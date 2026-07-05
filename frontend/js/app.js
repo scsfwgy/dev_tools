@@ -19,6 +19,69 @@
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
   ];
 
+  const seoMeta = {
+    "zh-CN": {
+      home: {
+        title: "Tools24 在线开发者工具箱 - JSON格式化、URL编码、Base64、时间戳转换",
+        description: "Tools24 提供在线 JSON 格式化校验、URL 编码解码、Base64 编码解码、时间戳转换、文本对比、文件 MD5/SHA 校验等开发者工具。"
+      },
+      json: {
+        title: "JSON格式化校验工具 - 在线 JSON Formatter / Viewer | Tools24",
+        description: "在线 JSON 格式化、压缩、校验和树形查看工具，支持快速检查 JSON 语法错误并复制格式化结果。"
+      },
+      timestamp: {
+        title: "时间戳转换工具 - Unix Timestamp 在线转换 | Tools24",
+        description: "在线时间戳转换工具，支持秒/毫秒时间戳、日期时间、ISO 8601、UTC 和本地时间互转。"
+      },
+      encoder: {
+        title: "URL编码解码工具 - URL Encode Decode 在线转换 | Tools24",
+        description: "在线 URL 编码和 URL 解码工具，支持中文、特殊字符、查询参数和链接文本快速转换。"
+      },
+      base64: {
+        title: "Base64编码解码工具 - Base64 Encode Decode 在线转换 | Tools24",
+        description: "在线 Base64 编码解码工具，支持文本和文件转 Base64、Base64 还原下载文件。"
+      },
+      diff: {
+        title: "文本对比工具 - 在线 Diff / 代码差异比较 | Tools24",
+        description: "在线文本对比和代码 Diff 工具，快速比较两段文本的新增、删除和相同内容。"
+      },
+      fileinfo: {
+        title: "文件详情和 MD5/SHA 哈希校验工具 | Tools24",
+        description: "在线查看文件大小、类型、图片尺寸、音视频信息，并计算 MD5、SHA-1、SHA-256 和 Base64。"
+      }
+    },
+    en: {
+      home: {
+        title: "Tools24 Online Developer Toolbox - JSON, URL Encoder, Base64, Timestamp",
+        description: "Tools24 provides online developer tools for JSON formatting, URL encoding, Base64, timestamp conversion, text diff and file hash checking."
+      },
+      json: {
+        title: "JSON Formatter and Validator Online | Tools24",
+        description: "Format, validate, compact and inspect JSON online with a tree viewer. Runs locally in your browser."
+      },
+      timestamp: {
+        title: "Timestamp Converter Online - Unix Time Converter | Tools24",
+        description: "Convert Unix timestamps, milliseconds, datetime, ISO 8601, UTC and local time online."
+      },
+      encoder: {
+        title: "URL Encoder and Decoder Online | Tools24",
+        description: "Encode and decode URLs, query parameters, Unicode text and special characters online."
+      },
+      base64: {
+        title: "Base64 Encoder and Decoder Online | Tools24",
+        description: "Encode and decode Base64 text online, convert files to Base64 and download decoded files."
+      },
+      diff: {
+        title: "Text Diff Tool Online - Compare Text and Code | Tools24",
+        description: "Compare two text snippets online and highlight added, removed and unchanged lines."
+      },
+      fileinfo: {
+        title: "File Info and MD5/SHA Hash Checker Online | Tools24",
+        description: "Inspect file size, type, media dimensions and calculate MD5, SHA-1, SHA-256 and Base64 locally."
+      }
+    }
+  };
+
   // ── SVG 图标库 ──
   const icons = {
     home: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
@@ -81,14 +144,19 @@
         const label = t(item.i18n);
         const hidden = query && !label.toLowerCase().includes(query) ? " hidden" : "";
         const active = item.id === activeMenuId ? " active" : "";
-        return `<button class="menu-item${active}${hidden}" data-id="${item.id}" title="${label}">
+        var lang = currentLang === "en" ? "en" : "zh";
+        var href = item.id === "home" ? "/" + lang + "/" : "/" + lang + "/tool/" + item.id;
+        return `<a class="menu-item${active}${hidden}" href="${href}" data-id="${item.id}" title="${label}">
           ${icons[item.icon]}<span>${label}</span>
-        </button>`;
+        </a>`;
       }).join("");
 
     // bind clicks
-    list.querySelectorAll(".menu-item").forEach(btn => {
-      btn.addEventListener("click", () => selectMenu(btn.dataset.id));
+    list.querySelectorAll(".menu-item").forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        selectMenu(this.dataset.id);
+      });
     });
 
     // render content if needed
@@ -99,11 +167,10 @@
     if (pushState !== false) {
       var lang = currentLang === "en" ? "en" : "zh";
       var path = id === "home" ? "/" + lang + "/" : "/" + lang + "/tool/" + id;
-      var title = (id === "home" ? "DevTools" : t("menu." + id) + " - DevTools");
-      history.pushState({ menuId: id }, title, path);
-      document.title = title;
+      history.pushState({ menuId: id }, "", path);
     }
     activeMenuId = id;
+    updateSeo();
     renderMenu();
   }
 
@@ -116,6 +183,7 @@
       document.getElementById("lang-select").value = currentLang;
     }
     activeMenuId = routed.menuId;
+    updateSeo();
     renderMenu();
   });
 
@@ -222,7 +290,7 @@
     }
     loadLocale(newLang);
     history.replaceState(history.state, "", newPath);
-    updateTitle();
+    updateSeo();
   });
 
   document.getElementById("theme-select").addEventListener("change", function () {
@@ -250,15 +318,40 @@
 
   applyTheme(currentTheme);
   loadLocale(currentLang).then(function () {
-    updateTitle();
+    updateSeo();
     renderContent();
   });
 
-  function updateTitle() {
-    if (activeMenuId === "home") {
-      document.title = "DevTools";
-    } else {
-      document.title = t("menu." + activeMenuId) + " - DevTools";
-    }
+  function updateSeo() {
+    var lang = currentLang === "en" ? "en" : "zh-CN";
+    var prefix = currentLang === "en" ? "en" : "zh";
+    var pageKey = activeMenuId || "home";
+    var meta = (seoMeta[lang] && seoMeta[lang][pageKey]) || seoMeta["zh-CN"].home;
+    var path = pageKey === "home" ? "/" + prefix + "/" : "/" + prefix + "/tool/" + pageKey;
+    var canonical = location.origin + path;
+    document.title = meta.title;
+    setMeta("name", "description", meta.description);
+    setMeta("property", "og:title", meta.title);
+    setMeta("property", "og:description", meta.description);
+    setMeta("property", "og:url", canonical);
+    setLink("canonical", canonical);
+    setAlternate("zh-CN", location.origin + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("en", location.origin + "/en" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("x-default", location.origin + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+  }
+
+  function setMeta(attr, key, value) {
+    var el = document.querySelector('meta[' + attr + '="' + key + '"]');
+    if (el) el.setAttribute("content", value);
+  }
+
+  function setLink(rel, href) {
+    var el = document.querySelector('link[rel="' + rel + '"]');
+    if (el) el.setAttribute("href", href);
+  }
+
+  function setAlternate(lang, href) {
+    var el = document.querySelector('link[rel="alternate"][hreflang="' + lang + '"]');
+    if (el) el.setAttribute("href", href);
   }
 })();

@@ -3,6 +3,8 @@
   "regions": ["hkg1"],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/robots.txt", "destination": "/api/index" },
+    { "source": "/sitemap.xml", "destination": "/api/index" },
     { "source": "/", "destination": "/api/index" },
     { "source": "/(zh|en)", "destination": "/api/index" },
     { "source": "/(zh|en)/", "destination": "/api/index" },
