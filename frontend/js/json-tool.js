@@ -1,27 +1,45 @@
 // JSON Tool — format, validate, tree view, folding. Zero deps.
 var JsonTool = (function () {
   var container, editor, output, resizer, leftPane, rightPane;
-  var splitRatio = 0.5; // ponytail: simple ratio, no per-pixel storage needed
+  var splitRatio = 0.5;
+  var HISTORY_KEY = "json_history";
+  var MAX_HISTORY = 20;
+
+  function t(key) { return (window.__t && window.__t(key)) || key; }
+
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch (e) { return []; }
+  }
+
+  function saveHistory(input) {
+    var list = loadHistory();
+    var idx = list.indexOf(input);
+    if (idx !== -1) list.splice(idx, 1);
+    list.unshift(input);
+    if (list.length > MAX_HISTORY) list.pop();
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+  }
 
   function init(parent) {
     container = parent;
     container.innerHTML =
       '<div class="json-tool">' +
       '  <div class="json-toolbar">' +
-      '    <button id="jt-format" class="jt-btn jt-btn-primary">格式化</button>' +
-      '    <button id="jt-compact" class="jt-btn">压缩</button>' +
-      '    <button id="jt-copy" class="jt-btn">复制</button>' +
+      '    <button id="jt-format" class="jt-btn jt-btn-primary">' + t("json.format") + '</button>' +
+      '    <button id="jt-compact" class="jt-btn">' + t("json.compact") + '</button>' +
+      '    <button id="jt-copy" class="jt-btn">' + t("json.copy") + '</button>' +
       '    <span id="jt-msg" class="jt-msg"></span>' +
       '  </div>' +
       '  <div class="json-panes">' +
       '    <div class="json-pane json-pane-left">' +
-      '      <textarea id="jt-editor" class="jt-editor" placeholder="粘贴 JSON..."></textarea>' +
+      '      <textarea id="jt-editor" class="jt-editor" placeholder="' + t("json.placeholder") + '"></textarea>' +
       '    </div>' +
       '    <div id="jt-resizer" class="jt-resizer"></div>' +
       '    <div class="json-pane json-pane-right">' +
       '      <div id="jt-output" class="jt-output"></div>' +
       '    </div>' +
       '  </div>' +
+      '  <div id="json-history" class="history-bar"></div>' +
       '</div>';
 
     editor = document.getElementById("jt-editor");
@@ -32,15 +50,9 @@ var JsonTool = (function () {
 
     applySplit();
 
-    document.getElementById("jt-format").addEventListener("click", function () {
-      formatJson();
-    });
-    document.getElementById("jt-compact").addEventListener("click", function () {
-      compactJson();
-    });
-    document.getElementById("jt-copy").addEventListener("click", function () {
-      copyOutput();
-    });
+    document.getElementById("jt-format").addEventListener("click", function () { formatJson(); });
+    document.getElementById("jt-compact").addEventListener("click", function () { compactJson(); });
+    document.getElementById("jt-copy").addEventListener("click", function () { copyOutput(); });
 
     editor.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
@@ -49,7 +61,7 @@ var JsonTool = (function () {
       }
     });
 
-    // ── drag resizer ──
+    // drag resizer
     resizer.addEventListener("mousedown", function (e) {
       e.preventDefault();
       var panes = container.querySelector(".json-panes");
@@ -58,24 +70,23 @@ var JsonTool = (function () {
       var panesWidth = panes.getBoundingClientRect().width;
 
       function onMove(ev) {
-        var dx = ev.clientX - startX;
-        var newRatio = startRatio + dx / panesWidth;
+        var newRatio = startRatio + (ev.clientX - startX) / panesWidth;
         splitRatio = Math.max(0.2, Math.min(0.8, newRatio));
         applySplit();
       }
-
       function onUp() {
         document.removeEventListener("mousemove", onMove);
         document.removeEventListener("mouseup", onUp);
         document.body.style.cursor = "";
         document.body.style.userSelect = "";
       }
-
       document.body.style.cursor = "col-resize";
       document.body.style.userSelect = "none";
       document.addEventListener("mousemove", onMove);
       document.addEventListener("mouseup", onUp);
     });
+
+    renderHistory();
   }
 
   function applySplit() {
@@ -94,8 +105,9 @@ var JsonTool = (function () {
     if (!raw) { output.innerHTML = ""; setMsg("", false); return; }
     try {
       var obj = JSON.parse(raw);
-      var formatted = JSON.stringify(obj, null, 2);
-      setMsg("✓ 有效 JSON", false);
+      setMsg("✓ " + t("json.valid"), false);
+      saveHistory(raw);
+      renderHistory();
       renderTree(obj);
     } catch (e) {
       setMsg("✗ " + e.message, true);
@@ -109,7 +121,9 @@ var JsonTool = (function () {
     try {
       var obj = JSON.parse(raw);
       editor.value = JSON.stringify(obj);
-      setMsg("✓ 已压缩", false);
+      setMsg("✓ " + t("json.compacted"), false);
+      saveHistory(raw);
+      renderHistory();
       renderTree(obj);
     } catch (e) {
       setMsg("✗ " + e.message, true);
@@ -120,22 +134,19 @@ var JsonTool = (function () {
     try {
       var obj = JSON.parse(editor.value.trim());
       navigator.clipboard.writeText(JSON.stringify(obj, null, 2)).then(function () {
-        setMsg("✓ 已复制", false);
+        setMsg("✓ " + t("json.copied"), false);
       });
     } catch (e) {
-      setMsg("✗ 无法复制：JSON 无效", true);
+      setMsg("✗ " + t("json.copyFailed"), true);
     }
   }
 
-  // ── tree view with folding ──
   function renderTree(obj) {
     output.innerHTML = buildNode(obj, 0);
-    // bind fold toggles
     output.querySelectorAll(".jt-toggle").forEach(function (tog) {
       tog.addEventListener("click", function (e) {
         e.stopPropagation();
-        var row = this.parentElement;
-        row.classList.toggle("jt-collapsed");
+        this.parentElement.classList.toggle("jt-collapsed");
       });
     });
   }
@@ -148,32 +159,47 @@ var JsonTool = (function () {
 
     if (Array.isArray(val)) {
       if (val.length === 0) return '<span class="jt-bracket">[]</span>';
-      var html = '<div class="jt-row jt-collapsible"><span class="jt-toggle">▼</span><span class="jt-bracket">[</span><span class="jt-count">' + val.length + " items</span></div>";
+      var html = '<div class="jt-row jt-collapsible"><span class="jt-toggle">▼</span><span class="jt-bracket">[</span><span class="jt-count">' + val.length + " " + t("json.items") + "</span></div>";
       html += '<div class="jt-children">';
       val.forEach(function (item, i) {
         html += '<div class="jt-row"><span class="jt-key">' + i + '</span>: ' + buildNode(item, depth + 1) + (i < val.length - 1 ? '<span class="jt-comma">,</span>' : "") + "</div>";
       });
-      html += '</div><div class="jt-row"><span class="jt-bracket">]</span></div>';
-      return html;
+      return html + '</div><div class="jt-row"><span class="jt-bracket">]</span></div>';
     }
 
     if (typeof val === "object") {
       var keys = Object.keys(val);
       if (keys.length === 0) return '<span class="jt-bracket">{}</span>';
-      var html = '<div class="jt-row jt-collapsible"><span class="jt-toggle">▼</span><span class="jt-bracket">{</span><span class="jt-count">' + keys.length + " keys</span></div>";
+      var html = '<div class="jt-row jt-collapsible"><span class="jt-toggle">▼</span><span class="jt-bracket">{</span><span class="jt-count">' + keys.length + " " + t("json.keys") + "</span></div>";
       html += '<div class="jt-children">';
       keys.forEach(function (k, i) {
         html += '<div class="jt-row"><span class="jt-key">"' + escapeHtml(k) + '"</span>: ' + buildNode(val[k], depth + 1) + (i < keys.length - 1 ? '<span class="jt-comma">,</span>' : "") + "</div>";
       });
-      html += '</div><div class="jt-row"><span class="jt-bracket">}</span></div>';
-      return html;
+      return html + '</div><div class="jt-row"><span class="jt-bracket">}</span></div>';
     }
 
     return String(val);
   }
 
-  function escapeHtml(s) {
-    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function escapeHtml(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function renderHistory() {
+    var list = loadHistory();
+    var el = document.getElementById("json-history");
+    if (!el) return;
+    if (!list.length) { el.innerHTML = ""; return; }
+    var html = '<span class="history-label">' + t("history.label") + '</span>';
+    list.forEach(function (item) {
+      html += '<button class="history-chip" title="' + escapeHtml(item) + '">' + escapeHtml(item.substring(0, 80)) + '</button>';
+    });
+    el.innerHTML = html;
+    el.querySelectorAll(".history-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        // load from history — the full text is in the title attribute
+        editor.value = this.getAttribute("title");
+        formatJson();
+      });
+    });
   }
 
   return { init: init };

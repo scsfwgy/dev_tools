@@ -22,5 +22,53 @@
   },
   "tool": {
     "comingSoon": "功能开发中..."
+  },
+  "json": {
+    "format": "格式化",
+    "compact": "压缩",
+    "copy": "复制",
+    "placeholder": "粘贴 JSON...",
+    "valid": "有效 JSON",
+    "compacted": "已压缩",
+    "copied": "已复制",
+    "copyFailed": "无法复制：JSON 无效",
+    "items": "项",
+    "keys": "个字段"
+  },
+  "history": {
+    "label": "历史记录"
+  },
+  "timestamp": {
+    "now": "当前时间",
+    "timezone": "时区",
+    "placeholder": "输入任意有效的时间格式均可转化～",
+    "ms": "毫秒时间戳",
+    "sec": "秒时间戳",
+    "datetime": "日期时间",
+    "iso": "ISO 8601",
+    "isoUtc": "ISO (UTC)",
+    "rfc": "RFC 2822",
+    "dow": "星期",
+    "week": "第几周",
+    "weekPrefix": "第",
+    "weekSuffix": "周",
+    "quarter": "季度",
+    "relative": "相对时间",
+    "utc": "UTC",
+    "local": "本地",
+    "copy": "复制",
+    "copied": "已复制",
+    "invalid": "无法识别的时间格式",
+    "justNow": "刚刚",
+    "past": "前",
+    "future": "后",
+    "secUnit": "秒",
+    "minUnit": "分钟",
+    "hrUnit": "小时",
+    "dayUnit": "天",
+    "monUnit": "个月",
+    "yrUnit": "年",
+    "days": "星期日,星期一,星期二,星期三,星期四,星期五,星期六",
+    "daysEn": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
   }
 }

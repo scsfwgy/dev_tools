@@ -31,6 +31,8 @@
     try {
       const res = await fetch(`/locales/${lang}.json`);
       locale = await res.json();
+      window.__locale = locale;
+      window.__t = t;
       currentLang = lang;
       localStorage.setItem(STORAGE_LANG, lang);
       document.documentElement.lang = lang;
@@ -137,6 +139,11 @@
     if (activeMenuId === "json" && typeof JsonTool !== "undefined") {
       el.innerHTML = "";
       JsonTool.init(el);
+      return;
+    }
+    if (activeMenuId === "timestamp" && typeof TimestampTool !== "undefined") {
+      el.innerHTML = "";
+      TimestampTool.init(el);
       return;
     }
     const item = menuItems.find(m => m.id === activeMenuId);

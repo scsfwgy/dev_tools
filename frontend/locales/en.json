@@ -22,5 +22,53 @@
   },
   "tool": {
     "comingSoon": "Coming soon..."
+  },
+  "json": {
+    "format": "Format",
+    "compact": "Compact",
+    "copy": "Copy",
+    "placeholder": "Paste JSON...",
+    "valid": "Valid JSON",
+    "compacted": "Compacted",
+    "copied": "Copied",
+    "copyFailed": "Copy failed: invalid JSON",
+    "items": "items",
+    "keys": "keys"
+  },
+  "history": {
+    "label": "History"
+  },
+  "timestamp": {
+    "now": "Current Time",
+    "timezone": "Timezone",
+    "placeholder": "Enter any valid time format to convert~",
+    "ms": "Milliseconds",
+    "sec": "Seconds",
+    "datetime": "Datetime",
+    "iso": "ISO 8601",
+    "isoUtc": "ISO (UTC)",
+    "rfc": "RFC 2822",
+    "dow": "Day of Week",
+    "week": "Week",
+    "weekPrefix": "Week",
+    "weekSuffix": "",
+    "quarter": "Quarter",
+    "relative": "Relative",
+    "utc": "UTC",
+    "local": "Local",
+    "copy": "Copy",
+    "copied": "Copied",
+    "invalid": "Unrecognized time format",
+    "justNow": "Just now",
+    "past": " ago",
+    "future": " later",
+    "secUnit": "s",
+    "minUnit": "min",
+    "hrUnit": "h",
+    "dayUnit": "d",
+    "monUnit": "mo",
+    "yrUnit": "y",
+    "days": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
+    "daysEn": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
   }
 }

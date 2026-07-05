@@ -456,3 +456,183 @@ body {
 [data-theme="light"] .jt-string { color: #0a3069; }
 [data-theme="light"] .jt-number { color: #0550ae; }
 [data-theme="light"] .jt-bool { color: #cf222e; }
+
+/* === 时间戳工具 === */
+.ts-tool {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.ts-now {
+    text-align: center;
+    padding: 20px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+}
+
+.ts-now-label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ts-now-value {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    user-select: text;
+    cursor: pointer;
+}
+
+.ts-now-date { color: var(--text); }
+
+.ts-now-time { color: var(--text); }
+
+.ts-now-ms {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    font-weight: 400;
+}
+
+.ts-now-tz {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.ts-input-wrap { margin-bottom: 20px; }
+
+.ts-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--select-bg);
+    color: var(--text);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.ts-input:focus { border-color: var(--accent); }
+
+.ts-input::placeholder { color: var(--text-muted); }
+
+.ts-results { min-height: 60px; }
+
+.ts-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ts-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+}
+
+.ts-row:last-child { border-bottom: none; }
+
+.ts-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.ts-val {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.88rem;
+    color: var(--text);
+    flex: 1;
+    word-break: break-all;
+}
+
+.ts-copy {
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.1s, color 0.1s;
+}
+
+.ts-copy:hover { background: var(--hover-row); color: var(--text); }
+
+.ts-toast {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    animation: ts-toast-in 0.2s ease;
+}
+
+@keyframes ts-toast-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* === 统一历史记录栏 === */
+.history-bar {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.history-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+
+.history-chip {
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    cursor: pointer;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.history-chip:hover {
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+
+.ts-error {
+    text-align: center;
+    padding: 24px;
+    color: #f85149;
+    font-size: 0.9rem;
+}
