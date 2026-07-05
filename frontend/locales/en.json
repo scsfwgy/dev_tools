@@ -1,0 +1,12 @@
+{
+  "subtitle": "Developer Toolbox",
+  "status": {
+    "running": "Service Running"
+  },
+  "settings": {
+    "language": "语言 / Language",
+    "theme": "主题 / Theme",
+    "themeDark": "Dark",
+    "themeLight": "Light"
+  }
+}

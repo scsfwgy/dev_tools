@@ -1,0 +1,12 @@
+{
+  "subtitle": "开发工具集",
+  "status": {
+    "running": "服务运行中"
+  },
+  "settings": {
+    "language": "语言 / Language",
+    "theme": "主题 / Theme",
+    "themeDark": "深色",
+    "themeLight": "浅色"
+  }
+}
