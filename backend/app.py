@@ -370,6 +370,6 @@ def visits():
 
 if __name__ == "__main__":
     host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", "8730"))
+    port = int(os.getenv("PORT", "8731"))
     debug = os.getenv("FLASK_DEBUG", "").lower() in ("1", "true", "yes", "on")
     app.run(host=host, port=port, debug=debug)

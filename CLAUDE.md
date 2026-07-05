@@ -4,7 +4,7 @@
 - 后端：Flask (Python)，蓝图路由
 - 前端：原生 HTML/CSS/JS，Flask 直接托管
 - 部署：Vercel serverless，入口 `api/index.py`
-- 端口：8730
+- 端口：8731
 - 缓存：Upstash Redis REST（可选），`service/cache_store.py`
 
 ## 关键文件

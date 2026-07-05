@@ -43,9 +43,9 @@ start_production() {
     echo "[2/2] 启动服务 (后台模式)..."
     PYTHONPATH=backend nohup "$VENV_PYTHON" backend/app.py >> "$LOGFILE" 2>&1 &
     echo $! > "$PIDFILE"
-    wait_for_url "http://127.0.0.1:8730/api/health"
+    wait_for_url "http://127.0.0.1:8731/api/health"
     echo "  服务已启动 PID: $(cat $PIDFILE)"
-    echo "  访问: http://127.0.0.1:8730"
+    echo "  访问: http://127.0.0.1:8731"
     echo "  日志: $LOGFILE"
 }
 
@@ -53,7 +53,7 @@ start_debug() {
     setup
     kill_port_if_needed
     echo "[2/2] 启动服务 (调试模式)..."
-    echo "  访问: http://127.0.0.1:8730"
+    echo "  访问: http://127.0.0.1:8731"
     echo "  按 Ctrl+C 停止"
     echo ""
     PYTHONPATH=backend "$VENV_PYTHON" backend/app.py
@@ -87,7 +87,7 @@ status() {
         pid=$(cat "$PIDFILE")
         if kill -0 "$pid" 2>/dev/null; then
             echo "运行中 (PID: $pid)"
-            echo "访问: http://127.0.0.1:8730"
+            echo "访问: http://127.0.0.1:8731"
         else
             echo "已停止 (PID 文件残留)"
             rm -f "$PIDFILE"
@@ -98,7 +98,7 @@ status() {
 }
 
 kill_port_if_needed() {
-    local port="${PORT:-8730}"
+    local port="${PORT:-8731}"
     local pids
     pids=$(lsof -ti :"$port" 2>/dev/null || true)
     if [ -n "$pids" ]; then
