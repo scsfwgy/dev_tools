@@ -6,7 +6,7 @@
     "home": "首页",
     "json": "JSON 工具",
     "timestamp": "时间戳转换",
-    "encoder": "编码转换",
+    "encoder": "URL编码转换",
     "diff": "文本对比",
     "base64": "Base64",
     "fileinfo": "文件详情",
