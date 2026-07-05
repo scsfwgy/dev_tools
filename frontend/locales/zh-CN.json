@@ -115,7 +115,8 @@
     "replyPlaceholder": "管理员回复内容...",
     "verifying": "验证中...",
     "adminEnabled": "✓ 管理员已启用",
-    "invalidToken": "Token 无效"
+    "invalidToken": "Token 无效",
+    "processing": "处理中..."
   },
   "fileinfo": {
     "dropText": "拖拽文件到此处查看详情",

@@ -161,7 +161,7 @@ var WishTool = (function () {
     var btn = document.getElementById("wish-submit");
     btn.disabled = true;
     var origText = btn.textContent;
-    btn.textContent = "···";
+    btn.textContent = t("wishes.processing");
     fetch(WISHES_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -182,7 +182,7 @@ var WishTool = (function () {
   function replyWish(wishId, text, btn) {
     var reply = (text || "").trim();
     if (!reply) { showMsg(t("wishes.errorReplyEmpty"), true); return; }
-    if (btn) { btn.disabled = true; var origText = btn.textContent; btn.textContent = "···"; }
+    if (btn) { btn.disabled = true; var origText = btn.textContent; btn.textContent = t("wishes.processing"); }
     fetch(WISHES_API + "/" + encodeURIComponent(wishId) + "/reply", {
       method: "PATCH",
       headers: { "Content-Type": "application/json", "X-Admin-Token": getAdminToken() },

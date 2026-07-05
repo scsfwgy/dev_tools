@@ -115,7 +115,8 @@
     "replyPlaceholder": "Admin reply...",
     "verifying": "Verifying...",
     "adminEnabled": "✓ Admin enabled",
-    "invalidToken": "Invalid token"
+    "invalidToken": "Invalid token",
+    "processing": "Processing..."
   },
   "fileinfo": {
     "dropText": "Drop a file here to inspect",

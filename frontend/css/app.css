@@ -226,7 +226,7 @@ body {
 .settings-panel {
     position: fixed;
     left: 12px;
-    bottom: 100px;
+    bottom: 50px;
     width: 220px;
     background: var(--panel-bg);
     border: 1px solid var(--border);
