@@ -681,3 +681,126 @@ body {
 
 .enc-textarea::placeholder { color: var(--text-muted); }
 
+/* === Base64 工具 === */
+.b64-tool { height: 100%; display: flex; flex-direction: column; }
+
+.b64-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 14px;
+}
+
+.b64-tab {
+    padding: 8px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.b64-tab:hover { color: var(--text); }
+.b64-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.b64-pane { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.b64-pane.hidden { display: none; }
+
+.b64-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.b64-panes {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+
+.b64-textarea {
+    width: 100%;
+    flex: 1;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--select-bg);
+    color: var(--text);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    resize: none;
+    outline: none;
+    min-height: 120px;
+}
+
+.b64-textarea:focus { border-color: var(--accent); }
+.b64-textarea::placeholder { color: var(--text-muted); }
+
+.b64-file-grid {
+    flex: 1;
+    display: flex;
+    gap: 14px;
+    min-height: 0;
+}
+
+.b64-file-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.b64-dropzone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    transition: border-color 0.15s, background 0.15s;
+    min-height: 140px;
+}
+
+.b64-dropzone:hover, .b64-dropzone.b64-dragover {
+    border-color: var(--accent);
+    background: var(--hover-row);
+}
+
+.b64-drop-text { font-size: 0.9rem; color: var(--text-secondary); }
+.b64-or { font-size: 0.8rem; }
+
+.b64-file-btn {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.b64-file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+}
+
+.b64-file-info.hidden { display: none; }
+
+#b64-file-name { flex: 1; color: var(--text); font-family: "SF Mono", monospace; }
+#b64-file-size { color: var(--text-muted); font-size: 0.8rem; }
+
+.b64-dl-btn { width: 100%; }
+

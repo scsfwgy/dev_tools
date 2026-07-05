@@ -8,6 +8,7 @@
     "timestamp": "Timestamp",
     "encoder": "Encoder",
     "diff": "Diff",
+    "base64": "Base64",
     "searchPlaceholder": "Search tools..."
   },
   "settings": {
@@ -49,6 +50,27 @@
     "decoded": "Decoded",
     "copied": "Copied",
     "auto": "Auto"
+  },
+  "base64": {
+    "text": "Text",
+    "file": "File",
+    "encode": "Encode",
+    "decode": "Decode",
+    "swap": "Swap",
+    "copy": "Copy",
+    "inputPlaceholder": "Enter text...",
+    "outputPlaceholder": "Encoded/Decoded result",
+    "encoded": "Encoded",
+    "decoded": "Decoded",
+    "copied": "Copied",
+    "dropText": "Drop file here, or",
+    "or": "— or —",
+    "chooseFile": "Choose File",
+    "copyBase64": "Copy Base64",
+    "pasteBase64": "Paste Base64 data...",
+    "download": "Download File",
+    "downloaded": "Downloaded",
+    "noInput": "Paste Base64 data first"
   },
   "timestamp": {
     "now": "Current Time",

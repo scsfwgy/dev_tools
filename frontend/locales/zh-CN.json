@@ -8,6 +8,7 @@
     "timestamp": "时间戳转换",
     "encoder": "编码转换",
     "diff": "文本对比",
+    "base64": "Base64",
     "searchPlaceholder": "搜索工具..."
   },
   "settings": {
@@ -49,6 +50,27 @@
     "decoded": "解码完成",
     "copied": "已复制",
     "auto": "自动识别"
+  },
+  "base64": {
+    "text": "文本",
+    "file": "文件",
+    "encode": "编码",
+    "decode": "解码",
+    "swap": "交换",
+    "copy": "复制",
+    "inputPlaceholder": "输入文本...",
+    "outputPlaceholder": "编码/解码结果",
+    "encoded": "编码完成",
+    "decoded": "解码完成",
+    "copied": "已复制",
+    "dropText": "拖拽文件到此处，或",
+    "or": "— 或 —",
+    "chooseFile": "选择文件",
+    "copyBase64": "复制 Base64",
+    "pasteBase64": "粘贴 Base64 数据...",
+    "download": "下载文件",
+    "downloaded": "下载完成",
+    "noInput": "请先粘贴 Base64 数据"
   },
   "timestamp": {
     "now": "当前时间",
