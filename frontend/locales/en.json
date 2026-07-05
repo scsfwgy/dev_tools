@@ -72,6 +72,17 @@
     "downloaded": "Downloaded",
     "noInput": "Paste Base64 data first"
   },
+  "diff": {
+    "compare": "Compare",
+    "swap": "Swap",
+    "clear": "Clear",
+    "original": "Original",
+    "modified": "Modified",
+    "pasteOriginal": "Paste original text...",
+    "pasteModified": "Paste modified text...",
+    "identical": "The two texts are identical",
+    "summary": "{a} lines added, {r} lines removed"
+  },
   "timestamp": {
     "now": "Current Time",
     "timezone": "Timezone",

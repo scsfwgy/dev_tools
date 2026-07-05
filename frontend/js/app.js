@@ -158,6 +158,11 @@
       Base64Tool.init(el);
       return;
     }
+    if (activeMenuId === "diff" && typeof DiffTool !== "undefined") {
+      el.innerHTML = "";
+      DiffTool.init(el);
+      return;
+    }
     const item = menuItems.find(m => m.id === activeMenuId);
     const label = item ? t(item.i18n) : activeMenuId;
     el.innerHTML = `

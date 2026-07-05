@@ -72,6 +72,17 @@
     "downloaded": "下载完成",
     "noInput": "请先粘贴 Base64 数据"
   },
+  "diff": {
+    "compare": "对比",
+    "swap": "交换",
+    "clear": "清空",
+    "original": "原始文本",
+    "modified": "修改后",
+    "pasteOriginal": "粘贴原始文本...",
+    "pasteModified": "粘贴修改后文本...",
+    "identical": "两份文本完全一致",
+    "summary": "共 {a} 行新增，{r} 行删除"
+  },
   "timestamp": {
     "now": "当前时间",
     "timezone": "时区",
