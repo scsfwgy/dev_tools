@@ -1,6 +1,7 @@
 // JSON Tool — format, validate, tree view, folding. Zero deps.
 var JsonTool = (function () {
-  var container, editor, output;
+  var container, editor, output, resizer, leftPane, rightPane;
+  var splitRatio = 0.5; // ponytail: simple ratio, no per-pixel storage needed
 
   function init(parent) {
     container = parent;
@@ -16,6 +17,7 @@ var JsonTool = (function () {
       '    <div class="json-pane json-pane-left">' +
       '      <textarea id="jt-editor" class="jt-editor" placeholder="粘贴 JSON..."></textarea>' +
       '    </div>' +
+      '    <div id="jt-resizer" class="jt-resizer"></div>' +
       '    <div class="json-pane json-pane-right">' +
       '      <div id="jt-output" class="jt-output"></div>' +
       '    </div>' +
@@ -24,6 +26,11 @@ var JsonTool = (function () {
 
     editor = document.getElementById("jt-editor");
     output = document.getElementById("jt-output");
+    resizer = document.getElementById("jt-resizer");
+    leftPane = container.querySelector(".json-pane-left");
+    rightPane = container.querySelector(".json-pane-right");
+
+    applySplit();
 
     document.getElementById("jt-format").addEventListener("click", function () {
       formatJson();
@@ -35,13 +42,45 @@ var JsonTool = (function () {
       copyOutput();
     });
 
-    // ponytail: auto-format on Ctrl+Enter
     editor.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         formatJson();
       }
     });
+
+    // ── drag resizer ──
+    resizer.addEventListener("mousedown", function (e) {
+      e.preventDefault();
+      var panes = container.querySelector(".json-panes");
+      var startX = e.clientX;
+      var startRatio = splitRatio;
+      var panesWidth = panes.getBoundingClientRect().width;
+
+      function onMove(ev) {
+        var dx = ev.clientX - startX;
+        var newRatio = startRatio + dx / panesWidth;
+        splitRatio = Math.max(0.2, Math.min(0.8, newRatio));
+        applySplit();
+      }
+
+      function onUp() {
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+      }
+
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    });
+  }
+
+  function applySplit() {
+    leftPane.style.flex = "0 0 " + (splitRatio * 100) + "%";
+    rightPane.style.flex = "0 0 " + ((1 - splitRatio) * 100) + "%";
   }
 
   function setMsg(text, isError) {

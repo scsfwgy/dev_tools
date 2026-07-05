@@ -361,15 +361,28 @@ body {
 .json-panes {
     flex: 1;
     display: flex;
-    gap: 12px;
     min-height: 0;
 }
 
 .json-pane {
-    flex: 1;
     display: flex;
     flex-direction: column;
     min-width: 0;
+    overflow: hidden;
+}
+
+.jt-resizer {
+    width: 6px;
+    cursor: col-resize;
+    background: transparent;
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.15s;
+}
+
+.jt-resizer:hover,
+.jt-resizer:active {
+    background: var(--accent);
 }
 
 .jt-editor {
