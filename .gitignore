@@ -1,0 +1,9 @@
+.idea/
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.log
+logs/
+.DS_Store
+.env.local
