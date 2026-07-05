@@ -38,6 +38,18 @@
   "history": {
     "label": "History"
   },
+  "encoder": {
+    "encode": "Encode",
+    "decode": "Decode",
+    "swap": "Swap",
+    "copy": "Copy",
+    "inputPlaceholder": "Enter text...",
+    "outputPlaceholder": "Result",
+    "encoded": "Encoded",
+    "decoded": "Decoded",
+    "copied": "Copied",
+    "auto": "Auto"
+  },
   "timestamp": {
     "now": "Current Time",
     "timezone": "Timezone",

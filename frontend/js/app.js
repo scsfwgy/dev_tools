@@ -146,6 +146,11 @@
       TimestampTool.init(el);
       return;
     }
+    if (activeMenuId === "encoder" && typeof EncoderTool !== "undefined") {
+      el.innerHTML = "";
+      EncoderTool.init(el);
+      return;
+    }
     const item = menuItems.find(m => m.id === activeMenuId);
     const label = item ? t(item.i18n) : activeMenuId;
     el.innerHTML = `

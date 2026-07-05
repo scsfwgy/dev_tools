@@ -636,3 +636,48 @@ body {
     color: #f85149;
     font-size: 0.9rem;
 }
+
+/* === URL 编码工具 === */
+.enc-tool {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.enc-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+}
+
+.enc-panes {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+
+.enc-textarea {
+    width: 100%;
+    flex: 1;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--select-bg);
+    color: var(--text);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    resize: none;
+    outline: none;
+    min-height: 120px;
+}
+
+.enc-textarea:focus { border-color: var(--accent); }
+
+.enc-textarea::placeholder { color: var(--text-muted); }
+

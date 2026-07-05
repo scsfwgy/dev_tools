@@ -38,6 +38,18 @@
   "history": {
     "label": "历史记录"
   },
+  "encoder": {
+    "encode": "编码",
+    "decode": "解码",
+    "swap": "交换",
+    "copy": "复制",
+    "inputPlaceholder": "输入文本...",
+    "outputPlaceholder": "转换结果",
+    "encoded": "编码完成",
+    "decoded": "解码完成",
+    "copied": "已复制",
+    "auto": "自动识别"
+  },
   "timestamp": {
     "now": "当前时间",
     "timezone": "时区",
