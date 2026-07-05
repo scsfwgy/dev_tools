@@ -1,12 +1,26 @@
 {
-  "subtitle": "开发工具集",
-  "status": {
-    "running": "服务运行中"
+  "app": {
+    "name": "DevTools"
+  },
+  "menu": {
+    "home": "首页",
+    "json": "JSON 工具",
+    "timestamp": "时间戳转换",
+    "encoder": "编码转换",
+    "diff": "文本对比",
+    "searchPlaceholder": "搜索工具..."
   },
   "settings": {
+    "title": "设置",
     "language": "语言 / Language",
     "theme": "主题 / Theme",
     "themeDark": "深色",
     "themeLight": "浅色"
+  },
+  "welcome": {
+    "desc": "开发工具集 — 从左侧菜单选择工具开始使用"
+  },
+  "tool": {
+    "comingSoon": "功能开发中..."
   }
 }

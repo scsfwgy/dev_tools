@@ -1,12 +1,26 @@
 {
-  "subtitle": "Developer Toolbox",
-  "status": {
-    "running": "Service Running"
+  "app": {
+    "name": "DevTools"
+  },
+  "menu": {
+    "home": "Home",
+    "json": "JSON Tool",
+    "timestamp": "Timestamp",
+    "encoder": "Encoder",
+    "diff": "Diff",
+    "searchPlaceholder": "Search tools..."
   },
   "settings": {
+    "title": "Settings",
     "language": "语言 / Language",
     "theme": "主题 / Theme",
     "themeDark": "Dark",
     "themeLight": "Light"
+  },
+  "welcome": {
+    "desc": "Developer Toolbox — select a tool from the sidebar to get started"
+  },
+  "tool": {
+    "comingSoon": "Coming soon..."
   }
 }
