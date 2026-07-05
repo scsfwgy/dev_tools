@@ -10,6 +10,7 @@
     "diff": "Diff",
     "base64": "Base64",
     "fileinfo": "File Info",
+    "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
   "settings": {
@@ -17,7 +18,8 @@
     "language": "语言 / Language",
     "theme": "主题 / Theme",
     "themeDark": "Dark",
-    "themeLight": "Light"
+    "themeLight": "Light",
+    "visitCount": "Visits: "
   },
   "welcome": {
     "desc": "Developer Toolbox — select a tool from the sidebar to get started"
@@ -83,6 +85,37 @@
     "pasteModified": "Paste modified text...",
     "identical": "The two texts are identical",
     "summary": "{a} lines added, {r} lines removed"
+  },
+  "wishes": {
+    "title": "🌟 Wish Wall — Have a feature request?",
+    "manage": "Admin",
+    "adminToken": "Admin Token",
+    "adminPlaceholder": "Enter token to delete wishes",
+    "save": "Save",
+    "placeholder": "Write your wish (max 200 characters)...",
+    "nickname": "Nickname (optional)",
+    "captchaHint": "Click to refresh captcha",
+    "captcha": "Captcha",
+    "submit": "Submit",
+    "empty": "No wishes yet. Be the first! ✨",
+    "loadFailed": "Failed to load, try again",
+    "errorEmpty": "Wish cannot be empty",
+    "errorCaptcha": "Captcha required",
+    "errorSubmit": "Failed to submit",
+    "errorDelete": "Failed to delete",
+    "errorReply": "Failed to reply",
+    "errorReplyEmpty": "Reply cannot be empty",
+    "success": "Wish submitted ✨",
+    "replySuccess": "Reply saved",
+    "anonymous": "Anonymous",
+    "delete": "Delete",
+    "adminReply": "[Admin Reply]",
+    "reply": "Reply",
+    "updateReply": "Update",
+    "replyPlaceholder": "Admin reply...",
+    "verifying": "Verifying...",
+    "adminEnabled": "✓ Admin enabled",
+    "invalidToken": "Invalid token"
   },
   "fileinfo": {
     "dropText": "Drop a file here to inspect",

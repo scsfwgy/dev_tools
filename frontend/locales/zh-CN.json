@@ -10,6 +10,7 @@
     "diff": "文本对比",
     "base64": "Base64",
     "fileinfo": "文件详情",
+    "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
   "settings": {
@@ -17,7 +18,8 @@
     "language": "语言 / Language",
     "theme": "主题 / Theme",
     "themeDark": "深色",
-    "themeLight": "浅色"
+    "themeLight": "浅色",
+    "visitCount": "访问次数："
   },
   "welcome": {
     "desc": "开发工具集 — 从左侧菜单选择工具开始使用"
@@ -83,6 +85,37 @@
     "pasteModified": "粘贴修改后文本...",
     "identical": "两份文本完全一致",
     "summary": "共 {a} 行新增，{r} 行删除"
+  },
+  "wishes": {
+    "title": "🌟 心愿墙 — 想要什么功能，留个言",
+    "manage": "管理",
+    "adminToken": "管理员 Token",
+    "adminPlaceholder": "填入后每条心愿可删除",
+    "save": "保存",
+    "placeholder": "写下你的心愿（最多 200 字）...",
+    "nickname": "昵称（可选）",
+    "captchaHint": "点击刷新验证码",
+    "captcha": "验证码",
+    "submit": "提交心愿",
+    "empty": "还没有心愿，来许下第一个吧 ✨",
+    "loadFailed": "加载失败，请重试",
+    "errorEmpty": "心愿内容不能为空",
+    "errorCaptcha": "请输入验证码",
+    "errorSubmit": "提交失败，请重试",
+    "errorDelete": "删除失败",
+    "errorReply": "回复失败",
+    "errorReplyEmpty": "回复内容不能为空",
+    "success": "心愿已提交 ✨",
+    "replySuccess": "回复成功",
+    "anonymous": "匿名",
+    "delete": "删除",
+    "adminReply": "[管理员回复]",
+    "reply": "回复",
+    "updateReply": "更新回复",
+    "replyPlaceholder": "管理员回复内容...",
+    "verifying": "验证中...",
+    "adminEnabled": "✓ 管理员已启用",
+    "invalidToken": "Token 无效"
   },
   "fileinfo": {
     "dropText": "拖拽文件到此处查看详情",

@@ -5,22 +5,24 @@
 - 前端：原生 HTML/CSS/JS，Flask 直接托管
 - 部署：Vercel serverless，入口 `api/index.py`
 - 端口：8730
+- 缓存：Upstash Redis REST（可选），`service/cache_store.py`
 
 ## 关键文件
-- `backend/app.py` — Flask 入口，静态文件托管，健康检查
+- `backend/app.py` — Flask 入口，静态文件托管，SEO 渲染，访问计数
 - `start.sh` — 开发/生产启动脚本，venv 管理
 - `vercel.json` — Vercel 路由（所有请求 → api/index.py）
 
 ## 约定
 - 无构建步骤，前端纯 HTML/CSS/JS
-- 国际化文件：`frontend/locales/{lang}.json`
+- 国际化：`frontend/locales/{lang}.json`
 - 蓝图在 `app.py` 中注册
 - `.env.local` 存放密钥（gitignore）
 
-## 强制要求（后续所有功能必须遵守）
-- **国际化**：所有用户可见文本必须使用 `data-i18n` 属性 + locale JSON。必须同时支持中文（`zh-CN`）和英文（`en`）。⚠️ 每实现一个新功能，必须同步更新两个 locale 文件，不得遗漏。
-- **换肤**：所有颜色必须引用 CSS 自定义属性（见 `app.css` 中的 `:root` / `[data-theme="light"]`）。必须同时支持深色和浅色主题。⚠️ 每实现一个新功能，必须在两种主题下验证颜色正常，不得使用硬编码颜色值。
-- **设置面板**：语言和主题选择器位于右上角齿轮下拉菜单中。后续所有全局偏好设置都放这里。
-- **SEO**：每个功能页面必须有独立的 URL 路径（通过 `history.pushState`），`<title>` 随页面切换更新，确保页面可被搜索引擎索引和收藏。
-- **URL 路由**：左侧菜单切换时必须同步更新浏览器地址栏路径，支持浏览器前进/后退导航。
-- **路由检查**：新增路由必须检查 vercel.json，否则可能导致部署到服务器出现404。
+## 强制要求
+- **国际化**：所有用户可见文本使用 `data-i18n` + locale JSON，中英双语。新功能必须同步更新两个 locale 文件。
+- **换肤**：所有颜色引用 CSS 自定义属性（`:root` / `[data-theme="light"]`），深色+浅色双主题。
+- **设置面板**：语言/主题选择器在右上角齿轮菜单。
+- **SEO**：每个功能页面独立 URL（`/{lang}/tool/{id}`），`history.pushState` 同步。
+- **路由检查**：新增路由需检查 vercel.json。
+- **历史记录**：每个工具在底部有统一 `.history-bar`，localStorage 持久化。
+- **本地处理**：文件相关操作不上传服务器，全部浏览器本地完成。

@@ -1,16 +1,22 @@
-"""DevTools — minimal Flask app shell."""
+"""DevTools — Flask app."""
 import html
 import json
 import logging
 import os
+import threading
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, send_from_directory
 from flask_cors import CORS
 
+from service import cache_store
+from routes.wishes import wishes_bp
+
 app = Flask(__name__, static_folder=None)
 CORS(app)
 logging.basicConfig(level=logging.INFO)
+
+app.register_blueprint(wishes_bp)
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 SITE_URL = "https://www.tools24.uk"
@@ -326,6 +332,40 @@ def build_seo_content(lang, tool_id, meta):
         f"<h2>{'更多工具' if lang == 'zh' else 'More tools'}</h2><ul>{nav}</ul>"
         "</section>"
     )
+
+
+# --- Visit counter (Redis preferred, file fallback) ---
+_VISIT_KEY = "visit_count"
+_COUNTER_PATH = Path("/tmp/visit_count.json") if Path("/tmp").exists() else Path(__file__).resolve().parent / "config" / "visit_count.json"
+_counter_lock = threading.Lock()
+
+
+def _read_counter():
+    try:
+        if _COUNTER_PATH.exists():
+            return json.loads(_COUNTER_PATH.read_text()).get("count", 0)
+    except Exception:
+        pass
+    return 0
+
+
+def _write_counter(count):
+    _COUNTER_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _COUNTER_PATH.write_text(json.dumps({"count": count}))
+
+
+@app.route("/api/visits")
+def visits():
+    # Shared Redis path — atomic, correct across instances.
+    if cache_store.is_enabled():
+        count = cache_store.cache_incr(_VISIT_KEY)
+        if count is not None:
+            return jsonify({"count": count})
+        # Redis transiently unavailable — fall through to the file counter.
+    with _counter_lock:
+        count = _read_counter() + 1
+        _write_counter(count)
+    return jsonify({"count": count})
 
 
 if __name__ == "__main__":
