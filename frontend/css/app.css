@@ -181,15 +181,12 @@ body {
     padding: 6px 8px;
 }
 
-.sidebar-visit {
+.settings-visit {
     font-size: 0.72rem;
     color: var(--text-muted);
-    padding: 4px 10px 6px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
     white-space: nowrap;
-}
-
-.sidebar.collapsed .sidebar-visit {
-    display: none;
 }
 
 .sidebar-action {
@@ -228,8 +225,8 @@ body {
 /* === 设置面板 === */
 .settings-panel {
     position: fixed;
-    left: calc(var(--sidebar-w) + 12px);
-    bottom: 60px;
+    left: 12px;
+    bottom: 100px;
     width: 220px;
     background: var(--panel-bg);
     border: 1px solid var(--border);
@@ -241,7 +238,7 @@ body {
 }
 
 .sidebar.collapsed ~ .settings-panel {
-    left: calc(var(--sidebar-collapsed-w) + 12px);
+    left: 12px;
 }
 
 .settings-panel.hidden {

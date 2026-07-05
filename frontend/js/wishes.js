@@ -121,7 +121,7 @@ var WishTool = (function () {
       var del = document.createElement("span");
       del.className = "wish-card-del";
       del.textContent = "  " + t("wishes.delete");
-      del.addEventListener("click", function () { deleteWish(wish.id); });
+      del.addEventListener("click", function () { deleteWish(wish.id, del); });
       right.appendChild(del);
     }
     meta.appendChild(right);
@@ -160,6 +160,8 @@ var WishTool = (function () {
 
     var btn = document.getElementById("wish-submit");
     btn.disabled = true;
+    var origText = btn.textContent;
+    btn.textContent = "···";
     fetch(WISHES_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -174,13 +176,13 @@ var WishTool = (function () {
         loadWishes();
       })
       .catch(function (e) { showMsg(e.message || t("wishes.errorSubmit"), true); loadCaptcha(); })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; btn.textContent = origText; });
   }
 
   function replyWish(wishId, text, btn) {
     var reply = (text || "").trim();
     if (!reply) { showMsg(t("wishes.errorReplyEmpty"), true); return; }
-    if (btn) btn.disabled = true;
+    if (btn) { btn.disabled = true; var origText = btn.textContent; btn.textContent = "···"; }
     fetch(WISHES_API + "/" + encodeURIComponent(wishId) + "/reply", {
       method: "PATCH",
       headers: { "Content-Type": "application/json", "X-Admin-Token": getAdminToken() },
@@ -189,16 +191,18 @@ var WishTool = (function () {
       .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || t("wishes.errorReply")); return d; }); })
       .then(function () { showMsg(t("wishes.replySuccess"), false); loadWishes(); })
       .catch(function (e) { showMsg(e.message || t("wishes.errorReply"), true); })
-      .finally(function () { if (btn) btn.disabled = false; });
+      .finally(function () { if (btn) { btn.disabled = false; btn.textContent = origText; } });
   }
 
-  function deleteWish(wishId) {
+  function deleteWish(wishId, btn) {
+    if (btn) { btn.style.pointerEvents = "none"; btn.style.opacity = "0.4"; }
     fetch(WISHES_API + "/" + encodeURIComponent(wishId), {
       method: "DELETE", headers: { "X-Admin-Token": getAdminToken() },
     })
       .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || t("wishes.errorDelete")); return d; }); })
       .then(function () { loadWishes(); })
-      .catch(function (e) { showMsg(e.message || t("wishes.errorDelete"), true); });
+      .catch(function (e) { showMsg(e.message || t("wishes.errorDelete"), true); })
+      .finally(function () { if (btn) { btn.style.pointerEvents = ""; btn.style.opacity = ""; } });
   }
 
   function showMsg(text, isError) {

@@ -19,7 +19,7 @@ import requests
 logger = logging.getLogger(__name__)
 
 _REST_TIMEOUT = 4
-_KEY_PREFIX = "dt:"  # DevTools namespace
+_KEY_PREFIX = "dev_tools:"
 
 _BASE_URL = (os.getenv("UPSTASH_REDIS_REST_URL") or os.getenv("KV_REST_API_URL") or "").rstrip("/")
 _TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN") or os.getenv("KV_REST_API_TOKEN") or ""

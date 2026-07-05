@@ -331,7 +331,7 @@
 
   // 访问计数
   (function () {
-    var el = document.getElementById("sidebar-visit-count");
+  var el = document.getElementById("settings-visit-count");
     if (!el) return;
     fetch("/api/visits")
       .then(function (r) { return r.json(); })
