@@ -629,6 +629,12 @@ body {
     color: var(--text);
 }
 
+.history-chip[disabled] {
+    opacity: 0.6;
+    cursor: default;
+    pointer-events: none;
+}
+
 
 .ts-error {
     text-align: center;
@@ -911,4 +917,93 @@ body {
 [data-theme="light"] .diff-rm  { background: rgba(207,34,46,0.08); }
 [data-theme="light"] .diff-add .diff-txt { color: #1a7f37; }
 [data-theme="light"] .diff-rm  .diff-txt { color: #cf222e; }
+
+/* === 文件详情工具 === */
+.fi-tool {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.fi-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px 24px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.fi-dropzone:hover, .fi-dropzone.fi-dragover {
+    border-color: var(--accent);
+    background: var(--hover-row);
+}
+
+.fi-dropzone.hidden { display: none; }
+
+.fi-drop-text { font-size: 0.95rem; color: var(--text-secondary); }
+.fi-or { font-size: 0.8rem; }
+
+.fi-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+.fi-loading.hidden { display: none; }
+
+.fi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fi-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+}
+
+.fi-row:last-child { border-bottom: none; }
+
+.fi-row-col { flex-direction: column; align-items: flex-start; }
+
+.fi-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    min-width: 90px;
+    flex-shrink: 0;
+}
+
+.fi-val {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.85rem;
+    color: var(--text);
+    flex: 1;
+    word-break: break-all;
+}
+
+.fi-base64-preview {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--select-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 100px;
+    overflow-y: auto;
+    margin-top: 4px;
+}
 
