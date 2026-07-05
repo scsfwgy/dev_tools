@@ -19,7 +19,8 @@
     "theme": "主题 / Theme",
     "themeDark": "深色",
     "themeLight": "浅色",
-    "visitCount": "访问次数："
+    "visitCount": "访问次数：",
+    "linkGithub": "GitHub"
   },
   "welcome": {
     "desc": "开发工具集 — 从左侧菜单选择工具开始使用"

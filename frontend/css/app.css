@@ -189,6 +189,34 @@ body {
     white-space: nowrap;
 }
 
+.settings-sep {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+}
+
+.settings-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.12s;
+}
+
+.settings-link:hover {
+    background: var(--hover-row);
+}
+
+.settings-link-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
 .sidebar-action {
     display: flex;
     align-items: center;

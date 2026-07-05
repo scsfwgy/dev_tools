@@ -19,7 +19,8 @@
     "theme": "主题 / Theme",
     "themeDark": "Dark",
     "themeLight": "Light",
-    "visitCount": "Visits: "
+    "visitCount": "Visits: ",
+    "linkGithub": "GitHub"
   },
   "welcome": {
     "desc": "Developer Toolbox — select a tool from the sidebar to get started"
