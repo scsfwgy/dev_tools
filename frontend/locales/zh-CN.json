@@ -6,7 +6,7 @@
     "home": "首页",
     "json": "JSON 工具",
     "timestamp": "时间戳转换",
-    "encoder": "URL编码转换",
+    "encoder": "编码转换",
     "diff": "文本对比",
     "base64": "Base64",
     "fileinfo": "文件详情",
@@ -54,7 +54,14 @@
     "encoded": "编码完成",
     "decoded": "解码完成",
     "copied": "已复制",
-    "auto": "自动识别"
+    "auto": "自动识别",
+    "tabUrl": "URL 编码",
+    "tabUtf8": "UTF-8 字节",
+    "tabUnicode": "Unicode",
+    "tabNative": "ASCII 转义",
+    "tabBase64": "Base64",
+    "tabBase32": "Base32",
+    "tabBase16": "Base16"
   },
   "base64": {
     "text": "文本",

@@ -36,8 +36,8 @@
         description: "在线时间戳转换工具，支持秒/毫秒时间戳、日期时间、ISO 8601、UTC 和本地时间互转。"
       },
       encoder: {
-        title: "URL编码解码工具 - URL Encode Decode 在线转换 | Tools24",
-        description: "在线 URL 编码和 URL 解码工具，支持中文、特殊字符、查询参数和链接文本快速转换。"
+        title: "在线编码转换工具 - URL编码 Base64 Base32 Base16 Unicode UTF-8 | Tools24",
+        description: "在线编码转换工具，支持 URL编解码、Base64、Base32、Base16、Unicode转义、UTF-8字节、ASCII 等七类互转。"
       },
       base64: {
         title: "Base64编码解码工具 - Base64 Encode Decode 在线转换 | Tools24",
@@ -70,8 +70,8 @@
         description: "Convert Unix timestamps, milliseconds, datetime, ISO 8601, UTC and local time online."
       },
       encoder: {
-        title: "URL Encoder and Decoder Online | Tools24",
-        description: "Encode and decode URLs, query parameters, Unicode text and special characters online."
+        title: "Online Encoding Converter - URL Base64 Base32 Base16 Unicode UTF-8 | Tools24",
+        description: "Online encoding converter: URL encode/decode, Base64, Base32, Base16, Unicode escapes, UTF-8 hex bytes, ASCII — all in one tool."
       },
       base64: {
         title: "Base64 Encoder and Decoder Online | Tools24",

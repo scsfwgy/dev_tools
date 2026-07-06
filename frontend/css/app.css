@@ -805,6 +805,7 @@ body {
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
 .enc-panes {
