@@ -194,14 +194,30 @@ var AndroidTool = (function () {
   ];
 
   var LIFECYCLE_REFS = [
-    ["Activity 启动", "Activity start", "onCreate → onStart → onResume", "首次进入前台"],
-    ["Activity 退到后台", "Activity background", "onPause → onStop", "被其他页面完全遮挡"],
-    ["Activity 回到前台", "Activity foreground", "onRestart → onStart → onResume", "从后台返回"],
-    ["Activity 销毁", "Activity destroy", "onPause → onStop → onDestroy", "finish 或系统回收"],
-    ["Fragment 创建视图", "Fragment view create", "onAttach → onCreate → onCreateView → onViewCreated → onStart → onResume", "绑定 View 生命周期"],
-    ["Fragment 销毁视图", "Fragment view destroy", "onPause → onStop → onDestroyView", "释放 view binding"],
-    ["Service 前台服务", "Foreground service", "startForegroundService → onCreate → onStartCommand → startForeground", "短时间内必须调用 startForeground"],
-    ["BroadcastReceiver", "BroadcastReceiver", "onReceive", "不要在 onReceive 做长任务"],
+    // ── Activity ──
+    ["Activity 启动", "Activity start", "onCreate → onStart → onResume", "首次进入前台，onCreate 只调一次"],
+    ["Activity 退到后台", "Activity background", "onPause → onStop", "被其他页面完全遮挡；onPause 里保存数据"],
+    ["Activity 回到前台", "Activity foreground", "onRestart → onStart → onResume", "从后台返回（非首次）"],
+    ["Activity 销毁", "Activity destroy", "onPause → onStop → onDestroy", "finish() 或被系统回收"],
+    ["Activity 重建", "Activity recreate", "onSaveInstanceState → onPause → onStop → onDestroy → onCreate → onRestoreInstanceState", "屏幕旋转 / 配置变更"],
+    // ── Fragment (attach-order) ──
+    ["Fragment 首次创建", "Fragment create", "onAttach → onCreate → onCreateView → onViewCreated → onActivityCreated → onStart → onResume", "onAttach 最先(绑定宿主Activity)，onActivityCreated 已废弃(API28+)"],
+    ["Fragment 退到后台", "Fragment background", "onPause → onStop", "宿主 Activity 被遮挡时一起走"],
+    ["Fragment 回到前台", "Fragment foreground", "onStart → onResume", "宿主恢复时一起恢复"],
+    ["Fragment 销毁/重建视图", "Fragment view destroy", "onPause → onStop → onDestroyView → onDestroy → onDetach", "replace/remove 或宿主销毁；onDestroyView 释放 View"],
+    ["Fragment 仅重建视图", "Fragment view recreate", "onDestroyView → onCreateView → onViewCreated → onStart → onResume", "addToBackStack 后 popBackStack 时重建 View"],
+    // ── View ──
+    ["View attach", "View attach", "onAttachedToWindow", "View 挂载到 Window，可获取屏幕尺寸"],
+    ["View detach", "View detach", "onDetachedFromWindow", "View 从 Window 移除，清理动画/监听"],
+    ["View measure", "View measure", "onMeasure(widthMeasureSpec, heightMeasureSpec)", "确定 View 期望尺寸；MeasureSpec 含 mode+size"],
+    ["View layout", "View layout", "onLayout(changed, left, top, right, bottom)", "确定子 View 位置 (ViewGroup 实现)"],
+    ["View draw", "View draw", "onDraw(canvas) / draw(canvas)", "onDraw 自定义绘制；draw 含背景+内容+前景+子View"],
+    ["View 可见性变化", "View visibility", "onVisibilityChanged / onWindowVisibilityChanged", "setVisibility GONE/VISIBLE/INVISIBLE"],
+    ["View 焦点变化", "View focus", "onFocusChanged / onWindowFocusChanged", "焦点获取/丢失，Window 焦点也触发刷新"],
+    ["SurfaceView", "SurfaceView lifecycle", "surfaceCreated → surfaceChanged → surfaceDestroyed", "独立绘制线程，适合相机/视频/游戏"],
+    // ── Service / Receiver ──
+    ["Service 前台服务", "Foreground service", "startForegroundService → onCreate → onStartCommand → startForeground", "5s 内必须调用 startForeground(API26+)"],
+    ["BroadcastReceiver", "BroadcastReceiver", "onReceive(context, intent)", "10s 内返回，不要做长任务"],
   ];
 
   var DOC_LINKS = [
