@@ -16,6 +16,7 @@
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
     { id: "android",  icon: "android",   i18n: "menu.android" },
+    { id: "qrcode",   icon: "qr",        i18n: "menu.qrcode" },
     { id: "base64",   icon: "lock",       i18n: "menu.base64" },
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
@@ -26,8 +27,8 @@
   const seoMeta = {
     "zh-CN": {
       home: {
-        title: "Tools24 在线开发者工具箱 - JSON格式化、URL编码、Base64、时间戳转换",
-        description: "Tools24 提供在线 JSON 格式化校验、URL 编码解码、Base64 编码解码、时间戳转换、文本对比、文件 MD5/SHA 校验等开发者工具。"
+        title: "Tools24 在线开发者工具箱 - JSON格式化 加解密 QR码 Android参考 Markdown | Tools24",
+        description: "Tools24 提供在线 JSON 格式化、编解码转换、加解密(AES/RSA)、二维码生成解析、Markdown 编辑、Android 开发速查、时间戳转换等开发者工具。"
       },
       json: {
         title: "JSON格式化校验工具 - 在线 JSON Formatter / Viewer | Tools24",
@@ -64,12 +65,16 @@
       android: {
         title: "Android 常用速查 - API ADB 权限 Intent Gradle 对照 | Tools24",
         description: "Android 开发者常用速查：API Level、ADB 命令、透明度、dp/px、权限、Intent、Manifest 配置、资源限定符、生命周期和官方文档地址。"
+      },
+      qrcode: {
+        title: "在线二维码生成解析工具 - QR Code Generator Parser | Tools24",
+        description: "在线二维码生成和解析工具，支持文本/链接生成二维码图片下载，上传/粘贴二维码图片解析内容。"
       }
     },
     en: {
       home: {
-        title: "Tools24 Online Developer Toolbox - JSON, URL Encoder, Base64, Timestamp",
-        description: "Tools24 provides online developer tools for JSON formatting, URL encoding, Base64, timestamp conversion, text diff and file hash checking."
+        title: "Tools24 Online Developer Toolbox - JSON Encryption QR Code Android Markdown | Tools24",
+        description: "Tools24 provides online developer tools: JSON formatting, codec converter, AES/RSA encryption, QR code generator & parser, Markdown editor, Android dev reference and more."
       },
       json: {
         title: "JSON Formatter and Validator Online | Tools24",
@@ -106,6 +111,10 @@
       android: {
         title: "Android Quick Reference - API ADB Permissions Intent Gradle | Tools24",
         description: "Android developer quick reference: API levels, ADB commands, alpha values, dp/px, permissions, intents, Manifest config, resource qualifiers, lifecycle and official docs."
+      },
+      qrcode: {
+        title: "Online QR Code Generator and Parser | Tools24",
+        description: "Generate and parse QR codes online. Create QR codes from text/URLs and decode QR codes from images — all in your browser."
       }
     }
   };
@@ -120,6 +129,7 @@
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
     shield: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
     android: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>',
+    qr: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="17.5" y1="14" x2="17.5" y2="21"/><line x1="14" y1="17.5" x2="21" y2="17.5"/></svg>',
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
@@ -273,6 +283,11 @@
     if (activeMenuId === "android" && typeof AndroidTool !== "undefined") {
       el.innerHTML = "";
       AndroidTool.init(el);
+      return;
+    }
+    if (activeMenuId === "qrcode" && typeof QrcodeTool !== "undefined") {
+      el.innerHTML = "";
+      QrcodeTool.init(el);
       return;
     }
     if (activeMenuId === "crypto" && typeof CryptoTool !== "undefined") {

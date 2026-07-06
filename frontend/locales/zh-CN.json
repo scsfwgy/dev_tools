@@ -13,6 +13,7 @@
     "markdown": "Markdown 编辑",
     "crypto": "加解密",
     "android": "Android 常用",
+    "qrcode": "二维码",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -211,6 +212,27 @@
     "type": "类型",
     "qualifier": "限定符",
     "sequence": "调用顺序"
+  },
+  "qrcode": {
+    "generate": "生成二维码",
+    "parse": "解析二维码",
+    "inputPlaceholder": "输入文本或链接，自动生成二维码...",
+    "size": "尺寸",
+    "download": "下载",
+    "generated": "已生成",
+    "downloaded": "已下载",
+    "emptyInput": "请先输入内容",
+    "emptyPreview": "输入内容后自动生成",
+    "dropText": "拖拽二维码图片到此处",
+    "or": "— 或 —",
+    "chooseImage": "选择图片",
+    "pasteHint": "也可 Ctrl+V 粘贴截图",
+    "resultPlaceholder": "解析结果...",
+    "parsed": "解析成功",
+    "parseFailed": "未识别到二维码",
+    "loadFailed": "二维码库加载失败，请检查网络后重试",
+    "copy": "复制",
+    "copied": "已复制"
   },
   "crypto": {
     "symmetric": "对称加密",

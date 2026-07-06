@@ -205,6 +205,32 @@ TOOLS = {
             ],
         },
     },
+    "qrcode": {
+        "zh": {
+            "name": "在线二维码生成解析工具",
+            "title": "在线二维码生成解析工具 - QR Code Generator Parser | Tools24",
+            "description": "在线二维码生成和解析工具，输入文本生成二维码图片下载，上传图片解析二维码内容，全部在浏览器本地完成。",
+            "keywords": "二维码生成,二维码解析,QR Code,在线二维码,QR生成器",
+            "intro": "输入文本或链接，自动生成可下载的二维码图片；上传或粘贴二维码图片即可解析内容。",
+            "features": ["文本/链接生成二维码", "可调尺寸，PNG 下载", "图片上传/粘贴解析二维码", "浏览器本地处理，数据不上传"],
+            "faq": [
+                ("二维码内容会上传服务器吗？", "不会，生成和解析完全在浏览器本地完成。"),
+                ("支持哪些输入类型？", "生成支持任意文本、URL、电话号码等；解析支持主流图片格式。"),
+            ],
+        },
+        "en": {
+            "name": "Online QR Code Generator and Parser",
+            "title": "Online QR Code Generator and Parser | Tools24",
+            "description": "Generate QR codes from text and parse QR codes from images — all processed locally in your browser.",
+            "keywords": "QR code generator,QR code parser,online QR code,QR reader,QR creator",
+            "intro": "Enter text to generate downloadable QR codes; upload or paste QR code images to decode their content.",
+            "features": ["Text/URL to QR code", "Adjustable size, PNG download", "Image upload/paste parsing", "Local browser processing"],
+            "faq": [
+                ("Is my QR code data uploaded?", "No. Generation and parsing are done locally in your browser."),
+                ("What formats are supported?", "Any text, URL, phone, etc. for generation; common image formats for parsing."),
+            ],
+        },
+    },
     "markdown": {
         "zh": {
             "name": "Markdown 在线编辑预览工具",
@@ -262,17 +288,17 @@ TOOLS = {
 HOME_META = {
     "zh": {
         "name": "Tools24 在线开发者工具箱",
-        "title": "Tools24 在线开发者工具箱 - JSON格式化、URL编码、Base64、时间戳转换",
-        "description": "Tools24 提供在线 JSON 格式化校验、URL 编码解码、Base64 编码解码、时间戳转换、文本对比、文件 MD5/SHA 校验等开发者工具。",
-        "keywords": "在线工具,开发者工具,JSON格式化,URL编码,Base64编码,时间戳转换,文本对比,MD5校验",
-        "intro": "Tools24 是面向开发者和日常办公的在线工具箱，提供 JSON、URL、Base64、时间戳、文本对比和文件哈希等常用工具。",
+        "title": "Tools24 在线开发者工具箱 - JSON格式化 加解密 QR码 Android参考 Markdown | Tools24",
+        "description": "Tools24 提供在线 JSON 格式化、编解码转换、Base64/32/16、加解密(AES/RSA)、二维码生成解析、Markdown 编辑、Android 开发速查、时间戳转换、文本对比、文件哈希等开发者工具。",
+        "keywords": "在线工具,开发者工具,JSON格式化,编码转换,Base64,加解密,二维码生成,Markdown编辑器,Android速查,时间戳转换,文本对比,MD5校验",
+        "intro": "Tools24 是面向开发者和日常办公的在线工具箱，提供编码转换、加解密、二维码、Markdown、Android 速查、JSON、Base64 等十余种常用工具。",
     },
     "en": {
         "name": "Tools24 Online Developer Toolbox",
-        "title": "Tools24 Online Developer Toolbox - JSON, URL Encoder, Base64, Timestamp",
-        "description": "Tools24 provides online developer tools for JSON formatting, URL encoding, Base64, timestamp conversion, text diff and file hash checking.",
-        "keywords": "online tools,developer tools,JSON formatter,URL encoder,Base64,timestamp converter,text diff,MD5 checker",
-        "intro": "Tools24 is an online toolbox for developers, covering JSON, URL encoding, Base64, timestamp conversion, text diff and file hashing.",
+        "title": "Tools24 Online Developer Toolbox - JSON Encryption QR Code Android Markdown | Tools24",
+        "description": "Tools24 provides online developer tools: JSON formatting, codec converter, Base64/32/16, AES/RSA encryption, QR code generator & parser, Markdown editor, Android dev reference, timestamp, text diff, file hashing and more.",
+        "keywords": "online tools,developer tools,JSON formatter,codec,Base64,encryption,QR code,Markdown editor,Android reference,timestamp converter,text diff,MD5 checker",
+        "intro": "Tools24 is an online toolbox for developers and daily work, covering codecs, encryption, QR codes, Markdown, Android reference, JSON, Base64 and more.",
     },
 }
 

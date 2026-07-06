@@ -13,6 +13,7 @@
     "markdown": "Markdown",
     "crypto": "Encryption",
     "android": "Android Ref",
+    "qrcode": "QR Code",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -211,6 +212,27 @@
     "type": "Type",
     "qualifier": "Qualifier",
     "sequence": "Sequence"
+  },
+  "qrcode": {
+    "generate": "Generate",
+    "parse": "Parse",
+    "inputPlaceholder": "Enter text or URL, auto-generate QR code...",
+    "size": "Size",
+    "download": "Download",
+    "generated": "Generated",
+    "downloaded": "Downloaded",
+    "emptyInput": "Enter content first",
+    "emptyPreview": "Enter content to generate QR code",
+    "dropText": "Drop QR code image here",
+    "or": "— or —",
+    "chooseImage": "Choose Image",
+    "pasteHint": "Or Ctrl+V to paste screenshot",
+    "resultPlaceholder": "Decoded result...",
+    "parsed": "Parsed",
+    "parseFailed": "No QR code detected",
+    "loadFailed": "Failed to load QR library. Check your network and try again",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "crypto": {
     "symmetric": "Symmetric",
