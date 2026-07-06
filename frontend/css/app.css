@@ -1200,6 +1200,49 @@ body {
     text-decoration: underline;
 }
 
+/* === 加解密工具 === */
+.crypto-config {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.crypto-inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.crypto-input {
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--select-bg);
+    color: var(--text);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.8rem;
+    outline: none;
+    width: 200px;
+}
+
+.crypto-input:focus { border-color: var(--accent); }
+
+.crypto-key-row {
+    margin-bottom: 12px;
+}
+
+.crypto-key-label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
 /* === 心愿墙 === */
 .wish-tool { max-width: 680px; margin: 0 auto; }
 

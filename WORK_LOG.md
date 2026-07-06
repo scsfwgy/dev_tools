@@ -26,7 +26,8 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-06 | 端口调整 | 本地端口 8730 → 8731 |
 | 2026-07-06 | 菜单文案 | 「编码转换」→「URL编码转换」 |
 | 2026-07-06 | 编码工具增强 | 新增分类标签：URL编码、UTF-8字节、Unicode转义、ASCII/Native、Base64、Base32、Base16 七类互转 |
-| 2026-07-06 | Markdown 编辑预览 | 实时预览、上传 .md、下载 HTML/DOC/MD、左右拖拽分栏 |
+| 2026-07-06 | Markdown 编辑预览 | 实时预览、上传 .md、下载 HTML/DOC/PDF/MD、左右拖拽分栏 |
+| 2026-07-06 | 加解密工具 | AES-GCM/CBC 对称加密 + RSA-OAEP 非对称加密，Web Crypto API 浏览器本地处理 |
 
 ## 技术决策
 

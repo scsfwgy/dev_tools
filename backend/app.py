@@ -153,6 +153,32 @@ TOOLS = {
             ],
         },
     },
+    "crypto": {
+        "zh": {
+            "name": "在线加解密工具",
+            "title": "在线加解密工具 - AES RSA 对称非对称加密 | Tools24",
+            "description": "在线加解密工具，支持 AES-GCM/CBC 对称加密和 RSA-OAEP 非对称加密，基于浏览器 Web Crypto API 本地处理，数据不上传。",
+            "keywords": "AES加密,RSA加密,对称加密,非对称加密,在线加解密,Web Crypto,密钥生成",
+            "intro": "支持对称加密（AES-GCM/CBC 密码派生）和非对称加密（RSA-OAEP 密钥对），所有操作在浏览器本地完成。",
+            "features": ["AES-GCM / AES-CBC 对称加密", "PBKDF2 密码派生密钥", "RSA-OAEP 密钥对生成（2048/4096）", "PEM 格式密钥导出", "浏览器本地处理，数据不上传"],
+            "faq": [
+                ("加密数据会上传服务器吗？", "不会，加解密完全在浏览器本地使用 Web Crypto API 完成，密钥和明文不会离开本地。"),
+                ("支持哪些加密算法？", "对称加密支持 AES-GCM 和 AES-CBC，非对称加密支持 RSA-OAEP，密钥长度可选 128/192/256 或 2048/4096 位。"),
+            ],
+        },
+        "en": {
+            "name": "Online Encryption Tool",
+            "title": "Online Encryption Tool - AES RSA Symmetric Asymmetric | Tools24",
+            "description": "Online encryption tool with AES-GCM/CBC symmetric and RSA-OAEP asymmetric encryption, powered by browser Web Crypto API — no data leaves your device.",
+            "keywords": "AES encryption,RSA encryption,symmetric encryption,asymmetric encryption,online encryption,Web Crypto,key generation",
+            "intro": "Symmetric encryption (AES-GCM/CBC with PBKDF2) and asymmetric encryption (RSA-OAEP with key pairs), all processed locally in your browser.",
+            "features": ["AES-GCM / AES-CBC symmetric", "PBKDF2 key derivation", "RSA-OAEP key pair (2048/4096)", "PEM key export", "Local browser processing"],
+            "faq": [
+                ("Is my data sent to a server?", "No. All encryption/decryption uses the browser Web Crypto API locally. Keys and plaintext never leave your device."),
+                ("Which algorithms are supported?", "Symmetric: AES-GCM and AES-CBC. Asymmetric: RSA-OAEP. Key lengths: 128/192/256 bit (AES) and 2048/4096 bit (RSA)."),
+            ],
+        },
+    },
     "markdown": {
         "zh": {
             "name": "Markdown 在线编辑预览工具",
