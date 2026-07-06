@@ -15,6 +15,7 @@
 | 心愿墙 | 匿名留言，验证码防刷，管理员回复 |
 | Markdown 编辑 | 实时预览，上传 .md，下载 HTML/DOC/PDF/MD |
 | 加解密 | AES-GCM/CBC 对称加密 + RSA-OAEP 非对称加密 |
+| Android 常用 | API、ADB、透明度、dp/px、权限、Intent、Manifest、资源限定符、官方文档速查 |
 
 ## 项目结构
 

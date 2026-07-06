@@ -62,8 +62,8 @@
         description: "在线加解密工具，支持 AES-GCM/CBC 对称加密和 RSA-OAEP 非对称加密，基于浏览器 Web Crypto API 本地处理。"
       },
       android: {
-        title: "Android 常用速查 - API 版本 透明度 dp/px 对照 | Tools24",
-        description: "Android 开发者常用速查：系统版本与 API Level 对应、透明度十六进制、dp/px 转换、屏幕密度参照。"
+        title: "Android 常用速查 - API ADB 权限 Intent Gradle 对照 | Tools24",
+        description: "Android 开发者常用速查：API Level、ADB 命令、透明度、dp/px、权限、Intent、Manifest 配置、资源限定符、生命周期和官方文档地址。"
       }
     },
     en: {
@@ -104,8 +104,8 @@
         description: "Online encryption tool supporting AES-GCM/CBC symmetric and RSA-OAEP asymmetric encryption, powered by browser Web Crypto API."
       },
       android: {
-        title: "Android Quick Reference - API Levels Alpha dp/px | Tools24",
-        description: "Android developer quick reference: system versions & API levels, alpha transparency hex values, dp/px converter, screen density reference."
+        title: "Android Quick Reference - API ADB Permissions Intent Gradle | Tools24",
+        description: "Android developer quick reference: API levels, ADB commands, alpha values, dp/px, permissions, intents, Manifest config, resource qualifiers, lifecycle and official docs."
       }
     }
   };
