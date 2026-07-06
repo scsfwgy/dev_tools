@@ -153,6 +153,32 @@ TOOLS = {
             ],
         },
     },
+    "android": {
+        "zh": {
+            "name": "Android 常用速查工具",
+            "title": "Android 常用速查 - API 版本 透明度 dp/px 对照 | Tools24",
+            "description": "Android 开发者常用速查：系统版本与 API Level 对照、透明度十六进制值、dp/px 互转计算器、屏幕密度参照表。",
+            "keywords": "Android,API Level,安卓版本,透明度,dp转px,屏幕密度,开发者工具",
+            "intro": "Android 开发常用对照表：系统版本与 API 对应关系、透明度 Hex 值速查、dp/px 实时转换、屏幕密度参考。",
+            "features": ["Android 版本 ↔ API Level 对照", "透明度百分比 ↔ 十六进制", "dp ↔ px 实时转换", "屏幕密度 (dpi) 参照表", "支持搜索过滤"],
+            "faq": [
+                ("Android API Level 最新是什么？", "截至 2026 年，Android 17 (Cinnamon Bun) 对应 API 37。"),
+                ("dp 和 px 如何转换？", "px = dp × density。例如 mdpi (1x) 下 1dp = 1px，xxhdpi (3x) 下 1dp = 3px。"),
+            ],
+        },
+        "en": {
+            "name": "Android Quick Reference",
+            "title": "Android Quick Reference - API Levels Alpha dp/px | Tools24",
+            "description": "Android developer quick reference: system versions & API levels, alpha transparency hex values, dp/px converter, screen density table.",
+            "keywords": "Android,API level,alpha transparency,dp to px,screen density,developer tools",
+            "intro": "Quick reference for Android developers: API levels, alpha transparency hex values, dp/px converter, and screen density reference.",
+            "features": ["Android version ↔ API level", "Alpha % ↔ hex values", "dp ↔ px live conversion", "Screen density (dpi) reference", "Search filtering"],
+            "faq": [
+                ("What is the latest Android API level?", "As of 2026, Android 17 (Cinnamon Bun) corresponds to API 37."),
+                ("How to convert dp to px?", "px = dp × density. For example, mdpi (1x): 1dp = 1px; xxhdpi (3x): 1dp = 3px."),
+            ],
+        },
+    },
     "crypto": {
         "zh": {
             "name": "在线加解密工具",

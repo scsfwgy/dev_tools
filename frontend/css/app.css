@@ -1243,6 +1243,65 @@ body {
     font-weight: 500;
 }
 
+/* === Android 常用 === */
+.android-tool {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.android-section {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+.android-section.hidden { display: none; }
+
+.at-search-wrap { margin-bottom: 12px; }
+.at-search-wrap .search-input { width: 100%; max-width: 360px; }
+
+.at-table-wrap { overflow-x: auto; }
+
+.at-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.at-table th, .at-table td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+.at-table th {
+    background: var(--bg-card);
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.at-table td { color: var(--text-secondary); }
+.at-table code { color: var(--accent); font-family: "SF Mono", "Fira Code", monospace; }
+.at-table tr:hover td { background: var(--hover-row); }
+
+.at-table-grid td:first-child,
+.at-table-grid td:nth-child(3),
+.at-table-grid td:nth-child(5),
+.at-table-grid td:nth-child(7) { text-align: right; width: 8%; }
+
+.at-converter {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+}
+.at-conv-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 /* === 心愿墙 === */
 .wish-tool { max-width: 680px; margin: 0 auto; }
 

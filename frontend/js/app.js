@@ -15,6 +15,7 @@
     { id: "timestamp",icon: "clock",      i18n: "menu.timestamp" },
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
+    { id: "android",  icon: "android",   i18n: "menu.android" },
     { id: "base64",   icon: "lock",       i18n: "menu.base64" },
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
@@ -59,6 +60,10 @@
       crypto: {
         title: "在线加解密工具 - AES RSA 对称非对称加密 | Tools24",
         description: "在线加解密工具，支持 AES-GCM/CBC 对称加密和 RSA-OAEP 非对称加密，基于浏览器 Web Crypto API 本地处理。"
+      },
+      android: {
+        title: "Android 常用速查 - API 版本 透明度 dp/px 对照 | Tools24",
+        description: "Android 开发者常用速查：系统版本与 API Level 对应、透明度十六进制、dp/px 转换、屏幕密度参照。"
       }
     },
     en: {
@@ -97,6 +102,10 @@
       crypto: {
         title: "Online Encryption Tool - AES RSA Symmetric Asymmetric | Tools24",
         description: "Online encryption tool supporting AES-GCM/CBC symmetric and RSA-OAEP asymmetric encryption, powered by browser Web Crypto API."
+      },
+      android: {
+        title: "Android Quick Reference - API Levels Alpha dp/px | Tools24",
+        description: "Android developer quick reference: system versions & API levels, alpha transparency hex values, dp/px converter, screen density reference."
       }
     }
   };
@@ -110,6 +119,7 @@
     diff: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
     shield: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    android: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>',
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
@@ -258,6 +268,11 @@
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
       el.innerHTML = "";
       FileInfoTool.init(el);
+      return;
+    }
+    if (activeMenuId === "android" && typeof AndroidTool !== "undefined") {
+      el.innerHTML = "";
+      AndroidTool.init(el);
       return;
     }
     if (activeMenuId === "crypto" && typeof CryptoTool !== "undefined") {
