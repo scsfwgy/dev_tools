@@ -17,6 +17,7 @@
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
     { id: "android",  icon: "android",   i18n: "menu.android" },
     { id: "qrcode",   icon: "qr",        i18n: "menu.qrcode" },
+    { id: "curl",     icon: "terminal",  i18n: "menu.curl" },
     { id: "base64",   icon: "lock",       i18n: "menu.base64" },
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
@@ -69,6 +70,10 @@
       qrcode: {
         title: "在线二维码生成解析工具 - QR Code Generator Parser | Tools24",
         description: "在线二维码生成和解析工具，支持文本/链接生成二维码图片下载，上传/粘贴二维码图片解析内容。"
+      },
+      curl: {
+        title: "在线 Curl 命令构建转换工具 - Curl Builder Converter | Tools24",
+        description: "在线 Curl 工具集：可视化构建 curl 命令、常用示例速查、curl 转 Python/JavaScript/Go/Java 代码。"
       }
     },
     en: {
@@ -115,6 +120,10 @@
       qrcode: {
         title: "Online QR Code Generator and Parser | Tools24",
         description: "Generate and parse QR codes online. Create QR codes from text/URLs and decode QR codes from images — all in your browser."
+      },
+      curl: {
+        title: "Online Curl Command Builder and Converter | Tools24",
+        description: "Build curl commands visually, browse common curl examples, and convert curl to Python/JavaScript/Go/Java code."
       }
     }
   };
@@ -130,6 +139,7 @@
     shield: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
     android: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>',
     qr: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="17.5" y1="14" x2="17.5" y2="21"/><line x1="14" y1="17.5" x2="21" y2="17.5"/></svg>',
+    terminal: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
@@ -283,6 +293,11 @@
     if (activeMenuId === "android" && typeof AndroidTool !== "undefined") {
       el.innerHTML = "";
       AndroidTool.init(el);
+      return;
+    }
+    if (activeMenuId === "curl" && typeof CurlTool !== "undefined") {
+      el.innerHTML = "";
+      CurlTool.init(el);
       return;
     }
     if (activeMenuId === "qrcode" && typeof QrcodeTool !== "undefined") {

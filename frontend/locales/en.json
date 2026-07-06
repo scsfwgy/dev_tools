@@ -14,6 +14,7 @@
     "crypto": "Encryption",
     "android": "Android Ref",
     "qrcode": "QR Code",
+    "curl": "Curl",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -212,6 +213,22 @@
     "type": "Type",
     "qualifier": "Qualifier",
     "sequence": "Sequence"
+  },
+  "curl": {
+    "builder": "Builder",
+    "examples": "Examples",
+    "convert": "To Code",
+    "headers": "Headers (one per line)",
+    "body": "Body",
+    "options": "Options",
+    "build": "Build",
+    "copyCmd": "Copy",
+    "tryIt": "Try It",
+    "copiedToClipboard": "Command copied to clipboard",
+    "searchExamples": "Search scenario, command or description...",
+    "replaceDomain": "Replace domain:",
+    "convertPlaceholder": "Converted code will appear here...",
+    "curlPlaceholder": "Curl command will appear here..."
   },
   "qrcode": {
     "generate": "Generate",

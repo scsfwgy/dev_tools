@@ -205,6 +205,32 @@ TOOLS = {
             ],
         },
     },
+    "curl": {
+        "zh": {
+            "name": "在线 Curl 命令工具",
+            "title": "在线 Curl 命令构建转换工具 - Curl Builder Converter | Tools24",
+            "description": "在线 Curl 工具集：可视化构建 curl 命令、常用 curl 示例速查、curl 命令转 Python/JavaScript/Go/Java 代码。",
+            "keywords": "curl命令,curl构建器,curl转代码,HTTP调试,API测试,curl示例",
+            "intro": "可视化构建 curl 命令、浏览常用示例、一键转换为 Python/JS/Go/Java 代码，适合 API 调试和开发。",
+            "features": ["可视化构建 curl 命令", "24 个常用 curl 示例速查", "curl → Python/JS/Go/Java 代码转换", "点击示例自动填充命令"],
+            "faq": [
+                ("curl 命令支持哪些转换语言？", "支持转换为 Python (requests)、JavaScript (fetch)、Go (net/http) 和 Java (OkHttp)。"),
+                ("生成的 curl 命令可以直接运行吗？", "可以，复制后在终端粘贴即可运行。"),
+            ],
+        },
+        "en": {
+            "name": "Online Curl Command Tool",
+            "title": "Online Curl Command Builder and Converter | Tools24",
+            "description": "Online curl tool: visual command builder, common curl examples, and curl-to-code converter for Python/JavaScript/Go/Java.",
+            "keywords": "curl command,curl builder,curl to code,HTTP debugging,API testing,curl examples",
+            "intro": "Visually build curl commands, browse common patterns, and convert curl to Python/JS/Go/Java code for API development.",
+            "features": ["Visual curl command builder", "24 common curl examples", "curl → Python/JS/Go/Java converter", "Click examples to autofill command"],
+            "faq": [
+                ("Which languages can curl be converted to?", "Python (requests), JavaScript (fetch), Go (net/http), and Java (OkHttp)."),
+                ("Can I run the generated curl command?", "Yes, copy and paste into your terminal."),
+            ],
+        },
+    },
     "qrcode": {
         "zh": {
             "name": "在线二维码生成解析工具",

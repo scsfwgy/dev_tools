@@ -14,6 +14,7 @@
     "crypto": "加解密",
     "android": "Android 常用",
     "qrcode": "二维码",
+    "curl": "Curl 工具",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -212,6 +213,22 @@
     "type": "类型",
     "qualifier": "限定符",
     "sequence": "调用顺序"
+  },
+  "curl": {
+    "builder": "构建命令",
+    "examples": "常用示例",
+    "convert": "转代码",
+    "headers": "Headers（每行一个）",
+    "body": "Body",
+    "options": "选项",
+    "build": "生成命令",
+    "copyCmd": "复制",
+    "tryIt": "试运行",
+    "copiedToClipboard": "命令已复制到剪贴板",
+    "searchExamples": "搜索场景、命令或说明...",
+    "replaceDomain": "替换域名：",
+    "convertPlaceholder": "转换结果将显示在这里...",
+    "curlPlaceholder": "curl 命令将显示在这里..."
   },
   "qrcode": {
     "generate": "生成二维码",

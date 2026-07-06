@@ -1396,6 +1396,30 @@ body {
     background: var(--hover-row);
 }
 
+/* === Curl 工具 === */
+.curl-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+.curl-form-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.curl-convert-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
 /* === 心愿墙 === */
 .wish-tool { max-width: 680px; margin: 0 auto; }
 

@@ -29,6 +29,7 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-06 | Markdown 编辑预览 | 实时预览、上传 .md、下载 HTML/DOC/PDF/MD、左右拖拽分栏 |
 | 2026-07-06 | Android 常用速查 | API版本/透明度-不透明度/dp↔px/权限/图标/Intent/Gradle七标签，搜索过滤 |
 | 2026-07-06 | 二维码生成解析 | 文本生成二维码(可调尺寸/PNG下载)，图片上传/粘贴解析，qrcode+jsQR CDN |
+| 2026-07-06 | Curl 工具集 | 可视化构建curl命令、24个常用示例速查、curl转Python/JS/Go/Java代码 |
 | 2026-07-06 | 加解密工具 | AES-GCM/CBC 对称加密 + RSA-OAEP 非对称加密，Web Crypto API 浏览器本地处理 |
 
 ## 技术决策
