@@ -10,6 +10,7 @@
     "diff": "Diff",
     "base64": "Base64",
     "fileinfo": "File Info",
+    "markdown": "Markdown",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -153,6 +154,27 @@
     "gps": "GPS",
     "artist": "Artist",
     "copyright": "Copyright"
+  },
+  "markdown": {
+    "upload": "Upload .md",
+    "downloadHtml": "Download HTML",
+    "downloadDoc": "Download DOC",
+    "downloadPdf": "Download PDF",
+    "downloadMd": "Download MD",
+    "copyHtml": "Copy HTML",
+    "placeholder": "Type Markdown here, live preview on the right...",
+    "emptyPreview": "Type Markdown to preview",
+    "emptyInput": "Enter Markdown content first",
+    "saved": "Saved to history",
+    "uploaded": "File loaded",
+    "htmlDownloaded": "HTML downloaded",
+    "docDownloaded": "DOC downloaded",
+    "mdDownloaded": "MD downloaded",
+    "htmlCopied": "HTML copied",
+    "copyFailed": "Copy failed",
+    "generating": "Generating...",
+    "pdfDownloaded": "PDF downloaded",
+    "pdfFailed": "PDF generation failed"
   },
   "timestamp": {
     "now": "Current Time",

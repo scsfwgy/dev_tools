@@ -10,6 +10,7 @@
     "diff": "文本对比",
     "base64": "Base64",
     "fileinfo": "文件详情",
+    "markdown": "Markdown 编辑",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -153,6 +154,27 @@
     "gps": "GPS 位置",
     "artist": "作者",
     "copyright": "版权"
+  },
+  "markdown": {
+    "upload": "上传 .md",
+    "downloadHtml": "下载 HTML",
+    "downloadDoc": "下载 DOC",
+    "downloadPdf": "下载 PDF",
+    "downloadMd": "下载 MD",
+    "copyHtml": "复制 HTML",
+    "placeholder": "输入 Markdown 内容，实时预览...",
+    "emptyPreview": "输入 Markdown 后在右侧预览",
+    "emptyInput": "请先输入 Markdown 内容",
+    "saved": "已保存到历史记录",
+    "uploaded": "文件已加载",
+    "htmlDownloaded": "HTML 已下载",
+    "docDownloaded": "DOC 已下载",
+    "mdDownloaded": "MD 已下载",
+    "htmlCopied": "HTML 已复制",
+    "copyFailed": "复制失败",
+    "generating": "生成中...",
+    "pdfDownloaded": "PDF 已下载",
+    "pdfFailed": "PDF 生成失败"
   },
   "timestamp": {
     "now": "当前时间",

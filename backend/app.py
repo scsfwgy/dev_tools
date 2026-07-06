@@ -153,6 +153,32 @@ TOOLS = {
             ],
         },
     },
+    "markdown": {
+        "zh": {
+            "name": "Markdown 在线编辑预览工具",
+            "title": "Markdown 在线编辑预览工具 - 实时预览/下载 HTML/DOC | Tools24",
+            "description": "在线 Markdown 编辑器，支持实时预览、上传 .md 文件、下载为 HTML/DOC/Markdown 文件，全部在浏览器本地完成。",
+            "keywords": "Markdown编辑器,Markdown预览,Markdown转HTML,在线Markdown,md文件",
+            "intro": "左侧输入 Markdown，右侧实时预览渲染效果。支持上传 .md 文件，可下载为 HTML、DOC 或 Markdown 文件。",
+            "features": ["实时 Markdown 预览", "上传 .md 文件编辑", "下载为 HTML / DOC / MD", "本地浏览器处理，不上传数据"],
+            "faq": [
+                ("Markdown 内容会上传吗？", "不会，所有编辑和渲染在浏览器本地完成。"),
+                ("支持哪些导出格式？", "支持下载为 HTML 网页、DOC（Word 可打开）和原始 Markdown 文件。"),
+            ],
+        },
+        "en": {
+            "name": "Markdown Editor and Preview",
+            "title": "Markdown Editor and Preview Online - Download HTML/DOC | Tools24",
+            "description": "Online Markdown editor with live preview, .md file upload, download as HTML, DOC or Markdown file — all processed locally in your browser.",
+            "keywords": "Markdown editor,Markdown preview,Markdown to HTML,online Markdown,md file",
+            "intro": "Write Markdown on the left, see the rendered preview on the right. Upload .md files, download as HTML, DOC or Markdown.",
+            "features": ["Live Markdown preview", "Upload .md files", "Download as HTML / DOC / MD", "Local browser processing"],
+            "faq": [
+                ("Is my Markdown uploaded?", "No. Editing and rendering happen locally in your browser."),
+                ("What export formats are supported?", "Download as HTML, DOC (Word-compatible), or raw Markdown."),
+            ],
+        },
+    },
     "fileinfo": {
         "zh": {
             "name": "文件详情和哈希校验工具",

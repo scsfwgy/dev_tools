@@ -17,6 +17,7 @@
     { id: "base64",   icon: "lock",       i18n: "menu.base64" },
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
+    { id: "markdown", icon: "md",         i18n: "menu.markdown" },
     { id: "wishes",   icon: "star",       i18n: "menu.wishes" },
   ];
 
@@ -49,6 +50,10 @@
       fileinfo: {
         title: "文件详情和 MD5/SHA 哈希校验工具 | Tools24",
         description: "在线查看文件大小、类型、图片尺寸、音视频信息，并计算 MD5、SHA-1、SHA-256 和 Base64。"
+      },
+      markdown: {
+        title: "Markdown 在线编辑预览工具 | Tools24",
+        description: "在线编辑和预览 Markdown，支持实时渲染，可下载为 HTML、DOC 或 Markdown 文件。"
       }
     },
     en: {
@@ -79,6 +84,10 @@
       fileinfo: {
         title: "File Info and MD5/SHA Hash Checker Online | Tools24",
         description: "Inspect file size, type, media dimensions and calculate MD5, SHA-1, SHA-256 and Base64 locally."
+      },
+      markdown: {
+        title: "Markdown Formatter and Preview Online | Tools24",
+        description: "Write and preview Markdown online with live rendering. Download as HTML, DOC or Markdown file."
       }
     }
   };
@@ -93,6 +102,7 @@
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
   };
 
   // ── locale ──
@@ -238,6 +248,11 @@
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
       el.innerHTML = "";
       FileInfoTool.init(el);
+      return;
+    }
+    if (activeMenuId === "markdown" && typeof MdTool !== "undefined") {
+      el.innerHTML = "";
+      MdTool.init(el);
       return;
     }
     if (activeMenuId === "wishes" && typeof WishTool !== "undefined") {
