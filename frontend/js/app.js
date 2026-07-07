@@ -24,7 +24,7 @@
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
     { id: "markdown", icon: "md",         i18n: "menu.markdown" },
-    { id: "wishes",   icon: "star",       i18n: "menu.wishes" },
+    { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
   ];
 
   const seoMeta = {
@@ -212,6 +212,7 @@
     const list = document.getElementById("menu-list");
     const query = document.getElementById("menu-search").value.toLowerCase();
     list.innerHTML = menuItems
+      .filter(function (item) { return !item.hidden; })
       .map(item => {
         const label = t(item.i18n);
         const hidden = query && !label.toLowerCase().includes(query) ? " hidden" : "";
@@ -390,6 +391,16 @@
 
   document.getElementById("settings-toggle").addEventListener("click", togglePanel);
   document.addEventListener("click", closePanel);
+
+  // wishes link inside settings panel
+  var wishesLink = document.getElementById("settings-wishes");
+  if (wishesLink) {
+    wishesLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      selectMenu("wishes");
+      document.getElementById("settings-panel").classList.add("hidden");
+    });
+  }
 
   document.getElementById("lang-select").addEventListener("change", function () {
     var newLang = this.value;

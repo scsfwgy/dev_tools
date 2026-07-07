@@ -27,7 +27,8 @@
     "themeDark": "Dark",
     "themeLight": "Light",
     "visitCount": "Visits: ",
-    "linkGithub": "GitHub"
+    "linkGithub": "GitHub",
+    "linkWishes": "Wish Wall"
   },
   "welcome": {
     "desc": "Developer Toolbox — select a tool from the sidebar to get started"

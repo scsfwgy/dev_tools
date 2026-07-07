@@ -27,7 +27,8 @@
     "themeDark": "深色",
     "themeLight": "浅色",
     "visitCount": "访问次数：",
-    "linkGithub": "GitHub"
+    "linkGithub": "GitHub",
+    "linkWishes": "心愿墙"
   },
   "welcome": {
     "desc": "开发工具集 — 从左侧菜单选择工具开始使用"
