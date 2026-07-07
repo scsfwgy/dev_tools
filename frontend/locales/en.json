@@ -16,6 +16,7 @@
     "qrcode": "QR Code",
     "curl": "Curl",
     "terminal": "Terminal",
+    "ai": "AI CLI",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -359,5 +360,18 @@
     "example": "Example",
     "note": "Note",
     "searchPlaceholder": "Search command, description or example..."
+  },
+  "ai": {
+    "claudeCode": "Claude Code",
+    "codex": "Codex",
+    "copilotCli": "GitHub Copilot",
+    "cursor": "Cursor",
+    "aider": "aider",
+    "windsurf": "Windsurf",
+    "cmd": "Command/Flag",
+    "desc": "Description",
+    "example": "Example",
+    "note": "Note",
+    "searchPlaceholder": "Search commands or descriptions..."
   }
 }

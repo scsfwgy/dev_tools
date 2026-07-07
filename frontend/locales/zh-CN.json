@@ -16,6 +16,7 @@
     "qrcode": "二维码",
     "curl": "Curl 工具",
     "terminal": "终端命令",
+    "ai": "AI 指令",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -359,5 +360,18 @@
     "example": "示例",
     "note": "备注",
     "searchPlaceholder": "搜索命令、说明或示例..."
+  },
+  "ai": {
+    "claudeCode": "Claude Code",
+    "codex": "Codex",
+    "copilotCli": "GitHub Copilot",
+    "cursor": "Cursor",
+    "aider": "aider",
+    "windsurf": "Windsurf",
+    "cmd": "指令/标志",
+    "desc": "作用",
+    "example": "示例",
+    "note": "备注",
+    "searchPlaceholder": "搜索指令、作用或示例..."
   }
 }

@@ -335,6 +335,32 @@ TOOLS = {
             ],
         },
     },
+    "ai": {
+        "zh": {
+            "name": "AI 常用指令速查",
+            "title": "AI 常用指令速查 - Claude Code Codex Copilot CLI 参考 | Tools24",
+            "description": "AI 编程助手 CLI 常用指令速查，覆盖 Claude Code、Codex、GitHub Copilot CLI、Cursor、aider 和 Windsurf 的命令参数和用法。",
+            "keywords": "AI CLI,Claude Code,Codex,GitHub Copilot,Cursor,aider,Windsurf,AI编程助手,终端指令",
+            "intro": "面向开发者的 AI 编程助手 CLI 常用指令速查，按工具分类为 Claude Code、Codex、GitHub Copilot CLI、Cursor、aider 和 Windsurf 六个标签页。",
+            "features": ["Claude Code 指令", "Codex (OpenAI) 指令", "GitHub Copilot CLI 指令", "Cursor CLI 指令", "aider 指令", "Windsurf / Cascade 指令"],
+            "faq": [
+                ("这些 AI 工具都是免费的吗？", "Claude Code 和 Codex 需要各自的 API key 按量付费；GitHub Copilot 需订阅；aider 开源免费但需自带 LLM API key。"),
+                ("哪个 AI 工具最适合我？", "Claude Code 综合能力强；Codex 沙箱安全；Copilot CLI 适合命令行补全；aider 适合喜欢终端+Git 工作流的开发者。"),
+            ],
+        },
+        "en": {
+            "name": "AI CLI Commands",
+            "title": "AI CLI Commands Reference - Claude Code Codex Copilot | Tools24",
+            "description": "AI coding assistant CLI commands reference covering Claude Code, Codex, GitHub Copilot CLI, Cursor, aider and Windsurf — commands, flags and usage patterns.",
+            "keywords": "AI CLI,Claude Code,Codex,GitHub Copilot CLI,Cursor,aider,Windsurf,AI coding assistant,terminal commands",
+            "intro": "A quick reference of AI coding assistant CLI commands for developers, organized into six tabs: Claude Code, Codex, GitHub Copilot CLI, Cursor, aider and Windsurf.",
+            "features": ["Claude Code commands", "Codex (OpenAI) commands", "GitHub Copilot CLI commands", "Cursor CLI commands", "aider commands", "Windsurf / Cascade commands"],
+            "faq": [
+                ("Are these AI tools free?", "Claude Code and Codex require API keys with pay-per-use pricing. GitHub Copilot requires a subscription. aider is open-source and free but you need your own LLM API key."),
+                ("Which AI tool should I choose?", "Claude Code is the most capable all-rounder. Codex offers sandbox safety. Copilot CLI excels at shell completions. aider suits developers who prefer terminal+Git workflows."),
+            ],
+        },
+    },
 }
 
 HOME_META = {
