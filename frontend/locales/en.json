@@ -17,6 +17,7 @@
     "curl": "Curl",
     "terminal": "Terminal",
     "ai": "AI CLI",
+    "translate": "Translate",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -375,5 +376,15 @@
     "example": "Example",
     "note": "Note",
     "searchPlaceholder": "Search commands or descriptions..."
+  },
+  "translate": {
+    "title": "Translate",
+    "subtitle": "Auto-detect direction · Phonetics for words · Pure translation for text · Translates on blur",
+    "placeholder": "Enter text to translate...",
+    "translate": "Translate",
+    "translating": "Translating...",
+    "copy": "Copy",
+    "speak": "Speak",
+    "error": "Translation failed, please retry"
   }
 }

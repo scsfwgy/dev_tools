@@ -1,4 +1,5 @@
 """DevTools — Flask app."""
+import hmac
 import html
 import json
 import logging
@@ -6,6 +7,7 @@ import os
 import threading
 from pathlib import Path
 
+import requests
 from flask import Flask, Response, jsonify, request, send_from_directory
 from flask_cors import CORS
 
@@ -361,6 +363,32 @@ TOOLS = {
             ],
         },
     },
+    "translate": {
+        "zh": {
+            "name": "在线翻译工具",
+            "title": "在线翻译工具 - 中英互译 单词音标 DeepSeek | Tools24",
+            "description": "基于 DeepSeek 的智能翻译工具，自动检测中英文方向，短词显示 IPA 音标和词性标注，长文段落纯翻译，离开输入框自动触发。",
+            "keywords": "在线翻译,中英翻译,单词音标,DeepSeek翻译,自动翻译,翻译工具",
+            "intro": "输入任意文字即可智能翻译：中文自动译英文，其他语言自动译中文。短词附带 IPA 音标发音和词性，长文专注流畅翻译。离开输入框或停止输入 0.8 秒后自动翻译。",
+            "features": ["中英文自动检测方向", "短词 IPA 音标 + 词性标注", "长文流畅翻译", "离开输入框自动翻译", "翻译历史记录"],
+            "faq": [
+                ("翻译引擎是什么？", "基于 DeepSeek Chat API，提供高质量中英互译。"),
+                ("短词和长文有什么区别？", "≤5 个词的短文本会额外显示国际音标（IPA）、发音提示和词性；长文本仅输出流畅译文。"),
+            ],
+        },
+        "en": {
+            "name": "Online Translator",
+            "title": "Online Translator - CN/EN with Phonetics DeepSeek | Tools24",
+            "description": "DeepSeek-powered smart translator with auto language detection, IPA phonetics and POS tagging for words, pure translation for paragraphs. Translates on blur.",
+            "keywords": "online translator,Chinese English translation,phonetics,DeepSeek translator,auto translate,IPA pronunciation",
+            "intro": "Type anything to translate: Chinese → English or any language → Chinese. Short words get IPA phonetics and part-of-speech tags. Long text gets clean, fluent translation. Translates automatically when you leave the input or pause typing for 0.8s.",
+            "features": ["Auto language detection", "IPA phonetics + POS for words", "Fluent long-text translation", "Translate on blur", "Translation history"],
+            "faq": [
+                ("What engine is used?", "DeepSeek Chat API, providing high-quality Chinese-English translation."),
+                ("What's the difference for short vs long text?", "Short text (≤5 words) gets IPA pronunciation and POS tagging. Long text gets pure fluent translation."),
+            ],
+        },
+    },
 }
 
 HOME_META = {
@@ -554,6 +582,15 @@ def visits():
 _TOOL_CLICK_KEY = "tool_clicks"
 
 
+def _check_admin_token() -> bool:
+    """Verify admin token from ?token= query param. Uses WISH_ADMIN_TOKEN env var."""
+    token = request.args.get("token", "")
+    admin = os.getenv("WISH_ADMIN_TOKEN", "")
+    if not admin or not token:
+        return False
+    return hmac.compare_digest(token, admin)
+
+
 @app.route("/api/tool-click", methods=["POST"])
 def tool_click():
     """Increment click count for a tool. Body: {"tool_id": "json"}"""
@@ -567,32 +604,204 @@ def tool_click():
 
 @app.route("/api/tool-stats")
 def tool_stats():
-    """Return all tool click counts sorted descending. Add ?view=1 for HTML page."""
+    """Return sorted tool click counts. ?view=1&token=xxx for admin dashboard."""
     stats = cache_store.cache_hgetall(_TOOL_CLICK_KEY)
     if not stats:
         stats = {}
-    # sort descending by count
     sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
 
-    # HTML view for browser inspection
+    # Admin dashboard — ?view=1&token=xxx
     if request.args.get("view"):
-        rows = ""
+        if not _check_admin_token():
+            return Response("<h1>401 Unauthorized</h1><p>需要 ?token= 鉴权参数</p>", status=401)
+
+        # tool ranking table
+        tool_rows = ""
         for rank, (tid, count) in enumerate(sorted_stats, 1):
             name = TOOLS.get(tid, {}).get("zh", {}).get("name", tid)
-            rows += f'<tr><td>{rank}</td><td>{html.escape(name)}</td><td><code>{html.escape(tid)}</code></td><td>{count}</td></tr>'
+            tool_rows += f'<tr><td>{rank}</td><td>{html.escape(name)}</td><td><code>{html.escape(tid)}</code></td><td>{count}</td></tr>'
+
+        # translate stats
+        tr_count = cache_store.cache_get("translate_count") or "0"
+        tr_history = cache_store.cache_lrange("translate_history", 0, 49)
+        tr_rows = ""
+        for item in tr_history:
+            try:
+                d = json.loads(item)
+                tr_rows += f'<tr><td><code>{html.escape(d.get("dir",""))}</code></td><td>{html.escape(d.get("src",""))}</td><td>{html.escape(d.get("tgt",""))}</td></tr>'
+            except Exception:
+                pass
+
         html_page = f"""<!DOCTYPE html>
-<meta charset="utf-8"><title>工具热度排行</title>
-<style>body{{font-family:system-ui;max-width:640px;margin:40px auto;padding:0 16px;background:#111;color:#eee}}
-h1{{font-size:1.2rem}}table{{width:100%;border-collapse:collapse}}th,td{{padding:8px 12px;text-align:left;border-bottom:1px solid #333}}
-th{{color:#999;font-size:.8rem}}td{{font-size:.9rem}}tr:hover{{background:#1a1a1a}}
-.rank{{color:#666;width:40px}}code{{color:#4fc3f7}}</style>
-<h1>🔥 工具热度排行 <small style="font-weight:400;color:#666;font-size:.8rem">（所有用户累计点击）</small></h1>
-<table><thead><tr><th>#</th><th>工具</th><th>ID</th><th>点击次数</th></tr></thead><tbody>{rows}</tbody></table>
-<p style="color:#666;font-size:.75rem;margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code>（HINCRBY）</p>"""
+<meta charset="utf-8"><title>站点统计</title>
+<style>
+body{{font-family:system-ui;max-width:800px;margin:30px auto;padding:0 16px;background:#111;color:#eee}}
+h1{{font-size:1.3rem;margin-bottom:4px}}h2{{font-size:1rem;margin:28px 0 10px;color:#ccc}}
+table{{width:100%;border-collapse:collapse;margin-bottom:8px}}
+th,td{{padding:7px 10px;text-align:left;border-bottom:1px solid #333}}
+th{{color:#999;font-size:.75rem;font-weight:600}}
+td{{font-size:.82rem}}tr:hover{{background:#1a1a1a}}
+code{{color:#4fc3f7;font-size:.8rem}}
+.badge{{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;background:#1a3a2a;color:#4caf50}}
+.summary{{display:flex;gap:20px;margin:16px 0}}
+.summary-card{{background:#1a1a1a;border-radius:10px;padding:14px 20px;min-width:120px}}
+.summary-card .num{{font-size:2rem;font-weight:700;color:var(--accent,#4fc3f7)}}
+.summary-card .label{{font-size:.75rem;color:#999;margin-top:2px}}
+.sub{{font-size:.7rem;color:#666}}
+</style>
+<h1>📊 站点统计</h1>
+<div class="summary">
+<div class="summary-card"><div class="num">{len(sorted_stats)}</div><div class="label">工具总数</div></div>
+<div class="summary-card"><div class="num">{tr_count}</div><div class="label">翻译次数</div></div>
+</div>
+
+<h2>🔥 工具点击排行 <span class="sub">（所有用户累计，Redis HINCRBY）</span></h2>
+<table><thead><tr><th>#</th><th>工具</th><th>ID</th><th>次数</th></tr></thead><tbody>{tool_rows}</tbody></table>
+
+<h2>📝 最近翻译记录 <span class="sub">（最新 {len(tr_history)} 条）</span></h2>
+<table><thead><tr><th>方向</th><th>原文</th><th>译文</th></tr></thead><tbody>{tr_rows or '<tr><td colspan="3" style="color:#666">暂无翻译记录</td></tr>'}</tbody></table>
+
+<p class="sub" style="margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code> / <code>dev_tools:translate_history</code></p>"""
         return html_page
 
-    # API: return sorted JSON
+    # API: return sorted JSON (no auth)
     return jsonify(dict(sorted_stats))
+
+
+# --- Translate API (DeepSeek) ---
+_DEEPSEEK_KEY = os.getenv("DEV_TOOLS_DEEPSEEK_API_KEY", "")
+_DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
+
+
+def _is_chinese(text: str) -> bool:
+    """True if >30% characters are CJK."""
+    if not text.strip():
+        return False
+    cjk = sum(1 for c in text if "一" <= c <= "鿿")
+    return cjk / max(len(text), 1) > 0.3
+
+
+def _is_short(text: str) -> bool:
+    """True if ≤5 words."""
+    return len(text.strip().split()) <= 5
+
+
+def _build_prompt(text: str) -> str:
+    """Build translation prompt based on language direction and length."""
+    is_cn = _is_chinese(text)
+    short = _is_short(text)
+
+    if is_cn and short:
+        return (
+            "Translate this Chinese word/phrase to English.\n"
+            "Return ONLY valid JSON (no markdown, no explanation):\n"
+            '{"translation": "English translation", '
+            '"phonetic": "Three lines separated by \\n:\\n'
+            'Line1: IPA notation\\n'
+            'Line2: 谐音「Chinese characters approximation」\\n'
+            'Line3: English syllable respelling (stressed in UPPERCASE)\\n'
+            'Examples:\\n'
+            'strawberry → /ˈstrɔːbɛri/\\n谐音「斯抓伯瑞」\\nSTRAW-ber-ee\\n'
+            'beautiful → /ˈbjuːtɪfəl/\\n谐音「标特否」\\nBYOO-ti-fuhl", '
+            '"pos": "part of speech in English"}\n\n'
+            f"Text: {text}"
+        )
+    if is_cn:
+        return (
+            "Translate the following Chinese text to fluent, natural English.\n"
+            "Return ONLY valid JSON (no markdown, no explanation):\n"
+            '{"translation": "the complete fluent translation"}\n\n'
+            f"Text: {text}"
+        )
+    if short:
+        return (
+            "Translate this word/phrase to Simplified Chinese.\n"
+            "Return ONLY valid JSON (no markdown, no explanation):\n"
+            '{"translation": "中文翻译", '
+            '"phonetic": "拼音 with tone marks. '
+            'Format: pīn yīn (with tone marks on vowels, e.g. xī guā, měi lì, kuài lè)", '
+            '"pos": "词性 in Chinese e.g. 名词/动词/形容词"}\n\n'
+            f"Text: {text}"
+        )
+    # non-Chinese, long text → translate to Chinese
+    return (
+        "Translate the following text to fluent, natural Simplified Chinese.\n"
+        "Return ONLY valid JSON (no markdown, no explanation):\n"
+        '{"translation": "the complete fluent translation"}\n\n'
+        f"Text: {text}"
+    )
+
+
+@app.route("/api/translate", methods=["POST"])
+def translate():
+    """Translate text via DeepSeek. Body: {"text": "..."}"""
+    if not _DEEPSEEK_KEY:
+        return jsonify({"ok": False, "error": "DeepSeek API key not configured"}), 503
+
+    data = request.get_json(silent=True) or {}
+    text = (data.get("text") or "").strip()
+    if not text:
+        return jsonify({"ok": False, "error": "empty text"}), 400
+    if len(text) > 5000:
+        return jsonify({"ok": False, "error": "text too long (max 5000 chars)"}), 400
+
+    prompt = _build_prompt(text)
+
+    try:
+        resp = requests.post(
+            _DEEPSEEK_URL,
+            headers={
+                "Authorization": f"Bearer {_DEEPSEEK_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "deepseek-v4-flash",
+                "messages": [
+                    {"role": "system", "content": "You are a professional translator. Always return valid JSON exactly as requested."},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.3,
+                "max_tokens": 2048,
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+        body = resp.json()
+        raw = body["choices"][0]["message"]["content"].strip()
+
+        # strip markdown fences if present
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[-1]
+            if raw.endswith("```"):
+                raw = raw[:-3]
+            raw = raw.strip()
+
+        result = json.loads(raw)
+    except (json.JSONDecodeError, KeyError, requests.RequestException) as e:
+        logger.warning("Translate failed: %s", e)
+        return jsonify({"ok": False, "error": "Translation failed, please retry"}), 500
+
+    # record stats in Redis (fire-and-forget style, errors ignored)
+    cache_store.cache_incr("translate_count")
+    # keep recent 200 translations
+    source_lang = "zh" if _is_chinese(text) else "auto"
+    target_lang = "en" if _is_chinese(text) else "zh"
+    entry = json.dumps({"src": text[:120], "tgt": result.get("translation", "")[:120], "dir": f"{source_lang}→{target_lang}"}, ensure_ascii=False)
+    cache_store.cache_lpush("translate_history", entry)
+    cache_store.cache_ltrim("translate_history", 0, 199)
+
+    is_cn = _is_chinese(text)
+    short = _is_short(text)
+    return jsonify({
+        "ok": True,
+        "translation": result.get("translation", ""),
+        "phonetic": result.get("phonetic") if short else None,
+        "pos": result.get("pos") if short else None,
+        "is_short": short,
+        "source_lang": source_lang,
+        "target_lang": target_lang,
+    })
+
 
 
 if __name__ == "__main__":

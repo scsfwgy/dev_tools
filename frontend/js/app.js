@@ -37,6 +37,7 @@
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
     { id: "android",  icon: "android",   i18n: "menu.android" },
+    { id: "translate",icon: "translate",i18n: "menu.translate" },
     { id: "terminal", icon: "console",  i18n: "menu.terminal" },
     { id: "ai",       icon: "ai",       i18n: "menu.ai" },
     { id: "qrcode",   icon: "qr",        i18n: "menu.qrcode" },
@@ -102,6 +103,10 @@
         title: "终端常用命令速查 - Shell 命令参考 Linux 运维 | Tools24",
         description: "终端常用命令速查表，覆盖文件操作、文本处理、进程管理、网络工具、系统信息、权限管理、压缩归档和 Shell 技巧，面向运维人员和终端用户。"
       },
+      translate: {
+        title: "在线翻译工具 - 中英互译 单词音标 DeepSeek | Tools24",
+        description: "基于 DeepSeek 的智能翻译工具，自动检测中英文方向，短词显示音标和词性，长文纯翻译，离开输入框自动翻译。"
+      },
       ai: {
         title: "AI 常用指令速查 - Claude Code Codex Copilot CLI 参考 | Tools24",
         description: "AI 编程助手 CLI 常用指令速查，覆盖 Claude Code、Codex、GitHub Copilot CLI、Cursor、aider 和 Windsurf 的命令用法和常用参数。"
@@ -160,6 +165,10 @@
         title: "Terminal Commands Cheat Sheet - Shell Reference Linux Ops | Tools24",
         description: "Terminal commands quick reference covering file ops, text processing, process management, networking, system info, permissions, archives and shell tips for ops and terminal users."
       },
+      translate: {
+        title: "Online Translator - CN/EN Translate with Phonetics DeepSeek | Tools24",
+        description: "DeepSeek-powered smart translator with auto language detection, word-level phonetics and POS tagging, paragraph-level pure translation. Translates on blur."
+      },
       ai: {
         title: "AI CLI Commands Reference - Claude Code Codex Copilot | Tools24",
         description: "AI coding assistant CLI commands quick reference covering Claude Code, Codex, GitHub Copilot CLI, Cursor, aider and Windsurf — commands, flags and usage patterns."
@@ -181,6 +190,7 @@
     terminal: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
     console: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="16" rx="2"/><path d="M6 9l2 2-2 2"/><line x1="12" y1="13" x2="16" y2="13"/></svg>',
     ai: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v1.5h.5A2.5 2.5 0 0 1 19 10v1.5a2.5 2.5 0 0 1-2 2.45V14a4 4 0 0 1-4 4h-1.5a2.5 2.5 0 0 1-2.45-2H7.5A2.5 2.5 0 0 1 5 13.5V12a4 4 0 0 1 2.4-3.6"/><circle cx="9" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/><path d="M9 13c.83 1.19 2 1.5 3 1.5s2.17-.31 3-1.5"/></svg>',
+    translate: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l4 4-4 4"/><path d="M19 8l-4 4 4 4"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
@@ -361,6 +371,11 @@
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
       el.innerHTML = "";
       FileInfoTool.init(el);
+      return;
+    }
+    if (activeMenuId === "translate" && typeof TranslateTool !== "undefined") {
+      el.innerHTML = "";
+      TranslateTool.init(el);
       return;
     }
     if (activeMenuId === "android" && typeof AndroidTool !== "undefined") {

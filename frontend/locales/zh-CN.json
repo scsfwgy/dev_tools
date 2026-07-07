@@ -17,6 +17,7 @@
     "curl": "Curl 工具",
     "terminal": "终端命令",
     "ai": "AI 指令",
+    "translate": "翻译",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -375,5 +376,15 @@
     "example": "示例",
     "note": "备注",
     "searchPlaceholder": "搜索指令、作用或示例..."
+  },
+  "translate": {
+    "title": "翻译",
+    "subtitle": "自动检测语言方向 · 短词含音标词性 · 长文纯翻译 · 离开输入框即翻",
+    "placeholder": "输入要翻译的文字...",
+    "translate": "翻译",
+    "translating": "翻译中...",
+    "copy": "复制译文",
+    "speak": "朗读",
+    "error": "翻译失败，请重试"
   }
 }

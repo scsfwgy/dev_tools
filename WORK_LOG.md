@@ -34,6 +34,7 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-07 | Android 版本增强 | Android 版本代号新增中文含义备注，渲染为「Pie（派）」格式 |
 | 2026-07-07 | 终端常用命令 | Shell 命令速查表，八大分类（文件/文本/进程/网络/系统/权限/压缩/Shell），中英双语搜索 |
 | 2026-07-07 | AI 常用指令 | 六大 AI 编程助手 CLI 指令速查：Claude Code / Codex / Copilot CLI / Cursor / aider / Windsurf |
+| 2026-07-07 | 翻译工具 | DeepSeek 智能翻译，自动检测中英方向，短词 IPA 音标+词性，长文纯翻译，离开输入框自动触发 |
 
 ## 技术决策
 
