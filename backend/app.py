@@ -621,6 +621,11 @@ def tool_stats():
             name = TOOLS.get(tid, {}).get("zh", {}).get("name", tid)
             tool_rows += f'<tr><td>{rank}</td><td>{html.escape(name)}</td><td><code>{html.escape(tid)}</code></td><td>{count}</td></tr>'
 
+        # visit count
+        visit_count = cache_store.cache_get("visit_count") or "0"
+        # total tool clicks
+        total_clicks = sum(stats.values())
+
         # translate stats
         tr_count = cache_store.cache_get("translate_count") or "0"
         tr_history = cache_store.cache_lrange("translate_history", 0, 49)
@@ -651,6 +656,8 @@ code{{color:#4fc3f7;font-size:.8rem}}
 </style>
 <h1>📊 站点统计</h1>
 <div class="summary">
+<div class="summary-card"><div class="num">{visit_count}</div><div class="label">页面访问</div></div>
+<div class="summary-card"><div class="num">{total_clicks}</div><div class="label">工具点击</div></div>
 <div class="summary-card"><div class="num">{len(sorted_stats)}</div><div class="label">工具总数</div></div>
 <div class="summary-card"><div class="num">{tr_count}</div><div class="label">翻译次数</div></div>
 </div>
