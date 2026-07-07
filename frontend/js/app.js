@@ -3,10 +3,31 @@
   const STORAGE_LANG = "devtools_lang";
   const STORAGE_THEME = "devtools_theme";
   const STORAGE_MENU = "devtools_menu_collapsed";
+  const STORAGE_CLICKS = "devtools_tool_clicks";
 
   let locale = {};
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
   let currentTheme = localStorage.getItem(STORAGE_THEME) || "dark";
+  let globalStats = {};  // {tool_id: count} from Redis, refreshed on load
+
+  // ── local click tracking ──
+  function loadLocalClicks() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_CLICKS)) || {}; } catch (e) { return {}; }
+  }
+  function saveLocalClick(toolId) {
+    if (toolId === "home") return;
+    var clicks = loadLocalClicks();
+    clicks[toolId] = (clicks[toolId] || 0) + 1;
+    localStorage.setItem(STORAGE_CLICKS, JSON.stringify(clicks));
+  }
+  function postGlobalClick(toolId) {
+    if (toolId === "home") return;
+    fetch("/api/tool-click", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tool_id: toolId }),
+    }).catch(function () {}); // fire-and-forget
+  }
 
   // ── 菜单定义 ──
   const menuItems = [
@@ -176,7 +197,6 @@
       localStorage.setItem(STORAGE_LANG, lang);
       document.documentElement.lang = lang;
       applyLocale();
-      renderMenu();
     } catch (e) {
       console.warn("Failed to load locale:", lang, e);
     }
@@ -211,8 +231,16 @@
   function renderMenu() {
     const list = document.getElementById("menu-list");
     const query = document.getElementById("menu-search").value.toLowerCase();
-    list.innerHTML = menuItems
-      .filter(function (item) { return !item.hidden; })
+    var items = menuItems.filter(function (item) { return !item.hidden; });
+    // sort by global click count descending; home always first
+    if (Object.keys(globalStats).length) {
+      items = items.slice().sort(function (a, b) {
+        if (a.id === "home") return -1;
+        if (b.id === "home") return 1;
+        return (globalStats[b.id] || 0) - (globalStats[a.id] || 0);
+      });
+    }
+    list.innerHTML = items
       .map(item => {
         const label = t(item.i18n);
         const hidden = query && !label.toLowerCase().includes(query) ? " hidden" : "";
@@ -243,6 +271,9 @@
       history.pushState({ menuId: id }, "", path);
     }
     activeMenuId = id;
+    // track clicks: local + global (fire-and-forget)
+    saveLocalClick(id);
+    postGlobalClick(id);
     updateSeo();
     renderMenu();
   }
@@ -272,12 +303,33 @@
   function renderContent() {
     const el = document.getElementById("content");
     if (activeMenuId === "home") {
+      // build personal top tools from local clicks
+      var localClicks = loadLocalClicks();
+      var sorted = Object.entries(localClicks).sort(function (a, b) { return b[1] - a[1]; });
+      var quickLinks = "";
+      if (sorted.length) {
+        quickLinks = '<div class="welcome-quick"><h3 data-i18n="welcome.quickLinks">常用工具</h3><div class="welcome-quick-grid">';
+        sorted.forEach(function (entry) {
+          var item = menuItems.find(function (m) { return m.id === entry[0]; });
+          if (!item || item.hidden) return;
+          var label = t(item.i18n);
+          var lang = currentLang === "en" ? "en" : "zh";
+          var href = "/" + lang + "/tool/" + item.id;
+          quickLinks += '<a class="welcome-tool-chip" href="' + href + '" data-id="' + item.id + '">' + icons[item.icon] + '<span>' + label + '</span></a>';
+        });
+        quickLinks += '</div></div>';
+      }
       el.innerHTML = `
         <div class="welcome">
           <div class="welcome-icon">🛠️</div>
           <h2>DevTools</h2>
           <p data-i18n="welcome.desc">开发工具集 — 从左侧菜单选择工具开始使用</p>
+          ${quickLinks}
         </div>`;
+      // bind chip clicks
+      el.querySelectorAll(".welcome-tool-chip").forEach(function (chip) {
+        chip.addEventListener("click", function (e) { e.preventDefault(); selectMenu(this.dataset.id); });
+      });
       applyLocale();
       return;
     }
@@ -440,7 +492,16 @@
   document.getElementById("theme-select").value = currentTheme;
 
   applyTheme(currentTheme);
-  loadLocale(currentLang).then(function () {
+
+  // fetch locale + global stats in parallel → render once (no flash)
+  var localeReady = loadLocale(currentLang);
+  var statsReady = fetch("/api/tool-stats")
+    .then(function (r) { return r.json(); })
+    .then(function (d) { globalStats = d; })
+    .catch(function () {});
+
+  Promise.all([localeReady, statsReady]).then(function () {
+    renderMenu();
     updateSeo();
     renderContent();
   });

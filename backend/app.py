@@ -6,7 +6,7 @@ import os
 import threading
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, send_from_directory
+from flask import Flask, Response, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 from service import cache_store
@@ -548,6 +548,51 @@ def visits():
         count = _read_counter() + 1
         _write_counter(count)
     return jsonify({"count": count})
+
+
+# --- Tool click stats (Redis hash: tool_clicks) ---
+_TOOL_CLICK_KEY = "tool_clicks"
+
+
+@app.route("/api/tool-click", methods=["POST"])
+def tool_click():
+    """Increment click count for a tool. Body: {"tool_id": "json"}"""
+    data = request.get_json(silent=True) or {}
+    tool_id = data.get("tool_id", "")
+    if not tool_id or tool_id == "home":
+        return jsonify({"ok": False, "error": "invalid tool_id"}), 400
+    count = cache_store.cache_hincrby(_TOOL_CLICK_KEY, tool_id)
+    return jsonify({"ok": True, "tool_id": tool_id, "count": count})
+
+
+@app.route("/api/tool-stats")
+def tool_stats():
+    """Return all tool click counts sorted descending. Add ?view=1 for HTML page."""
+    stats = cache_store.cache_hgetall(_TOOL_CLICK_KEY)
+    if not stats:
+        stats = {}
+    # sort descending by count
+    sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
+
+    # HTML view for browser inspection
+    if request.args.get("view"):
+        rows = ""
+        for rank, (tid, count) in enumerate(sorted_stats, 1):
+            name = TOOLS.get(tid, {}).get("zh", {}).get("name", tid)
+            rows += f'<tr><td>{rank}</td><td>{html.escape(name)}</td><td><code>{html.escape(tid)}</code></td><td>{count}</td></tr>'
+        html_page = f"""<!DOCTYPE html>
+<meta charset="utf-8"><title>工具热度排行</title>
+<style>body{{font-family:system-ui;max-width:640px;margin:40px auto;padding:0 16px;background:#111;color:#eee}}
+h1{{font-size:1.2rem}}table{{width:100%;border-collapse:collapse}}th,td{{padding:8px 12px;text-align:left;border-bottom:1px solid #333}}
+th{{color:#999;font-size:.8rem}}td{{font-size:.9rem}}tr:hover{{background:#1a1a1a}}
+.rank{{color:#666;width:40px}}code{{color:#4fc3f7}}</style>
+<h1>🔥 工具热度排行 <small style="font-weight:400;color:#666;font-size:.8rem">（所有用户累计点击）</small></h1>
+<table><thead><tr><th>#</th><th>工具</th><th>ID</th><th>点击次数</th></tr></thead><tbody>{rows}</tbody></table>
+<p style="color:#666;font-size:.75rem;margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code>（HINCRBY）</p>"""
+        return html_page
+
+    # API: return sorted JSON
+    return jsonify(dict(sorted_stats))
 
 
 if __name__ == "__main__":

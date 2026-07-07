@@ -31,7 +31,8 @@
     "linkWishes": "心愿墙"
   },
   "welcome": {
-    "desc": "开发工具集 — 从左侧菜单选择工具开始使用"
+    "desc": "开发工具集 — 从左侧菜单选择工具开始使用",
+    "quickLinks": "常用工具"
   },
   "tool": {
     "comingSoon": "功能开发中..."

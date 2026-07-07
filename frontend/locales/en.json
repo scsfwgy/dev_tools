@@ -31,7 +31,8 @@
     "linkWishes": "Wish Wall"
   },
   "welcome": {
-    "desc": "Developer Toolbox — select a tool from the sidebar to get started"
+    "desc": "Developer Toolbox — select a tool from the sidebar to get started",
+    "quickLinks": "Favorites"
   },
   "tool": {
     "comingSoon": "Coming soon..."

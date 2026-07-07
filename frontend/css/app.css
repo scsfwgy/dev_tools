@@ -175,6 +175,12 @@ body {
     display: none;
 }
 
+.menu-count {
+    margin-left: auto; font-size: 0.65rem; color: var(--text-muted);
+    background: var(--hover-row); padding: 1px 6px; border-radius: 8px;
+    white-space: nowrap;
+}
+
 /* 底部操作 */
 .sidebar-bottom {
     border-top: 1px solid var(--border);
@@ -329,6 +335,25 @@ body {
     color: var(--text-secondary);
     font-size: 0.95rem;
     line-height: 1.6;
+}
+
+/* welcome — quick links (personal top tools) */
+.welcome-quick { margin-top: 32px; }
+.welcome-quick h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 500; }
+.welcome-quick-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.welcome-tool-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg-card);
+    color: var(--text); text-decoration: none; font-size: 0.85rem;
+    transition: border-color 0.15s, background 0.15s;
+}
+.welcome-tool-chip:hover { border-color: var(--accent); background: var(--hover-row); }
+.welcome-tool-chip svg { width: 16px; height: 16px; flex-shrink: 0; }
+.welcome-tool-chip em {
+    font-style: normal; font-size: 0.7rem; color: var(--text-muted);
+    background: var(--hover-row); padding: 1px 6px; border-radius: 8px;
+}
 }
 
 /* === 工具占位页 === */

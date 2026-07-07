@@ -112,3 +112,26 @@ def cache_lrem(key: str, count: int, value: str) -> Optional[int]:
         return int(result) if result is not None else None
     except (TypeError, ValueError):
         return None
+
+
+def cache_hincrby(key: str, field: str, amount: int = 1) -> Optional[int]:
+    """Increment a hash field by amount. Returns new value or None."""
+    result = _command(["HINCRBY", _KEY_PREFIX + key, field, str(int(amount))])
+    try:
+        return int(result) if result is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def cache_hgetall(key: str) -> dict:
+    """Get all fields and values of a hash. Returns empty dict on failure."""
+    result = _command(["HGETALL", _KEY_PREFIX + key])
+    if not isinstance(result, list):
+        return {}
+    d = {}
+    for i in range(0, len(result), 2):
+        try:
+            d[result[i]] = int(result[i + 1])
+        except (TypeError, ValueError):
+            d[result[i]] = result[i + 1]
+    return d
