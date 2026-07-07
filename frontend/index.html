@@ -55,7 +55,13 @@
             <input id="menu-search" class="search-input" type="text" data-i18n-placeholder="menu.searchPlaceholder" placeholder="搜索工具...">
         </div>
         <nav id="menu-list" class="menu-list">
-            <!-- JS 动态渲染 -->
+            <span class="menu-skel" style="width:70%"></span>
+            <span class="menu-skel" style="width:85%"></span>
+            <span class="menu-skel" style="width:60%"></span>
+            <span class="menu-skel" style="width:75%"></span>
+            <span class="menu-skel" style="width:50%"></span>
+            <span class="menu-skel" style="width:80%"></span>
+            <span class="menu-skel" style="width:65%"></span>
         </nav>
         <div class="sidebar-bottom">
             <button id="settings-toggle" class="sidebar-action" title="设置" aria-label="设置">
@@ -98,6 +104,11 @@
 
     <!-- 右侧内容 -->
     <main id="content" class="content">
+        <div class="content-loader">
+            <div class="content-skel-icon"></div>
+            <div class="content-skel-bar" style="width:160px;height:22px;margin:0 auto 10px"></div>
+            <div class="content-skel-bar" style="width:280px;height:14px;margin:0 auto"></div>
+        </div>
         <!--SEO_CONTENT-->
     </main>
 

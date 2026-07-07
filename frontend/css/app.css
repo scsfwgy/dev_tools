@@ -171,6 +171,30 @@ body {
     min-width: 18px;
 }
 
+/* menu skeleton — shown while JS loads */
+.menu-skel {
+    display: block; height: 16px; margin: 10px 12px;
+    border-radius: 4px; background: var(--border);
+    animation: skel-pulse 1.2s ease-in-out infinite;
+}
+@keyframes skel-pulse { 0%,100%{opacity:.3} 50%{opacity:.7} }
+
+/* content skeleton — shown while JS loads, mimics welcome page */
+.content-loader {
+    display: flex; flex-direction: column; align-items: center;
+    padding-top: 100px;
+}
+.content-skel-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--border); margin-bottom: 20px;
+    animation: skel-pulse 1.2s ease-in-out infinite;
+}
+.content-skel-bar {
+    border-radius: 4px; background: var(--border);
+    animation: skel-pulse 1.2s ease-in-out infinite;
+}
+@keyframes tr-spin { to { transform: rotate(360deg); } }
+
 .menu-item.hidden {
     display: none;
 }
@@ -1192,13 +1216,9 @@ body {
     margin-top: 4px;
 }
 
-/* === SEO 静态内容（JS 加载前可抓取） === */
+/* === SEO 静态内容（仅供爬虫，JS 渲染后隐藏） === */
 .seo-content {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 32px 24px;
-    color: var(--text-secondary);
-    line-height: 1.7;
+    display: none;
 }
 
 .seo-content h1,
@@ -1392,8 +1412,6 @@ body {
     width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent);
     border-radius: 50%; animation: tr-spin 0.6s linear infinite;
 }
-@keyframes tr-spin { to { transform: rotate(360deg); } }
-
 .tr-result {
     display: none; border: 1px solid var(--border); border-radius: 10px;
     background: var(--bg-card); padding: 20px;
