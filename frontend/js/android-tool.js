@@ -3,29 +3,29 @@ var AndroidTool = (function () {
   function t(key) { return (window.__t && window.__t(key)) || key; }
 
   var API_LEVELS = [
-    { ver: "17",  code: "Cinnamon Bun",         api: 37, year: 2026 },
-    { ver: "16",  code: "Baklava",             api: 36, year: 2025 },
-    { ver: "15",  code: "Vanilla Ice Cream",   api: 35, year: 2024 },
-    { ver: "14",  code: "Upside Down Cake",    api: 34, year: 2023 },
-    { ver: "13",  code: "Tiramisu",            api: 33, year: 2022 },
-    { ver: "12L", code: "Snow Cone v2",        api: 32, year: 2022 },
-    { ver: "12",  code: "Snow Cone",           api: 31, year: 2021 },
-    { ver: "11",  code: "Red Velvet Cake",     api: 30, year: 2020 },
-    { ver: "10",  code: "Quince Tart",         api: 29, year: 2019 },
-    { ver: "9",   code: "Pie",                 api: 28, year: 2018 },
-    { ver: "8.1", code: "Oreo MR1",            api: 27, year: 2017 },
-    { ver: "8.0", code: "Oreo",                api: 26, year: 2017 },
-    { ver: "7.1", code: "Nougat MR1",          api: 25, year: 2016 },
-    { ver: "7.0", code: "Nougat",              api: 24, year: 2016 },
-    { ver: "6.0", code: "Marshmallow",         api: 23, year: 2015 },
-    { ver: "5.1", code: "Lollipop MR1",        api: 22, year: 2015 },
-    { ver: "5.0", code: "Lollipop",            api: 21, year: 2014 },
-    { ver: "4.4", code: "KitKat",              api: 19, year: 2013 },
-    { ver: "4.3", code: "Jelly Bean MR2",      api: 18, year: 2013 },
-    { ver: "4.2", code: "Jelly Bean MR1",      api: 17, year: 2012 },
-    { ver: "4.1", code: "Jelly Bean",          api: 16, year: 2012 },
-    { ver: "4.0", code: "Ice Cream Sandwich",  api: 15, year: 2011 },
-    { ver: "2.3", code: "Gingerbread",         api: 10, year: 2011 },
+    { ver: "17",  code: "Cinnamon Bun",         zh: "肉桂卷",               api: 37, year: 2026 },
+    { ver: "16",  code: "Baklava",             zh: "果仁蜜饼",              api: 36, year: 2025 },
+    { ver: "15",  code: "Vanilla Ice Cream",   zh: "香草冰淇淋",             api: 35, year: 2024 },
+    { ver: "14",  code: "Upside Down Cake",    zh: "翻转蛋糕",              api: 34, year: 2023 },
+    { ver: "13",  code: "Tiramisu",            zh: "提拉米苏",              api: 33, year: 2022 },
+    { ver: "12L", code: "Snow Cone v2",        zh: "雪花冰 v2",            api: 32, year: 2022 },
+    { ver: "12",  code: "Snow Cone",           zh: "雪花冰",               api: 31, year: 2021 },
+    { ver: "11",  code: "Red Velvet Cake",     zh: "红丝绒蛋糕",             api: 30, year: 2020 },
+    { ver: "10",  code: "Quince Tart",         zh: "榅桲挞",               api: 29, year: 2019 },
+    { ver: "9",   code: "Pie",                 zh: "派",                  api: 28, year: 2018 },
+    { ver: "8.1", code: "Oreo MR1",            zh: "奥利奥 MR1",           api: 27, year: 2017 },
+    { ver: "8.0", code: "Oreo",                zh: "奥利奥",               api: 26, year: 2017 },
+    { ver: "7.1", code: "Nougat MR1",          zh: "牛轧糖 MR1",           api: 25, year: 2016 },
+    { ver: "7.0", code: "Nougat",              zh: "牛轧糖",               api: 24, year: 2016 },
+    { ver: "6.0", code: "Marshmallow",         zh: "棉花糖",               api: 23, year: 2015 },
+    { ver: "5.1", code: "Lollipop MR1",        zh: "棒棒糖 MR1",           api: 22, year: 2015 },
+    { ver: "5.0", code: "Lollipop",            zh: "棒棒糖",               api: 21, year: 2014 },
+    { ver: "4.4", code: "KitKat",              zh: "奇巧巧克力",             api: 19, year: 2013 },
+    { ver: "4.3", code: "Jelly Bean MR2",      zh: "果冻豆 MR2",           api: 18, year: 2013 },
+    { ver: "4.2", code: "Jelly Bean MR1",      zh: "果冻豆 MR1",           api: 17, year: 2012 },
+    { ver: "4.1", code: "Jelly Bean",          zh: "果冻豆",               api: 16, year: 2012 },
+    { ver: "4.0", code: "Ice Cream Sandwich",  zh: "冰淇淋三明治",            api: 15, year: 2011 },
+    { ver: "2.3", code: "Gingerbread",         zh: "姜饼",                api: 10, year: 2011 },
   ];
 
   // 0% → 100% alpha channel
@@ -336,7 +336,7 @@ var AndroidTool = (function () {
     h += '<div class="at-search-wrap"><input id="at-search-api" class="search-input" type="text" placeholder="' + t("android.searchApi") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("android.version") + '</th><th>' + t("android.codename") + '</th><th>API</th><th>' + t("android.year") + '</th></tr></thead><tbody>';
     API_LEVELS.forEach(function (r) {
-      h += '<tr data-search="' + r.ver + ' ' + r.code.toLowerCase() + ' ' + r.api + '"><td><code>' + r.ver + '</code></td><td>' + r.code + '</td><td><code>' + r.api + '</code></td><td>' + r.year + '</td></tr>';
+      h += '<tr data-search="' + r.ver + ' ' + r.code.toLowerCase() + ' ' + r.api + ' ' + r.zh + '"><td><code>' + r.ver + '</code></td><td>' + r.code + '（' + r.zh + '）</td><td><code>' + r.api + '</code></td><td>' + r.year + '</td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
