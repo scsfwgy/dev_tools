@@ -15,6 +15,7 @@
     "android": "Android 常用",
     "qrcode": "二维码",
     "curl": "Curl 工具",
+    "terminal": "终端命令",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -343,5 +344,20 @@
     "yrUnit": "年",
     "days": "星期日,星期一,星期二,星期三,星期四,星期五,星期六",
     "daysEn": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+  },
+  "terminal": {
+    "fileOps": "文件操作",
+    "textProc": "文本处理",
+    "process": "进程管理",
+    "network": "网络工具",
+    "system": "系统信息",
+    "perm": "权限管理",
+    "archive": "压缩归档",
+    "shellTips": "Shell 技巧",
+    "cmd": "命令",
+    "desc": "说明",
+    "example": "示例",
+    "note": "备注",
+    "searchPlaceholder": "搜索命令、说明或示例..."
   }
 }

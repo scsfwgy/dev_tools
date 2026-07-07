@@ -309,6 +309,32 @@ TOOLS = {
             ],
         },
     },
+    "terminal": {
+        "zh": {
+            "name": "终端常用命令速查",
+            "title": "终端常用命令速查表 - Shell 命令参考 Linux 运维 | Tools24",
+            "description": "终端常用命令速查表，覆盖文件操作、文本处理、进程管理、网络工具、系统信息、权限管理、压缩归档和 Shell 技巧，面向运维人员和终端用户。",
+            "keywords": "终端命令,shell命令,Linux命令,运维命令,命令行速查,macOS命令,bash,zsh,终端常用命令",
+            "intro": "面向运维人员和终端用户的常用 Shell 命令速查表，按类别分为文件操作、文本处理、进程管理、网络、系统、权限、压缩归档和 Shell 技巧八大类。",
+            "features": ["文件操作命令", "文本处理命令", "进程管理命令", "网络工具命令", "系统信息命令", "权限管理命令", "压缩归档命令", "Shell 技巧"],
+            "faq": [
+                ("这些命令适用于哪些系统？", "大部分命令适用于 Linux 和 macOS，部分命令（如 apt）仅限特定发行版。"),
+                ("如何查找特定命令？", "点击对应分类标签后使用搜索框，支持中英文关键词过滤。"),
+            ],
+        },
+        "en": {
+            "name": "Terminal Commands",
+            "title": "Terminal Commands Cheat Sheet - Shell Reference Linux Ops | Tools24",
+            "description": "Terminal commands quick reference covering file ops, text processing, process management, networking, system info, permissions, archives and shell tips for ops and terminal users.",
+            "keywords": "terminal commands,shell commands,linux commands,ops commands,cli reference,bash,zsh,terminal cheat sheet",
+            "intro": "A quick reference of common shell commands for ops and terminal users, organized into eight categories: file ops, text processing, process management, networking, system info, permissions, archives and shell tips.",
+            "features": ["File operations", "Text processing", "Process management", "Network tools", "System info", "Permissions", "Archives", "Shell tips"],
+            "faq": [
+                ("Which systems do these commands apply to?", "Most commands work on Linux and macOS. Some (like apt) are distro-specific."),
+                ("How do I find a specific command?", "Click a category tab then use the search box. Supports keyword filtering in both English and Chinese."),
+            ],
+        },
+    },
 }
 
 HOME_META = {

@@ -15,6 +15,7 @@
     "android": "Android Ref",
     "qrcode": "QR Code",
     "curl": "Curl",
+    "terminal": "Terminal",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -343,5 +344,20 @@
     "yrUnit": "y",
     "days": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
     "daysEn": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+  },
+  "terminal": {
+    "fileOps": "File Ops",
+    "textProc": "Text Processing",
+    "process": "Process Mgmt",
+    "network": "Network",
+    "system": "System Info",
+    "perm": "Permissions",
+    "archive": "Archive",
+    "shellTips": "Shell Tips",
+    "cmd": "Command",
+    "desc": "Description",
+    "example": "Example",
+    "note": "Note",
+    "searchPlaceholder": "Search command, description or example..."
   }
 }

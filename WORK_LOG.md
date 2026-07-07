@@ -31,6 +31,8 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-06 | 二维码生成解析 | 文本生成二维码(可调尺寸/PNG下载)，图片上传/粘贴解析，qrcode+jsQR CDN |
 | 2026-07-06 | Curl 工具集 | 可视化构建curl命令、24个常用示例速查、curl转Python/JS/Go/Java代码 |
 | 2026-07-06 | 加解密工具 | AES-GCM/CBC 对称加密 + RSA-OAEP 非对称加密，Web Crypto API 浏览器本地处理 |
+| 2026-07-07 | Android 版本增强 | Android 版本代号新增中文含义备注，渲染为「Pie（派）」格式 |
+| 2026-07-07 | 终端常用命令 | Shell 命令速查表，八大分类（文件/文本/进程/网络/系统/权限/压缩/Shell），中英双语搜索 |
 
 ## 技术决策
 

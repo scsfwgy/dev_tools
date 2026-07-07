@@ -1328,6 +1328,11 @@ body {
     gap: 12px;
 }
 
+.at-muted { color: var(--text-muted); font-size: 0.8rem; }
+
+/* === 终端命令 === */
+/* ponytail: reuses .at-table, .at-search-wrap, .android-section, .b64-tabs from Android tool */
+
 /* === 二维码工具 === */
 .qr-gen-wrap {
     display: flex;
