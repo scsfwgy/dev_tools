@@ -1375,6 +1375,17 @@ body {
 
 .at-muted { color: var(--text-muted); font-size: 0.8rem; }
 
+/* === Git 工具 === */
+/* ponytail: reuses .at-table, .at-search-wrap, .android-section, .b64-tabs from Android tool */
+.git-replace-bar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 10px 0; margin-bottom: 4px;
+    border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.git-replace-field { display: flex; align-items: center; gap: 6px; }
+.git-replace-label { font-size: 0.82rem; color: var(--text-secondary); white-space: nowrap; }
+.git-replace-msg { font-size: 0.78rem; color: var(--text-muted); }
+
 /* === 终端命令 === */
 /* ponytail: reuses .at-table, .at-search-wrap, .android-section, .b64-tabs from Android tool */
 

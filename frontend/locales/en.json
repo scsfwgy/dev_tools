@@ -18,6 +18,7 @@
     "terminal": "Terminal",
     "ai": "AI CLI",
     "translate": "Translate",
+    "git": "Git",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools..."
   },
@@ -392,5 +393,26 @@
     "copy": "Copy",
     "speak": "Speak",
     "error": "Translation failed, please retry"
+  },
+  "git": {
+    "all": "All",
+    "basic": "Basics",
+    "branch": "Branch",
+    "undo": "Undo",
+    "remote": "Remote",
+    "stashLog": "Stash & Log",
+    "tagSub": "Tags & Subs",
+    "config": "Config",
+    "adv": "Advanced",
+    "command": "Command",
+    "description": "Description",
+    "example": "Example",
+    "note": "Note",
+    "searchPlaceholder": "Search commands or descriptions...",
+    "replaceRemote": "Replace domain:",
+    "replaceBranch": "Replace branch:",
+    "oldBranchName": "Old name",
+    "newBranchName": "New name",
+    "resetBtn": "Reset"
   }
 }

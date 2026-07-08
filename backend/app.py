@@ -389,6 +389,32 @@ TOOLS = {
             ],
         },
     },
+    "git": {
+        "zh": {
+            "name": "Git 常用命令速查",
+            "title": "Git 常用命令速查 - Git Cheat Sheet 远程地址替换 | Tools24",
+            "description": "Git 常用命令速查表，覆盖基础操作、分支管理、撤销回退、远程管理、暂存日志、标签子模块和高级操作七大类。支持一键替换远程地址和分支名。",
+            "keywords": "Git命令,Git Cheat Sheet,Git速查,git remote,git branch,分支管理,远程地址替换",
+            "intro": "面向开发者的 Git 常用命令速查，七大类命令覆盖日常开发场景。底部两个实用工具：输入命令一键替换远程地址、一键替换分支名，方便切换仓库和分支命名规范变更。",
+            "features": ["基础操作命令", "分支管理命令", "撤销回退命令", "远程管理命令", "暂存日志命令", "标签子模块命令", "高级操作命令", "一键替换远程地址", "一键替换分支名"],
+            "faq": [
+                ("替换远程地址怎么用？", "粘贴 git clone 或 git remote add 命令，输入新地址后点击替换，命令中的远程 URL 会自动替换。"),
+                ("替换分支名怎么用？", "粘贴任意 git 命令，输入旧分支名和新分支名后点击替换，命令中所有匹配的分支名都会替换。"),
+            ],
+        },
+        "en": {
+            "name": "Git Commands",
+            "title": "Git Cheat Sheet - Git Commands Reference Remote Branch | Tools24",
+            "description": "Git commands quick reference covering basics, branching, undo, remote, stash/log, tags/submodules and advanced ops. Includes remote URL and branch name replacement tools.",
+            "keywords": "Git commands,Git Cheat Sheet,git reference,git remote,git branch,branch management,remote URL replace",
+            "intro": "A developer-focused Git commands quick reference across seven categories covering daily scenarios. Includes two utility tools: one-click remote URL replacement and branch name replacement for commands.",
+            "features": ["Basic commands", "Branch management", "Undo & revert", "Remote management", "Stash & log", "Tags & submodules", "Advanced operations", "Remote URL replacement", "Branch name replacement"],
+            "faq": [
+                ("How to use remote URL replacement?", "Paste a git clone or git remote command, enter a new address, click Replace — the remote URL in the command will be updated automatically."),
+                ("How to use branch name replacement?", "Paste any git command, enter old and new branch names, click Replace — all matching branch names in the command will be updated."),
+            ],
+        },
+    },
 }
 
 HOME_META = {

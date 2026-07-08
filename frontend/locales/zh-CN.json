@@ -18,6 +18,7 @@
     "terminal": "终端命令",
     "ai": "AI 指令",
     "translate": "翻译",
+    "git": "Git 命令",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具..."
   },
@@ -392,5 +393,26 @@
     "copy": "复制译文",
     "speak": "朗读",
     "error": "翻译失败，请重试"
+  },
+  "git": {
+    "all": "全部",
+    "basic": "基础操作",
+    "branch": "分支管理",
+    "undo": "撤销回退",
+    "remote": "远程管理",
+    "stashLog": "暂存日志",
+    "tagSub": "标签子模块",
+    "config": "配置",
+    "adv": "高级操作",
+    "command": "命令",
+    "description": "说明",
+    "example": "示例",
+    "note": "备注",
+    "searchPlaceholder": "搜索命令、说明或示例...",
+    "replaceRemote": "替换域名：",
+    "replaceBranch": "替换分支：",
+    "oldBranchName": "旧分支名",
+    "newBranchName": "新分支名",
+    "resetBtn": "重置"
   }
 }
