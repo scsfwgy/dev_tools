@@ -32,7 +32,7 @@ TOOLS = {
             "description": "在线 JSON 格式化、压缩、校验和树形查看工具，支持快速检查 JSON 语法错误并复制格式化结果。",
             "keywords": "JSON格式化,JSON校验,JSON压缩,JSON Viewer,JSON Formatter,在线JSON工具",
             "intro": "粘贴 JSON 后即可格式化、压缩、校验语法并查看树形结构，适合接口调试、日志查看和配置文件整理。",
-            "features": ["JSON 格式化与压缩", "语法错误提示", "树形层级查看", "本地浏览器处理，不上传数据"],
+            "features": ["JSON 格式化与压缩", "语法错误提示", "树形层级查看", "JSON 转换为 YAML/XML/CSV/JS/Kotlin/Java/Go", "本地浏览器处理，不上传数据"],
             "faq": [
                 ("JSON 格式化会上传数据吗？", "不会，Tools24 的 JSON 工具在浏览器本地运行。"),
                 ("支持 JSON 压缩吗？", "支持，可以把格式化 JSON 压缩成单行。"),
@@ -44,7 +44,7 @@ TOOLS = {
             "description": "Format, validate, compact and inspect JSON online with a tree viewer. Runs locally in your browser.",
             "keywords": "JSON formatter,JSON validator,JSON viewer,JSON compact,online JSON tool",
             "intro": "Paste JSON to format, compact, validate syntax and inspect nested data in a tree view for API debugging and config editing.",
-            "features": ["Format and compact JSON", "Syntax validation", "Tree view", "Local browser processing"],
+            "features": ["Format and compact JSON", "Syntax validation", "Tree view", "Convert JSON to YAML/XML/CSV/JS/Kotlin/Java/Go", "Local browser processing"],
             "faq": [
                 ("Is my JSON uploaded?", "No. The JSON tool runs in your browser."),
                 ("Can it compact JSON?", "Yes. It can output a minified single-line JSON string."),

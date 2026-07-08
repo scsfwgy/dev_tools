@@ -40,6 +40,8 @@
   },
   "json": {
     "format": "格式化",
+    "convert": "转换",
+    "formatBtn": "格式化",
     "compact": "压缩",
     "copy": "复制",
     "placeholder": "粘贴 JSON...",
@@ -48,7 +50,11 @@
     "copied": "已复制",
     "copyFailed": "无法复制：JSON 无效",
     "items": "项",
-    "keys": "个字段"
+    "keys": "个字段",
+    "cvPlaceholder": "粘贴 JSON（或 YAML/XML/CSV/JS 对象）...",
+    "cvOutputPlaceholder": "转换结果",
+    "convertBtn": "转换",
+    "swapDir": "切换方向"
   },
   "history": {
     "label": "历史记录"

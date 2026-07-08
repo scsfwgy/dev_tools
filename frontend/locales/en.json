@@ -40,6 +40,8 @@
   },
   "json": {
     "format": "Format",
+    "convert": "Convert",
+    "formatBtn": "Format",
     "compact": "Compact",
     "copy": "Copy",
     "placeholder": "Paste JSON...",
@@ -48,7 +50,11 @@
     "copied": "Copied",
     "copyFailed": "Copy failed: invalid JSON",
     "items": "items",
-    "keys": "keys"
+    "keys": "keys",
+    "cvPlaceholder": "Paste JSON (or YAML/XML/CSV/JS object)...",
+    "cvOutputPlaceholder": "Conversion result",
+    "convertBtn": "Convert",
+    "swapDir": "Swap direction"
   },
   "history": {
     "label": "History"
