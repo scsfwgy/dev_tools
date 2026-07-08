@@ -5,6 +5,7 @@
   "menu": {
     "home": "Home",
     "json": "JSON Tool",
+    "format": "Formatter",
     "timestamp": "Timestamp",
     "encoder": "Encoder",
     "diff": "Diff",
@@ -56,6 +57,16 @@
     "cvOutputPlaceholder": "Conversion result",
     "convertBtn": "Convert",
     "swapDir": "Swap direction"
+  },
+  "format": {
+    "formatBtn": "Format",
+    "copy": "Copy",
+    "loading": "Loading...",
+    "loadFail": "Failed to load formatter engine",
+    "done": "Formatted",
+    "copied": "Copied",
+    "placeholder": "Paste code...",
+    "outputPlaceholder": "Formatted result"
   },
   "history": {
     "label": "History"

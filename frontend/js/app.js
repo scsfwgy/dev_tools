@@ -33,6 +33,7 @@
   const menuItems = [
     { id: "home",     icon: "home",       i18n: "menu.home" },
     { id: "json",     icon: "json",       i18n: "menu.json" },
+    { id: "format",   icon: "code",       i18n: "menu.format" },
     { id: "timestamp",icon: "clock",      i18n: "menu.timestamp" },
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
@@ -59,6 +60,10 @@
       json: {
         title: "JSON格式化校验工具 - 在线 JSON Formatter / Viewer | Tools24",
         description: "在线 JSON 格式化、压缩、校验和树形查看工具，支持快速检查 JSON 语法错误并复制格式化结果。"
+      },
+      format: {
+        title: "代码格式化工具 - HTML CSS JS TS YAML XML Markdown | Tools24",
+        description: "在线代码格式化工具，基于 Prettier 支持 HTML、CSS、SCSS、JavaScript、TypeScript、JSON、YAML、XML、Markdown 等多种语言的智能美化。"
       },
       timestamp: {
         title: "时间戳转换工具 - Unix Timestamp 在线转换 | Tools24",
@@ -125,6 +130,10 @@
       json: {
         title: "JSON Formatter and Validator Online | Tools24",
         description: "Format, validate, compact and inspect JSON online with a tree viewer. Runs locally in your browser."
+      },
+      format: {
+        title: "Code Formatter - HTML CSS JS TS YAML XML Markdown | Tools24",
+        description: "Online code formatter powered by Prettier. Supports HTML, CSS, SCSS, Less, JavaScript, TypeScript, JSON, YAML, XML and Markdown."
       },
       timestamp: {
         title: "Timestamp Converter Online - Unix Time Converter | Tools24",
@@ -351,6 +360,11 @@
         chip.addEventListener("click", function (e) { e.preventDefault(); selectMenu(this.dataset.id); });
       });
       applyLocale();
+      return;
+    }
+    if (activeMenuId === "format" && typeof FormatTool !== "undefined") {
+      el.innerHTML = "";
+      FormatTool.init(el);
       return;
     }
     if (activeMenuId === "json" && typeof JsonTool !== "undefined") {

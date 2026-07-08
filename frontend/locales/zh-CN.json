@@ -5,6 +5,7 @@
   "menu": {
     "home": "首页",
     "json": "JSON 工具",
+    "format": "代码格式化",
     "timestamp": "时间戳转换",
     "encoder": "编码转换",
     "diff": "文本对比",
@@ -56,6 +57,16 @@
     "cvOutputPlaceholder": "转换结果",
     "convertBtn": "转换",
     "swapDir": "切换方向"
+  },
+  "format": {
+    "formatBtn": "格式化",
+    "copy": "复制",
+    "loading": "加载中...",
+    "loadFail": "格式化引擎加载失败",
+    "done": "格式化完成",
+    "copied": "已复制",
+    "placeholder": "粘贴代码...",
+    "outputPlaceholder": "格式化结果"
   },
   "history": {
     "label": "历史记录"

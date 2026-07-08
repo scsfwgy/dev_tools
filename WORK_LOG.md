@@ -37,6 +37,7 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-07 | 翻译工具 | DeepSeek 智能翻译，自动检测中英方向，短词 IPA 音标+词性，长文纯翻译，离开输入框自动触发 |
 | 2026-07-07 | JSON 转换增强 | JSON ↔ YAML/XML/CSV/JS 互转及 → Kotlin/Java/Go 代码生成，单下拉框按方向分组选转换对 |
 | 2026-07-08 | Git 命令 | Git 常用命令速查（七大类 + 两实用工具），一键替换远程地址/分支名 |
+| 2026-07-08 | 代码格式化 | 基于 Prettier 的多语言格式化工具，支持 HTML/CSS/JS/TS/JSON/YAML/XML/Markdown |
 
 ## 技术决策
 

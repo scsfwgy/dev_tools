@@ -25,6 +25,32 @@ SITE_URL = "https://www.tools24.uk"
 SUPPORTED_LANGS = {"zh", "en"}
 
 TOOLS = {
+    "format": {
+        "zh": {
+            "name": "代码格式化工具",
+            "title": "代码格式化工具 - HTML CSS JS TS YAML XML Markdown | Tools24",
+            "description": "在线代码格式化工具，基于 Prettier 支持 HTML、CSS、SCSS、JavaScript、TypeScript、JSON、YAML、XML、Markdown 等多种语言的美化。",
+            "keywords": "代码格式化,HTML格式化,CSS格式化,JS格式化,TypeScript格式化,YAML格式化,XML格式化,Prettier,代码美化",
+            "intro": "粘贴代码选择语言即可一键格式化，支持 HTML、CSS、SCSS、Less、JavaScript、TypeScript、JSON、YAML、XML、Markdown 等十种常见语言。",
+            "features": ["HTML / CSS / SCSS / Less", "JavaScript / TypeScript", "JSON / YAML", "XML / Markdown", "Prettier 引擎，浏览器本地处理"],
+            "faq": [
+                ("格式化会上传代码吗？", "不会，基于 Prettier 在浏览器本地处理，代码不离开你的设备。"),
+                ("支持哪些语言？", "HTML、CSS、SCSS、Less、JavaScript、TypeScript、JSON、YAML、XML、Markdown。"),
+            ],
+        },
+        "en": {
+            "name": "Code Formatter",
+            "title": "Code Formatter - HTML CSS JS TS YAML XML Markdown | Tools24",
+            "description": "Online code formatter powered by Prettier. Supports HTML, CSS, SCSS, Less, JavaScript, TypeScript, JSON, YAML, XML and Markdown.",
+            "keywords": "code formatter,HTML formatter,CSS formatter,JS formatter,TypeScript formatter,YAML formatter,XML formatter,Prettier,beautify",
+            "intro": "Paste code, pick a language, click Format. Supports HTML, CSS, SCSS, Less, JavaScript, TypeScript, JSON, YAML, XML and Markdown.",
+            "features": ["HTML / CSS / SCSS / Less", "JavaScript / TypeScript", "JSON / YAML", "XML / Markdown", "Prettier engine, local browser processing"],
+            "faq": [
+                ("Is my code uploaded?", "No. Prettier runs locally in your browser; code never leaves your device."),
+                ("Which languages are supported?", "HTML, CSS, SCSS, Less, JavaScript, TypeScript, JSON, YAML, XML and Markdown."),
+            ],
+        },
+    },
     "json": {
         "zh": {
             "name": "JSON格式化校验工具",
