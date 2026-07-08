@@ -240,8 +240,15 @@ var CurlTool = (function () {
       var origUrl = r[2];
       var origMatch = origUrl.match(/^(https?:\/\/[^\/]+)(\/.*)?$/);
       if (!origMatch) return;
-      var origPath = userHasPath ? "" : (origMatch[2] || "");
-      var newUrl = newDomain.replace(/\/+$/, "") + origPath;
+      var origPath = origMatch[2] || "";
+      var origQuery = origPath.indexOf("?") > 0 ? origPath.substring(origPath.indexOf("?")) : "";
+      var newUrl;
+      if (userHasPath) {
+        // user provided domain+path → preserve original query string
+        newUrl = newDomain.replace(/\/+$/, "") + origQuery;
+      } else {
+        newUrl = newDomain.replace(/\/+$/, "") + origPath;
+      }
       var urlCell = tr.querySelector("td:nth-child(3) code");
       if (urlCell) urlCell.textContent = newUrl;
       tr.dataset.replacedUrl = newUrl;
