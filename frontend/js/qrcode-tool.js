@@ -105,7 +105,7 @@ var QrcodeTool = (function () {
     document.addEventListener("paste", handlePaste);
     document.getElementById("qr-copy-result").addEventListener("click", function () {
       var v = document.getElementById("qr-result").value;
-      if (v) { navigator.clipboard.writeText(v); parseMsg("✓ " + t("qrcode.copied"), false); }
+      if (v) { navigator.clipboard.writeText(v); showCopyToast(t("qrcode.copied")); }
     });
   }
 

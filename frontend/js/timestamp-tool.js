@@ -39,7 +39,7 @@ var TimestampTool = (function () {
 
     tsNow.addEventListener("click", function () {
       navigator.clipboard.writeText(fmtDatetime(new Date()));
-      showToast(t("timestamp.copied"));
+      showCopyToast(t("timestamp.copied"));
     });
 
     var input = document.getElementById("ts-input");

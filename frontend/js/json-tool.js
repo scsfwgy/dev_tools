@@ -137,7 +137,7 @@ var JsonTool = (function () {
     document.getElementById("jt-cv-go").addEventListener("click", doConvert);
     document.getElementById("jt-cv-copy").addEventListener("click", function () {
       var v = document.getElementById("jt-cv-output").value;
-      if (v) navigator.clipboard.writeText(v).then(function () { setCvMsg("✓ " + t("json.copied"), false); });
+      if (v) navigator.clipboard.writeText(v).then(function () { showCopyToast(t("json.copied")); });
     });
     document.getElementById("jt-cv-format").addEventListener("change", doConvert);
     document.getElementById("jt-cv-input").addEventListener("input", function () { doConvert(); });
@@ -216,7 +216,7 @@ var JsonTool = (function () {
     try {
       var obj = JSON.parse(editor.value.trim());
       navigator.clipboard.writeText(JSON.stringify(obj, null, 2)).then(function () {
-        setMsg("✓ " + t("json.copied"), false);
+        showCopyToast(t("json.copied"));
       });
     } catch (e) {
       setMsg("✗ " + t("json.copyFailed"), true);

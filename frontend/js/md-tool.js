@@ -230,7 +230,7 @@ var MdTool = (function () {
     var rendered = getRenderedHtml();
     if (!rendered) { setMsg(t("markdown.emptyInput"), true); return; }
     navigator.clipboard.writeText(rendered).then(function () {
-      setMsg("✓ " + t("markdown.htmlCopied"), false);
+      showCopyToast(t("markdown.htmlCopied"));
     }).catch(function () {
       setMsg("✗ " + t("markdown.copyFailed"), true);
     });

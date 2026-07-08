@@ -147,7 +147,7 @@ var CryptoTool = (function () {
     });
     document.getElementById("crypto-sym-copy").addEventListener("click", function () {
       var v = document.getElementById("crypto-sym-output").value;
-      if (v) { navigator.clipboard.writeText(v); symMsg("✓ " + t("crypto.copied"), false); }
+      if (v) { navigator.clipboard.writeText(v); showCopyToast(t("crypto.copied")); }
     });
     document.getElementById("crypto-sym-input").addEventListener("blur", function () {
       var raw = this.value.trim();
@@ -281,11 +281,11 @@ var CryptoTool = (function () {
     document.getElementById("crypto-asym-import").addEventListener("click", asymImport);
     document.getElementById("crypto-asym-copy-pub").addEventListener("click", function () {
       var v = document.getElementById("crypto-asym-pub").value;
-      if (v) { navigator.clipboard.writeText(v); asymMsg("✓ " + t("crypto.copied"), false); }
+      if (v) { navigator.clipboard.writeText(v); showCopyToast(t("crypto.copied")); }
     });
     document.getElementById("crypto-asym-copy-prv").addEventListener("click", function () {
       var v = document.getElementById("crypto-asym-prv").value;
-      if (v) { navigator.clipboard.writeText(v); asymMsg("✓ " + t("crypto.copied"), false); }
+      if (v) { navigator.clipboard.writeText(v); showCopyToast(t("crypto.copied")); }
     });
     document.getElementById("crypto-asym-enc").addEventListener("click", function () { asymConvert("encrypt"); });
     document.getElementById("crypto-asym-dec").addEventListener("click", function () { asymConvert("decrypt"); });
@@ -295,7 +295,7 @@ var CryptoTool = (function () {
     });
     document.getElementById("crypto-asym-copy").addEventListener("click", function () {
       var v = document.getElementById("crypto-asym-output").value;
-      if (v) { navigator.clipboard.writeText(v); asymOpMsg("✓ " + t("crypto.copied"), false); }
+      if (v) { navigator.clipboard.writeText(v); showCopyToast(t("crypto.copied")); }
     });
   }
 

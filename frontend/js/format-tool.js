@@ -108,7 +108,7 @@ var FormatTool = (function () {
 
     document.getElementById("fmt-go").addEventListener("click", doFormat);
     document.getElementById("fmt-copy").addEventListener("click", function () {
-      if (output.value) navigator.clipboard.writeText(output.value).then(function () { setMsg("✓ " + t("format.copied"), false); });
+      if (output.value) navigator.clipboard.writeText(output.value).then(function () { showCopyToast(t("format.copied")); });
     });
     // Ctrl/Cmd+Enter to format
     input.addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); doFormat(); } });

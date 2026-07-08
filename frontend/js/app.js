@@ -339,16 +339,17 @@
   }
 
   // ── device info helpers ──
-  // ── global copy toast (top-right, auto-fade) ──
+  // ── global copy toast (top-center pill, auto-fade) ──
   function showCopyToast(msg) {
     var toast = document.createElement("div");
     toast.className = "copy-toast";
-    toast.textContent = msg || "已复制";
+    toast.textContent = msg || "✓ 已复制";
     document.body.appendChild(toast);
     setTimeout(function () { toast.classList.add("copy-toast-visible"); }, 10);
     setTimeout(function () { toast.classList.remove("copy-toast-visible"); }, 1800);
     setTimeout(function () { toast.remove(); }, 2200);
   }
+  window.showCopyToast = showCopyToast;
 
   function stopClock() {
     if (_clockTimer) { clearInterval(_clockTimer); _clockTimer = null; }

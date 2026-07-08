@@ -141,7 +141,7 @@ var CurlTool = (function () {
     document.getElementById("curl-convert-btn").addEventListener("click", convertCurl);
     document.getElementById("curl-convert-copy").addEventListener("click", function () {
       var v = document.getElementById("curl-convert-output").value;
-      if (v) navigator.clipboard.writeText(v);
+      if (v) { navigator.clipboard.writeText(v); showCopyToast(); }
     });
     bindSearch("curl-search-examples", "#curl-examples-body tr", function (tr, q) {
       tr.style.display = q && !tr.textContent.toLowerCase().includes(q) ? "none" : "";
@@ -198,14 +198,14 @@ var CurlTool = (function () {
 
   function copyCmd() {
     var v = document.getElementById("curl-output-cmd").value;
-    if (v) navigator.clipboard.writeText(v.replace(/ \\\n  /g, " "));
+    if (v) { navigator.clipboard.writeText(v.replace(/ \\\n  /g, " ")); showCopyToast(); }
   }
 
   function tryCurl() {
     var cmd = document.getElementById("curl-output-cmd").value.replace(/ \\\n  /g, " ");
     if (!cmd) return;
     navigator.clipboard.writeText(cmd);
-    alert(t("curl.copiedToClipboard"));
+    showCopyToast();
   }
 
   // ═══ Examples ═══

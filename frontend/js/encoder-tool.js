@@ -87,7 +87,7 @@ var EncoderTool = (function () {
       var val = document.getElementById("enc-output").value;
       if (!val) return;
       navigator.clipboard.writeText(val);
-      setMsg("✓ " + t("encoder.copied"), false);
+      showCopyToast(t("encoder.copied"));
     });
 
     var input = document.getElementById("enc-input");

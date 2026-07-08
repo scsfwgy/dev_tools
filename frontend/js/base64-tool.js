@@ -67,7 +67,7 @@ var Base64Tool = (function () {
     });
     document.getElementById("b64-copy-out").addEventListener("click", function () {
       var val = document.getElementById("b64-output").value;
-      if (val) { navigator.clipboard.writeText(val); setMsg("✓ " + t("base64.copied"), false); }
+      if (val) { navigator.clipboard.writeText(val); showCopyToast(t("base64.copied")); }
     });
 
     // file mode
@@ -81,7 +81,7 @@ var Base64Tool = (function () {
     });
 
     document.getElementById("b64-copy-file").addEventListener("click", function () {
-      if (fileData) { navigator.clipboard.writeText(fileData.base64); setMsg("✓ " + t("base64.copied"), false); }
+      if (fileData) { navigator.clipboard.writeText(fileData.base64); showCopyToast(t("base64.copied")); }
     });
 
     document.getElementById("b64-download").addEventListener("click", downloadFile);
