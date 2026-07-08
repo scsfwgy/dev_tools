@@ -1,0 +1,25 @@
+name: Tools24
+version: 1.0.0
+description: 在线开发者工具箱
+tools:
+  - id: json
+    name: JSON 格式化
+    enabled: true
+  - id: encoder
+    name: 编码转换
+    enabled: true
+config:
+  theme: dark
+  language: zh-CN
+  features:
+    - formatting
+    - validation
+    - history
+  limits:
+    maxHistory: 20
+    maxFileSize: 1048576
+meta:
+  createdAt: 2024-01-01T00:00:00Z
+  author:
+    name: dev
+    email: dev@example.com
