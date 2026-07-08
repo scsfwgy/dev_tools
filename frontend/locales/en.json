@@ -4,6 +4,7 @@
   },
   "menu": {
     "home": "Home",
+    "device": "Device Info",
     "json": "JSON Tool",
     "format": "Formatter",
     "timestamp": "Timestamp",
@@ -35,7 +36,25 @@
   },
   "welcome": {
     "desc": "Developer Toolbox — select a tool from the sidebar to get started",
-    "quickLinks": "Favorites"
+    "quickLinks": "Favorites",
+    "deviceInfo": "Device Info",
+    "deviceSubtitle": "Inspect your current browser and device environment",
+    "now": "Now",
+    "timestamp": "Timestamp (ms)",
+    "ip": "IP",
+    "platform": "Platform",
+    "language": "Language",
+    "timezone": "Timezone",
+    "browser": "Browser",
+    "os": "OS",
+    "screen": "Screen",
+    "viewport": "Viewport",
+    "cpu": "CPU cores",
+    "memory": "Memory",
+    "colorScheme": "Color scheme",
+    "touch": "Touch",
+    "network": "Network",
+    "copied": "Copied"
   },
   "tool": {
     "comingSoon": "Coming soon..."

@@ -25,6 +25,32 @@ SITE_URL = "https://www.tools24.uk"
 SUPPORTED_LANGS = {"zh", "en"}
 
 TOOLS = {
+    "device": {
+        "zh": {
+            "name": "设备信息工具",
+            "title": "设备信息工具 - 浏览器 平台 时区 IP User-Agent | Tools24",
+            "description": "查看当前设备和浏览器环境信息：毫秒级时间、IP、平台、语言、时区、浏览器、系统、屏幕、视口、CPU、内存、主题、触控和网络。",
+            "keywords": "设备信息,浏览器信息,时区,IP,User-Agent,平台,屏幕分辨率,视口,CPU,内存",
+            "intro": "查看当前浏览器与设备环境详情，包括毫秒级当前时间、IP、平台、语言、时区、浏览器、系统、屏幕、视口、CPU、内存、主题、触控能力与网络信息。",
+            "features": ["毫秒级当前时间", "真实访客 IP（线上）", "平台 / 浏览器 / 系统", "屏幕 / 视口 / DPR", "CPU / 内存 / 主题 / 触控 / 网络"],
+            "faq": [
+                ("为什么本地显示 127.0.0.1？", "因为本地开发是浏览器直接访问本机服务，127.0.0.1 属正常现象。线上部署会优先读取 X-Forwarded-For。"),
+                ("颜色主题显示的是什么？", "显示的是当前站内主题（dark / light），不是操作系统偏好主题。"),
+            ],
+        },
+        "en": {
+            "name": "Device Info",
+            "title": "Device Info - Browser Platform Timezone IP User-Agent | Tools24",
+            "description": "Inspect current device and browser info including millisecond clock, IP, platform, language, timezone, browser, OS, screen, viewport, CPU, memory, theme, touch and network.",
+            "keywords": "device info,browser info,timezone,IP,user agent,platform,screen resolution,viewport,CPU,memory",
+            "intro": "Inspect your current browser and device environment, including a millisecond clock, IP, platform, language, timezone, browser, OS, screen, viewport, CPU, memory, theme, touch capability and network information.",
+            "features": ["Millisecond clock", "Real visitor IP in production", "Platform / browser / OS", "Screen / viewport / DPR", "CPU / memory / theme / touch / network"],
+            "faq": [
+                ("Why does local dev show 127.0.0.1?", "Because your browser is calling your local server directly. In production the app prefers X-Forwarded-For to show the real visitor IP."),
+                ("What does the theme field show?", "It shows the current site theme (dark / light), not the OS preferred color scheme."),
+            ],
+        },
+    },
     "format": {
         "zh": {
             "name": "代码格式化工具",
@@ -563,6 +589,19 @@ def build_schema(lang, tool_id, canonical, meta):
             ],
         }
     return schema
+
+
+def _client_ip():
+    """Best-effort client IP from X-Forwarded-For, fallback remote_addr."""
+    fwd = request.headers.get("X-Forwarded-For", "")
+    if fwd:
+        return fwd.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+@app.route("/api/ip")
+def ip_info():
+    return jsonify({"ip": _client_ip()})
 
 
 def build_seo_content(lang, tool_id, meta):

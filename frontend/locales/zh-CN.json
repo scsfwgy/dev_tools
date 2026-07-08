@@ -4,6 +4,7 @@
   },
   "menu": {
     "home": "首页",
+    "device": "设备信息",
     "json": "JSON 工具",
     "format": "代码格式化",
     "timestamp": "时间戳转换",
@@ -35,7 +36,25 @@
   },
   "welcome": {
     "desc": "开发工具集 — 从左侧菜单选择工具开始使用",
-    "quickLinks": "常用工具"
+    "quickLinks": "常用工具",
+    "deviceInfo": "设备信息",
+    "deviceSubtitle": "查看当前浏览器与设备环境详情",
+    "now": "当前时间",
+    "timestamp": "时间戳(ms)",
+    "ip": "IP",
+    "platform": "平台",
+    "language": "语言",
+    "timezone": "时区",
+    "browser": "浏览器",
+    "os": "系统",
+    "screen": "屏幕",
+    "viewport": "视口",
+    "cpu": "CPU核心",
+    "memory": "内存",
+    "colorScheme": "颜色主题",
+    "touch": "触控能力",
+    "network": "网络信息",
+    "copied": "已复制"
   },
   "tool": {
     "comingSoon": "功能开发中..."

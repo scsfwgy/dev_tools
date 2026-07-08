@@ -9,6 +9,7 @@
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
   let currentTheme = localStorage.getItem(STORAGE_THEME) || "dark";
   let globalStats = {};  // {tool_id: count} from Redis, refreshed on load
+  var _clockTimer = null;
 
   // ── local click tracking ──
   function loadLocalClicks() {
@@ -32,6 +33,7 @@
   // ── 菜单定义 ──
   const menuItems = [
     { id: "home",     icon: "home",       i18n: "menu.home" },
+    { id: "device",   icon: "console",    i18n: "menu.device" },
     { id: "json",     icon: "json",       i18n: "menu.json" },
     { id: "format",   icon: "code",       i18n: "menu.format" },
     { id: "timestamp",icon: "clock",      i18n: "menu.timestamp" },
@@ -56,6 +58,10 @@
       home: {
         title: "Tools24 在线开发者工具箱 - JSON格式化 加解密 QR码 Android参考 Markdown | Tools24",
         description: "Tools24 提供在线 JSON 格式化、编解码转换、加解密(AES/RSA)、二维码生成解析、Markdown 编辑、Android 开发速查、时间戳转换等开发者工具。"
+      },
+      device: {
+        title: "设备信息工具 - 浏览器 平台 时区 IP User-Agent | Tools24",
+        description: "查看当前设备和浏览器环境信息：毫秒级时间、IP、平台、语言、时区、浏览器、系统、屏幕、视口、CPU、内存、主题、触控和网络。"
       },
       json: {
         title: "JSON格式化校验工具 - 在线 JSON Formatter / Viewer | Tools24",
@@ -126,6 +132,10 @@
       home: {
         title: "Tools24 Online Developer Toolbox - JSON Encryption QR Code Android Markdown | Tools24",
         description: "Tools24 provides online developer tools: JSON formatting, codec converter, AES/RSA encryption, QR code generator & parser, Markdown editor, Android dev reference and more."
+      },
+      device: {
+        title: "Device Info - Browser Platform Timezone IP User-Agent | Tools24",
+        description: "Inspect current device and browser info including millisecond clock, IP, platform, language, timezone, browser, OS, screen, viewport, CPU, memory, theme, touch and network."
       },
       json: {
         title: "JSON Formatter and Validator Online | Tools24",
@@ -328,8 +338,126 @@
     return { lang: null, menuId: "home" };
   }
 
+  // ── device info helpers ──
+  // ── global copy toast (top-right, auto-fade) ──
+  function showCopyToast(msg) {
+    var toast = document.createElement("div");
+    toast.className = "copy-toast";
+    toast.textContent = msg || "已复制";
+    document.body.appendChild(toast);
+    setTimeout(function () { toast.classList.add("copy-toast-visible"); }, 10);
+    setTimeout(function () { toast.classList.remove("copy-toast-visible"); }, 1800);
+    setTimeout(function () { toast.remove(); }, 2200);
+  }
+
+  function stopClock() {
+    if (_clockTimer) { clearInterval(_clockTimer); _clockTimer = null; }
+  }
+
+  function formatNow() {
+    var d = new Date();
+    var y = d.getFullYear();
+    var mon = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    var hh = String(d.getHours()).padStart(2, "0");
+    var mm = String(d.getMinutes()).padStart(2, "0");
+    var ss = String(d.getSeconds()).padStart(2, "0");
+    var ms = String(d.getMilliseconds()).padStart(3, "0");
+    return y + "-" + mon + "-" + day + " " + hh + ":" + mm + ":" + ss + " " + ms;
+  }
+
+  function detectBrowser(ua) {
+    ua = ua || navigator.userAgent;
+    var m;
+    if ((m = ua.match(/Edg\/(\S+)/))) return "Edge " + m[1];
+    if ((m = ua.match(/Chrome\/(\S+)/))) return "Chrome " + m[1];
+    if ((m = ua.match(/Firefox\/(\S+)/))) return "Firefox " + m[1];
+    if ((m = ua.match(/Version\/(\S+).*Safari/))) return "Safari " + m[1];
+    return "Unknown";
+  }
+
+  function detectOS(ua) {
+    ua = ua || navigator.userAgent;
+    if (/Windows NT/.test(ua)) return "Windows";
+    if (/Mac OS X/.test(ua) && !/iPhone|iPad/.test(ua)) return "macOS";
+    if (/iPhone|iPad/.test(ua)) return "iOS";
+    if (/Android/.test(ua)) return "Android";
+    if (/Linux/.test(ua)) return "Linux";
+    return "Unknown";
+  }
+
+  function tzOffset() {
+    var mins = -new Date().getTimezoneOffset();
+    var sign = mins >= 0 ? "+" : "-";
+    mins = Math.abs(mins);
+    return "UTC" + sign + String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
+  }
+
+  function fetchClientIp(cb) {
+    fetch("/api/ip").then(function (r) { return r.json(); }).then(function (d) { cb(d.ip || "unknown"); }).catch(function () { cb("unknown"); });
+  }
+
+  function mountDeviceInfo(el) {
+    var ua = navigator.userAgent || "";
+    var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "unknown";
+    var mem = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "n/a";
+    var cpu = navigator.hardwareConcurrency || "n/a";
+    var screenInfo = screen.width + "×" + screen.height + " @" + (window.devicePixelRatio || 1) + "x";
+    var viewportInfo = window.innerWidth + "×" + window.innerHeight;
+    var colorScheme = currentTheme;
+    var touchInfo = navigator.maxTouchPoints ? (navigator.maxTouchPoints + " points") : "no";
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var networkInfo = conn ? [conn.effectiveType, conn.downlink ? conn.downlink + "Mb/s" : null, conn.rtt ? conn.rtt + "ms" : null].filter(Boolean).join(" · ") : "n/a";
+    var html =
+      '<div class="device-info">' +
+      '  <h3 data-i18n="welcome.deviceInfo">设备信息</h3>' +
+      '  <div class="device-grid">' +
+      '    <div><span>' + t("welcome.now") + '</span><strong id="dev-now">' + formatNow() + '</strong></div>' +
+      '    <div><span>' + t("welcome.timestamp") + '</span><strong id="dev-ts">' + Date.now() + '</strong></div>' +
+      '    <div><span>' + t("welcome.ip") + '</span><strong id="dev-ip">…</strong></div>' +
+      '    <div><span>' + t("welcome.platform") + '</span><strong>' + platform + '</strong></div>' +
+      '    <div><span>' + t("welcome.language") + '</span><strong>' + (navigator.language || "n/a") + '</strong></div>' +
+      '    <div><span>' + t("welcome.timezone") + '</span><strong>' + Intl.DateTimeFormat().resolvedOptions().timeZone + ' (' + tzOffset() + ')</strong></div>' +
+      '    <div><span>' + t("welcome.browser") + '</span><strong>' + detectBrowser(ua) + '</strong></div>' +
+      '    <div><span>' + t("welcome.os") + '</span><strong>' + detectOS(ua) + '</strong></div>' +
+      '    <div><span>' + t("welcome.screen") + '</span><strong>' + screenInfo + '</strong></div>' +
+      '    <div><span>' + t("welcome.viewport") + '</span><strong>' + viewportInfo + '</strong></div>' +
+      '    <div><span>' + t("welcome.cpu") + '</span><strong>' + cpu + '</strong></div>' +
+      '    <div><span>' + t("welcome.memory") + '</span><strong>' + mem + '</strong></div>' +
+      '    <div><span>' + t("welcome.colorScheme") + '</span><strong>' + colorScheme + '</strong></div>' +
+      '    <div><span>' + t("welcome.touch") + '</span><strong>' + touchInfo + '</strong></div>' +
+      '    <div><span>' + t("welcome.network") + '</span><strong>' + networkInfo + '</strong></div>' +
+      '  </div>' +
+      '  <details class="device-ua"><summary>User-Agent</summary><pre>' + ua.replace(/</g, "&lt;") + '</pre></details>' +
+      '</div>';
+    el.insertAdjacentHTML("beforeend", html);
+    // click-to-copy on each grid item
+    el.querySelectorAll(".device-grid div").forEach(function (div) {
+      div.addEventListener("click", function () {
+        var strong = this.querySelector("strong");
+        if (!strong || !strong.textContent || strong.textContent === "…") return;
+        var val = strong.textContent;
+        navigator.clipboard.writeText(val).then(function () {
+          showCopyToast(t("welcome.copied"));
+        }).catch(function () {});
+      });
+    });
+    stopClock();
+    _clockTimer = setInterval(function () {
+      var nowEl = document.getElementById("dev-now");
+      if (nowEl) nowEl.textContent = formatNow();
+      var tsEl = document.getElementById("dev-ts");
+      if (tsEl) tsEl.textContent = Date.now();
+    }, 100);
+    fetchClientIp(function (ip) {
+      var ipEl = document.getElementById("dev-ip");
+      if (ipEl) ipEl.textContent = ip;
+    });
+  }
+
   // ── 右侧内容 ──
   function renderContent() {
+    stopClock();
     const el = document.getElementById("content");
     if (activeMenuId === "home") {
       // build personal top tools from local clicks
@@ -359,6 +487,17 @@
       el.querySelectorAll(".welcome-tool-chip").forEach(function (chip) {
         chip.addEventListener("click", function (e) { e.preventDefault(); selectMenu(this.dataset.id); });
       });
+      applyLocale();
+      return;
+    }
+    if (activeMenuId === "device") {
+      el.innerHTML = `
+        <div class="welcome">
+          <div class="welcome-icon">💻</div>
+          <h2 data-i18n="welcome.deviceInfo">设备信息</h2>
+          <p data-i18n="welcome.deviceSubtitle">查看当前浏览器与设备环境详情</p>
+        </div>`;
+      mountDeviceInfo(el);
       applyLocale();
       return;
     }
