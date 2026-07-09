@@ -255,7 +255,8 @@
     "example": "Example",
     "type": "Type",
     "qualifier": "Qualifier",
-    "sequence": "Sequence"
+    "sequence": "Sequence",
+    "copied": "Copied"
   },
   "curl": {
     "builder": "Builder",
@@ -400,7 +401,8 @@
     "desc": "Description",
     "example": "Example",
     "note": "Note",
-    "searchPlaceholder": "Search command, description or example..."
+    "searchPlaceholder": "Search command, description or example...",
+    "copied": "Copied"
   },
   "ai": {
     "claudeCode": "Claude Code",
@@ -442,6 +444,7 @@
     "replaceBranch": "Replace branch:",
     "oldBranchName": "Old name",
     "newBranchName": "New name",
-    "resetBtn": "Reset"
+    "resetBtn": "Reset",
+    "copied": "Copied"
   }
 }

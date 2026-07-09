@@ -255,7 +255,8 @@
     "example": "示例",
     "type": "类型",
     "qualifier": "限定符",
-    "sequence": "调用顺序"
+    "sequence": "调用顺序",
+    "copied": "已复制"
   },
   "curl": {
     "builder": "构建命令",
@@ -400,7 +401,8 @@
     "desc": "说明",
     "example": "示例",
     "note": "备注",
-    "searchPlaceholder": "搜索命令、说明或示例..."
+    "searchPlaceholder": "搜索命令、说明或示例...",
+    "copied": "已复制"
   },
   "ai": {
     "claudeCode": "Claude Code",
@@ -442,6 +444,7 @@
     "replaceBranch": "替换分支：",
     "oldBranchName": "旧分支名",
     "newBranchName": "新分支名",
-    "resetBtn": "重置"
+    "resetBtn": "重置",
+    "copied": "已复制"
   }
 }

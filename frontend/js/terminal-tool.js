@@ -130,7 +130,7 @@ var TerminalTool = (function () {
     h += '</tr></thead><tbody>';
     tab.data.forEach(function (r) {
       var searchData = r.join(" ").toLowerCase();
-      h += '<tr data-search="' + searchData + '">';
+      h += '<tr data-search="' + searchData + '" data-copy="' + escapeHtml(r[2]) + '">';
       h += '<td><code>' + r[0] + '</code></td>';  // command
       h += '<td>' + r[1] + '<br><span class="at-muted">' + r[3] + '</span></td>';  // desc zh + en
       h += '<td><code>' + escapeHtml(r[2]) + '</code></td>';  // example
@@ -160,6 +160,16 @@ var TerminalTool = (function () {
     // tab switch
     document.querySelectorAll(".b64-tab[data-ttab]").forEach(function (btn) {
       btn.addEventListener("click", function () { switchTTab(this.dataset.ttab); });
+    });
+
+    // click row to copy example
+    parent.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return;
+      var tr = e.target.closest("tr[data-copy]");
+      if (!tr) return;
+      navigator.clipboard.writeText(tr.dataset.copy).then(function () {
+        showCopyToast("✓ " + t("terminal.copied"));
+      });
     });
 
     // search binding per tab
