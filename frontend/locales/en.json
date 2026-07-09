@@ -31,6 +31,7 @@
     "themeDark": "Dark",
     "themeLight": "Light",
     "visitCount": "Visits: ",
+    "visitCountUnavailable": "Unavailable",
     "linkGithub": "GitHub",
     "linkWishes": "Wish Wall"
   },

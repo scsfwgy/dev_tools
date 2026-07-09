@@ -9,6 +9,8 @@
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
   let currentTheme = localStorage.getItem(STORAGE_THEME) || "dark";
   let globalStats = {};  // {tool_id: count} from Redis, refreshed on load
+  let visitCountValue = null;
+  let visitCountUnavailable = false;
   var _clockTimer = null;
 
   // ── local click tracking ──
@@ -225,6 +227,87 @@
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
   };
 
+  function localeToPrefix(lang) {
+    return lang === "en" ? "en" : "zh";
+  }
+
+  function prefixToLocale(prefix) {
+    return prefix === "en" ? "en" : "zh-CN";
+  }
+
+  function buildPathForMenu(menuId, lang) {
+    var prefix = localeToPrefix(lang || currentLang);
+    return menuId === "home" ? "/" + prefix + "/" : "/" + prefix + "/tool/" + menuId;
+  }
+
+  function syncLanguageUi(lang) {
+    currentLang = lang;
+    localStorage.setItem(STORAGE_LANG, currentLang);
+    document.documentElement.lang = currentLang;
+    var langSelect = document.getElementById("lang-select");
+    if (langSelect) langSelect.value = currentLang;
+  }
+
+  function renderVisitCount() {
+    var el = document.getElementById("settings-visit-count");
+    if (!el) return;
+    var label = (locale.settings && locale.settings.visitCount) || "访问次数：";
+    if (visitCountValue !== null) {
+      el.textContent = label + formatCount(visitCountValue);
+      return;
+    }
+    if (visitCountUnavailable) {
+      var unavailable = (locale.settings && locale.settings.visitCountUnavailable) || "暂不可用";
+      el.textContent = label + unavailable;
+      return;
+    }
+    el.textContent = label + "⋯";
+  }
+
+  async function loadVisitCount() {
+    try {
+      const res = await fetch("/api/visits");
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      if (!data || typeof data.count !== "number") throw new Error("Invalid visit count payload");
+      visitCountValue = data.count;
+      visitCountUnavailable = false;
+    } catch (err) {
+      visitCountValue = null;
+      visitCountUnavailable = true;
+      console.warn("Failed to load visit count:", err);
+    }
+    renderVisitCount();
+  }
+
+  async function incrementVisitCount() {
+    try {
+      const res = await fetch("/api/visits/increment", { method: "POST" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      if (!data || typeof data.count !== "number") throw new Error("Invalid visit increment payload");
+      visitCountValue = data.count;
+      visitCountUnavailable = false;
+      renderVisitCount();
+      return data.count;
+    } catch (err) {
+      console.warn("Failed to increment visit count:", err);
+      return null;
+    }
+  }
+
+  async function applyLanguageAndRender(lang, options) {
+    options = options || {};
+    await loadLocale(lang);
+    syncLanguageUi(currentLang);
+    if (options.path) {
+      history.replaceState(options.state || history.state, "", options.path);
+    }
+    updateSeo();
+    renderMenu();
+    renderVisitCount();
+  }
+
   // ── locale ──
   async function loadLocale(lang) {
     try {
@@ -232,10 +315,9 @@
       locale = await res.json();
       window.__locale = locale;
       window.__t = t;
-      currentLang = lang;
-      localStorage.setItem(STORAGE_LANG, lang);
-      document.documentElement.lang = lang;
+      syncLanguageUi(lang);
       applyLocale();
+      renderVisitCount();
     } catch (e) {
       console.warn("Failed to load locale:", lang, e);
     }
@@ -284,8 +366,7 @@
         const label = t(item.i18n);
         const hidden = query && !label.toLowerCase().includes(query) ? " hidden" : "";
         const active = item.id === activeMenuId ? " active" : "";
-        var lang = currentLang === "en" ? "en" : "zh";
-        var href = item.id === "home" ? "/" + lang + "/" : "/" + lang + "/tool/" + item.id;
+        var href = buildPathForMenu(item.id, currentLang);
         return `<a class="menu-item${active}${hidden}" href="${href}" data-id="${item.id}" title="${label}">
           ${icons[item.icon]}<span>${label}</span>
         </a>`;
@@ -305,9 +386,7 @@
 
   function selectMenu(id, pushState) {
     if (pushState !== false) {
-      var lang = currentLang === "en" ? "en" : "zh";
-      var path = id === "home" ? "/" + lang + "/" : "/" + lang + "/tool/" + id;
-      history.pushState({ menuId: id }, "", path);
+      history.pushState({ menuId: id }, "", buildPathForMenu(id, currentLang));
     }
     activeMenuId = id;
     // track clicks: local + global (fire-and-forget)
@@ -318,23 +397,23 @@
   }
 
   // 浏览器前进/后退
-  window.addEventListener("popstate", function (e) {
+  window.addEventListener("popstate", function () {
     var routed = routeFromPath();
-    if (routed.lang && routed.lang !== currentLang) {
-      currentLang = routed.lang;
-      localStorage.setItem(STORAGE_LANG, currentLang);
-      document.getElementById("lang-select").value = currentLang;
-    }
     activeMenuId = routed.menuId;
+    if (routed.lang) {
+      applyLanguageAndRender(routed.lang);
+      return;
+    }
     updateSeo();
     renderMenu();
+    renderVisitCount();
   });
 
   function routeFromPath() {
     var m = location.pathname.match(/^\/(zh|en)\/tool\/(\w+)$/);
-    if (m && menuItems.some(function (item) { return item.id === m[2]; })) return { lang: m[1] === "en" ? "en" : "zh-CN", menuId: m[2] };
+    if (m && menuItems.some(function (item) { return item.id === m[2]; })) return { lang: prefixToLocale(m[1]), menuId: m[2] };
     var m2 = location.pathname.match(/^\/(zh|en)\/?$/);
-    if (m2) return { lang: m2[1] === "en" ? "en" : "zh-CN", menuId: "home" };
+    if (m2) return { lang: prefixToLocale(m2[1]), menuId: "home" };
     return { lang: null, menuId: "home" };
   }
 
@@ -471,8 +550,7 @@
           var item = menuItems.find(function (m) { return m.id === entry[0]; });
           if (!item || item.hidden) return;
           var label = t(item.i18n);
-          var lang = currentLang === "en" ? "en" : "zh";
-          var href = "/" + lang + "/tool/" + item.id;
+          var href = buildPathForMenu(item.id, currentLang);
           quickLinks += '<a class="welcome-tool-chip" href="' + href + '" data-id="' + item.id + '">' + icons[item.icon] + '<span>' + label + '</span></a>';
         });
         quickLinks += '</div></div>';
@@ -638,18 +716,13 @@
     });
   }
 
-  document.getElementById("lang-select").addEventListener("change", function () {
+  document.getElementById("lang-select").addEventListener("change", async function () {
     var newLang = this.value;
-    var oldPrefix = currentLang === "en" ? "/en" : "/zh";
-    var newPrefix = newLang === "en" ? "/en" : "/zh";
-    var newPath = location.pathname.replace(/^\/(zh|en)/, newPrefix);
-    // ponytail: if URL doesn't have lang prefix yet, build one
-    if (newPath === location.pathname) {
-      newPath = newPrefix + (location.pathname === "/" ? "/" : location.pathname);
-    }
-    loadLocale(newLang);
-    history.replaceState(history.state, "", newPath);
-    updateSeo();
+    var newPath = buildPathForMenu(activeMenuId, newLang);
+    await applyLanguageAndRender(newLang, {
+      path: newPath,
+      state: { menuId: activeMenuId }
+    });
   });
 
   document.getElementById("theme-select").addEventListener("change", function () {
@@ -661,15 +734,13 @@
 
   // URL 带语言前缀 → 以此为优先
   if (routed.lang) {
-    currentLang = routed.lang;
-    localStorage.setItem(STORAGE_LANG, currentLang);
+    syncLanguageUi(routed.lang);
   }
   activeMenuId = routed.menuId;
 
   // 首页无语言前缀 → 补上
   if (!routed.lang && location.pathname === "/") {
-    var defaultPrefix = currentLang === "en" ? "/en" : "/zh";
-    history.replaceState({ menuId: "home" }, "", defaultPrefix + "/");
+    history.replaceState({ menuId: "home" }, "", buildPathForMenu("home", currentLang));
   }
 
   document.getElementById("lang-select").value = currentLang;
@@ -687,21 +758,11 @@
   Promise.all([localeReady, statsReady]).then(function () {
     renderMenu();
     updateSeo();
-    renderContent();
+    renderVisitCount();
+    incrementVisitCount().finally(function () {
+      loadVisitCount();
+    });
   });
-
-  // 访问计数
-  (function () {
-  var el = document.getElementById("settings-visit-count");
-    if (!el) return;
-    fetch("/api/visits")
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var label = (locale.settings && locale.settings.visitCount) || "访问次数：";
-        el.textContent = label + formatCount(d.count);
-      })
-      .catch(function () {});
-  })();
 
   function formatCount(n) {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";

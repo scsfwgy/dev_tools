@@ -657,12 +657,29 @@ def _write_counter(count):
 
 @app.route("/api/visits")
 def visits():
-    # Shared Redis path — atomic, correct across instances.
+    """Read current visit count without incrementing."""
+    if cache_store.is_enabled():
+        # Try reading from Redis first
+        result = cache_store.cache_get(_VISIT_KEY)
+        if result is not None:
+            try:
+                return jsonify({"count": int(result)})
+            except (TypeError, ValueError):
+                pass
+    # Fall back to file counter
+    with _counter_lock:
+        count = _read_counter()
+    return jsonify({"count": count})
+
+
+@app.route("/api/visits/increment", methods=["POST"])
+def visits_increment():
+    """Increment visit count and return new value."""
     if cache_store.is_enabled():
         count = cache_store.cache_incr(_VISIT_KEY)
         if count is not None:
             return jsonify({"count": count})
-        # Redis transiently unavailable — fall through to the file counter.
+    # Fall back to file counter
     with _counter_lock:
         count = _read_counter() + 1
         _write_counter(count)
