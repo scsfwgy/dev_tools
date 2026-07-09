@@ -1,83 +1,13 @@
-// AI Tool — CC Switch guide, downloads, Claude Code + Codex CLI reference
+// AI Tool — Claude Code + Codex CLI reference
 var AiTool = (function () {
   function t(key) { return (window.__t && window.__t(key)) || key; }
-
-  // ═══ Tab 1: CC Switch 使用指南 ═══
-
-  function buildCcSwitchSection() {
-    var h = '';
-    h += '<div class="ccswitch-guide">';
-
-    // ── 简介 ──
-    h += '<div class="ccswitch-hero">';
-    h += '<h3>🔄 CC Switch — 统一管理你的 AI 编程工具工作流</h3>';
-    h += '<p>' + t("ai.ccintro") + '</p>';
-    h += '<div class="ccswitch-meta">';
-    h += '<a href="https://ccswitch.io" target="_blank" rel="noopener">🌐 官网</a> · ';
-    h += '<a href="https://github.com/farion1231/cc-switch" target="_blank" rel="noopener">⭐ GitHub</a> · ';
-    h += '<span>📥 ' + t("ai.ccPlatforms") + '</span>';
-    h += '</div></div>';
-
-    // ── 它能做什么 ──
-    h += '<h4>' + t("ai.ccWhat") + '</h4>';
-    h += '<ul>';
-    h += '<li><strong>' + t("ai.ccWhat1Title") + '</strong>：' + t("ai.ccWhat1Desc") + '</li>';
-    h += '<li><strong>' + t("ai.ccWhat2Title") + '</strong>：' + t("ai.ccWhat2Desc") + '</li>';
-    h += '<li><strong>' + t("ai.ccWhat3Title") + '</strong>：' + t("ai.ccWhat3Desc") + '</li>';
-    h += '<li><strong>' + t("ai.ccWhat4Title") + '</strong>：' + t("ai.ccWhat4Desc") + '</li>';
-    h += '<li><strong>' + t("ai.ccWhat5Title") + '</strong>：' + t("ai.ccWhat5Desc") + '</li>';
-    h += '</ul>';
-
-    // ── 安装 ──
-    h += '<h4>📥 ' + t("ai.ccInstall") + '</h4>';
-    h += '<ol><li>' + t("ai.ccInstallStep1") + ' <a href="https://github.com/farion1231/cc-switch/releases" target="_blank" rel="noopener">GitHub Releases</a></li>';
-    h += '<li>' + t("ai.ccInstallStep2") + '</li>';
-    h += '<li>' + t("ai.ccInstallStep3") + '</li></ol>';
-
-    // ── 结合 Claude Code ──
-    h += '<h4>🤖 ' + t("ai.ccWithClaude") + '</h4>';
-    h += '<ol>';
-    h += '<li>' + t("ai.ccClaudeStep1") + '</li>';
-    h += '<li>' + t("ai.ccClaudeStep2") + '</li>';
-    h += '<li>' + t("ai.ccClaudeStep3") + '</li>';
-    h += '<li>' + t("ai.ccClaudeStep4") + '</li>';
-    h += '<li>' + t("ai.ccClaudeStep5") + '</li>';
-    h += '</ol>';
-    h += '<p class="at-muted">💡 ' + t("ai.ccClaudeTip") + '</p>';
-
-    // ── 结合 Codex ──
-    h += '<h4>⚡ ' + t("ai.ccWithCodex") + '</h4>';
-    h += '<ol>';
-    h += '<li>' + t("ai.ccCodexStep1") + '</li>';
-    h += '<li>' + t("ai.ccCodexStep2") + '</li>';
-    h += '<li>' + t("ai.ccCodexStep3") + '</li>';
-    h += '<li>' + t("ai.ccCodexStep4") + '</li>';
-    h += '</ol>';
-    h += '<p class="at-muted">💡 ' + t("ai.ccCodexTip") + '</p>';
-
-    h += '</div>';
-    return h;
-  }
-
-  // ═══ Tab 2: 常用下载 ═══
-  // Each: [tool name, description (zh), official url, mirror/note (zh), description (en), mirror/note (en)]
-
-  var DOWNLOADS = [
-    ["Claude Code",   "Anthropic 官方 CLI 编程助手",    "https://docs.anthropic.com/en/docs/claude-code/overview", "npm i -g @anthropic-ai/claude-code", "Anthropic official CLI coding assistant", "npm i -g @anthropic-ai/claude-code"],
-    ["CC Switch",     "Claude Code 国内镜像切换工具",    "https://ccswitch.io",                                     "https://ccswitch.io",                "Claude Code mirror switcher for China",          "https://ccswitch.io"],
-    ["Codex",         "OpenAI 终端编程助手",             "https://github.com/openai/codex",                         "npm i -g @openai/codex",             "OpenAI terminal coding assistant",              "npm i -g @openai/codex"],
-    ["Cursor",        "AI-first 代码编辑器",             "https://cursor.com",                                      "https://cursor.com/downloads",       "AI-first code editor",                          "https://cursor.com/downloads"],
-    ["Windsurf",      "Codeium 推出的 AI IDE",           "https://codeium.com/windsurf",                            "https://codeium.com/windsurf/download", "Codeium AI-powered IDE",                     "https://codeium.com/windsurf/download"],
-    ["GitHub Copilot","VS Code / JetBrains AI 补全插件", "https://github.com/features/copilot",                     "VS Code 扩展商店搜索 Copilot",        "VS Code / JetBrains AI completion extension",    "Search Copilot in VS Code marketplace"],
-    ["aider",         "终端 AI 结对编程工具",            "https://aider.chat",                                      "pip install aider-chat",              "Terminal AI pair programming tool",             "pip install aider-chat"],
-    ["Cline",         "VS Code AI 编程助手插件",         "https://github.com/cline/cline",                          "VS Code 扩展商店搜索 Cline",          "VS Code AI coding assistant extension",          "Search Cline in VS Code marketplace"],
-    ["Continue",      "开源 VS Code / JetBrains AI 插件","https://continue.dev",                                     "VS Code 扩展商店搜索 Continue",       "Open-source VS Code / JetBrains AI extension",   "Search Continue in VS Code marketplace"],
-  ];
 
   // ═══ Claude Code commands ═══
   // Each: [command/flag, description (zh), example, description (en), note]
 
   var CLAUDE_CMDS = [
+    // ── 官网 ──
+    ["🌐 官网", "Anthropic 官方文档", "https://docs.anthropic.com/en/docs/claude-code/overview", "Claude Code 官方使用指南", "Anthropic official docs", "Claude Code official user guide"],
     // ── 核心高频（放首位）──
     ["claude",                "启动交互会话", "claude", "Start interactive session", "在项目根目录运行，自动读取 CLAUDE.md 获取上下文"],
     ["--dangerously-skip-permissions", "跳过所有权限提示", "claude --dangerously-skip-permissions", "Skip ALL permission prompts", "⚠️ 跳过所有确认弹窗，脚本/CI 必需；仅在信任项目使用"],
@@ -96,9 +26,33 @@ var AiTool = (function () {
     ["--verbose / --debug",   "详细/调试输出", "claude --debug -p 'what is going on'", "Verbose debug logging", "排查问题时开启，输出完整 API 交互日志"],
     ["--output-format json",  "JSON 结构化输出", "claude -p 'list files' --output-format json", "Structured JSON output", "默认 text；json 适合程序解析"],
     ["--allowedTools",        "限制可用工具", "claude --allowedTools 'Bash,Read'", "Restrict tool access", "安全场景：只允许只读工具"],
+
+    // ── 交互会话斜杠命令 ──
+    ["/clear",                "清空会话历史", "/clear", "Clear conversation history", "重置上下文窗口，释放 token，话题切换时使用"],
+    ["/compact",              "压缩/摘要会话", "/compact", "Compact / summarize conversation", "自动摘要历史消息，保留关键上下文，大幅降低 token 消耗"],
+    ["/rename",               "重命名会话", "/rename 'fix login bug'", "Rename current conversation", "给会话起个有意义的名字，方便后续 resume 时查找"],
+    ["/model",                "切换模型", "/model opus", "Switch model mid-session", "opus / sonnet / haiku，无需重启会话"],
+    ["/cost",                 "查看用量与费用", "/cost", "Show token usage and cost", "显示当前会话的 token 消耗和预估费用"],
+    ["/init",                 "初始化项目 CLAUDE.md", "/init", "Generate CLAUDE.md for project", "分析项目结构后生成项目配置文件"],
+    ["/add-dir",              "添加目录到工作区", "/add-dir ~/other-project", "Add directory to workspace", "将外部目录加入当前工作区，跨项目协作"],
+    ["/memory",               "管理记忆", "/memory", "Open memory manager", "查看和编辑持久化记忆条目"],
+    ["/export",               "导出会话", "/export", "Export conversation to file", "导出完整会话记录，支持多种格式"],
+    ["/review",               "代码审查 PR", "/review", "Review a GitHub pull request", "在 PR 页面触发完整代码审查流程"],
+    ["/upgrade",              "升级 Claude Code", "/upgrade", "Upgrade Claude Code CLI", "检测并安装最新版本"],
+    ["/workflows",            "管理工作流", "/workflows", "Manage workflows & agents", "查看运行中的后台代理和工作流"],
+    ["/statusline",           "配置状态栏", "/statusline", "Configure status line", "自定义终端状态栏显示内容和样式"],
+    ["/todos",                "任务列表", "/todos", "Manage task list", "查看和管理当前会话的任务清单"],
+    ["/config",               "配置设置", "/config", "Configure theme, model, etc.", "交互式修改主题、默认模型、权限等配置"],
+    ["/doctor",               "环境诊断", "/doctor", "Diagnose environment", "检查 Node、git、网络、API 认证等状态"],
+    ["/pr-comments",          "PR 评论", "/pr-comments", "Send review as PR comments", "将代码审查结果以行级评论发到 GitHub PR"],
+    ["/terminal-setup",       "终端设置", "/terminal-setup", "Configure terminal integration", "设置终端快捷键、自动补全等"],
   ];
 
   var CODEX_CMDS = [
+    // ── 官网 ──
+    ["🌐 官网", "OpenAI Codex 官方", "https://chatgpt.com/zh-Hans-CN/codex/", "Codex 产品主页", "OpenAI Codex official", "Codex product page"],
+    ["📦 GitHub", "Codex 开源仓库", "https://github.com/openai/codex", "Issues / Releases / Discussions", "Codex open-source repo", "Issues / Releases / Discussions"],
+    // ── CLI 命令 ──
     ["codex",                 "启动交互会话", "codex", "Start Codex session", "OpenAI 的终端编程助手；需 OPENAI_API_KEY 环境变量"],
     ["codex exec \"...\"",    "执行指定任务", "codex exec 'add rate limiting to the API'", "Execute a task", "自动规划并执行多步骤，直接修改代码"],
     // ── 权限与安全 ──
@@ -118,34 +72,39 @@ var AiTool = (function () {
     ["codex review <file>",   "代码审查", "codex review src/auth.py", "Review code for bugs and style", "类似 PR review，逐行给优化建议"],
     ["codex test <file>",     "自动生成测试", "codex test src/auth.py", "Auto-generate test cases", "分析代码逻辑后生成测试文件"],
     ["codex plan",            "任务规划（仅设计）", "codex plan 'build a REST API'", "Plan mode—no code changes", "先出设计方案，用户确认后 exec 再实现"],
+
+    // ── 交互会话斜杠命令 ──
+    ["/model",                "切换模型", "/model", "Switch model mid-session", "列出可用模型并切换，无需重启会话"],
+    ["/init",                 "初始化项目 AGENTS.md", "/init", "Generate AGENTS.md for project", "分析项目结构生成配置，等价 Claude Code /init"],
+    ["/compact",              "压缩上下文", "/compact", "Compact conversation context", "自动摘要历史消息，降低 token 消耗"],
+    ["/clear",                "清空上下文", "/clear", "Clear conversation context", "重置上下文窗口，话题切换时使用"],
+    ["/rename",               "重命名会话", "/rename 'API refactor'", "Rename current session", "给会话起名，方便后续 resume 查找"],
+    ["/new",                  "新建会话", "/new", "Start a new session", "保留当前会话，另开一个新的"],
+    ["/resume",               "恢复会话", "/resume", "Resume a previous session", "显示历史会话列表供选择恢复"],
+    ["/review",               "代码审查", "/review", "Review code changes", "审查当前 diff，给出行级优化建议"],
+    ["/diff",                 "查看变更", "/diff", "Show current diff", "显示本次会话所有文件变更摘要"],
+    ["/usage",                "查看用量", "/usage", "Show token usage and cost", "显示当前会话 token 消耗和预估费用"],
+    ["/status",               "会话状态", "/status", "Show session status", "查看当前会话模型、token 用量、运行时长"],
+    ["/plan",                 "规划模式", "/plan 'build REST API'", "Enter plan-only mode", "先设计方案不写代码，确认后再执行"],
+    ["/goal",                 "设定目标", "/goal 'refactor auth module'", "Set session goal", "为会话设定高层次目标，引导 agent 工作方向"],
+    ["/agent",                "生成子代理", "/agent 'write tests'", "Spawn a sub-agent", "派生子代理处理独立任务，并行工作"],
+    ["/stop",                 "停止代理", "/stop", "Stop running agent", "终止当前正在执行的代理任务"],
+    ["/permissions",          "权限管理", "/permissions", "Manage tool permissions", "查看和修改工具权限（allow/deny/ask）"],
+    ["/skills",               "管理技能", "/skills", "Manage skills", "查看已安装的技能列表，启用/禁用"],
+    ["/memories",             "管理记忆", "/memories", "Manage memories", "查看和编辑 Codex 持久化记忆"],
+    ["/mcp",                  "MCP 服务器", "/mcp", "Manage MCP servers", "添加、移除、查看 MCP 服务器配置"],
+    ["/sandbox-add-read-dir", "添加沙箱读取目录", "/sandbox-add-read-dir ~/lib", "Add read dir to sandbox", "将外部目录加入沙箱只读路径"],
+    ["/theme",                "切换主题", "/theme", "Change UI theme", "切换 TUI 配色方案"],
+    ["/statusline",           "配置状态栏", "/statusline", "Configure status line", "自定义终端状态栏显示内容"],
+    ["/quit",                 "退出会话", "/quit", "Quit Codex session", "等价 /exit，退出当前交互会话"],
   ];
 
   var CLI_TABS = [
-    { id: "claude",  i18n: "ai.claudeCode", data: CLAUDE_CMDS, cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "codex",   i18n: "ai.codex",      data: CODEX_CMDS,  cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
+    { id: "claude", i18n: "ai.claudeCode", data: CLAUDE_CMDS, cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
+    { id: "codex",  i18n: "ai.codex",      data: CODEX_CMDS,  cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
   ];
 
   // ═══ Build ═══
-
-  function buildDownloadSection() {
-    var h = '';
-    h += '<div class="at-table-wrap"><table class="at-table"><thead><tr>';
-    h += '<th>' + t("ai.dlTool") + '</th>';
-    h += '<th>' + t("ai.dlDesc") + '</th>';
-    h += '<th>' + t("ai.dlOfficial") + '</th>';
-    h += '<th>' + t("ai.dlMirror") + '</th>';
-    h += '</tr></thead><tbody>';
-    DOWNLOADS.forEach(function (r) {
-      h += '<tr>';
-      h += '<td><strong>' + escapeHtml(r[0]) + '</strong></td>';
-      h += '<td>' + escapeHtml(r[1]) + '<br><span class="at-muted">' + escapeHtml(r[4]) + '</span></td>';
-      h += '<td><a href="' + escapeHtml(r[2]) + '" target="_blank" rel="noopener">' + escapeHtml(r[2]) + '</a></td>';
-      h += '<td class="at-mono">' + escapeHtml(r[3]) + '<br><span class="at-muted">' + escapeHtml(r[5]) + '</span></td>';
-      h += '</tr>';
-    });
-    h += '</tbody></table></div>';
-    return h;
-  }
 
   function buildCliSection(tab) {
     var h = '';
@@ -155,10 +114,16 @@ var AiTool = (function () {
     h += '</tr></thead><tbody>';
     tab.data.forEach(function (r) {
       var searchData = r.join(" ").toLowerCase();
-      h += '<tr data-search="' + searchData + '">';
+      var example = r[2];
+      h += '<tr data-search="' + searchData + '" data-copy="' + escapeHtml(example) + '">';
       h += '<td><code>' + r[0] + '</code></td>';
       h += '<td>' + r[1] + '<br><span class="at-muted">' + r[3] + '</span></td>';
-      h += '<td><code>' + escapeHtml(r[2]) + '</code></td>';
+      // example column: URL → clickable link
+      if (/^https?:\/\//.test(example)) {
+        h += '<td><a href="' + escapeHtml(example) + '" target="_blank" rel="noopener" class="at-url">' + escapeHtml(example) + '</a></td>';
+      } else {
+        h += '<td><code>' + escapeHtml(example) + '</code></td>';
+      }
       h += '<td class="at-muted">' + r[4] + '</td>';
       h += '</tr>';
     });
@@ -171,21 +136,12 @@ var AiTool = (function () {
   function init(parent) {
     var h = '<div class="b64-tool">';
     h += '<div class="b64-tabs">';
-    // CC Switch 指南 tab first
-    h += '<button class="b64-tab active" data-aitab="ccswitch">' + t("ai.ccSwitch") + '</button>';
-    // 常用下载 tab second
-    h += '<button class="b64-tab" data-aitab="downloads">' + t("ai.downloads") + '</button>';
-    CLI_TABS.forEach(function (tab) {
-      h += '<button class="b64-tab" data-aitab="' + tab.id + '">' + t(tab.i18n) + '</button>';
+    CLI_TABS.forEach(function (tab, i) {
+      h += '<button class="b64-tab' + (i === 0 ? ' active' : '') + '" data-aitab="' + tab.id + '">' + t(tab.i18n) + '</button>';
     });
     h += '</div>';
-    // CC Switch section (shown by default)
-    h += '<div id="aitab-ccswitch" class="android-section">' + buildCcSwitchSection() + '</div>';
-    // download section (hidden by default)
-    h += '<div id="aitab-downloads" class="android-section hidden">' + buildDownloadSection() + '</div>';
-    // cli sections (hidden by default)
-    CLI_TABS.forEach(function (tab) {
-      h += '<div id="aitab-' + tab.id + '" class="android-section hidden">' + buildCliSection(tab) + '</div>';
+    CLI_TABS.forEach(function (tab, i) {
+      h += '<div id="aitab-' + tab.id + '" class="android-section' + (i !== 0 ? ' hidden' : '') + '">' + buildCliSection(tab) + '</div>';
     });
     h += '</div>';
 
@@ -194,6 +150,16 @@ var AiTool = (function () {
     // tab switch
     document.querySelectorAll(".b64-tab[data-aitab]").forEach(function (btn) {
       btn.addEventListener("click", function () { switchAiTab(this.dataset.aitab); });
+    });
+
+    // click row to copy example (delegation, skip <a> clicks)
+    parent.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return;
+      var tr = e.target.closest("tr[data-copy]");
+      if (!tr) return;
+      navigator.clipboard.writeText(tr.dataset.copy).then(function () {
+        showCopyToast("✓ " + t("ai.copied"));
+      });
     });
 
     // search binding per CLI tab
