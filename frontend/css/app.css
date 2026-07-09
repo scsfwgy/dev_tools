@@ -1406,6 +1406,19 @@ body {
 }
 
 .at-muted { color: var(--text-muted); font-size: 0.8rem; }
+.at-mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82rem; }
+
+/* === CC Switch 指南 === */
+.ccswitch-guide { line-height: 1.75; }
+.ccswitch-guide h3 { font-size: 1.15rem; margin: 0 0 6px; color: var(--text); }
+.ccswitch-guide h4 { font-size: 1rem; margin: 20px 0 8px; color: var(--text); padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.ccswitch-guide p { margin: 0 0 8px; color: var(--text-secondary); }
+.ccswitch-guide ul, .ccswitch-guide ol { margin: 0 0 12px; padding-left: 20px; color: var(--text-secondary); }
+.ccswitch-guide li { margin-bottom: 4px; }
+.ccswitch-guide a { color: var(--accent); }
+.ccswitch-hero { padding: 8px 0 4px; }
+.ccswitch-meta { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+.ccswitch-meta a { color: var(--accent); }
 
 /* === Git 工具 === */
 /* ponytail: reuses .at-table, .at-search-wrap, .android-section, .b64-tabs from Android tool */

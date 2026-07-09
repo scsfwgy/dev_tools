@@ -1,8 +1,80 @@
-// AI Tool — CLI commands reference for AI coding assistants (Claude Code, Codex, Copilot CLI, etc.)
+// AI Tool — CC Switch guide, downloads, Claude Code + Codex CLI reference
 var AiTool = (function () {
   function t(key) { return (window.__t && window.__t(key)) || key; }
 
-  // ═══ Per-tool command data ═══
+  // ═══ Tab 1: CC Switch 使用指南 ═══
+
+  function buildCcSwitchSection() {
+    var h = '';
+    h += '<div class="ccswitch-guide">';
+
+    // ── 简介 ──
+    h += '<div class="ccswitch-hero">';
+    h += '<h3>🔄 CC Switch — 统一管理你的 AI 编程工具工作流</h3>';
+    h += '<p>' + t("ai.ccintro") + '</p>';
+    h += '<div class="ccswitch-meta">';
+    h += '<a href="https://ccswitch.io" target="_blank" rel="noopener">🌐 官网</a> · ';
+    h += '<a href="https://github.com/farion1231/cc-switch" target="_blank" rel="noopener">⭐ GitHub</a> · ';
+    h += '<span>📥 ' + t("ai.ccPlatforms") + '</span>';
+    h += '</div></div>';
+
+    // ── 它能做什么 ──
+    h += '<h4>' + t("ai.ccWhat") + '</h4>';
+    h += '<ul>';
+    h += '<li><strong>' + t("ai.ccWhat1Title") + '</strong>：' + t("ai.ccWhat1Desc") + '</li>';
+    h += '<li><strong>' + t("ai.ccWhat2Title") + '</strong>：' + t("ai.ccWhat2Desc") + '</li>';
+    h += '<li><strong>' + t("ai.ccWhat3Title") + '</strong>：' + t("ai.ccWhat3Desc") + '</li>';
+    h += '<li><strong>' + t("ai.ccWhat4Title") + '</strong>：' + t("ai.ccWhat4Desc") + '</li>';
+    h += '<li><strong>' + t("ai.ccWhat5Title") + '</strong>：' + t("ai.ccWhat5Desc") + '</li>';
+    h += '</ul>';
+
+    // ── 安装 ──
+    h += '<h4>📥 ' + t("ai.ccInstall") + '</h4>';
+    h += '<ol><li>' + t("ai.ccInstallStep1") + ' <a href="https://github.com/farion1231/cc-switch/releases" target="_blank" rel="noopener">GitHub Releases</a></li>';
+    h += '<li>' + t("ai.ccInstallStep2") + '</li>';
+    h += '<li>' + t("ai.ccInstallStep3") + '</li></ol>';
+
+    // ── 结合 Claude Code ──
+    h += '<h4>🤖 ' + t("ai.ccWithClaude") + '</h4>';
+    h += '<ol>';
+    h += '<li>' + t("ai.ccClaudeStep1") + '</li>';
+    h += '<li>' + t("ai.ccClaudeStep2") + '</li>';
+    h += '<li>' + t("ai.ccClaudeStep3") + '</li>';
+    h += '<li>' + t("ai.ccClaudeStep4") + '</li>';
+    h += '<li>' + t("ai.ccClaudeStep5") + '</li>';
+    h += '</ol>';
+    h += '<p class="at-muted">💡 ' + t("ai.ccClaudeTip") + '</p>';
+
+    // ── 结合 Codex ──
+    h += '<h4>⚡ ' + t("ai.ccWithCodex") + '</h4>';
+    h += '<ol>';
+    h += '<li>' + t("ai.ccCodexStep1") + '</li>';
+    h += '<li>' + t("ai.ccCodexStep2") + '</li>';
+    h += '<li>' + t("ai.ccCodexStep3") + '</li>';
+    h += '<li>' + t("ai.ccCodexStep4") + '</li>';
+    h += '</ol>';
+    h += '<p class="at-muted">💡 ' + t("ai.ccCodexTip") + '</p>';
+
+    h += '</div>';
+    return h;
+  }
+
+  // ═══ Tab 2: 常用下载 ═══
+  // Each: [tool name, description (zh), official url, mirror/note (zh), description (en), mirror/note (en)]
+
+  var DOWNLOADS = [
+    ["Claude Code",   "Anthropic 官方 CLI 编程助手",    "https://docs.anthropic.com/en/docs/claude-code/overview", "npm i -g @anthropic-ai/claude-code", "Anthropic official CLI coding assistant", "npm i -g @anthropic-ai/claude-code"],
+    ["CC Switch",     "Claude Code 国内镜像切换工具",    "https://ccswitch.io",                                     "https://ccswitch.io",                "Claude Code mirror switcher for China",          "https://ccswitch.io"],
+    ["Codex",         "OpenAI 终端编程助手",             "https://github.com/openai/codex",                         "npm i -g @openai/codex",             "OpenAI terminal coding assistant",              "npm i -g @openai/codex"],
+    ["Cursor",        "AI-first 代码编辑器",             "https://cursor.com",                                      "https://cursor.com/downloads",       "AI-first code editor",                          "https://cursor.com/downloads"],
+    ["Windsurf",      "Codeium 推出的 AI IDE",           "https://codeium.com/windsurf",                            "https://codeium.com/windsurf/download", "Codeium AI-powered IDE",                     "https://codeium.com/windsurf/download"],
+    ["GitHub Copilot","VS Code / JetBrains AI 补全插件", "https://github.com/features/copilot",                     "VS Code 扩展商店搜索 Copilot",        "VS Code / JetBrains AI completion extension",    "Search Copilot in VS Code marketplace"],
+    ["aider",         "终端 AI 结对编程工具",            "https://aider.chat",                                      "pip install aider-chat",              "Terminal AI pair programming tool",             "pip install aider-chat"],
+    ["Cline",         "VS Code AI 编程助手插件",         "https://github.com/cline/cline",                          "VS Code 扩展商店搜索 Cline",          "VS Code AI coding assistant extension",          "Search Cline in VS Code marketplace"],
+    ["Continue",      "开源 VS Code / JetBrains AI 插件","https://continue.dev",                                     "VS Code 扩展商店搜索 Continue",       "Open-source VS Code / JetBrains AI extension",   "Search Continue in VS Code marketplace"],
+  ];
+
+  // ═══ Claude Code commands ═══
   // Each: [command/flag, description (zh), example, description (en), note]
 
   var CLAUDE_CMDS = [
@@ -48,51 +120,34 @@ var AiTool = (function () {
     ["codex plan",            "任务规划（仅设计）", "codex plan 'build a REST API'", "Plan mode—no code changes", "先出设计方案，用户确认后 exec 再实现"],
   ];
 
-  var COPILOT_CMDS = [
-    ["gh copilot suggest \"...\"",  "AI 命令建议", "gh copilot suggest 'find large files over 1GB'", "Get AI shell command suggestion", "需安装 GitHub CLI + gh auth login 认证"],
-    ["gh copilot explain \"...\"",  "解释命令含义", "gh copilot explain 'tar -czvf archive.tar.gz dir/'", "Explain a shell command", "对陌生/复杂命令快速理解每个参数"],
-    ["gh copilot alias",            "命令别名建议", "gh copilot alias 'git reset --soft HEAD~1'", "Suggest shorter alias", "为长命令生成可记的短别名"],
-    ["gh copilot debug",            "调试命令错误", "gh copilot debug 'permission denied'", "Debug command errors", "粘贴报错信息，Copilot 分析原因并给出修复建议"],
-  ];
-
-  var CURSOR_CMDS = [
-    ["cursor <path>",         "用 Cursor 打开项目", "cursor .", "Open project in Cursor IDE", "等价于 VS Code 的 code . 命令"],
-    ["cursor --wait <file>",  "等待关闭后继续", "cursor --wait README.md", "Wait for file close then exit", "适合做 git editor：git config --global core.editor 'cursor --wait'"],
-    ["cursor --install-extension <id>", "安装扩展", "cursor --install-extension ms-python.python", "Install VS Code extension", "Cursor 兼容所有 VS Code 扩展"],
-    ["cursor --disable-extensions", "无扩展启动", "cursor --disable-extensions .", "Start without extensions", "排查扩展冲突问题时使用"],
-  ];
-
-  var AIDER_CMDS = [
-    ["aider",                 "启动会话", "aider --model claude-sonnet-5", "Start AI coding session with LLM", "支持 Claude/GPT/DeepSeek 等多种模型"],
-    ["aider --architect",     "架构师模式", "aider --architect --model opus", "Architect + Editor dual model", "Opus 设计架构 → Sonnet 写代码，分工协作"],
-    ["aider --edit-format diff", "生成标准 patch", "aider --edit-format diff", "Use unified diff format for edits", "更可控的编辑方式，适合 code review 流程"],
-    ["aider --map-tokens <n>","控制上下文大小", "aider --map-tokens 8000", "Limit repo map token size", "大项目调小此值避免超 token 限制"],
-    ["aider --watch",         "文件变更自动触发", "aider --watch", "Auto-act on file changes", "配合 lint/test watch 模式，文件变更即触发 AI 优化"],
-    ["aider --voice",         "语音输入模式", "aider --voice", "Voice input mode", "说话代替打字，需要系统麦克风权限"],
-    ["/add <file>",           "添加文件到上下文", "/add src/models.py", "Add file to chat context", "把非 git-tracked 文件加入 AI 上下文"],
-    ["/clear",                "清空对话历史", "/clear", "Clear chat history", "释放 token 预算，适合话题切换"],
-    ["/run <cmd>",            "执行命令并反馈", "/run pytest", "Run shell command, feed output to AI", "测试失败 → AI 看到输出 → 自动修复"],
-  ];
-
-  var WINDSURF_CMDS = [
-    ["windsurf",              "启动 Windsurf IDE", "windsurf .", "Launch Windsurf IDE", "基于 VS Code 的 AI IDE，内置 Cascade AI"],
-    ["Cascade (Cmd+L)",       "AI 对话面板", "Cmd+L 输入 'optimize this function'", "Open AI chat panel", "选中代码后提问，AI 理解上下文"],
-    ["Cascade (Cmd+I)",       "行内代码生成", "Cmd+I 写注释 → AI 生成实现", "Inline code generation", "写需求注释，AI 直接替换为代码实现"],
-    ["Cascade /fix",          "自动修复错误", "Cascade /fix → 自动修 lint/type 错误", "Auto-fix diagnostics", "一键修复当前文件所有诊断问题"],
-  ];
-
-  var TABS = [
-    { id: "claude",  i18n: "ai.claudeCode",    data: CLAUDE_CMDS,   cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "codex",   i18n: "ai.codex",         data: CODEX_CMDS,    cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "copilot", i18n: "ai.copilotCli",    data: COPILOT_CMDS,  cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "cursor",  i18n: "ai.cursor",        data: CURSOR_CMDS,   cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "aider",   i18n: "ai.aider",         data: AIDER_CMDS,    cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "windsurf",i18n: "ai.windsurf",      data: WINDSURF_CMDS, cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
+  var CLI_TABS = [
+    { id: "claude",  i18n: "ai.claudeCode", data: CLAUDE_CMDS, cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
+    { id: "codex",   i18n: "ai.codex",      data: CODEX_CMDS,  cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
   ];
 
   // ═══ Build ═══
 
-  function buildSection(tab) {
+  function buildDownloadSection() {
+    var h = '';
+    h += '<div class="at-table-wrap"><table class="at-table"><thead><tr>';
+    h += '<th>' + t("ai.dlTool") + '</th>';
+    h += '<th>' + t("ai.dlDesc") + '</th>';
+    h += '<th>' + t("ai.dlOfficial") + '</th>';
+    h += '<th>' + t("ai.dlMirror") + '</th>';
+    h += '</tr></thead><tbody>';
+    DOWNLOADS.forEach(function (r) {
+      h += '<tr>';
+      h += '<td><strong>' + escapeHtml(r[0]) + '</strong></td>';
+      h += '<td>' + escapeHtml(r[1]) + '<br><span class="at-muted">' + escapeHtml(r[4]) + '</span></td>';
+      h += '<td><a href="' + escapeHtml(r[2]) + '" target="_blank" rel="noopener">' + escapeHtml(r[2]) + '</a></td>';
+      h += '<td class="at-mono">' + escapeHtml(r[3]) + '<br><span class="at-muted">' + escapeHtml(r[5]) + '</span></td>';
+      h += '</tr>';
+    });
+    h += '</tbody></table></div>';
+    return h;
+  }
+
+  function buildCliSection(tab) {
     var h = '';
     h += '<div class="at-search-wrap"><input id="aisearch-' + tab.id + '" class="search-input" type="text" placeholder="' + t("ai.searchPlaceholder") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr>';
@@ -116,12 +171,21 @@ var AiTool = (function () {
   function init(parent) {
     var h = '<div class="b64-tool">';
     h += '<div class="b64-tabs">';
-    TABS.forEach(function (tab, i) {
-      h += '<button class="b64-tab' + (i === 0 ? ' active' : '') + '" data-aitab="' + tab.id + '">' + t(tab.i18n) + '</button>';
+    // CC Switch 指南 tab first
+    h += '<button class="b64-tab active" data-aitab="ccswitch">' + t("ai.ccSwitch") + '</button>';
+    // 常用下载 tab second
+    h += '<button class="b64-tab" data-aitab="downloads">' + t("ai.downloads") + '</button>';
+    CLI_TABS.forEach(function (tab) {
+      h += '<button class="b64-tab" data-aitab="' + tab.id + '">' + t(tab.i18n) + '</button>';
     });
     h += '</div>';
-    TABS.forEach(function (tab, i) {
-      h += '<div id="aitab-' + tab.id + '" class="android-section' + (i === 0 ? '' : ' hidden') + '">' + buildSection(tab) + '</div>';
+    // CC Switch section (shown by default)
+    h += '<div id="aitab-ccswitch" class="android-section">' + buildCcSwitchSection() + '</div>';
+    // download section (hidden by default)
+    h += '<div id="aitab-downloads" class="android-section hidden">' + buildDownloadSection() + '</div>';
+    // cli sections (hidden by default)
+    CLI_TABS.forEach(function (tab) {
+      h += '<div id="aitab-' + tab.id + '" class="android-section hidden">' + buildCliSection(tab) + '</div>';
     });
     h += '</div>';
 
@@ -132,8 +196,8 @@ var AiTool = (function () {
       btn.addEventListener("click", function () { switchAiTab(this.dataset.aitab); });
     });
 
-    // search binding per tab
-    TABS.forEach(function (tab) {
+    // search binding per CLI tab
+    CLI_TABS.forEach(function (tab) {
       var input = document.getElementById("aisearch-" + tab.id);
       if (!input) return;
       input.addEventListener("input", function () {
@@ -149,7 +213,7 @@ var AiTool = (function () {
     document.querySelectorAll(".b64-tab[data-aitab]").forEach(function (b) {
       b.className = "b64-tab" + (b.dataset.aitab === name ? " active" : "");
     });
-    document.querySelectorAll("#aitab-" + name + ", .android-section[id^='aitab-']").forEach(function (s) {
+    document.querySelectorAll("[id^='aitab-']").forEach(function (s) {
       s.classList.toggle("hidden", s.id !== "aitab-" + name);
     });
   }
