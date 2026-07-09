@@ -130,10 +130,10 @@ var GitTool = (function () {
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("git.command") + '</th><th>' + t("git.description") + '</th><th>' + t("git.example") + '</th><th>' + t("git.note") + '</th></tr></thead><tbody id="gtbody-' + tabId + '">';
     data.forEach(function (r, idx) {
       var searchData = r.join(" ").toLowerCase();
-      h += '<tr data-idx="' + idx + '" data-search="' + searchData + '" data-copy="' + escapeHtml(r[2]) + '">';
+      h += '<tr data-idx="' + idx + '" data-search="' + searchData + '">';
       h += '<td><code>' + r[0] + '</code></td>';
       h += '<td>' + r[1] + '<br><span class="at-muted">' + r[4] + '</span></td>';
-      h += '<td><code class="gt-example">' + escapeHtml(r[2]) + '</code></td>';
+      h += '<td data-copy="' + escapeHtml(r[2]) + '"><code class="gt-example">' + escapeHtml(r[2]) + '</code></td>';
       h += '<td class="at-muted">' + r[3] + '</td>';
       h += '</tr>';
     });
@@ -233,9 +233,9 @@ var GitTool = (function () {
     // click row to copy example
     parent.addEventListener("click", function (e) {
       if (e.target.closest("a")) return;
-      var tr = e.target.closest("tr[data-copy]");
-      if (!tr) return;
-      navigator.clipboard.writeText(tr.dataset.copy).then(function () {
+      var el = e.target.closest("[data-copy]");
+      if (!el) return;
+      navigator.clipboard.writeText(el.dataset.copy).then(function () {
         showCopyToast("✓ " + t("git.copied"));
       });
     });

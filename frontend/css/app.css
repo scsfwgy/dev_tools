@@ -1409,8 +1409,8 @@ body {
 .at-mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82rem; }
 .at-url { color: var(--accent); word-break: break-all; }
 .at-url:hover { text-decoration: underline; }
-tr[data-copy] { cursor: pointer; }
-tr[data-copy]:hover { background: var(--hover); }
+[data-copy] { cursor: pointer; }
+[data-copy]:hover { background: var(--hover); }
 
 /* === Git 工具 === */
 /* ponytail: reuses .at-table, .at-search-wrap, .android-section, .b64-tabs from Android tool */

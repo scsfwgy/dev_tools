@@ -115,14 +115,14 @@ var AiTool = (function () {
     tab.data.forEach(function (r) {
       var searchData = r.join(" ").toLowerCase();
       var example = r[2];
-      h += '<tr data-search="' + searchData + '" data-copy="' + escapeHtml(example) + '">';
+      h += '<tr data-search="' + searchData + '">';
       h += '<td><code>' + r[0] + '</code></td>';
       h += '<td>' + r[1] + '<br><span class="at-muted">' + r[3] + '</span></td>';
-      // example column: URL → clickable link
+      // example column: URL → clickable link, else → copy on click
       if (/^https?:\/\//.test(example)) {
         h += '<td><a href="' + escapeHtml(example) + '" target="_blank" rel="noopener" class="at-url">' + escapeHtml(example) + '</a></td>';
       } else {
-        h += '<td><code>' + escapeHtml(example) + '</code></td>';
+        h += '<td data-copy="' + escapeHtml(example) + '"><code>' + escapeHtml(example) + '</code></td>';
       }
       h += '<td class="at-muted">' + r[4] + '</td>';
       h += '</tr>';
@@ -155,9 +155,9 @@ var AiTool = (function () {
     // click row to copy example (delegation, skip <a> clicks)
     parent.addEventListener("click", function (e) {
       if (e.target.closest("a")) return;
-      var tr = e.target.closest("tr[data-copy]");
-      if (!tr) return;
-      navigator.clipboard.writeText(tr.dataset.copy).then(function () {
+      var el = e.target.closest("[data-copy]");
+      if (!el) return;
+      navigator.clipboard.writeText(el.dataset.copy).then(function () {
         showCopyToast("✓ " + t("ai.copied"));
       });
     });

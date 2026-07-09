@@ -130,10 +130,10 @@ var TerminalTool = (function () {
     h += '</tr></thead><tbody>';
     tab.data.forEach(function (r) {
       var searchData = r.join(" ").toLowerCase();
-      h += '<tr data-search="' + searchData + '" data-copy="' + escapeHtml(r[2]) + '">';
+      h += '<tr data-search="' + searchData + '">';
       h += '<td><code>' + r[0] + '</code></td>';  // command
       h += '<td>' + r[1] + '<br><span class="at-muted">' + r[3] + '</span></td>';  // desc zh + en
-      h += '<td><code>' + escapeHtml(r[2]) + '</code></td>';  // example
+      h += '<td data-copy="' + escapeHtml(r[2]) + '"><code>' + escapeHtml(r[2]) + '</code></td>';  // example
       h += '<td class="at-muted">' + r[4] + '</td>';  // note
       h += '</tr>';
     });
@@ -165,9 +165,9 @@ var TerminalTool = (function () {
     // click row to copy example
     parent.addEventListener("click", function (e) {
       if (e.target.closest("a")) return;
-      var tr = e.target.closest("tr[data-copy]");
-      if (!tr) return;
-      navigator.clipboard.writeText(tr.dataset.copy).then(function () {
+      var el = e.target.closest("[data-copy]");
+      if (!el) return;
+      navigator.clipboard.writeText(el.dataset.copy).then(function () {
         showCopyToast("✓ " + t("terminal.copied"));
       });
     });

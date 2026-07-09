@@ -319,9 +319,9 @@ var AndroidTool = (function () {
     // click row to copy command (ADB tab)
     parent.addEventListener("click", function (e) {
       if (e.target.closest("a")) return;
-      var tr = e.target.closest("tr[data-copy]");
-      if (!tr) return;
-      navigator.clipboard.writeText(tr.dataset.copy).then(function () {
+      var el = e.target.closest("[data-copy]");
+      if (!el) return;
+      navigator.clipboard.writeText(el.dataset.copy).then(function () {
         showCopyToast("✓ " + t("android.copied"));
       });
     });
@@ -474,7 +474,7 @@ var AndroidTool = (function () {
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("android.scenario") + '</th><th>' + t("android.command") + '</th><th>' + t("android.note") + '</th></tr></thead><tbody>';
     ADB_COMMANDS.forEach(function (r) {
       var scenario = currentLang() === "en" ? r[1] : r[0];
-      h += '<tr data-search="' + [r[0], r[1], r[2], r[3]].join(" ").toLowerCase() + '" data-copy="' + escapeHtml(r[2]) + '"><td>' + scenario + '</td><td><code>' + r[2] + '</code></td><td>' + r[3] + '</td></tr>';
+      h += '<tr data-search="' + [r[0], r[1], r[2], r[3]].join(" ").toLowerCase() + '"><td>' + scenario + '</td><td data-copy="' + escapeHtml(r[2]) + '"><code>' + r[2] + '</code></td><td>' + r[3] + '</td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
