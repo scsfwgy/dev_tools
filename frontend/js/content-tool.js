@@ -62,6 +62,7 @@ var ContentTool = (function () {
       '      <button id="content-generate" class="b64-btn b64-btn-primary">' + t("content.generate") + '</button>' +
       '    </div>' +
       '    <div class="content-hint">💡 ' + t("content.terminalHint") + '</div>' +
+      '    <div class="content-hint">' + t("content.urlHint") + '</div>' +
       '    <div id="content-result" class="content-result hidden"></div>' +
       '  </section>' +
       '  <div id="content-history" class="history-bar"></div>' +

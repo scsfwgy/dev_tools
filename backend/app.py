@@ -1259,11 +1259,14 @@ def content_create():
 
 @app.route("/api/content/<content_id>")
 def content_get(content_id: str):
-    """Serve raw text content."""
+    """Serve raw text content, or redirect if the content is a URL."""
     entry = _load_content(content_id)
     if not entry:
         return Response("Content not found or expired.", status=404, mimetype="text/plain")
-    return Response(entry["text"], content_type="text/plain; charset=utf-8")
+    text = entry["text"].strip()
+    if text.startswith(("http://", "https://")):
+        return Response("", status=302, headers={"Location": text})
+    return Response(text, content_type="text/plain; charset=utf-8")
 
 
 @app.route("/api/content/<content_id>", methods=["DELETE"])
