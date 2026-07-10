@@ -17,12 +17,32 @@ PIDFILE="logs/server.pid"
 LOGFILE="logs/server.log"
 
 setup() {
-    echo "[1/2] 安装依赖..."
+    echo "[1/3] 安装依赖..."
     if [ ! -d backend/.venv ]; then
         python3 -m venv backend/.venv
     fi
     $VENV_PIP install -q -r requirements.txt
     mkdir -p logs
+}
+
+run_tests() {
+    echo "[2/3] 运行测试套件..."
+    echo ""
+    if PYTHONPATH=backend "$VENV_PYTHON" -m pytest backend/tests/ -v --tb=short --color=yes; then
+        echo ""
+        echo "[test] ✓ 全部测试通过"
+        return 0
+    else
+        local exit_code=$?
+        echo ""
+        echo "[test] ✗ 测试失败 (exit code: $exit_code)，终止启动" >&2
+        return $exit_code
+    fi
+}
+
+preflight() {
+    setup
+    run_tests
 }
 
 wait_for_url() {
@@ -38,9 +58,13 @@ wait_for_url() {
 }
 
 start_production() {
-    setup
+    preflight
+    launch_production
+}
+
+launch_production() {
     kill_port_if_needed
-    echo "[2/2] 启动服务 (后台模式)..."
+    echo "[3/3] 启动服务 (后台模式)..."
     PYTHONPATH=backend nohup "$VENV_PYTHON" backend/app.py >> "$LOGFILE" 2>&1 &
     echo $! > "$PIDFILE"
     wait_for_url "http://127.0.0.1:8731/api/health"
@@ -50,9 +74,9 @@ start_production() {
 }
 
 start_debug() {
-    setup
+    preflight
     kill_port_if_needed
-    echo "[2/2] 启动服务 (调试模式)..."
+    echo "[3/3] 启动服务 (调试模式)..."
     echo "  访问: http://127.0.0.1:8731"
     echo "  按 Ctrl+C 停止"
     echo ""
@@ -121,9 +145,14 @@ case "${1:-}" in
         stop
         ;;
     restart)
+        preflight
         stop
         sleep 1
-        start_production
+        launch_production
+        ;;
+    test)
+        setup
+        run_tests
         ;;
     status)
         status
@@ -131,10 +160,11 @@ case "${1:-}" in
     "")
         echo "用法: ./start.sh [命令]"
         echo ""
-        echo "  start       生产模式 (后台)"
-        echo "  debug       调试模式 (前台)"
+        echo "  start       先测试，再以生产模式启动 (后台)"
+        echo "  debug       先测试，再以调试模式启动 (前台)"
+        echo "  test        仅运行测试套件"
         echo "  stop        停止服务"
-        echo "  restart     重启"
+        echo "  restart     先测试，通过后重启"
         echo "  status      查看状态"
         exit 1
         ;;

@@ -17,6 +17,7 @@ from routes.wishes import wishes_bp
 app = Flask(__name__, static_folder=None)
 CORS(app)
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app.register_blueprint(wishes_bp)
 
@@ -930,7 +931,7 @@ def translate():
             raw = raw.strip()
 
         result = json.loads(raw)
-    except (json.JSONDecodeError, KeyError, requests.RequestException) as e:
+    except (json.JSONDecodeError, KeyError, requests.exceptions.RequestException) as e:
         logger.warning("Translate failed: %s", e)
         return jsonify({"ok": False, "error": "Translation failed, please retry"}), 500
 
