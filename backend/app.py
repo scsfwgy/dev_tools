@@ -1222,7 +1222,7 @@ def content_create():
     return jsonify({
         "ok": True,
         "id": content_id,
-        "url": f"{SITE_URL}/api/content/{content_id}",
+        "url": f"{request.host_url.rstrip('/')}/api/content/{content_id}",
         "size": len(text),
     })
 
@@ -1247,7 +1247,7 @@ def content_get(content_id: str):
             created_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(created)) if created else "-"
             size = entry.get("size", 0)
             ip = html.escape(entry.get("ip", "-"))
-            link = f"{SITE_URL}/api/content/{cid}"
+            link = f"{request.host_url.rstrip('/')}/api/content/{cid}"
             rows += (
                 f'<tr>'
                 f'<td><code>{html.escape(cid)}</code></td>'
