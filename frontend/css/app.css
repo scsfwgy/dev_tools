@@ -335,9 +335,14 @@ body {
 /* === 右侧内容 === */
 .content {
     flex: 1;
+    min-width: 0;
     height: 100vh;
     overflow-y: auto;
     padding: 40px 48px;
+}
+
+@media (max-width: 760px) {
+    .content { padding: 20px 16px; }
 }
 
 .welcome {
@@ -1752,3 +1757,38 @@ body {
     outline: none;
 }
 .wish-reply-input:focus { border-color: var(--accent); }
+
+/* === 单位换算 === */
+.uc-tool {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    padding: 0 0 28px;
+}
+.uc-tabs { margin-bottom: 14px; scrollbar-width: thin; scroll-snap-type: x proximity; }
+.uc-tab { flex: 0 0 auto; scroll-snap-align: start; }
+.uc-note { position: relative; display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; padding: 13px 16px 13px 30px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); }
+.uc-note::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 18px; border-right: 1px solid var(--border); background: repeating-linear-gradient(to bottom, transparent 0 7px, var(--text-muted) 7px 8px, transparent 8px 14px); opacity: 0.65; }
+.uc-note strong { color: var(--text); font-size: 0.9rem; white-space: nowrap; }
+.uc-note span { color: var(--text-secondary); font-size: 0.82rem; line-height: 1.55; }
+.uc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.uc-unit { position: relative; padding: 13px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); transition: border-color 0.16s, box-shadow 0.16s, transform 0.16s; animation: uc-rise 0.28s both; animation-delay: calc(var(--uc-index) * 22ms); }
+.uc-unit:hover { transform: translateY(-1px); }
+.uc-unit.is-source { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 16%, transparent); }
+.uc-unit label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; cursor: text; }
+.uc-unit-name { min-width: 0; color: var(--text-secondary); font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uc-unit-symbol { color: var(--accent); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.72rem; font-weight: 650; white-space: nowrap; }
+.uc-input-row { display: grid; grid-template-columns: minmax(0, 1fr) 38px; gap: 7px; }
+.uc-input { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; outline: none; background: var(--select-bg); color: var(--text); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.94rem; font-variant-numeric: tabular-nums; transition: border-color 0.15s, background 0.15s; }
+.uc-input:focus { border-color: var(--accent); background: var(--bg); }
+.uc-copy { display: grid; place-items: center; min-width: 38px; border: 1px solid var(--border); border-radius: 7px; background: var(--select-bg); color: var(--text-secondary); cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s; }
+.uc-copy:hover { color: var(--accent); border-color: var(--accent); background: var(--hover-row); }
+.uc-status { min-height: 34px; padding: 10px 2px 0; color: var(--text-secondary); font-size: 0.78rem; }
+.uc-status-error { color: var(--accent); }
+.uc-status-warning, .uc-status-info { color: var(--text-secondary); }
+.uc-status-ok { color: var(--green); }
+@keyframes uc-rise { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 760px) {
+    .uc-grid { grid-template-columns: 1fr; }
+    .uc-note { align-items: flex-start; flex-direction: column; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .uc-unit { animation: none; transition: none; } }

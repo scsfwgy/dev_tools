@@ -39,6 +39,7 @@
     { id: "json",     icon: "json",       i18n: "menu.json" },
     { id: "format",   icon: "code",       i18n: "menu.format" },
     { id: "timestamp",icon: "clock",      i18n: "menu.timestamp" },
+    { id: "unitconvert",icon: "ruler",    i18n: "menu.unitconvert" },
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
     { id: "android",  icon: "android",   i18n: "menu.android" },
@@ -76,6 +77,10 @@
       timestamp: {
         title: "时间戳转换工具 - Unix Timestamp 在线转换 | Tools24",
         description: "在线时间戳转换工具，支持秒/毫秒时间戳、日期时间、ISO 8601、UTC 和本地时间互转。"
+      },
+      unitconvert: {
+        title: "单位换算工具 - 长度 温度 数据存储 压力 能量 燃油经济性 | Tools24",
+        description: "在线单位换算工具，提供长度、面积、体积、质量、速度、温度、风力、数据存储、时间、压力、能量、功率、角度、流量、烹饪容量和燃油经济性 16 类实时换算。"
       },
       encoder: {
         title: "在线编码转换工具 - URL编码 Base64 Base32 Base16 Unicode UTF-8 | Tools24",
@@ -151,6 +156,10 @@
         title: "Timestamp Converter Online - Unix Time Converter | Tools24",
         description: "Convert Unix timestamps, milliseconds, datetime, ISO 8601, UTC and local time online."
       },
+      unitconvert: {
+        title: "Unit Converter - Length Temperature Data Pressure Energy Fuel Economy | Tools24",
+        description: "Convert 16 categories including length, area, volume, mass, speed, temperature, wind, data storage, time, pressure, energy, power, angle, flow, cooking volume and fuel economy."
+      },
       encoder: {
         title: "Online Encoding Converter - URL Base64 Base32 Base16 Unicode UTF-8 | Tools24",
         description: "Online encoding converter: URL encode/decode, Base64, Base32, Base16, Unicode escapes, UTF-8 hex bytes, ASCII — all in one tool."
@@ -211,6 +220,7 @@
     home: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
     json: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/><path d="M8 12h8"/><path d="M12 4v12"/></svg>',
     clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    ruler: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0l-2.6-2.6a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 13.5 3 3M10.5 10.5l3 3M13.5 7.5l3 3M16.5 4.5l3 3"/></svg>',
     code: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
     diff: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
@@ -593,6 +603,11 @@
     if (activeMenuId === "timestamp" && typeof TimestampTool !== "undefined") {
       el.innerHTML = "";
       TimestampTool.init(el);
+      return;
+    }
+    if (activeMenuId === "unitconvert" && typeof UnitConvertTool !== "undefined") {
+      el.innerHTML = "";
+      UnitConvertTool.init(el);
       return;
     }
     if (activeMenuId === "encoder" && typeof EncoderTool !== "undefined") {
