@@ -40,6 +40,8 @@
     { id: "format",   icon: "code",       i18n: "menu.format" },
     { id: "timestamp",icon: "clock",      i18n: "menu.timestamp" },
     { id: "unitconvert",icon: "ruler",    i18n: "menu.unitconvert" },
+    { id: "regex",    icon: "code",       i18n: "menu.regex" },
+    { id: "http",     icon: "console",    i18n: "menu.http" },
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
     { id: "android",  icon: "android",   i18n: "menu.android" },
@@ -51,6 +53,7 @@
     { id: "curl",     icon: "terminal",  i18n: "menu.curl" },
     { id: "base64",   icon: "lock",       i18n: "menu.base64" },
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
+    { id: "text",     icon: "code",       i18n: "menu.text" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
     { id: "markdown", icon: "md",         i18n: "menu.markdown" },
     { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
@@ -81,6 +84,18 @@
       unitconvert: {
         title: "单位换算工具 - 长度 温度 数据存储 压力 能量 燃油经济性 | Tools24",
         description: "在线单位换算工具，提供长度、面积、体积、质量、速度、温度、风力、数据存储、时间、压力、能量、功率、角度、流量、烹饪容量和燃油经济性 16 类实时换算。"
+      },
+      text: {
+        title: "在线文本处理工具 - 去重排序大小写多行转换 | Tools24",
+        description: "在线文本处理工具，支持去空行、去重、排序、大小写、空白整理，以及多行转 JSON、CSV、SQL IN 和带引号列表。"
+      },
+      regex: {
+        title: "正则表达式测试工具 - Regex 在线匹配替换 | Tools24",
+        description: "在线正则表达式测试工具，支持实时匹配高亮、JavaScript flags、捕获组、命名捕获组、替换预览和常用正则模板。"
+      },
+      http: {
+        title: "HTTP 状态码与 Header 速查 - 请求头响应头 | Tools24",
+        description: "HTTP 状态码和 Header 在线速查，覆盖请求头、响应头、缓存、CORS、安全 Header，支持分类搜索和一键复制。"
       },
       encoder: {
         title: "在线编码转换工具 - URL编码 Base64 Base32 Base16 Unicode UTF-8 | Tools24",
@@ -159,6 +174,18 @@
       unitconvert: {
         title: "Unit Converter - Length Temperature Data Pressure Energy Fuel Economy | Tools24",
         description: "Convert 16 categories including length, area, volume, mass, speed, temperature, wind, data storage, time, pressure, energy, power, angle, flow, cooking volume and fuel economy."
+      },
+      text: {
+        title: "Online Text Processing Tool - Dedupe Sort Case Convert | Tools24",
+        description: "Process text online with blank-line removal, deduplication, sorting, case conversion, whitespace cleanup and line conversion to JSON, CSV or SQL IN lists."
+      },
+      regex: {
+        title: "Regex Tester Online - Match Capture Replace | Tools24",
+        description: "Test JavaScript regular expressions online with live highlighting, flags, capture groups, named groups, replacement preview and common templates."
+      },
+      http: {
+        title: "HTTP Status Codes and Headers Reference | Tools24",
+        description: "Search HTTP status codes and headers including requests, responses, caching, CORS and security headers, with examples and one-click copy."
       },
       encoder: {
         title: "Online Encoding Converter - URL Base64 Base32 Base16 Unicode UTF-8 | Tools24",
@@ -347,6 +374,9 @@
       const key = el.getAttribute("data-i18n-placeholder");
       el.placeholder = t(key);
     });
+    if (document.getElementById("sidebar") && document.getElementById("sidebar").dataset.state) {
+      applySidebarState(document.getElementById("sidebar").dataset.state);
+    }
   }
 
   // ── theme ──
@@ -610,6 +640,16 @@
       UnitConvertTool.init(el);
       return;
     }
+    if (activeMenuId === "regex" && typeof RegexTool !== "undefined") {
+      el.innerHTML = "";
+      RegexTool.init(el);
+      return;
+    }
+    if (activeMenuId === "http" && typeof HttpTool !== "undefined") {
+      el.innerHTML = "";
+      HttpTool.init(el);
+      return;
+    }
     if (activeMenuId === "encoder" && typeof EncoderTool !== "undefined") {
       el.innerHTML = "";
       EncoderTool.init(el);
@@ -623,6 +663,11 @@
     if (activeMenuId === "diff" && typeof DiffTool !== "undefined") {
       el.innerHTML = "";
       DiffTool.init(el);
+      return;
+    }
+    if (activeMenuId === "text" && typeof TextTool !== "undefined") {
+      el.innerHTML = "";
+      TextTool.init(el);
       return;
     }
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
@@ -693,12 +738,28 @@
 
   // ── 菜单折叠 ──
   const sidebar = document.getElementById("sidebar");
-  const savedCollapsed = localStorage.getItem(STORAGE_MENU) === "1";
-  if (savedCollapsed) sidebar.classList.add("collapsed");
+  const menuToggle = document.getElementById("menu-toggle");
+  function normalizeMenuState(value) {
+    if (value === "1" || value === "compact") return "compact";
+    if (value === "immersive") return "immersive";
+    return "expanded";
+  }
+  function applySidebarState(state) {
+    sidebar.classList.remove("collapsed", "immersive");
+    if (state === "compact") sidebar.classList.add("collapsed");
+    if (state === "immersive") sidebar.classList.add("immersive");
+    sidebar.dataset.state = state;
+    localStorage.setItem(STORAGE_MENU, state);
+    var label = state === "expanded" ? t("menu.collapseMenu") : (state === "compact" ? t("menu.immersiveMenu") : t("menu.expandMenu"));
+    menuToggle.title = label;
+    menuToggle.setAttribute("aria-label", label);
+    if (state === "immersive") document.getElementById("settings-panel").classList.add("hidden");
+  }
+  applySidebarState(normalizeMenuState(localStorage.getItem(STORAGE_MENU)));
 
-  document.getElementById("menu-toggle").addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-    localStorage.setItem(STORAGE_MENU, sidebar.classList.contains("collapsed") ? "1" : "0");
+  menuToggle.addEventListener("click", function () {
+    var current = sidebar.dataset.state || "expanded";
+    applySidebarState(current === "expanded" ? "compact" : (current === "compact" ? "immersive" : "expanded"));
   });
 
   // ── 菜单搜索 ──

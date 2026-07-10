@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from unittest.mock import Mock
 
 import requests
@@ -24,6 +25,63 @@ def test_spa_routes_render_seo_and_fallback(client):
     assert "JSON Formatter and Validator Online" in html
     assert fallback.status_code == 200
     assert "<!--SEO_TITLE-->" in fallback.get_data(as_text=True)
+
+
+def test_regex_and_http_tools_are_wired_with_seo_and_locales(client):
+    regex_page = client.get("/zh/tool/regex")
+    http_page = client.get("/en/tool/http")
+    regex_script = client.get("/js/regex-tool.js")
+    http_script = client.get("/js/http-tool.js")
+
+    assert regex_page.status_code == 200
+    assert "正则表达式测试工具" in regex_page.get_data(as_text=True)
+    assert "https://www.tools24.uk/zh/tool/regex" in regex_page.get_data(as_text=True)
+    assert http_page.status_code == 200
+    assert "HTTP Status Codes and Headers Reference" in http_page.get_data(as_text=True)
+    assert regex_script.status_code == 200
+    assert "collectMatches" in regex_script.get_data(as_text=True)
+    assert "COMMON_PATTERNS" in regex_script.get_data(as_text=True)
+    assert "data-regex-tab" in regex_script.get_data(as_text=True)
+    assert http_script.status_code == 200
+    assert "Access-Control-Allow-Origin" in http_script.get_data(as_text=True)
+
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert zh_locale["menu"]["regex"] == "正则测试"
+    assert en_locale["menu"]["http"] == "HTTP Reference"
+    assert index_html.index("regex-tool.js") < index_html.index("app.js")
+    assert index_html.index("http-tool.js") < index_html.index("app.js")
+
+
+def test_text_tool_is_wired_with_seo_and_locales(client):
+    response = client.get("/zh/tool/text")
+    script = client.get("/js/text-tool.js")
+
+    assert response.status_code == 200
+    assert "在线文本处理工具" in response.get_data(as_text=True)
+    assert "https://www.tools24.uk/zh/tool/text" in response.get_data(as_text=True)
+    assert script.status_code == 200
+    assert "sqlIn" in script.get_data(as_text=True)
+
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert zh_locale["menu"]["text"] == "文本处理"
+    assert index_html.index("text-tool.js") < index_html.index("app.js")
+
+
+def test_unit_converter_and_sidebar_use_shared_ui_states(client):
+    unit_script = client.get("/js/unitconvert-tool.js").get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+
+    assert "at-table uc-table" in unit_script
+    assert "data-uc-category" in unit_script
+    assert '"immersive"' in app_script
+    assert "applySidebarState" in app_script
 
 
 def test_visit_counter_is_read_only_then_increments(client):

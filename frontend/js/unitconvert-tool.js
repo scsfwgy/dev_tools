@@ -287,20 +287,22 @@ var UnitConvertTool = (function () {
 
   function init(parent) {
     var tabs = CATEGORIES.map(function (category) {
-      return '<button class="b64-tab uc-tab" data-category="' + category.id + '">' + t("unitconvert.tabs." + category.id) + '</button>';
+      return '<button class="b64-tab" data-uc-category="' + category.id + '">' + t("unitconvert.tabs." + category.id) + '</button>';
     }).join("");
 
     parent.innerHTML =
-      '<div class="uc-tool">' +
-      '  <div class="b64-tabs uc-tabs">' + tabs + '</div>' +
-      '  <div id="uc-note" class="uc-note"></div>' +
-      '  <div id="uc-grid" class="uc-grid"></div>' +
+      '<div class="b64-tool">' +
+      '  <div class="b64-tabs">' + tabs + '</div>' +
+      '  <div class="android-section">' +
+      '  <div id="uc-note" class="at-doc-refs"></div>' +
+      '  <div id="uc-grid"></div>' +
       '  <div id="uc-status" class="uc-status" aria-live="polite"></div>' +
       '  <div id="uc-history" class="history-bar"></div>' +
+      '  </div>' +
       '</div>';
 
-    parent.querySelectorAll(".uc-tab").forEach(function (button) {
-      button.addEventListener("click", function () { switchCategory(this.dataset.category); });
+    parent.querySelectorAll(".b64-tab[data-uc-category]").forEach(function (button) {
+      button.addEventListener("click", function () { switchCategory(this.dataset.ucCategory); });
     });
 
     switchCategory(activeCategoryId);
@@ -311,21 +313,11 @@ var UnitConvertTool = (function () {
     var category = categoryById(categoryId);
     if (!category) return;
     activeCategoryId = categoryId;
-    var activeButton = null;
-    document.querySelectorAll(".uc-tab").forEach(function (button) {
-      var isActive = button.dataset.category === categoryId;
-      button.classList.toggle("active", isActive);
-      if (isActive) activeButton = button;
+    document.querySelectorAll(".b64-tab[data-uc-category]").forEach(function (button) {
+      var isActive = button.dataset.ucCategory === categoryId;
+      button.className = "b64-tab" + (isActive ? " active" : "");
     });
-    if (activeButton) {
-      var tabs = activeButton.closest(".uc-tabs");
-      var tabsRect = tabs.getBoundingClientRect();
-      var buttonRect = activeButton.getBoundingClientRect();
-      var targetLeft = tabs.scrollLeft + buttonRect.left - tabsRect.left - Math.max(0, (tabs.clientWidth - buttonRect.width) / 2);
-      tabs.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
-    }
-    document.getElementById("uc-note").innerHTML =
-      '<strong>' + t("unitconvert.tabs." + category.id) + '</strong><span>' + t("unitconvert.notes." + category.id) + '</span>';
+    document.getElementById("uc-note").textContent = t("unitconvert.notes." + category.id);
     renderGrid(category);
 
     var draft = drafts[categoryId] || { sourceUnitId: category.defaultUnit, rawValue: category.defaultValue };
@@ -335,13 +327,15 @@ var UnitConvertTool = (function () {
 
   function renderGrid(category) {
     var grid = document.getElementById("uc-grid");
-    grid.innerHTML = category.units.map(function (unit, index) {
-      return '<div class="uc-unit" data-unit="' + unit.id + '" style="--uc-index:' + index + '">' +
-        '<label for="uc-input-' + unit.id + '"><span class="uc-unit-name">' + unitLabel(unit) + '</span><span class="uc-unit-symbol">' + unit.symbol + '</span></label>' +
-        '<div class="uc-input-row"><input id="uc-input-' + unit.id + '" class="uc-input" data-unit="' + unit.id + '" inputmode="decimal" autocomplete="off" aria-label="' + unitLabel(unit) + '">' +
-        '<button class="uc-copy" data-unit="' + unit.id + '" title="' + t("unitconvert.copy") + '" aria-label="' + t("unitconvert.copy") + ' ' + unitLabel(unit) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>' +
-      '</div>';
+    var rows = category.units.map(function (unit) {
+      return '<tr class="uc-unit" data-unit="' + unit.id + '">' +
+        '<td><label for="uc-input-' + unit.id + '">' + unitLabel(unit) + '</label></td>' +
+        '<td><code>' + unit.symbol + '</code></td>' +
+        '<td><input id="uc-input-' + unit.id + '" class="crypto-input uc-input" style="width:100%" data-unit="' + unit.id + '" inputmode="decimal" autocomplete="off" aria-label="' + unitLabel(unit) + '"></td>' +
+        '<td><button class="jt-btn uc-copy" data-unit="' + unit.id + '" title="' + t("unitconvert.copy") + '" aria-label="' + t("unitconvert.copy") + ' ' + unitLabel(unit) + '">' + t("unitconvert.copy") + '</button></td>' +
+      '</tr>';
     }).join("");
+    grid.innerHTML = '<div class="at-table-wrap"><table class="at-table uc-table"><thead><tr><th>' + t("unitconvert.unit") + '</th><th>' + t("unitconvert.symbol") + '</th><th>' + t("unitconvert.value") + '</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
 
     grid.querySelectorAll(".uc-input").forEach(function (input) {
       input.addEventListener("input", function () {

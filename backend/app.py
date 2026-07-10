@@ -52,6 +52,58 @@ TOOLS = {
             ],
         },
     },
+    "regex": {
+        "zh": {
+            "name": "正则表达式测试工具",
+            "title": "正则表达式测试工具 - Regex 在线匹配替换 | Tools24",
+            "description": "在线正则表达式测试工具，支持实时匹配高亮、JavaScript flags、捕获组、命名捕获组、替换预览和常用正则模板。",
+            "keywords": "正则表达式测试,Regex测试,正则匹配,正则替换,捕获组,JavaScript RegExp,在线正则工具",
+            "intro": "输入 JavaScript 正则表达式和测试文本，即时查看匹配高亮、匹配位置、捕获组及替换结果，并可从常用模板快速开始。",
+            "features": ["实时匹配与高亮", "g / i / m / s / u flags", "普通与命名捕获组", "替换结果预览", "常用正则模板与本地历史"],
+            "faq": [
+                ("需要输入两侧的斜杠吗？", "不需要，只输入斜杠之间的表达式内容，flags 可通过右侧按钮选择。"),
+                ("文本会上传服务器吗？", "不会，匹配和替换全部使用浏览器原生 JavaScript RegExp 在本地完成。"),
+            ],
+        },
+        "en": {
+            "name": "Regular Expression Tester",
+            "title": "Regex Tester Online - Match Capture Replace | Tools24",
+            "description": "Test JavaScript regular expressions online with live highlighting, flags, capture groups, named groups, replacement preview and common templates.",
+            "keywords": "regex tester,regular expression tester,regex match,regex replace,capture groups,JavaScript RegExp,online regex tool",
+            "intro": "Enter a JavaScript regular expression and test text to inspect live highlights, match positions, capture groups and replacement output, with common templates to get started.",
+            "features": ["Live matching and highlighting", "g / i / m / s / u flags", "Numbered and named captures", "Replacement preview", "Common templates and local history"],
+            "faq": [
+                ("Should I enter the surrounding slashes?", "No. Enter only the pattern between the slashes and select flags with the controls on the right."),
+                ("Is my text uploaded?", "No. Matching and replacement run locally with the browser's native JavaScript RegExp engine."),
+            ],
+        },
+    },
+    "http": {
+        "zh": {
+            "name": "HTTP 状态码与 Header 速查",
+            "title": "HTTP 状态码与 Header 速查 - 请求头响应头 | Tools24",
+            "description": "HTTP 状态码和 Header 在线速查，覆盖请求头、响应头、缓存、CORS、安全 Header，支持分类搜索和一键复制。",
+            "keywords": "HTTP状态码,HTTP Header,请求头,响应头,Cache-Control,CORS,安全响应头,HTTP速查",
+            "intro": "集中查询常用 HTTP 状态码及 Header 的含义和示例，包含请求、响应、缓存、CORS 与安全分类，点击即可复制。",
+            "features": ["1xx 至 5xx 常用状态码", "请求头与响应头", "缓存控制 Header", "CORS 与安全 Header", "分类搜索与一键复制"],
+            "faq": [
+                ("401 和 403 有什么区别？", "401 表示缺少或无效的身份认证；403 表示服务器知道当前身份，但拒绝授予访问权限。"),
+                ("no-cache 是否表示完全不缓存？", "不是。no-cache 允许存储响应，但每次复用前必须向服务器重新验证；完全禁止存储应使用 no-store。"),
+            ],
+        },
+        "en": {
+            "name": "HTTP Status and Header Reference",
+            "title": "HTTP Status Codes and Headers Reference | Tools24",
+            "description": "Search HTTP status codes and headers including requests, responses, caching, CORS and security headers, with examples and one-click copy.",
+            "keywords": "HTTP status codes,HTTP headers,request headers,response headers,Cache-Control,CORS,security headers,HTTP reference",
+            "intro": "Look up common HTTP status codes and header meanings with examples across request, response, caching, CORS and security categories, then copy with one click.",
+            "features": ["Common 1xx through 5xx codes", "Request and response headers", "Caching headers", "CORS and security headers", "Category search and one-click copy"],
+            "faq": [
+                ("What is the difference between 401 and 403?", "401 means authentication is missing or invalid; 403 means the server knows the identity but refuses access."),
+                ("Does no-cache disable caching?", "No. no-cache permits storage but requires revalidation before reuse. Use no-store to prevent storage entirely."),
+            ],
+        },
+    },
     "format": {
         "zh": {
             "name": "代码格式化工具",
@@ -477,6 +529,32 @@ TOOLS = {
                 ("Why are months and years omitted from time conversion?", "Months range from 28 to 31 days and years may be leap years, so they are not fixed durations."),
                 ("Can Beaufort force be converted to an exact wind speed?", "No. Each Beaufort force represents a speed range. The tool shows that range and uses its midpoint only to estimate other speed units."),
                 ("Is the Mach conversion exact?", "The speed of sound changes with conditions. This tool uses the common standard approximation of 340.29 m/s at sea level and 15°C."),
+            ],
+        },
+    },
+    "text": {
+        "zh": {
+            "name": "在线文本处理工具",
+            "title": "在线文本处理工具 - 去重排序大小写多行转换 | Tools24",
+            "description": "在线文本处理工具，支持去空行、去重、排序、大小写、空白整理，以及多行转 JSON、CSV、SQL IN 和带引号列表。",
+            "keywords": "文本处理,文本去重,文本排序,删除空行,大小写转换,多行转JSON,SQL IN,文本统计",
+            "intro": "在浏览器本地整理多行文本，可执行去重、排序、空白清理和大小写转换，也可转换为 JSON 数组、CSV、SQL IN 等开发常用格式。",
+            "features": ["删除空行与行首尾空格", "多行去重与升降序", "大小写和连续空格处理", "多行转 JSON / CSV / SQL IN", "字符、行、单词和字节统计", "本地处理与历史记录"],
+            "faq": [
+                ("文本会上传服务器吗？", "不会，所有文本整理和格式转换都在浏览器本地完成。"),
+                ("SQL IN 如何处理单引号？", "工具会把值中的单引号转义为两个单引号，生成可直接调整使用的字符串列表。"),
+            ],
+        },
+        "en": {
+            "name": "Online Text Processing Tool",
+            "title": "Online Text Processing Tool - Dedupe Sort Case Convert | Tools24",
+            "description": "Process text online with blank-line removal, deduplication, sorting, case conversion, whitespace cleanup and line conversion to JSON, CSV or SQL IN lists.",
+            "keywords": "text processing,text dedupe,text sort,remove blank lines,case converter,lines to JSON,SQL IN,text statistics",
+            "intro": "Clean multiline text locally in the browser with deduplication, sorting, whitespace cleanup and case conversion, or convert lines into JSON arrays, CSV and SQL IN lists.",
+            "features": ["Remove blank lines and trim lines", "Deduplicate and sort lines", "Case and whitespace cleanup", "Lines to JSON / CSV / SQL IN", "Character, line, word and byte statistics", "Local processing and history"],
+            "faq": [
+                ("Is my text uploaded?", "No. All cleanup and conversion runs locally in your browser."),
+                ("How are quotes handled for SQL IN?", "Single quotes inside values are escaped as two single quotes, producing a list you can safely adapt for SQL."),
             ],
         },
     },
