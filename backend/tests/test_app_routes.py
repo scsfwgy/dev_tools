@@ -74,6 +74,65 @@ def test_text_tool_is_wired_with_seo_and_locales(client):
     assert index_html.index("text-tool.js") < index_html.index("app.js")
 
 
+def test_tax_tool_is_wired_with_seo_and_locales(client):
+    response_zh = client.get("/zh/tool/tax")
+    response_en = client.get("/en/tool/tax")
+    script = client.get("/js/tax-tool.js")
+
+    assert response_zh.status_code == 200
+    assert "工资税收计算器" in response_zh.get_data(as_text=True)
+    assert "https://www.tools24.uk/zh/tool/tax" in response_zh.get_data(as_text=True)
+    assert response_en.status_code == 200
+    assert "China Tax Calculator" in response_en.get_data(as_text=True)
+    assert script.status_code == 200
+    script_text = script.get_data(as_text=True)
+    assert "MONTHLY_BRACKETS" in script_text
+    assert "ANNUAL_BRACKETS" in script_text
+    assert "calcBonusSeparate" in script_text
+    assert "data-tax-tab" in script_text
+    assert "tax-schedule-body" in script_text
+    assert "tax-bracket-body" in script_text
+    assert "tax-guide-example-body" in script_text
+    assert 'data-tax-tab="guide"' in script_text
+    assert "renderGuide" in script_text
+    assert "cumulativeTaxable" in script_text
+    assert "var separateTotal = roundMoney(result.annualTax + separateBonusTax)" in script_text
+
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert zh_locale["menu"]["tax"] == "税收计算"
+    assert en_locale["menu"]["tax"] == "Tax Calculator"
+    assert zh_locale["tax"]["bracketsTab"] == "年度税阶拆分"
+    assert zh_locale["tax"]["guideTab"] == "计算说明"
+    assert en_locale["tax"]["scheduleTab"] == "Monthly Withholding Process"
+    assert en_locale["tax"]["guideTab"] == "How It Works"
+    assert index_html.index("tax-tool.js") < index_html.index("app.js")
+
+
+def test_mortgage_tool_is_wired_with_seo_and_locales(client):
+    response = client.get("/zh/tool/mortgage")
+    script = client.get("/js/mortgage-tool.js")
+
+    assert response.status_code == 200
+    assert "房贷计算器" in response.get_data(as_text=True)
+    assert "https://www.tools24.uk/zh/tool/mortgage" in response.get_data(as_text=True)
+    assert script.status_code == 200
+    assert "calcEqualInstallment" in script.get_data(as_text=True)
+    assert "calcEqualPrincipal" in script.get_data(as_text=True)
+
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert zh_locale["menu"]["mortgage"] == "房贷计算"
+    assert en_locale["menu"]["mortgage"] == "Mortgage"
+    assert index_html.index("mortgage-tool.js") < index_html.index("app.js")
+
+
 def test_unit_converter_and_sidebar_use_shared_ui_states(client):
     unit_script = client.get("/js/unitconvert-tool.js").get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
@@ -82,6 +141,35 @@ def test_unit_converter_and_sidebar_use_shared_ui_states(client):
     assert "data-uc-category" in unit_script
     assert '"immersive"' in app_script
     assert "applySidebarState" in app_script
+
+
+def test_ai_tool_uses_verified_commands_categories_and_comparison(client):
+    page = client.get("/zh/tool/ai")
+    script = client.get("/js/ai-tool.js")
+    script_text = script.get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert "Claude Code 与 Codex CLI 对照" in page.get_data(as_text=True)
+    assert script.status_code == 200
+    assert "COMPARISON" in script_text
+    assert "data-ai-product" in script_text
+    assert "data-ai-category" in script_text
+    assert "claude mcp list" in script_text
+    assert "claude --dangerously-skip-permissions -r" in script_text
+    assert "codex review --uncommitted" in script_text
+    assert "claude --mcp" not in script_text
+    assert "codex test <file>" not in script_text
+    assert "codex plan" not in script_text
+    assert "--approve" not in script_text
+
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert zh_locale["ai"]["comparison"] == "功能对照"
+    assert en_locale["ai"]["categories"]["review"] == "Code Review"
+    assert index_html.index("ai-tool.js") < index_html.index("app.js")
 
 
 def test_visit_counter_is_read_only_then_increments(client):

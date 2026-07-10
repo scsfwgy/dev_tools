@@ -54,6 +54,8 @@
     { id: "base64",   icon: "lock",       i18n: "menu.base64" },
     { id: "diff",     icon: "diff",       i18n: "menu.diff" },
     { id: "text",     icon: "code",       i18n: "menu.text" },
+    { id: "tax",      icon: "dollar",     i18n: "menu.tax" },
+    { id: "mortgage", icon: "home",       i18n: "menu.mortgage" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
     { id: "markdown", icon: "md",         i18n: "menu.markdown" },
     { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
@@ -96,6 +98,14 @@
       http: {
         title: "HTTP 状态码与 Header 速查 - 请求头响应头 | Tools24",
         description: "HTTP 状态码和 Header 在线速查，覆盖请求头、响应头、缓存、CORS、安全 Header，支持分类搜索和一键复制。"
+      },
+      tax: {
+        title: "工资个税计算器 - 累计预扣 七级税阶明细 | Tools24",
+        description: "中国大陆工资个税估算，采用累计预扣法，展示1至12月预扣税额、七级超额累进税阶分档税额，并对比年终奖单独与合并计税。"
+      },
+      mortgage: {
+        title: "房贷计算器 - 等额本息 等额本金 月供对比 | Tools24",
+        description: "在线房贷计算器，支持等额本息和等额本金两种还款方式，对比月供、利息总额和还款总额。"
       },
       encoder: {
         title: "在线编码转换工具 - URL编码 Base64 Base32 Base16 Unicode UTF-8 | Tools24",
@@ -146,8 +156,8 @@
         description: "Git 常用命令速查表，覆盖基础操作、分支管理、撤销回退、远程管理、暂存日志、标签子模块和高级操作，支持一键替换远程地址和分支名。"
       },
       ai: {
-        title: "AI 常用指令速查 - Claude Code Codex Copilot CLI 参考 | Tools24",
-        description: "AI 编程助手 CLI 常用指令速查，覆盖 Claude Code、Codex、GitHub Copilot CLI、Cursor、aider 和 Windsurf 的命令用法和常用参数。"
+        title: "AI 指令速查 - Claude Code 与 Codex CLI 对照 | Tools24",
+        description: "Claude Code 与 Codex CLI 指令速查，涵盖快速开始、会话管理、自动化、权限安全、MCP、插件和代码审查，并提供常用功能对照。"
       }
     },
     en: {
@@ -186,6 +196,14 @@
       http: {
         title: "HTTP Status Codes and Headers Reference | Tools24",
         description: "Search HTTP status codes and headers including requests, responses, caching, CORS and security headers, with examples and one-click copy."
+      },
+      tax: {
+        title: "China IIT Calculator - Cumulative Withholding & Tax Brackets | Tools24",
+        description: "China salary IIT estimate using cumulative withholding, with monthly withholding schedule, seven progressive bracket breakdown, and year-end bonus tax comparison."
+      },
+      mortgage: {
+        title: "Mortgage Calculator - Equal Installment vs Equal Principal | Tools24",
+        description: "Online mortgage calculator comparing equal installment and equal principal repayment methods side by side."
       },
       encoder: {
         title: "Online Encoding Converter - URL Base64 Base32 Base16 Unicode UTF-8 | Tools24",
@@ -236,8 +254,8 @@
         description: "Git commands quick reference covering basics, branching, undo, remote management, stash/log, tags/submodules and advanced ops. Includes remote URL and branch name replacement tools."
       },
       ai: {
-        title: "AI CLI Commands Reference - Claude Code Codex Copilot | Tools24",
-        description: "AI coding assistant CLI commands quick reference covering Claude Code, Codex, GitHub Copilot CLI, Cursor, aider and Windsurf — commands, flags and usage patterns."
+        title: "AI CLI Reference - Claude Code and Codex Comparison | Tools24",
+        description: "Verified Claude Code and Codex CLI reference covering quick start, sessions, automation, permissions, safety, MCP, plugins, code review, and task-by-task comparison."
       }
     }
   };
@@ -262,6 +280,7 @@
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
+    dollar: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
   };
 
   function localeToPrefix(lang) {
@@ -668,6 +687,16 @@
     if (activeMenuId === "text" && typeof TextTool !== "undefined") {
       el.innerHTML = "";
       TextTool.init(el);
+      return;
+    }
+    if (activeMenuId === "tax" && typeof TaxTool !== "undefined") {
+      el.innerHTML = "";
+      TaxTool.init(el);
+      return;
+    }
+    if (activeMenuId === "mortgage" && typeof MortgageTool !== "undefined") {
+      el.innerHTML = "";
+      MortgageTool.init(el);
       return;
     }
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {

@@ -1443,6 +1443,8 @@ body {
 }
 
 .at-muted { color: var(--text-muted); font-size: 0.8rem; }
+.ai-category-tabs { margin-bottom: 12px; }
+.ai-danger-row .at-muted { color: var(--accent); }
 .at-mono { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82rem; }
 .at-url { color: var(--accent); word-break: break-all; }
 .at-url:hover { text-decoration: underline; }
@@ -1844,3 +1846,44 @@ body {
     .rx-flags { width: 100%; margin: 8px 0 0 20px; }
     .rx-grid { grid-template-columns: 1fr; }
 }
+
+/* === 税收计算器 === */
+.tax-inline { display: flex; align-items: center; gap: 8px; }
+.tax-num { width: 160px; font-variant-numeric: tabular-nums; }
+.tax-unit { color: var(--text-muted); font-size: .8rem; white-space: nowrap; }
+.tax-input-table td:nth-child(odd) { width: 18%; }
+.tax-input-table td:nth-child(even) { width: 32%; }
+.tax-input-table label { color: var(--text-secondary); font-size: .84rem; font-weight: 600; cursor: text; }
+.tax-result-tabs { margin-top: 14px; }
+.tax-positive { color: var(--green); }
+.tax-subnote { margin-top: 16px; }
+#tax-bonus-wrap.hidden { display: none; }
+.tax-better-row td { background: color-mix(in srgb, var(--green) 10%, transparent); }
+.tax-used-row td { background: var(--hover-row); }
+.tax-recommend { color: var(--green); font-size: .82rem; font-weight: 650; }
+.tax-saving-note { color: var(--green); font-size: .8rem; font-weight: 650; }
+
+@media (max-width: 760px) {
+    .tax-input-table td { display: block; width: 100% !important; border-bottom: 0; }
+    .tax-input-table td:nth-child(even) { border-bottom: 1px solid var(--border); }
+    .tax-num { width: 100%; }
+    .tax-inline { width: 100%; }
+}
+
+/* === 房贷计算器 === */
+.mg-chart-section { margin-top: 18px; }
+.mg-chart-section canvas { display: block; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); }
+.mg-detail-section { margin-top: 14px; }
+.mg-detail-table { font-size: .8rem; }
+.mg-detail-table th { font-size: .76rem; white-space: nowrap; }
+.mg-detail-table td { font-variant-numeric: tabular-nums; }
+.mg-detail-table td:nth-child(1) { color: var(--text-muted); width: 7%; }
+.mg-detail-table td:nth-child(3) { color: var(--green); }
+.mg-detail-table td:nth-child(4) { color: #f85149; }
+.mg-detail-table td:nth-child(5) { color: #f85149; font-weight: 650; }
+.mg-detail-table td:nth-child(6) { color: var(--accent); font-weight: 650; }
+.mg-pager { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 0 10px; }
+.mg-pager-btn { min-width: 30px; height: 28px; padding: 0 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: var(--text); cursor: pointer; font-size: .82rem; line-height: 1; }
+.mg-pager-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.mg-pager-btn:disabled { opacity: 0.3; cursor: default; }
+.mg-pager-info { color: var(--text-muted); font-size: .78rem; padding: 0 10px; font-variant-numeric: tabular-nums; }

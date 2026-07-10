@@ -1,193 +1,218 @@
-// AI Tool — Claude Code + Codex CLI reference
+// AI Tool — verified Claude Code and Codex CLI reference.
 var AiTool = (function () {
+  var activeProduct = "claude";
+  var activeCategories = { claude: "quick", codex: "quick" };
+
   function t(key) { return (window.__t && window.__t(key)) || key; }
-
-  // ═══ Claude Code commands ═══
-  // Each: [command/flag, description (zh), example, description (en), note]
-
-  var CLAUDE_CMDS = [
-    // ── 官网 ──
-    ["🌐 官网", "Anthropic 官方文档", "https://docs.anthropic.com/en/docs/claude-code/overview", "Claude Code 官方使用指南", "Anthropic official docs", "Claude Code official user guide"],
-    // ── 核心高频（放首位）──
-    ["claude",                "启动交互会话", "claude", "Start interactive session", "在项目根目录运行，自动读取 CLAUDE.md 获取上下文"],
-    ["--dangerously-skip-permissions", "跳过所有权限提示", "claude --dangerously-skip-permissions", "Skip ALL permission prompts", "⚠️ 跳过所有确认弹窗，脚本/CI 必需；仅在信任项目使用"],
-    ["--dangerously-skip-permissions -r", "跳过权限 + 恢复会话", "claude --dangerously-skip-permissions -r", "Skip perms AND resume last session", "⚠️ 高频组合：免确认继续上次未完成的工作"],
-    // ── 基础命令 ──
-    ["claude -p \"...\"",     "一次性提问", "claude -p '解释 src/auth.py 的登录流程'", "One-shot prompt (non-interactive)", "--output-format json 可输出结构化结果，适合脚本/CI 调用"],
-    ["claude --model <name>", "指定模型", "claude --model opus -p 'review this'", "Switch model", "opus=最强推理, sonnet=均衡, haiku=快速廉价"],
-    ["claude --resume",       "恢复上次会话", "claude --resume", "Resume last session", "会话自动保存，适用于中断后继续"],
-    ["claude commit",         "自动生成提交", "claude commit", "Auto-generate commit message", "分析 git diff → conventional commit；--no-commit 仅预览不提交"],
-    // ── 配置与诊断 ──
-    ["claude --mcp",          "管理 MCP 服务器", "claude --mcp add my-server --command 'node server.js'", "Manage MCP servers", "支持 stdio / sse / http 传输；list/remove 子命令查看和删除"],
-    ["claude config",         "查看/编辑配置", "claude config set theme dark", "View or update settings", "配置文件 ~/.claude/settings.json；可设 keybindings / hooks"],
-    ["claude doctor",         "环境诊断", "claude doctor", "Diagnose environment", "检查 Node、git、网络、API 认证等环境状态"],
-    ["claude update",         "更新到最新版", "claude update", "Update CLI", "自动检测和安装最新版本"],
-    // ── 其他常用标志 ──
-    ["--verbose / --debug",   "详细/调试输出", "claude --debug -p 'what is going on'", "Verbose debug logging", "排查问题时开启，输出完整 API 交互日志"],
-    ["--output-format json",  "JSON 结构化输出", "claude -p 'list files' --output-format json", "Structured JSON output", "默认 text；json 适合程序解析"],
-    ["--allowedTools",        "限制可用工具", "claude --allowedTools 'Bash,Read'", "Restrict tool access", "安全场景：只允许只读工具"],
-
-    // ── 交互会话斜杠命令 ──
-    ["/clear",                "清空会话历史", "/clear", "Clear conversation history", "重置上下文窗口，释放 token，话题切换时使用"],
-    ["/compact",              "压缩/摘要会话", "/compact", "Compact / summarize conversation", "自动摘要历史消息，保留关键上下文，大幅降低 token 消耗"],
-    ["/rename",               "重命名会话", "/rename 'fix login bug'", "Rename current conversation", "给会话起个有意义的名字，方便后续 resume 时查找"],
-    ["/model",                "切换模型", "/model opus", "Switch model mid-session", "opus / sonnet / haiku，无需重启会话"],
-    ["/cost",                 "查看用量与费用", "/cost", "Show token usage and cost", "显示当前会话的 token 消耗和预估费用"],
-    ["/init",                 "初始化项目 CLAUDE.md", "/init", "Generate CLAUDE.md for project", "分析项目结构后生成项目配置文件"],
-    ["/add-dir",              "添加目录到工作区", "/add-dir ~/other-project", "Add directory to workspace", "将外部目录加入当前工作区，跨项目协作"],
-    ["/memory",               "管理记忆", "/memory", "Open memory manager", "查看和编辑持久化记忆条目"],
-    ["/export",               "导出会话", "/export", "Export conversation to file", "导出完整会话记录，支持多种格式"],
-    ["/review",               "代码审查 PR", "/review", "Review a GitHub pull request", "在 PR 页面触发完整代码审查流程"],
-    ["/upgrade",              "升级 Claude Code", "/upgrade", "Upgrade Claude Code CLI", "检测并安装最新版本"],
-    ["/workflows",            "管理工作流", "/workflows", "Manage workflows & agents", "查看运行中的后台代理和工作流"],
-    ["/statusline",           "配置状态栏", "/statusline", "Configure status line", "自定义终端状态栏显示内容和样式"],
-    ["/todos",                "任务列表", "/todos", "Manage task list", "查看和管理当前会话的任务清单"],
-    ["/config",               "配置设置", "/config", "Configure theme, model, etc.", "交互式修改主题、默认模型、权限等配置"],
-    ["/doctor",               "环境诊断", "/doctor", "Diagnose environment", "检查 Node、git、网络、API 认证等状态"],
-    ["/pr-comments",          "PR 评论", "/pr-comments", "Send review as PR comments", "将代码审查结果以行级评论发到 GitHub PR"],
-    ["/terminal-setup",       "终端设置", "/terminal-setup", "Configure terminal integration", "设置终端快捷键、自动补全等"],
-  ];
-
-  var CODEX_CMDS = [
-    // ── 官网 ──
-    ["🌐 官网", "OpenAI Codex 官方", "https://chatgpt.com/zh-Hans-CN/codex/", "Codex 产品主页", "OpenAI Codex official", "Codex product page"],
-    ["📦 GitHub", "Codex 开源仓库", "https://github.com/openai/codex", "Issues / Releases / Discussions", "Codex open-source repo", "Issues / Releases / Discussions"],
-    // ── CLI 命令 ──
-    ["codex",                 "启动交互会话", "codex", "Start Codex session", "OpenAI 的终端编程助手；需 OPENAI_API_KEY 环境变量"],
-    ["codex exec \"...\"",    "执行指定任务", "codex exec 'add rate limiting to the API'", "Execute a task", "自动规划并执行多步骤，直接修改代码"],
-    // ── 权限与安全 ──
-    ["--dangerously-bypass-approvals-and-sandbox", "跳过所有审批 + 沙箱（= --yolo）", "codex --yolo exec 'deploy to prod'", "Skip ALL approvals AND sandbox", "⚠️ 等价 claude --dangerously-skip-permissions；CI/脚本用，极其危险"],
-    ["--dangerously-bypass-hook-trust", "跳过 hook 信任确认", "codex --dangerously-bypass-hook-trust exec 'run hooks'", "Skip hook trust prompts", "自动化场景：已审查过 hook 来源时跳过确认"],
-    // ── 沙箱与模式 ──
-    ["--sandbox / -s",        "沙箱策略", "codex --sandbox workspace exec '...'", "Sandbox policy selection", "workspace=限制工作区；danger-full-access=无限制"],
-    ["--approve",             "自动审批操作", "codex --approve exec 'run tests'", "Auto-approve actions", "信任场景下跳过审批提示"],
-    // ── 模型与配置 ──
-    ["--model / -m <name>",   "指定模型", "codex -m gpt-5 exec 'design API'", "Switch model", "默认 gpt-5；也支持 o4-mini 等"],
-    ["--profile / -p <name>", "配置档案", "codex -p production exec '...'", "Config profile", "$CODEX_HOME/<name>.config.toml 叠加配置"],
-    ["--oss",                 "开源本地模型", "codex --oss --local-provider ollama", "Use open-source provider", "支持 ollama / lmstudio；无需 API key"],
-    // ── 会话管理 ──
-    ["codex resume",          "恢复上次会话", "codex resume --last", "Resume previous session", "等价 claude --resume；--last 恢复最近一次"],
-    ["codex resume <id>",     "恢复指定会话", "codex resume abc123 '继续写测试'", "Resume session by ID", "从 codex ps 获取 session ID 后恢复"],
-    // ── 代码辅助 ──
-    ["codex review <file>",   "代码审查", "codex review src/auth.py", "Review code for bugs and style", "类似 PR review，逐行给优化建议"],
-    ["codex test <file>",     "自动生成测试", "codex test src/auth.py", "Auto-generate test cases", "分析代码逻辑后生成测试文件"],
-    ["codex plan",            "任务规划（仅设计）", "codex plan 'build a REST API'", "Plan mode—no code changes", "先出设计方案，用户确认后 exec 再实现"],
-
-    // ── 交互会话斜杠命令 ──
-    ["/model",                "切换模型", "/model", "Switch model mid-session", "列出可用模型并切换，无需重启会话"],
-    ["/init",                 "初始化项目 AGENTS.md", "/init", "Generate AGENTS.md for project", "分析项目结构生成配置，等价 Claude Code /init"],
-    ["/compact",              "压缩上下文", "/compact", "Compact conversation context", "自动摘要历史消息，降低 token 消耗"],
-    ["/clear",                "清空上下文", "/clear", "Clear conversation context", "重置上下文窗口，话题切换时使用"],
-    ["/rename",               "重命名会话", "/rename 'API refactor'", "Rename current session", "给会话起名，方便后续 resume 查找"],
-    ["/new",                  "新建会话", "/new", "Start a new session", "保留当前会话，另开一个新的"],
-    ["/resume",               "恢复会话", "/resume", "Resume a previous session", "显示历史会话列表供选择恢复"],
-    ["/review",               "代码审查", "/review", "Review code changes", "审查当前 diff，给出行级优化建议"],
-    ["/diff",                 "查看变更", "/diff", "Show current diff", "显示本次会话所有文件变更摘要"],
-    ["/usage",                "查看用量", "/usage", "Show token usage and cost", "显示当前会话 token 消耗和预估费用"],
-    ["/status",               "会话状态", "/status", "Show session status", "查看当前会话模型、token 用量、运行时长"],
-    ["/plan",                 "规划模式", "/plan 'build REST API'", "Enter plan-only mode", "先设计方案不写代码，确认后再执行"],
-    ["/goal",                 "设定目标", "/goal 'refactor auth module'", "Set session goal", "为会话设定高层次目标，引导 agent 工作方向"],
-    ["/agent",                "生成子代理", "/agent 'write tests'", "Spawn a sub-agent", "派生子代理处理独立任务，并行工作"],
-    ["/stop",                 "停止代理", "/stop", "Stop running agent", "终止当前正在执行的代理任务"],
-    ["/permissions",          "权限管理", "/permissions", "Manage tool permissions", "查看和修改工具权限（allow/deny/ask）"],
-    ["/skills",               "管理技能", "/skills", "Manage skills", "查看已安装的技能列表，启用/禁用"],
-    ["/memories",             "管理记忆", "/memories", "Manage memories", "查看和编辑 Codex 持久化记忆"],
-    ["/mcp",                  "MCP 服务器", "/mcp", "Manage MCP servers", "添加、移除、查看 MCP 服务器配置"],
-    ["/sandbox-add-read-dir", "添加沙箱读取目录", "/sandbox-add-read-dir ~/lib", "Add read dir to sandbox", "将外部目录加入沙箱只读路径"],
-    ["/theme",                "切换主题", "/theme", "Change UI theme", "切换 TUI 配色方案"],
-    ["/statusline",           "配置状态栏", "/statusline", "Configure status line", "自定义终端状态栏显示内容"],
-    ["/quit",                 "退出会话", "/quit", "Quit Codex session", "等价 /exit，退出当前交互会话"],
-  ];
-
-  var CLI_TABS = [
-    { id: "claude", i18n: "ai.claudeCode", data: CLAUDE_CMDS, cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-    { id: "codex",  i18n: "ai.codex",      data: CODEX_CMDS,  cols: ["ai.cmd", "ai.desc", "ai.example", "ai.note"] },
-  ];
-
-  // ═══ Build ═══
-
-  function buildCliSection(tab) {
-    var h = '';
-    h += '<div class="at-search-wrap"><input id="aisearch-' + tab.id + '" class="search-input" type="text" placeholder="' + t("ai.searchPlaceholder") + '"></div>';
-    h += '<div class="at-table-wrap"><table class="at-table"><thead><tr>';
-    tab.cols.forEach(function (c) { h += '<th>' + t(c) + '</th>'; });
-    h += '</tr></thead><tbody>';
-    tab.data.forEach(function (r) {
-      var searchData = r.join(" ").toLowerCase();
-      var example = r[2];
-      h += '<tr data-search="' + searchData + '">';
-      h += '<td><code>' + r[0] + '</code></td>';
-      h += '<td>' + r[1] + '<br><span class="at-muted">' + r[3] + '</span></td>';
-      // example column: URL → clickable link, else → copy on click
-      if (/^https?:\/\//.test(example)) {
-        h += '<td><a href="' + escapeHtml(example) + '" target="_blank" rel="noopener" class="at-url">' + escapeHtml(example) + '</a></td>';
-      } else {
-        h += '<td data-copy="' + escapeHtml(example) + '"><code>' + escapeHtml(example) + '</code></td>';
-      }
-      h += '<td class="at-muted">' + r[4] + '</td>';
-      h += '</tr>';
+  function currentLang() { return document.documentElement.lang.toLowerCase().indexOf("en") === 0 ? "en" : "zh"; }
+  function text(item, field) { return item[field + (currentLang() === "en" ? "En" : "Zh")]; }
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (char) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char];
     });
-    h += '</tbody></table></div>';
-    return h;
   }
 
-  // ═══ Init ═══
+  var PRODUCTS = {
+    claude: {
+      labelKey: "ai.claudeCode",
+      version: "Claude Code 2.1.128",
+      verified: "2026-07-10",
+      links: [
+        ["CLI Reference", "https://code.claude.com/docs/en/cli-reference"],
+        ["Commands", "https://code.claude.com/docs/en/commands"],
+      ],
+      categories: ["quick", "session", "automation", "safety", "extensions", "interactive"],
+      commands: [
+        { category:"quick", command:"claude", example:"claude", descZh:"启动交互会话", descEn:"Start an interactive session", noteZh:"在项目目录运行，读取项目上下文和 CLAUDE.md。", noteEn:"Run inside a project to load project context and CLAUDE.md." },
+        { category:"quick", command:"claude \"<prompt>\"", example:"claude \"解释这个项目的认证流程\"", exampleEn:"claude \"Explain this project's authentication flow\"", descZh:"带初始任务启动交互会话", descEn:"Start interactively with an initial task", noteZh:"适合直接进入明确任务。", noteEn:"Useful when the first task is already known." },
+        { category:"quick", command:"claude -p \"<prompt>\"", example:"claude -p \"列出未使用的依赖\"", exampleEn:"claude -p \"List unused dependencies\"", descZh:"非交互执行一次任务", descEn:"Run one non-interactive task", noteZh:"完成后退出，适合管道和自动化。", noteEn:"Exits after completion; useful in pipelines and automation." },
+        { category:"quick", command:"claude --model <model>", example:"claude --model sonnet", descZh:"为当前会话选择模型", descEn:"Select a model for this session", noteZh:"使用官方模型别名或完整模型 ID，不在页面硬编码默认模型。", noteEn:"Use an official alias or full model ID; this page does not assume a default." },
+        { category:"quick", command:"claude doctor", example:"claude doctor", descZh:"诊断安装与配置", descEn:"Diagnose installation and configuration", noteZh:"只读检查安装、PATH、认证和配置健康状况。", noteEn:"Read-only checks for installation, PATH, authentication, and configuration." },
 
-  function init(parent) {
-    var h = '<div class="b64-tool">';
-    h += '<div class="b64-tabs">';
-    CLI_TABS.forEach(function (tab, i) {
-      h += '<button class="b64-tab' + (i === 0 ? ' active' : '') + '" data-aitab="' + tab.id + '">' + t(tab.i18n) + '</button>';
+        { category:"session", command:"claude -c", example:"claude -c", descZh:"继续当前目录最近会话", descEn:"Continue the latest session for this directory", noteZh:"等价 --continue。", noteEn:"Alias for --continue." },
+        { category:"session", command:"claude -r [name|id]", example:"claude -r auth-refactor \"继续补测试\"", exampleEn:"claude -r auth-refactor \"Continue adding tests\"", descZh:"恢复指定会话或打开选择器", descEn:"Resume a named/session ID or open the picker", noteZh:"不带参数时打开会话选择器。", noteEn:"Without a value, opens the session picker." },
+        { category:"session", command:"--name / -n", example:"claude -n feature-auth", descZh:"设置会话名称", descEn:"Name the session", noteZh:"名称会显示在恢复选择器和终端标题中。", noteEn:"The name appears in the resume picker and terminal title." },
+        { category:"session", command:"--fork-session", example:"claude -r auth-refactor --fork-session", descZh:"恢复时创建新的会话分支", descEn:"Fork into a new session while resuming", noteZh:"保留原会话 ID，适合尝试另一条路线。", noteEn:"Preserves the original session while trying another direction." },
+        { category:"session", command:"--worktree / -w", example:"claude -w feature-auth", descZh:"在隔离 Git worktree 中启动", descEn:"Start in an isolated Git worktree", noteZh:"适合并行功能开发，避免污染当前工作区。", noteEn:"Useful for parallel work without changing the current worktree." },
+
+        { category:"automation", command:"--output-format", example:"claude -p \"检查项目\" --output-format json", exampleEn:"claude -p \"Inspect the project\" --output-format json", descZh:"选择 text、json 或 stream-json 输出", descEn:"Choose text, JSON, or streaming JSON output", noteZh:"仅用于 print 模式。", noteEn:"Available in print mode." },
+        { category:"automation", command:"--json-schema", example:"claude -p --json-schema '{\"type\":\"object\"}' \"分析项目\"", exampleEn:"claude -p --json-schema '{\"type\":\"object\"}' \"Analyze the project\"", descZh:"约束最终结构化输出", descEn:"Validate the final structured output", noteZh:"适合脚本稳定消费结果。", noteEn:"Useful when scripts require a stable result shape." },
+        { category:"automation", command:"--max-budget-usd", example:"claude -p --max-budget-usd 2 \"修复测试\"", exampleEn:"claude -p --max-budget-usd 2 \"Fix the tests\"", descZh:"限制非交互任务预算", descEn:"Set a budget limit for non-interactive work", noteZh:"达到限制后停止。", noteEn:"Stops when the limit is reached." },
+        { category:"automation", command:"--max-turns", example:"claude -p --max-turns 3 \"分析失败原因\"", exampleEn:"claude -p --max-turns 3 \"Analyze the failure\"", descZh:"限制代理执行轮数", descEn:"Limit agentic turns", noteZh:"适合控制自动化任务边界。", noteEn:"Keeps automated tasks bounded." },
+        { category:"automation", command:"--bare", example:"claude --bare -p \"总结 README\"", exampleEn:"claude --bare -p \"Summarize the README\"", descZh:"最小化启动模式", descEn:"Start in minimal mode", noteZh:"跳过多数自定义加载，适合快速脚本调用。", noteEn:"Skips most customizations for faster scripted startup." },
+
+        { category:"safety", command:"--permission-mode", example:"claude --permission-mode plan", descZh:"选择权限模式", descEn:"Select a permission mode", noteZh:"可使用 plan、default、acceptEdits、auto 等模式。", noteEn:"Supports modes such as plan, default, acceptEdits, and auto." },
+        { category:"safety", command:"--allowedTools", example:"claude --allowedTools \"Bash(git diff *)\" Read", descZh:"预先允许匹配的工具调用", descEn:"Pre-allow matching tool calls", noteZh:"使用权限规则语法精确限制范围。", noteEn:"Use permission-rule syntax to keep access narrow." },
+        { category:"safety", command:"--disallowedTools", example:"claude --disallowedTools \"Bash(rm *)\" Edit", descZh:"拒绝指定工具或调用模式", descEn:"Deny tools or matching calls", noteZh:"适合只读审查任务。", noteEn:"Useful for read-only review tasks." },
+        { category:"safety", command:"--safe-mode", example:"claude --safe-mode", descZh:"禁用自定义项进行故障排查", descEn:"Disable customizations for troubleshooting", noteZh:"保留认证、模型和内置工具，禁用技能、插件、MCP 等自定义。", noteEn:"Keeps auth and built-ins while disabling skills, plugins, MCP, and other customizations." },
+        { category:"safety", command:"claude --dangerously-skip-permissions -r", example:"claude --dangerously-skip-permissions -r", descZh:"跳过权限提示并打开会话恢复选择器", descEn:"Skip permission prompts and open the session picker", noteZh:"-r 不带名称或 ID 时打开选择器；仅限外部已隔离且完全信任的环境。", noteEn:"Without a name or ID, -r opens the picker; use only in an externally isolated, fully trusted environment.", dangerous:true },
+        { category:"safety", command:"--dangerously-skip-permissions", example:"claude --dangerously-skip-permissions", descZh:"跳过权限提示", descEn:"Skip permission prompts", noteZh:"仅应在外部已隔离且完全信任的环境使用。", noteEn:"Use only inside an externally isolated, fully trusted environment.", dangerous:true },
+
+        { category:"extensions", command:"claude mcp list", example:"claude mcp list", descZh:"列出 MCP 服务器", descEn:"List configured MCP servers", noteZh:"使用 claude mcp add/get/remove 管理。", noteEn:"Manage servers with claude mcp add/get/remove." },
+        { category:"extensions", command:"claude mcp add", example:"claude mcp add my-server -- npx my-mcp-server", descZh:"添加 MCP 服务器", descEn:"Add an MCP server", noteZh:"支持 stdio 和 HTTP 等传输。", noteEn:"Supports transports including stdio and HTTP." },
+        { category:"extensions", command:"claude plugin list", example:"claude plugin list", descZh:"列出已安装插件", descEn:"List installed plugins", noteZh:"还支持 install、enable、disable、update、remove。", noteEn:"Also supports install, enable, disable, update, and remove." },
+        { category:"extensions", command:"--plugin-dir", example:"claude --plugin-dir ./my-plugin", descZh:"为当前会话加载本地插件", descEn:"Load a local plugin for this session", noteZh:"可重复传入多个目录或 zip。", noteEn:"Repeat for multiple directories or zip archives." },
+        { category:"extensions", command:"--add-dir", example:"claude --add-dir ../shared-lib", descZh:"增加可访问目录", descEn:"Add another accessible directory", noteZh:"仅授予目录访问，不等于加载该目录全部配置。", noteEn:"Grants directory access without loading every configuration from it." },
+
+        { category:"interactive", command:"/compact [instructions]", example:"/compact 保留认证和测试上下文", exampleEn:"/compact preserve auth and test context", descZh:"压缩当前会话上下文", descEn:"Compact the current conversation", noteZh:"继续同一会话并释放上下文空间。", noteEn:"Keeps the same session while freeing context space." },
+        { category:"interactive", command:"/clear [name]", example:"/clear auth-before-refactor", descZh:"开始空上下文的新对话", descEn:"Start a new conversation with empty context", noteZh:"上一会话仍可通过 /resume 恢复。", noteEn:"The previous conversation remains available through /resume." },
+        { category:"interactive", command:"/model [model]", example:"/model sonnet", descZh:"切换模型", descEn:"Switch model", noteZh:"无参数时打开选择器。", noteEn:"Without a value, opens the model picker." },
+        { category:"interactive", command:"/permissions", example:"/permissions", descZh:"管理允许、询问和拒绝规则", descEn:"Manage allow, ask, and deny rules", noteZh:"交互查看不同作用域的权限。", noteEn:"Interactively manages permission rules by scope." },
+        { category:"interactive", command:"/diff", example:"/diff", descZh:"查看当前及逐轮代码差异", descEn:"Open the interactive diff viewer", noteZh:"用于检查未提交变更和每轮编辑。", noteEn:"Inspect uncommitted changes and per-turn edits." },
+        { category:"interactive", command:"/init", example:"/init", descZh:"生成项目 CLAUDE.md", descEn:"Initialize a project CLAUDE.md", noteZh:"分析项目并创建持久化项目指引。", noteEn:"Analyzes the project and creates durable project guidance." },
+        { category:"interactive", command:"/mcp", example:"/mcp", descZh:"管理 MCP 连接和认证", descEn:"Manage MCP connections and authentication", noteZh:"可查看、启用、禁用和重连服务器。", noteEn:"View, enable, disable, and reconnect servers." },
+        { category:"interactive", command:"/plugin", example:"/plugin list", descZh:"管理插件", descEn:"Manage plugins", noteZh:"无参数时打开插件菜单。", noteEn:"Without a subcommand, opens the plugin menu." },
+        { category:"interactive", command:"/doctor", example:"/doctor", descZh:"运行安装与配置检查", descEn:"Run installation and configuration diagnostics", noteZh:"先报告问题，再在修改前请求确认。", noteEn:"Reports findings first and asks before making changes." },
+      ],
+    },
+    codex: {
+      labelKey: "ai.codex",
+      version: "codex-cli 0.144.0-alpha.4",
+      verified: "2026-07-10",
+      links: [
+        ["CLI Repository", "https://github.com/openai/codex"],
+        ["Codex Docs", "https://developers.openai.com/codex/cli"],
+      ],
+      categories: ["quick", "session", "automation", "safety", "extensions", "review"],
+      commands: [
+        { category:"quick", command:"codex [prompt]", example:"codex \"解释这个项目的认证流程\"", exampleEn:"codex \"Explain this project's authentication flow\"", descZh:"启动交互会话", descEn:"Start an interactive session", noteZh:"无提示词时直接进入交互界面。", noteEn:"Omit the prompt to open the interactive interface directly." },
+        { category:"quick", command:"codex exec [prompt]", example:"codex exec \"修复失败的测试\"", exampleEn:"codex exec \"Fix the failing tests\"", descZh:"非交互执行任务", descEn:"Run a task non-interactively", noteZh:"适合脚本、CI 和明确的一次性任务。", noteEn:"Useful for scripts, CI, and bounded one-shot tasks." },
+        { category:"quick", command:"codex -C <dir>", example:"codex -C ../service \"检查 API\"", exampleEn:"codex -C ../service \"Inspect the API\"", descZh:"指定工作目录", descEn:"Set the working directory", noteZh:"无需先 cd。", noteEn:"Avoids changing directories before launch." },
+        { category:"quick", command:"codex -m <model>", example:"codex -m <model> \"审查当前改动\"", exampleEn:"codex -m <model> \"Review current changes\"", descZh:"为当前会话选择模型", descEn:"Select a model for this session", noteZh:"模型可用性取决于当前账户和配置。", noteEn:"Model availability depends on account and configuration." },
+        { category:"quick", command:"codex doctor", example:"codex doctor", descZh:"诊断安装、配置和认证", descEn:"Diagnose installation, config, and auth", noteZh:"优先用于排查本地运行问题。", noteEn:"Use first when troubleshooting a local installation." },
+
+        { category:"session", command:"codex resume", example:"codex resume", descZh:"打开会话恢复选择器", descEn:"Open the session resume picker", noteZh:"默认按当前目录筛选会话。", noteEn:"Sessions are filtered by the current directory by default." },
+        { category:"session", command:"codex resume --last", example:"codex resume --last \"继续补测试\"", exampleEn:"codex resume --last \"Continue adding tests\"", descZh:"恢复最近会话", descEn:"Resume the most recent session", noteZh:"不显示选择器。", noteEn:"Skips the picker." },
+        { category:"session", command:"codex resume <id|name>", example:"codex resume auth-refactor", descZh:"恢复指定 ID 或名称的会话", descEn:"Resume a session by ID or name", noteZh:"UUID 优先按会话 ID 解析。", noteEn:"UUID values are resolved as session IDs first." },
+        { category:"session", command:"codex fork --last", example:"codex fork --last", descZh:"从最近会话派生新会话", descEn:"Fork the most recent session", noteZh:"适合保留原路线并尝试另一种实现。", noteEn:"Preserves the original path while trying another implementation." },
+        { category:"session", command:"codex archive <id|name>", example:"codex archive auth-refactor", descZh:"归档已保存会话", descEn:"Archive a saved session", noteZh:"还提供 unarchive 和 delete。", noteEn:"Related commands include unarchive and delete." },
+
+        { category:"automation", command:"codex exec --json", example:"codex exec --json \"检查依赖\"", descZh:"以 JSONL 输出事件", descEn:"Emit events as JSONL", noteZh:"适合程序逐事件消费。", noteEn:"Useful for programmatic event processing." },
+        { category:"automation", command:"--output-schema <file>", example:"codex exec --output-schema result.schema.json \"分析项目\"", descZh:"指定最终输出 JSON Schema", descEn:"Set a JSON Schema for the final response", noteZh:"用于稳定结构化结果。", noteEn:"Provides a stable structured result." },
+        { category:"automation", command:"-o, --output-last-message", example:"codex exec -o result.txt \"总结改动\"", descZh:"把最终消息写入文件", descEn:"Write the final message to a file", noteZh:"标准输出仍可用于事件或日志。", noteEn:"Standard output remains available for events or logs." },
+        { category:"automation", command:"--ephemeral", example:"codex exec --ephemeral \"检查 README\"", descZh:"不持久化会话文件", descEn:"Run without persisting session files", noteZh:"适合临时自动化任务。", noteEn:"Useful for disposable automated tasks." },
+        { category:"automation", command:"--skip-git-repo-check", example:"codex exec --skip-git-repo-check \"分析这个目录\"", descZh:"允许在非 Git 目录执行", descEn:"Allow execution outside a Git repository", noteZh:"仅在明确不需要 Git 上下文时使用。", noteEn:"Use only when Git context is intentionally unnecessary." },
+
+        { category:"safety", command:"-s, --sandbox", example:"codex -s read-only \"审查代码\"", descZh:"选择命令沙箱策略", descEn:"Select the command sandbox policy", noteZh:"支持 read-only、workspace-write、danger-full-access。", noteEn:"Supports read-only, workspace-write, and danger-full-access." },
+        { category:"safety", command:"-a, --ask-for-approval", example:"codex -a on-request \"修复测试\"", descZh:"选择审批策略", descEn:"Select the approval policy", noteZh:"支持 untrusted、on-request、never。", noteEn:"Supports untrusted, on-request, and never." },
+        { category:"safety", command:"--add-dir", example:"codex --add-dir ../shared-lib", descZh:"增加可写目录", descEn:"Add another writable directory", noteZh:"与主工作区一起纳入沙箱范围。", noteEn:"Adds another directory to the sandbox alongside the workspace." },
+        { category:"safety", command:"--strict-config", example:"codex --strict-config", descZh:"遇到未知配置项时直接报错", descEn:"Fail on unrecognized configuration", noteZh:"适合 CI 检测过期或拼错配置。", noteEn:"Useful in CI to catch stale or misspelled config." },
+        { category:"safety", command:"--dangerously-bypass-approvals-and-sandbox", example:"codex --dangerously-bypass-approvals-and-sandbox", descZh:"跳过审批并关闭沙箱", descEn:"Skip approvals and disable sandboxing", noteZh:"仅应在外部已隔离的环境使用。", noteEn:"Use only in an externally isolated environment.", dangerous:true },
+
+        { category:"extensions", command:"codex mcp list", example:"codex mcp list", descZh:"列出 MCP 服务器", descEn:"List configured MCP servers", noteZh:"还支持 get、add、remove、login、logout。", noteEn:"Also supports get, add, remove, login, and logout." },
+        { category:"extensions", command:"codex plugin list", example:"codex plugin list", descZh:"列出插件市场中的插件", descEn:"List plugins from configured marketplaces", noteZh:"还支持 add、remove 和 marketplace 管理。", noteEn:"Also supports add, remove, and marketplace management." },
+        { category:"extensions", command:"codex completion <shell>", example:"codex completion zsh", descZh:"生成 Shell 自动补全", descEn:"Generate shell completion", noteZh:"输出可写入对应 Shell 的补全目录。", noteEn:"Write the output into the completion location for your shell." },
+        { category:"extensions", command:"codex app", example:"codex app", descZh:"启动 Codex 桌面应用", descEn:"Launch the Codex desktop app", noteZh:"缺少应用时会打开安装流程。", noteEn:"Opens the installer when the app is unavailable." },
+        { category:"extensions", command:"codex update", example:"codex update", descZh:"更新 Codex CLI", descEn:"Update Codex CLI", noteZh:"安装当前渠道的最新版本。", noteEn:"Installs the latest version from the current channel." },
+
+        { category:"review", command:"codex review --uncommitted", example:"codex review --uncommitted", descZh:"审查暂存、未暂存和未跟踪改动", descEn:"Review staged, unstaged, and untracked changes", noteZh:"用于提交前审查当前工作区。", noteEn:"Useful for a pre-commit review of the working tree." },
+        { category:"review", command:"codex review --base <branch>", example:"codex review --base main", descZh:"审查相对基准分支的改动", descEn:"Review changes against a base branch", noteZh:"适合 PR 或功能分支检查。", noteEn:"Useful for pull requests and feature branches." },
+        { category:"review", command:"codex review --commit <sha>", example:"codex review --commit HEAD", descZh:"审查指定提交引入的改动", descEn:"Review changes introduced by a commit", noteZh:"可追加自定义审查提示词。", noteEn:"A custom review prompt can also be supplied." },
+        { category:"review", command:"codex exec review", example:"codex exec review --uncommitted", descZh:"在非交互执行流程中运行代码审查", descEn:"Run review through the non-interactive exec flow", noteZh:"适合脚本和 CI。", noteEn:"Useful for scripts and CI." },
+        { category:"review", command:"codex apply", example:"codex apply", descZh:"应用代理最近生成的补丁", descEn:"Apply the latest agent-produced diff", noteZh:"以 git apply 方式写入当前工作树。", noteEn:"Applies the latest diff to the current working tree using git apply." },
+      ],
+    },
+  };
+
+  var COMPARISON = [
+    { key:"start", claudeZh:"claude", claudeEn:"claude", codexZh:"codex [prompt]", codexEn:"codex [prompt]" },
+    { key:"oneShot", claudeZh:"claude -p \"<prompt>\"", claudeEn:"claude -p \"<prompt>\"", codexZh:"codex exec \"<prompt>\"", codexEn:"codex exec \"<prompt>\"" },
+    { key:"resume", claudeZh:"claude -c / claude -r", claudeEn:"claude -c / claude -r", codexZh:"codex resume / codex resume --last", codexEn:"codex resume / codex resume --last" },
+    { key:"model", claudeZh:"claude --model <model>", claudeEn:"claude --model <model>", codexZh:"codex -m <model>", codexEn:"codex -m <model>" },
+    { key:"workdir", claudeZh:"claude --add-dir <dir>", claudeEn:"claude --add-dir <dir>", codexZh:"codex -C <dir> / --add-dir <dir>", codexEn:"codex -C <dir> / --add-dir <dir>" },
+    { key:"plan", claudeZh:"claude --permission-mode plan", claudeEn:"claude --permission-mode plan", codexZh:"在提示词中要求先规划，或使用支持的交互模式", codexEn:"Ask for a plan in the prompt, or use a supported interactive mode" },
+    { key:"approval", claudeZh:"claude --permission-mode <mode>", claudeEn:"claude --permission-mode <mode>", codexZh:"codex -a <policy>", codexEn:"codex -a <policy>" },
+    { key:"sandbox", claudeZh:"通过权限模式和工具规则控制", claudeEn:"Controlled through permission modes and tool rules", codexZh:"codex -s <sandbox>", codexEn:"codex -s <sandbox>" },
+    { key:"structured", claudeZh:"--output-format json / --json-schema", claudeEn:"--output-format json / --json-schema", codexZh:"codex exec --json / --output-schema", codexEn:"codex exec --json / --output-schema" },
+    { key:"review", claudeZh:"/code-review 或直接要求审查", claudeEn:"/code-review or ask for a review directly", codexZh:"codex review --uncommitted|--base|--commit", codexEn:"codex review --uncommitted|--base|--commit" },
+    { key:"mcp", claudeZh:"claude mcp ... / /mcp", claudeEn:"claude mcp ... / /mcp", codexZh:"codex mcp ...", codexEn:"codex mcp ..." },
+    { key:"plugins", claudeZh:"claude plugin ... / /plugin", claudeEn:"claude plugin ... / /plugin", codexZh:"codex plugin ...", codexEn:"codex plugin ..." },
+  ];
+
+  function buildLinks(product) {
+    var html = '<div class="at-doc-refs"><span>' + t("ai.verified") + ': ' + escapeHtml(product.version) + ' · ' + product.verified + '</span>';
+    product.links.forEach(function (link) {
+      html += '<a href="' + escapeHtml(link[1]) + '" target="_blank" rel="noopener">' + escapeHtml(link[0]) + '</a>';
     });
-    h += '</div>';
-    CLI_TABS.forEach(function (tab, i) {
-      h += '<div id="aitab-' + tab.id + '" class="android-section' + (i !== 0 ? ' hidden' : '') + '">' + buildCliSection(tab) + '</div>';
-    });
-    h += '</div>';
+    return html + '</div>';
+  }
 
-    parent.innerHTML = h;
+  function buildCategoryTabs(productId) {
+    return '<div class="b64-tabs ai-category-tabs">' + PRODUCTS[productId].categories.map(function (category) {
+      return '<button class="b64-tab' + (activeCategories[productId] === category ? ' active' : '') + '" data-ai-category="' + category + '">' + t("ai.categories." + category) + '</button>';
+    }).join('') + '</div>';
+  }
 
-    // tab switch
-    document.querySelectorAll(".b64-tab[data-aitab]").forEach(function (btn) {
-      btn.addEventListener("click", function () { switchAiTab(this.dataset.aitab); });
-    });
+  function buildCommandTable(productId) {
+    var product = PRODUCTS[productId];
+    var category = activeCategories[productId];
+    var rows = product.commands.filter(function (item) { return item.category === category; }).map(function (item) {
+      var rowClass = item.dangerous ? ' class="ai-danger-row"' : '';
+      var example = currentLang() === "en" && item.exampleEn ? item.exampleEn : item.example;
+      return '<tr' + rowClass + ' data-search="' + escapeHtml([item.command, item.example, item.exampleEn || "", item.descZh, item.descEn, item.noteZh, item.noteEn].join(' ').toLowerCase()) + '">' +
+        '<td><code>' + escapeHtml(item.command) + '</code>' + (item.dangerous ? '<br><span class="at-muted">⚠ ' + t("ai.dangerous") + '</span>' : '') + '</td>' +
+        '<td>' + escapeHtml(text(item, "desc")) + '</td>' +
+        '<td data-copy="' + escapeHtml(example) + '"><code>' + escapeHtml(example) + '</code></td>' +
+        '<td class="at-muted">' + escapeHtml(text(item, "note")) + '</td></tr>';
+    }).join('');
+    return '<div class="at-search-wrap"><input id="ai-search" class="search-input" type="text" placeholder="' + t("ai.searchPlaceholder") + '"></div>' +
+      '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("ai.cmd") + '</th><th>' + t("ai.desc") + '</th><th>' + t("ai.example") + '</th><th>' + t("ai.note") + '</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
 
-    // click row to copy example (delegation, skip <a> clicks)
-    parent.addEventListener("click", function (e) {
-      if (e.target.closest("a")) return;
-      var el = e.target.closest("[data-copy]");
-      if (!el) return;
-      navigator.clipboard.writeText(el.dataset.copy).then(function () {
-        showCopyToast("✓ " + t("ai.copied"));
-      });
-    });
+  function buildProduct(productId) {
+    return buildLinks(PRODUCTS[productId]) + buildCategoryTabs(productId) + '<div id="ai-command-table">' + buildCommandTable(productId) + '</div>';
+  }
 
-    // search binding per CLI tab
-    CLI_TABS.forEach(function (tab) {
-      var input = document.getElementById("aisearch-" + tab.id);
-      if (!input) return;
-      input.addEventListener("input", function () {
-        var q = this.value.toLowerCase();
-        document.querySelectorAll("#aitab-" + tab.id + " tbody tr").forEach(function (tr) {
-          tr.style.display = q && !tr.dataset.search.includes(q) ? "none" : "";
+  function buildComparison() {
+    var rows = COMPARISON.map(function (row) {
+      var claudeValue = text(row, "claude");
+      var codexValue = text(row, "codex");
+      return '<tr><td>' + t("ai.compare." + row.key) + '</td><td data-copy="' + escapeHtml(claudeValue) + '"><code>' + escapeHtml(claudeValue) + '</code></td><td data-copy="' + escapeHtml(codexValue) + '"><code>' + escapeHtml(codexValue) + '</code></td></tr>';
+    }).join('');
+    return '<div class="at-doc-refs">' + t("ai.compareHint") + '</div><div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("ai.scenario") + '</th><th>Claude Code</th><th>Codex</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function renderBody() {
+    var body = document.getElementById("ai-body");
+    body.innerHTML = activeProduct === "compare" ? buildComparison() : buildProduct(activeProduct);
+    if (activeProduct !== "compare") {
+      body.querySelectorAll(".b64-tab[data-ai-category]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          activeCategories[activeProduct] = this.dataset.aiCategory;
+          renderBody();
         });
       });
-    });
+      var search = document.getElementById("ai-search");
+      if (search) search.addEventListener("input", function () {
+        var query = this.value.trim().toLowerCase();
+        document.querySelectorAll("#ai-command-table tbody tr").forEach(function (row) {
+          row.style.display = query && row.dataset.search.indexOf(query) === -1 ? "none" : "";
+        });
+      });
+    }
   }
 
-  function switchAiTab(name) {
-    document.querySelectorAll(".b64-tab[data-aitab]").forEach(function (b) {
-      b.className = "b64-tab" + (b.dataset.aitab === name ? " active" : "");
+  function init(parent) {
+    parent.innerHTML = '<div class="b64-tool"><div class="b64-tabs">' +
+      '<button class="b64-tab active" data-ai-product="claude">' + t("ai.claudeCode") + '</button>' +
+      '<button class="b64-tab" data-ai-product="codex">' + t("ai.codex") + '</button>' +
+      '<button class="b64-tab" data-ai-product="compare">' + t("ai.comparison") + '</button></div><div id="ai-body" class="android-section"></div></div>';
+    parent.querySelectorAll(".b64-tab[data-ai-product]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        activeProduct = this.dataset.aiProduct;
+        parent.querySelectorAll(".b64-tab[data-ai-product]").forEach(function (item) {
+          item.className = "b64-tab" + (item.dataset.aiProduct === activeProduct ? " active" : "");
+        });
+        renderBody();
+      });
     });
-    document.querySelectorAll("[id^='aitab-']").forEach(function (s) {
-      s.classList.toggle("hidden", s.id !== "aitab-" + name);
+    parent.addEventListener("click", function (event) {
+      if (event.target.closest("a")) return;
+      var copyTarget = event.target.closest("[data-copy]");
+      if (!copyTarget) return;
+      navigator.clipboard.writeText(copyTarget.dataset.copy).then(function () { showCopyToast("✓ " + t("ai.copied")); });
     });
-  }
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, function (ch) {
-      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch];
-    });
+    renderBody();
   }
 
   return { init: init };
