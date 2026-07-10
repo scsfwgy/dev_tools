@@ -1259,59 +1259,7 @@ def content_create():
 
 @app.route("/api/content/<content_id>")
 def content_get(content_id: str):
-    """Return raw text content."""
-    # admin view — ?view=1&token=xxx
-    if request.args.get("view"):
-        if not _check_admin_token():
-            return Response("<h1>401 Unauthorized</h1><p>需要 ?token= 鉴权参数</p>", status=401)
-
-        ids = _list_contents()
-        rows = ""
-        for cid in ids:
-            entry = _load_content(cid)
-            if not entry:
-                continue
-            full_text = html.escape(entry.get("text", ""))
-            text_preview = full_text[:80].replace("\n", " ")
-            created = entry.get("created_at", 0)
-            created_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(created)) if created else "-"
-            size = entry.get("size", 0)
-            ip = html.escape(entry.get("ip", "-"))
-            link = f"{request.host_url.rstrip('/')}/api/content/{cid}"
-            rows += (
-                f'<tr>'
-                f'<td><code>{html.escape(cid)}</code></td>'
-                f'<td>{text_preview}{"…" if len(entry.get("text","")) > 80 else ""}</td>'
-                f'<td style="font-size:.75rem"><a href="{html.escape(link)}" target="_blank" style="color:var(--accent,#4fc3f7)">{html.escape(link)}</a></td>'
-                f'<td style="font-size:.75rem">{created_str}</td>'
-                f'<td>{size}</td>'
-                f'<td style="font-size:.7rem;color:#888">{ip}</td>'
-                f'<td><button class="toggle-btn" onclick="var d=this.parentElement.querySelector(\'pre\');d.hidden=!d.hidden;this.textContent=d.hidden?\'查看\':\'收起\'">查看</button>'
-                f'<pre class="content-full" hidden style="max-width:400px;white-space:pre-wrap;word-break:break-all;font-size:.75rem;margin-top:4px;padding:6px 8px;background:#1a1a1a;border-radius:4px;color:#ccc">{full_text}</pre></td>'
-                f'</tr>'
-            )
-
-        html_page = f"""<!DOCTYPE html>
-<meta charset="utf-8"><title>内容管理</title>
-<style>
-body{{font-family:system-ui;max-width:1200px;margin:30px auto;padding:0 16px;background:#111;color:#eee}}
-h1{{font-size:1.3rem}}h2{{font-size:1rem;margin:24px 0 10px;color:#ccc}}
-table{{width:100%;border-collapse:collapse;margin-bottom:8px}}
-th,td{{padding:7px 10px;text-align:left;border-bottom:1px solid #333;vertical-align:top}}
-th{{color:#999;font-size:.75rem;font-weight:600}}
-td{{font-size:.82rem}}tr:hover{{background:#1a1a1a}}
-code{{color:#4fc3f7;font-size:.8rem}}
-a{{text-decoration:none}}a:hover{{text-decoration:underline}}
-.sub{{font-size:.7rem;color:#666}}
-.toggle-btn{{padding:2px 8px;border:1px solid #555;border-radius:4px;background:transparent;color:#aaa;cursor:pointer;font-size:.72rem}}
-.toggle-btn:hover{{border-color:var(--accent,#4fc3f7);color:var(--accent,#4fc3f7)}}
-</style>
-<h1>📝 内容管理</h1>
-<p class="sub">共 {len(ids)} 条记录 · 数据来源：{'Redis' if cache_store.is_enabled() else '本地文件'} · 访问链接直接返回纯文本</p>
-<table><thead><tr><th>ID</th><th>内容预览</th><th>链接</th><th>时间</th><th>大小</th><th>IP</th><th>全文</th></tr></thead><tbody>{rows or '<tr><td colspan="7" style="color:#666">暂无内容</td></tr>'}</tbody></table>"""
-        return html_page
-
-    # serve raw text
+    """Serve raw text content."""
     entry = _load_content(content_id)
     if not entry:
         return Response("Content not found or expired.", status=404, mimetype="text/plain")
