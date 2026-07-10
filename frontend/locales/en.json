@@ -27,6 +27,7 @@
     "ai": "AI CLI",
     "translate": "Translate",
     "git": "Git",
+    "content": "Content Gen",
     "wishes": "Wish Wall",
     "searchPlaceholder": "Search tools...",
     "collapseMenu": "Collapse menu",
@@ -770,5 +771,23 @@
     "referenceNote": "Use the rate in your loan contract. LPR is a pricing reference and is not necessarily your final mortgage rate.",
     "pbcLpr": "PBOC: LPR",
     "chinaMoneyLpr": "ChinaMoney: Official LPR"
+  },
+  "content": {
+    "createTab": "Generate Remote Link",
+    "notice": "Content will be recorded on the server. Anyone with the link can access it. Do not host passwords, keys, or other sensitive information.",
+    "terminalHint": "After generating a link, use <code>curl -s &lt;url&gt; | bash</code> to execute remotely. See <a href=\"/en/tool/terminal#shell\">Terminal Commands · Shell Tips</a>.",
+    "placeholder": "Paste any text content...\n\nExamples:\n• Shell scripts\n• Config files (JSON/YAML/TOML)\n• Code snippets\n• Plain text notes",
+    "generate": "Generate Link",
+    "generating": "Generating...",
+    "yourLink": "Your remote link (access for raw plain text):",
+    "copy": "Copy",
+    "open": "Open",
+    "copied": "Copied",
+    "error": "Generation failed, please retry",
+    "tooLarge": "Content too long, max 1,024 characters",
+    "chars": "chars",
+    "history": "History",
+    "recommend": "Recommended (click to copy, use at your own risk)",
+    "safer": "safer"
   }
 }

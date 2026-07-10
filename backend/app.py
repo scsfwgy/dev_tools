@@ -4,7 +4,9 @@ import html
 import json
 import logging
 import os
+import secrets
 import threading
+import time
 from pathlib import Path
 
 import requests
@@ -610,6 +612,34 @@ TOOLS = {
             ],
         },
     },
+    "content": {
+        "zh": {
+            "name": "内容生成器",
+            "title": "内容生成器 - 生成远程链接 纯文本托管 脚本分享 | Tools24",
+            "description": "输入任意文本内容，生成一个远程链接，访问即可获取纯文本内容。适合远程脚本、配置文件托管和文本分享。",
+            "keywords": "内容生成,远程链接,文本托管,脚本分享,在线文本,内容分享,pastebin",
+            "intro": "输入任意文本内容，一键生成远程链接。访问该链接即可获取纯文本内容，适合托管远程脚本、配置文件或分享文本。",
+            "features": ["一键生成远程链接", "纯文本直接访问", "支持脚本/配置/文本", "内容限制 1024 字符", "四种推荐命令一键复制"],
+            "faq": [
+                ("生成的内容会公开吗？", "链接本身不可猜测，但拥有链接的任何人都可以访问内容。请勿托管敏感信息。"),
+                ("内容保存多久？", "内容默认保存 7 天，过期自动删除。"),
+                ("内容大小有限制吗？", "单次内容限制 1,024 个字符。"),
+            ],
+        },
+        "en": {
+            "name": "Content Generator",
+            "title": "Content Generator - Remote Link Plain Text Hosting Script Share | Tools24",
+            "description": "Generate a remote link from any text content. Access it to get raw plain text — perfect for remote scripts, config hosting and text sharing.",
+            "keywords": "content generator,remote link,text hosting,script sharing,online text,pastebin,content share",
+            "intro": "Paste any text and generate a remote link. Visiting the link returns raw plain text — ideal for hosting remote scripts, configs or sharing text snippets.",
+            "features": ["One-click remote link generation", "Raw plain text access", "Scripts / configs / text", "1,024 character limit", "4 recommended commands, click to copy"],
+            "faq": [
+                ("Is my content public?", "The link is unguessable, but anyone with the link can access the content. Do not host sensitive information."),
+                ("How long is content kept?", "Content is stored for 7 days by default, then automatically deleted."),
+                ("Is there a size limit?", "Single content is limited to 1,024 characters."),
+            ],
+        },
+    },
     "mortgage": {
         "zh": {
             "name": "房贷计算器",
@@ -1086,6 +1116,169 @@ def translate():
         "target_lang": target_lang,
     })
 
+
+
+# --- Content Generator API ---
+_MAX_CONTENT_SIZE = 1024  # characters
+_CONTENT_TTL = 7 * 24 * 3600  # 7 days
+_CONTENT_KEY_PREFIX = "content:"
+_CONTENT_LIST_KEY = "content_list"
+_CONTENT_STORE_DIR = Path("/tmp/content_store") if Path("/tmp").exists() else Path(__file__).resolve().parent / "config" / "content_store"
+
+
+def _content_store_path(content_id: str) -> Path:
+    return _CONTENT_STORE_DIR / f"{content_id}.json"
+
+
+def _save_content_file(content_id: str, data: dict) -> None:
+    _CONTENT_STORE_DIR.mkdir(parents=True, exist_ok=True)
+    _content_store_path(content_id).write_text(json.dumps(data, ensure_ascii=False))
+
+
+def _load_content_file(content_id: str) -> dict | None:
+    p = _content_store_path(content_id)
+    if p.exists():
+        try:
+            return json.loads(p.read_text())
+        except Exception:
+            return None
+    return None
+
+
+def _delete_content_file(content_id: str) -> bool:
+    p = _content_store_path(content_id)
+    if p.exists():
+        p.unlink()
+        return True
+    return False
+
+
+def _list_content_files() -> list[str]:
+    if not _CONTENT_STORE_DIR.exists():
+        return []
+    return sorted(
+        [p.stem for p in _CONTENT_STORE_DIR.glob("*.json") if p.stem != "_list"],
+        key=lambda x: _CONTENT_STORE_DIR.joinpath(f"{x}.json").stat().st_mtime,
+        reverse=True,
+    )
+
+
+def _save_content(content_id: str, text: str) -> None:
+    now = int(time.time())
+    data = {"text": text, "created_at": now, "size": len(text), "ip": _client_ip()}
+    if cache_store.is_enabled():
+        cache_store.cache_set(f"{_CONTENT_KEY_PREFIX}{content_id}", json.dumps(data, ensure_ascii=False), _CONTENT_TTL)
+        cache_store.cache_lpush(_CONTENT_LIST_KEY, content_id)
+    else:
+        _save_content_file(content_id, data)
+        # maintain file-based list
+        list_path = _CONTENT_STORE_DIR / "_list.json"
+        ids = []
+        if list_path.exists():
+            try:
+                ids = json.loads(list_path.read_text())
+            except Exception:
+                ids = []
+        ids.insert(0, content_id)
+        list_path.write_text(json.dumps(ids))
+
+
+def _load_content(content_id: str) -> dict | None:
+    if cache_store.is_enabled():
+        raw = cache_store.cache_get(f"{_CONTENT_KEY_PREFIX}{content_id}")
+        if raw:
+            try:
+                return json.loads(raw)
+            except Exception:
+                return None
+    return _load_content_file(content_id)
+
+
+def _delete_content(content_id: str) -> bool:
+    if cache_store.is_enabled():
+        cache_store.cache_del(f"{_CONTENT_KEY_PREFIX}{content_id}")
+        cache_store.cache_lrem(_CONTENT_LIST_KEY, 0, content_id)
+    return _delete_content_file(content_id)
+
+
+def _list_contents() -> list[str]:
+    if cache_store.is_enabled():
+        return cache_store.cache_lrange(_CONTENT_LIST_KEY, 0, -1)
+    return _list_content_files()
+
+
+@app.route("/api/content", methods=["POST"])
+def content_create():
+    """Create a new content entry. Body: {"text": "..."}"""
+    data = request.get_json(silent=True) or {}
+    text = data.get("text", "")
+    if not text:
+        return jsonify({"ok": False, "error": "empty text"}), 400
+    if len(text) > _MAX_CONTENT_SIZE:
+        return jsonify({"ok": False, "error": f"content too large (max {_MAX_CONTENT_SIZE} chars)"}), 400
+
+    content_id = secrets.token_hex(4)  # 8 hex chars
+    _save_content(content_id, text)
+    return jsonify({
+        "ok": True,
+        "id": content_id,
+        "url": f"{SITE_URL}/api/content/{content_id}",
+        "size": len(text),
+    })
+
+
+@app.route("/api/content/<content_id>")
+def content_get(content_id: str):
+    """Return raw text content."""
+    # admin view — ?view=1&token=xxx
+    if request.args.get("view"):
+        if not _check_admin_token():
+            return Response("<h1>401 Unauthorized</h1><p>需要 ?token= 鉴权参数</p>", status=401)
+
+        ids = _list_contents()
+        rows = ""
+        for cid in ids:
+            entry = _load_content(cid)
+            if not entry:
+                continue
+            text_preview = html.escape(entry.get("text", "")[:80].replace("\n", " "))
+            created = entry.get("created_at", 0)
+            created_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(created)) if created else "-"
+            size = entry.get("size", 0)
+            ip = html.escape(entry.get("ip", "-"))
+            rows += f'<tr><td><code>{html.escape(cid)}</code></td><td>{text_preview}…</td><td style="font-size:.75rem">{created_str}</td><td>{size}</td><td style="font-size:.7rem;color:#888">{ip}</td></tr>'
+
+        html_page = f"""<!DOCTYPE html>
+<meta charset="utf-8"><title>内容管理</title>
+<style>
+body{{font-family:system-ui;max-width:960px;margin:30px auto;padding:0 16px;background:#111;color:#eee}}
+h1{{font-size:1.3rem}}h2{{font-size:1rem;margin:24px 0 10px;color:#ccc}}
+table{{width:100%;border-collapse:collapse;margin-bottom:8px}}
+th,td{{padding:7px 10px;text-align:left;border-bottom:1px solid #333}}
+th{{color:#999;font-size:.75rem;font-weight:600}}
+td{{font-size:.82rem}}tr:hover{{background:#1a1a1a}}
+code{{color:#4fc3f7;font-size:.8rem}}
+.sub{{font-size:.7rem;color:#666}}
+</style>
+<h1>📝 内容管理</h1>
+<p class="sub">共 {len(ids)} 条记录 · 数据来源：{'Redis' if cache_store.is_enabled() else '本地文件'}</p>
+<table><thead><tr><th>ID</th><th>内容预览</th><th>创建时间</th><th>大小</th><th>IP</th></tr></thead><tbody>{rows or '<tr><td colspan="5" style="color:#666">暂无内容</td></tr>'}</tbody></table>"""
+        return html_page
+
+    # serve raw text
+    entry = _load_content(content_id)
+    if not entry:
+        return Response("Content not found or expired.", status=404, mimetype="text/plain")
+    return Response(entry["text"], content_type="text/plain; charset=utf-8")
+
+
+@app.route("/api/content/<content_id>", methods=["DELETE"])
+def content_delete(content_id: str):
+    """Delete a content entry (admin only)."""
+    if not _check_admin_token():
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+    deleted = _delete_content(content_id)
+    return jsonify({"ok": deleted})
 
 
 if __name__ == "__main__":

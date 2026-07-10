@@ -107,6 +107,8 @@ var TerminalTool = (function () {
     ["tee",   "同时输出到文件和屏幕", "./script 2>&1 | tee log.txt", "Write to stdout and file", "调试利器，-a 追加模式"],
     ["~/.ssh/config","SSH 主机别名配置", "echo -e 'Host dev\n  HostName 10.0.0.5\n  User ubuntu\n  IdentityFile ~/.ssh/id_ed25519' >> ~/.ssh/config", "SSH client config for aliases", "配置后可直接 ssh dev 登录，免去每次输入 IP/用户名/密钥路径"],
     ["xargs", "将 stdin 转为参数", "find . -name '*.tmp' | xargs rm", "Build commands from stdin", "-P N 并行执行，-I {} 占位符替换"],
+    ["curl | bash","执行远程脚本","curl -s https://example.com/script.sh | bash","Execute remote script via pipe","⚠️ 务必确认来源可信；建议先 curl -s URL | less 检查内容再执行"],
+    ["curl -o","下载后执行(更安全)","curl -s URL -o install.sh && bash install.sh","Download then execute (safer)","先下载到本地文件，检查无误后再运行，比直接管道更安全"],
   ];
 
   var TABS = [
@@ -156,6 +158,12 @@ var TerminalTool = (function () {
     h += '</div>';
 
     parent.innerHTML = h;
+
+    // hash-based tab: /terminal#shell → switch to shell tab
+    var hash = location.hash.replace("#", "");
+    if (hash && TABS.some(function (t) { return t.id === hash; })) {
+      switchTTab(hash);
+    }
 
     // tab switch
     document.querySelectorAll(".b64-tab[data-ttab]").forEach(function (btn) {

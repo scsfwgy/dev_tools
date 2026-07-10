@@ -58,6 +58,7 @@
     { id: "mortgage", icon: "home",       i18n: "menu.mortgage" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
     { id: "markdown", icon: "md",         i18n: "menu.markdown" },
+    { id: "content",  icon: "link",       i18n: "menu.content" },
     { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
   ];
 
@@ -126,6 +127,10 @@
       markdown: {
         title: "Markdown 在线编辑预览工具 | Tools24",
         description: "在线编辑和预览 Markdown，支持实时渲染，可下载为 HTML、DOC 或 Markdown 文件。"
+      },
+      content: {
+        title: "内容生成器 - 生成远程链接 纯文本托管 脚本分享 | Tools24",
+        description: "输入任意文本内容，生成一个远程链接，访问即可获取纯文本内容。适合远程脚本、配置文件托管和文本分享。"
       },
       crypto: {
         title: "在线加解密工具 - AES RSA 对称非对称加密 | Tools24",
@@ -225,6 +230,10 @@
         title: "Markdown Formatter and Preview Online | Tools24",
         description: "Write and preview Markdown online with live rendering. Download as HTML, DOC or Markdown file."
       },
+      content: {
+        title: "Content Generator - Remote Link Plain Text Hosting | Tools24",
+        description: "Generate a remote link from any text content. Access it to get raw plain text — perfect for remote scripts, config hosting and text sharing."
+      },
       crypto: {
         title: "Online Encryption Tool - AES RSA Symmetric Asymmetric | Tools24",
         description: "Online encryption tool supporting AES-GCM/CBC symmetric and RSA-OAEP asymmetric encryption, powered by browser Web Crypto API."
@@ -281,6 +290,7 @@
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
     dollar: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    link: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
   };
 
   function localeToPrefix(lang) {
@@ -747,6 +757,11 @@
     if (activeMenuId === "markdown" && typeof MdTool !== "undefined") {
       el.innerHTML = "";
       MdTool.init(el);
+      return;
+    }
+    if (activeMenuId === "content" && typeof ContentTool !== "undefined") {
+      el.innerHTML = "";
+      ContentTool.init(el);
       return;
     }
     if (activeMenuId === "wishes" && typeof WishTool !== "undefined") {

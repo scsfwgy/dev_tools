@@ -27,6 +27,7 @@
     "ai": "AI 指令",
     "translate": "翻译",
     "git": "Git 命令",
+    "content": "内容生成",
     "wishes": "心愿墙",
     "searchPlaceholder": "搜索工具...",
     "collapseMenu": "收起菜单",
@@ -770,5 +771,23 @@
     "referenceNote": "年利率需以贷款合同为准；LPR 是贷款定价参考，不等于最终房贷利率。",
     "pbcLpr": "中国人民银行：LPR",
     "chinaMoneyLpr": "中国货币网：LPR 官方栏目"
+  },
+  "content": {
+    "createTab": "生成远程链接",
+    "notice": "该内容会被记录到服务器，拥有链接的任何人均可访问。请勿托管密码、密钥等敏感信息。",
+    "terminalHint": "生成链接后可用 <code>curl -s &lt;链接&gt; | bash</code> 远程执行，详见 <a href=\"/zh/tool/terminal#shell\">终端命令 · Shell 技巧</a>。",
+    "placeholder": "粘贴任意文本内容...\n\n例如：\n• Shell 脚本\n• 配置文件 (JSON/YAML/TOML)\n• 代码片段\n• 纯文本笔记",
+    "generate": "生成链接",
+    "generating": "生成中...",
+    "yourLink": "你的远程链接（访问即可获取纯文本内容）：",
+    "copy": "复制",
+    "open": "打开",
+    "copied": "已复制",
+    "error": "生成失败，请重试",
+    "tooLarge": "内容过长，请控制在 1024 个字符以内",
+    "chars": "字符",
+    "history": "历史记录",
+    "recommend": "推荐命令（点击复制，风险自担）",
+    "safer": "更安全"
   }
 }
