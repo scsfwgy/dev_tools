@@ -28,14 +28,16 @@ var ContentTool = (function () {
     container.innerHTML =
       '<span class="history-label">' + t("content.history") + '</span>' +
       history.map(function (item, i) {
+        var shortUrl = item.url.replace(/^https?:\/\//, "").slice(0, 30);
         return '<button class="history-chip" data-idx="' + i + '" title="' + escapeHtml(item.url) + '">' +
-          escapeHtml(item.text.slice(0, 24).replace(/\s+/g, " ")) + '</button>';
+          escapeHtml(shortUrl) + '</button>';
       }).join("");
     container.querySelectorAll(".history-chip").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var h = history[Number(this.dataset.idx)];
-        document.getElementById("content-input").value = h.text;
-        updateStats();
+        navigator.clipboard.writeText(h.url).then(function () {
+          window.showCopyToast && window.showCopyToast("✓ " + t("content.copied"));
+        });
       });
     });
   }

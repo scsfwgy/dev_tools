@@ -1257,6 +1257,56 @@ def content_create():
     })
 
 
+@app.route("/api/content", methods=["GET"])
+def content_list():
+    """Admin view: ?view=1&token=xxx shows all content entries."""
+    if not request.args.get("view"):
+        return jsonify({"ok": False, "error": "use ?view=1&token=xxx for admin dashboard"}), 400
+    if not _check_admin_token():
+        return Response("<h1>401 Unauthorized</h1><p>需要 ?token= 鉴权参数</p>", status=401)
+
+    ids = _list_contents()
+    rows = ""
+    for cid in ids[:50]:
+        entry = _load_content(cid)
+        if not entry:
+            continue
+        full_text = html.escape(entry.get("text", ""))
+        text_preview = full_text[:60].replace("\n", " ")
+        created = entry.get("created_at", 0)
+        created_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(created)) if created else "-"
+        size = entry.get("size", 0)
+        ip = html.escape(entry.get("ip", "-"))
+        link = f"{request.host_url.rstrip('/')}/api/content/{cid}"
+        rows += (
+            f'<tr>'
+            f'<td><code>{html.escape(cid)}</code></td>'
+            f'<td>{text_preview}{"…" if len(entry.get("text","")) > 60 else ""}</td>'
+            f'<td style="font-size:.75rem"><a href="{html.escape(link)}" target="_blank" style="color:var(--accent,#4fc3f7)">{html.escape(link)}</a></td>'
+            f'<td style="font-size:.75rem">{created_str}</td>'
+            f'<td>{size}</td>'
+            f'<td style="font-size:.7rem;color:#888">{ip}</td>'
+            f'</tr>'
+        )
+
+    return f"""<!DOCTYPE html>
+<meta charset="utf-8"><title>内容管理</title>
+<style>
+body{{font-family:system-ui;max-width:960px;margin:30px auto;padding:0 16px;background:#111;color:#eee}}
+h1{{font-size:1.3rem;margin-bottom:4px}}h2{{font-size:1rem;margin:24px 0 10px;color:#ccc}}
+table{{width:100%;border-collapse:collapse;margin-bottom:8px}}
+th,td{{padding:7px 10px;text-align:left;border-bottom:1px solid #333;vertical-align:top}}
+th{{color:#999;font-size:.75rem;font-weight:600}}
+td{{font-size:.82rem}}tr:hover{{background:#1a1a1a}}
+code{{color:#4fc3f7;font-size:.8rem}}
+a{{text-decoration:none}}a:hover{{text-decoration:underline}}
+.sub{{font-size:.7rem;color:#666}}
+</style>
+<h1>📝 内容管理</h1>
+<p class="sub">共 {len(ids)} 条记录 · 数据来源：{'Redis' if cache_store.is_enabled() else '本地文件'} · 访问链接直接返回纯文本 · HTTP(S) 链接自动 302 重定向</p>
+<table><thead><tr><th>ID</th><th>内容预览</th><th>链接</th><th>时间</th><th>大小</th><th>IP</th></tr></thead><tbody>{rows or '<tr><td colspan="6" style="color:#666">暂无内容</td></tr>'}</tbody></table>"""
+
+
 @app.route("/api/content/<content_id>")
 def content_get(content_id: str):
     """Serve raw text content, or redirect if the content is a URL."""
