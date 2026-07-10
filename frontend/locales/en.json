@@ -741,7 +741,9 @@
     "guideProgressiveFormula": "Sum the annual marginal tax from each used bracket",
     "guideNetFormula": "Annual salary − employee contributions − IIT",
     "progressiveExample": "Tax brackets used by the current annual taxable income:",
-    "guideDisclaimer": "Note: this calculator estimates employee contributions by applying rates directly to monthly salary. Actual contributions use local bases and upper/lower caps. Bonuses, service income, equity incentives, multiple employers, or partial-year employment may require separate treatment."
+    "guideDisclaimer": "Note: this calculator estimates employee contributions by applying rates directly to monthly salary. Actual contributions use local bases and upper/lower caps. Bonuses, service income, equity incentives, multiple employers, or partial-year employment may require separate treatment.",
+    "officialWithholding": "STA: Cumulative Withholding Rules",
+    "officialRateTable": "Tax Authority: Comprehensive Income Rates"
   },
   "mortgage": {
     "title": "Mortgage Calculator",
@@ -764,6 +766,9 @@
     "interestRatio": "Interest %",
     "progress": "Progress",
     "month": "Period",
-    "historyLabel": "History"
+    "historyLabel": "History",
+    "referenceNote": "Use the rate in your loan contract. LPR is a pricing reference and is not necessarily your final mortgage rate.",
+    "pbcLpr": "PBOC: LPR",
+    "chinaMoneyLpr": "ChinaMoney: Official LPR"
   }
 }

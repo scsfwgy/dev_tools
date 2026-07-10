@@ -347,6 +347,7 @@ var MortgageTool = (function () {
   function init(container) {
     container.innerHTML =
       '<div>' +
+      '  <div class="at-doc-refs"><span>' + t("mortgage.referenceNote") + '</span><a href="https://www.pbc.gov.cn/zhengcehuobisi/125207/125213/125440/3876551/index.html" target="_blank" rel="noopener">' + t("mortgage.pbcLpr") + '</a><a href="https://www.chinamoney.com.cn/chinese/bklpr/" target="_blank" rel="noopener">' + t("mortgage.chinaMoneyLpr") + '</a></div>' +
       '  <div class="at-table-wrap"><table class="at-table tax-main"><tbody>' +
       '    <tr><td style="width:28%"><label for="mg-amount">' + t("mortgage.amount") + '</label></td>' +
       '      <td colspan="3"><div class="tax-inline"><input id="mg-amount" class="crypto-input tax-num" type="number" min="0" step="1" value="100" inputmode="decimal" autocomplete="off"><span class="tax-unit">' + t("mortgage.wan") + '</span></div></td></tr>' +
@@ -403,6 +404,7 @@ var MortgageTool = (function () {
       byId("mg-years").value = items[idx].years;
       updateAll();
     });
+    updateAll();
   }
 
   return { init: init };

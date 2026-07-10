@@ -95,6 +95,8 @@ def test_tax_tool_is_wired_with_seo_and_locales(client):
     assert "tax-guide-example-body" in script_text
     assert 'data-tax-tab="guide"' in script_text
     assert "renderGuide" in script_text
+    assert "fgk.chinatax.gov.cn" in script_text
+    assert "P020240202362406243753.pdf" in script_text
     assert "cumulativeTaxable" in script_text
     assert "var separateTotal = roundMoney(result.annualTax + separateBonusTax)" in script_text
 
@@ -120,8 +122,14 @@ def test_mortgage_tool_is_wired_with_seo_and_locales(client):
     assert "房贷计算器" in response.get_data(as_text=True)
     assert "https://www.tools24.uk/zh/tool/mortgage" in response.get_data(as_text=True)
     assert script.status_code == 200
-    assert "calcEqualInstallment" in script.get_data(as_text=True)
-    assert "calcEqualPrincipal" in script.get_data(as_text=True)
+    script_text = script.get_data(as_text=True)
+    assert "calcEqualInstallment" in script_text
+    assert "calcEqualPrincipal" in script_text
+    assert "renderHistory(byId(\"mg-history\"))" in script_text
+    assert "updateAll();\n  }" in script_text
+    assert "pbc.gov.cn" in script_text
+    assert "chinamoney.com.cn/chinese/bklpr/" in script_text
+    assert "bklpr3hischrt" not in script_text
 
     frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
     zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
@@ -130,6 +138,8 @@ def test_mortgage_tool_is_wired_with_seo_and_locales(client):
 
     assert zh_locale["menu"]["mortgage"] == "房贷计算"
     assert en_locale["menu"]["mortgage"] == "Mortgage"
+    assert zh_locale["mortgage"]["pbcLpr"] == "中国人民银行：LPR"
+    assert en_locale["tax"]["officialWithholding"] == "STA: Cumulative Withholding Rules"
     assert index_html.index("mortgage-tool.js") < index_html.index("app.js")
 
 

@@ -741,7 +741,9 @@
     "guideProgressiveFormula": "按年度七级超额累进税率分档相加",
     "guideNetFormula": "年度工资 − 个人社保公积金 − 个税",
     "progressiveExample": "当前年度应纳税所得额实际使用到的税档：",
-    "guideDisclaimer": "注意：本工具默认直接用月薪乘比例估算个人缴费。实际社保与公积金按当地缴费基数及上下限计算；奖金、劳务报酬、股权激励、跨单位任职和中途入职等情况可能需要另行处理。"
+    "guideDisclaimer": "注意：本工具默认直接用月薪乘比例估算个人缴费。实际社保与公积金按当地缴费基数及上下限计算；奖金、劳务报酬、股权激励、跨单位任职和中途入职等情况可能需要另行处理。",
+    "officialWithholding": "国家税务总局：累计预扣办法",
+    "officialRateTable": "税务局：综合所得税率表"
   },
   "mortgage": {
     "title": "房贷计算器",
@@ -764,6 +766,9 @@
     "interestRatio": "利息占比",
     "progress": "还款进度",
     "month": "期数",
-    "historyLabel": "历史记录"
+    "historyLabel": "历史记录",
+    "referenceNote": "年利率需以贷款合同为准；LPR 是贷款定价参考，不等于最终房贷利率。",
+    "pbcLpr": "中国人民银行：LPR",
+    "chinaMoneyLpr": "中国货币网：LPR 官方栏目"
   }
 }
