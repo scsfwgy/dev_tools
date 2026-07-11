@@ -314,6 +314,14 @@
     "title": "File Converter",
     "subtitle": "Files are processed only in this browser and are never uploaded",
     "supportedRoutes": "All Supported Conversions (15)",
+    "compatibility": "Compatibility and possible data loss",
+    "examples": "Example files",
+    "route": "Route",
+    "preserved": "Preserved",
+    "mayLose": "May be lost",
+    "cancel": "Cancel",
+    "cancelled": "Conversion cancelled",
+    "memoryNote": "Files are processed in browser memory. DOCX/XLSX files near 20MB may use several times more memory; conversion can be cancelled.",
     "dropTitle": "Drop a file here",
     "supported": "Supports TXT, HTML, Markdown, CSV, XLSX and DOCX up to 20 MB",
     "chooseFile": "Choose File",
@@ -334,6 +342,7 @@
     "binaryPreview": "The XLSX file is ready. Download it to view the result."
   },
   "android": {
+    "versionBaseline": "targetSdk 35 · minSdk varies by feature", "versionNote": "Updated 2026-07-11 · Android 13+ notification/media permissions and Android 14+ behavior changes are called out where relevant.", "filterAll": "All APIs", "filterCurrent": "API 23+ supported", "filterLegacy": "Legacy / deprecated baseline", "legacyBaseline": "Legacy baseline", "permissionVersionNote": "Android 13+: notification and granular media permissions. Android 14+: selected photos access and foreground-service type restrictions. Request permissions only at the point of use.", "adbCommonOutput": "Common output:", "adbTroubleshooting": "unauthorized → confirm the RSA prompt; offline → reconnect or restart adb; no devices → check USB debugging, cable and drivers.", "composeMaterialNote": "Material 3 is the default for new Compose apps. Basic layout primitives such as Box and Row are framework components; Material widgets are marked M3.",
     "apiLevels": "API Levels",
     "alpha": "Alpha",
     "dpPx": "dp ↔ px",
@@ -602,6 +611,8 @@
     }
   },
   "regex": {
+    "engineTitle": "JavaScript RegExp", "engineNote": "PCRE-only recursion, atomic groups and many inline modifiers are unsupported. RE2 avoids backtracking but rejects backreferences and lookbehind.",
+    "analysis": "Matching explanation and risk checks", "share": "Copy share link", "shareCopied": "Share link copied", "riskBacktracking": "Nested quantifiers may cause catastrophic backtracking on long input", "riskAmbiguous": "Repeated alternation may trigger excessive backtracking", "explainAnchored": "Anchors constrain matches to the start or end", "explainClasses": "Character classes match groups of characters", "explainCaptures": "Numbered capture groups are shown as $1, $2", "explainNamedCaptures": "Contains named capture groups", "explainLiteral": "Scans the input from left to right", "zeroLengthHint": "Found {count} zero-length matches; they consume no characters and require loop guards", "noObviousRisk": "No obvious high-risk backtracking structure detected",
     "title": "Regular Expression Tester",
     "subtitle": "Live matching, highlighting, capture groups and replacement preview · JavaScript RegExp",
     "testerTab": "Regex Tester",
@@ -910,6 +921,7 @@
     "safer": "safer"
   },
   "flutter": {
+    "versionBaseline": "Flutter 3.32 · Dart 3.8", "versionNote": "Updated 2026-07-11 · Check the linked official documentation for newer API changes and deprecations.",
     "widgets": "Widgets",
     "cli": "CLI Commands",
     "packages": "Packages",
@@ -943,6 +955,7 @@
     "relatedDocs": "Docs:"
   },
   "ios": {
+    "versionBaseline": "iOS 18 · Swift 6", "versionNote": "Updated 2026-07-11 · Minimum versions are shown per API; verify availability against the linked Apple documentation.", "modernSwiftTitle": "Modern Swift:", "modernSwiftNote": "async/await and actors (iOS 13+), Observation and SwiftData (iOS 17+), plus strict concurrency checking in Swift 6.", "reviewGuidanceTitle": "Review guidance:", "reviewGuidanceNote": "Permission descriptions must explain the concrete user benefit. Example: “Allow camera access to scan QR codes for device setup.” Generic text such as “App needs camera” may be rejected.", "deviceSourceNote": "Source: Apple device compatibility and product specifications · Updated 2026-07-11.",
     "versions": "iOS Versions",
     "swiftui": "SwiftUI",
     "swift": "Swift",

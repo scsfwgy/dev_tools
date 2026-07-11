@@ -314,6 +314,14 @@
     "title": "文件转换",
     "subtitle": "文件仅在当前浏览器本地处理，转换过程中不会上传服务器",
     "supportedRoutes": "当前支持的全部转换格式（15 项）",
+    "compatibility": "格式兼容性与可能丢失的内容",
+    "examples": "示例文件",
+    "route": "转换路线",
+    "preserved": "可保留",
+    "mayLose": "可能丢失",
+    "cancel": "取消",
+    "cancelled": "转换已取消",
+    "memoryNote": "文件在浏览器内存中处理；接近 20MB 的 DOCX/XLSX 可能占用数倍内存，可随时取消。",
     "dropTitle": "拖拽文件到这里",
     "supported": "支持 TXT、HTML、Markdown、CSV、XLSX、DOCX，最大 20 MB",
     "chooseFile": "选择文件",
@@ -334,6 +342,7 @@
     "binaryPreview": "XLSX 文件已生成，请下载后查看"
   },
   "android": {
+    "versionBaseline": "targetSdk 35 · minSdk 因功能而异", "versionNote": "更新于 2026-07-11 · 页面会特别说明 Android 13+ 通知/媒体权限与 Android 14+ 行为变更。", "filterAll": "全部 API", "filterCurrent": "API 23+ 当前支持", "filterLegacy": "旧版 / 废弃基线", "legacyBaseline": "旧版基线", "permissionVersionNote": "Android 13+：通知权限与细分媒体权限；Android 14+：部分照片访问与前台服务类型限制。建议只在实际使用功能时申请权限。", "adbCommonOutput": "常见输出：", "adbTroubleshooting": "unauthorized → 在设备上确认 RSA 授权；offline → 重新连接或重启 adb；无设备 → 检查 USB 调试、数据线和驱动。", "composeMaterialNote": "新 Compose 项目默认使用 Material 3。Box、Row 等基础布局属于 Compose 框架组件；Material 控件会标记为 M3。",
     "apiLevels": "Android 版本",
     "alpha": "透明度",
     "dpPx": "dp ↔ px",
@@ -602,6 +611,8 @@
     }
   },
   "regex": {
+    "engineTitle": "JavaScript 正则引擎", "engineNote": "不支持 PCRE 专属的递归、原子组及部分行内修饰符。RE2 可避免回溯，但不支持反向引用和后行断言。",
+    "analysis": "匹配过程与风险提示", "share": "复制分享链接", "shareCopied": "分享链接已复制", "riskBacktracking": "检测到嵌套量词，长文本下可能产生灾难性回溯", "riskAmbiguous": "重复的分支选择可能造成大量回溯", "explainAnchored": "使用行首/行尾锚点限制匹配位置", "explainClasses": "使用字符类别匹配一组字符", "explainCaptures": "包含编号捕获组，结果显示为 $1、$2", "explainNamedCaptures": "包含命名捕获组", "explainLiteral": "按表达式从左到右扫描文本", "zeroLengthHint": "发现 {count} 个零宽匹配；它们不消耗字符，连续处理时需防止死循环", "noObviousRisk": "未检测到明显的高风险回溯结构",
     "title": "正则表达式测试",
     "subtitle": "实时匹配、高亮、捕获组与替换预览 · 基于浏览器 JavaScript RegExp",
     "testerTab": "正则测试",
@@ -910,6 +921,7 @@
     "safer": "更安全"
   },
   "flutter": {
+    "versionBaseline": "Flutter 3.32 · Dart 3.8", "versionNote": "更新于 2026-07-11 · 新版 API 变化和废弃项请以关联的官方文档为准。",
     "widgets": "Widget 组件",
     "cli": "CLI 命令",
     "packages": "常用 Packages",
@@ -943,6 +955,7 @@
     "relatedDocs": "相关文档："
   },
   "ios": {
+    "versionBaseline": "iOS 18 · Swift 6", "versionNote": "更新于 2026-07-11 · 每项 API 会标注最低版本，实际可用性请以关联的 Apple 官方文档为准。", "modernSwiftTitle": "现代 Swift：", "modernSwiftNote": "async/await 与 Actor（iOS 13+）、Observation 和 SwiftData（iOS 17+），以及 Swift 6 严格并发检查。", "reviewGuidanceTitle": "审核说明：", "reviewGuidanceNote": "权限描述必须说明具体用户价值。例如：“允许访问相机以扫描设备配置二维码。”类似“应用需要相机”的笼统文案可能被拒绝。", "deviceSourceNote": "来源：Apple 设备兼容性与产品规格 · 更新于 2026-07-11。",
     "versions": "iOS 版本",
     "swiftui": "SwiftUI",
     "swift": "Swift 语法",

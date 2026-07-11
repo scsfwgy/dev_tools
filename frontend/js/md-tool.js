@@ -4,6 +4,9 @@ var MdTool = (function () {
   var splitRatio = 0.5;
   var HISTORY_KEY = "md_history";
   var MAX_HISTORY = 20;
+  var MARKED_URL = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+  var HTML2PDF_URL = "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js";
+  var scriptPromises = {};
 
   function t(key) { return (window.__t && window.__t(key)) || key; }
 
@@ -129,6 +132,7 @@ var MdTool = (function () {
       preview.innerHTML = '<div class="md-empty">' + t("markdown.emptyPreview") + '</div>';
       return;
     }
+    if (!window.marked) { ensureScript("marked", MARKED_URL).then(renderPreview); return; }
     try {
       preview.innerHTML = marked.parse(raw);
     } catch (e) {
@@ -157,9 +161,10 @@ var MdTool = (function () {
     try { return marked.parse(raw); } catch (e) { return ""; }
   }
 
-  function downloadHtml() {
+  async function downloadHtml() {
     var md = editor.value.trim();
     if (!md) { setMsg(t("markdown.emptyInput"), true); return; }
+    await ensureScript("marked", MARKED_URL);
     var rendered = getRenderedHtml();
     var fullHtml = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<style>\n' +
       'body{max-width:900px;margin:0 auto;padding:20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6;color:#24292f;background:#fff;}\n' +
@@ -171,11 +176,12 @@ var MdTool = (function () {
     setMsg("✓ " + t("markdown.htmlDownloaded"), false);
   }
 
-  function downloadPdf() {
+  async function downloadPdf() {
     var md = editor.value.trim();
     if (!md) { setMsg(t("markdown.emptyInput"), true); return; }
     var el = document.getElementById("md-preview");
     setMsg("⏳ " + t("markdown.generating"), false);
+    await ensureScript("html2pdf", HTML2PDF_URL);
     var opt = {
       margin: [10, 10, 10, 10],
       filename: "document.pdf",
@@ -204,9 +210,10 @@ var MdTool = (function () {
     });
   }
 
-  function downloadDoc() {
+  async function downloadDoc() {
     var md = editor.value.trim();
     if (!md) { setMsg(t("markdown.emptyInput"), true); return; }
+    await ensureScript("marked", MARKED_URL);
     var rendered = getRenderedHtml();
     // ponytail: Word opens HTML files — wrap with Office namespace for .doc
     var docHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">\n<head>\n<meta charset="utf-8">\n<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->\n<style>\n' +
@@ -226,7 +233,8 @@ var MdTool = (function () {
     setMsg("✓ " + t("markdown.mdDownloaded"), false);
   }
 
-  function copyHtml() {
+  async function copyHtml() {
+    await ensureScript("marked", MARKED_URL);
     var rendered = getRenderedHtml();
     if (!rendered) { setMsg(t("markdown.emptyInput"), true); return; }
     navigator.clipboard.writeText(rendered).then(function () {
@@ -249,6 +257,19 @@ var MdTool = (function () {
   }
 
   function escapeHtml(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function ensureScript(name, url) {
+    if (window[name]) return Promise.resolve();
+    if (scriptPromises[name]) return scriptPromises[name];
+    scriptPromises[name] = new Promise(function (resolve, reject) {
+      var script = document.createElement("script");
+      script.src = url;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return scriptPromises[name];
+  }
 
   function renderHistory() {
     var list = loadHistory();

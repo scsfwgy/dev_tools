@@ -345,6 +345,7 @@ var AndroidTool = (function () {
   function init(parent) {
     parent.innerHTML =
       '<div class="android-tool">' +
+      '  <div class="platform-version-note"><strong>' + t("android.versionBaseline") + '</strong><span>' + t("android.versionNote") + '</span></div>' +
       '  <div class="b64-tabs">' +
       '    <button class="b64-tab active" data-atab="api">' + t("android.apiLevels") + '</button>' +
       '    <button class="b64-tab" data-atab="docs">' + t("android.docs") + '</button>' +
@@ -389,6 +390,8 @@ var AndroidTool = (function () {
 
     bindEvents();
     renderAlphaBody(); // ponytail: alpha table built dynamically, must render on init
+    var requestedTab = { permissions: "perm", compose: "compose", adb: "adb", intent: "intent" }[window.__toolSubpage];
+    if (requestedTab) switchATab(requestedTab);
   }
 
   function switchATab(name) {
@@ -404,10 +407,10 @@ var AndroidTool = (function () {
 
   function buildApiTable() {
     var h = buildDocRefs("api");
-    h += '<div class="at-search-wrap"><input id="at-search-api" class="search-input" type="text" placeholder="' + t("android.searchApi") + '"></div>';
+    h += '<div class="at-search-wrap"><input id="at-search-api" class="search-input" type="text" placeholder="' + t("android.searchApi") + '"><select id="at-api-status" class="settings-select" style="width:auto"><option value="">' + t("android.filterAll") + '</option><option value="current">' + t("android.filterCurrent") + '</option><option value="legacy">' + t("android.filterLegacy") + '</option></select></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("android.version") + '</th><th>' + t("android.codename") + '</th><th>API</th><th>' + t("android.year") + '</th></tr></thead><tbody>';
     API_LEVELS.forEach(function (r) {
-      h += '<tr data-search="' + r.ver + ' ' + r.code.toLowerCase() + ' ' + r.api + ' ' + r.zh + '"><td><code>' + r.ver + '</code></td><td>' + r.code + '（' + r.zh + '）</td><td><code>' + r.api + '</code></td><td>' + r.year + '</td></tr>';
+      h += '<tr data-api-status="' + (r.api >= 23 ? "current" : "legacy") + '" data-search="' + r.ver + ' ' + r.code.toLowerCase() + ' ' + r.api + ' ' + r.zh + '"><td><code>' + r.ver + '</code></td><td>' + r.code + '（' + r.zh + '）</td><td><code>' + r.api + '</code></td><td>' + r.year + (r.api < 23 ? '<small class="api-version">' + t("android.legacyBaseline") + '</small>' : '') + '</td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
@@ -490,7 +493,7 @@ var AndroidTool = (function () {
   // ═══ Permissions ═══
 
   function buildPermTable() {
-    var h = buildDocRefs("perm");
+    var h = buildDocRefs("perm") + '<div class="platform-topic-note">' + t("android.permissionVersionNote") + '</div>';
     h += '<div class="at-search-wrap"><input id="at-search-perm" class="search-input" type="text" placeholder="' + t("android.searchPerm") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>Permission</th><th>' + t("android.description") + '</th><th>' + t("android.level") + '</th></tr></thead><tbody>';
     PERMISSIONS.forEach(function (r) {
@@ -530,7 +533,7 @@ var AndroidTool = (function () {
   // ═══ ADB Commands ═══
 
   function buildAdbTable() {
-    var h = buildDocRefs("adb");
+    var h = buildDocRefs("adb") + '<div class="platform-topic-note"><strong>' + t("android.adbCommonOutput") + '</strong> ' + t("android.adbTroubleshooting") + '</div>';
     h += '<div class="at-search-wrap"><input id="at-search-adb" class="search-input" type="text" placeholder="' + t("android.searchAdb") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("android.scenario") + '</th><th>' + t("android.command") + '</th><th>' + t("android.note") + '</th></tr></thead><tbody>';
     ADB_COMMANDS.forEach(function (r) {
@@ -614,7 +617,7 @@ var AndroidTool = (function () {
   // ═══ Compose Components ═══
 
   function buildComposeTab() {
-    var h = '<div class="at-search-wrap">';
+    var h = '<div class="platform-topic-note">' + t("android.composeMaterialNote") + '</div><div class="at-search-wrap">';
     h += '<div class="at-cat-bar">';
     COMPOSE_CATEGORIES.forEach(function (cat) {
       h += '<button class="ft-cat-filter' + (composeActiveCat === cat[0] ? ' active' : '') + '" data-compose-cat="' + cat[0] + '">' + (currentLang() === "en" ? cat[2] : cat[1]) + '</button>';
@@ -626,7 +629,7 @@ var AndroidTool = (function () {
     COMPOSE_WIDGETS.forEach(function (r) {
       var name = r[0];
       var desc = currentLang() === "en" ? r[3] : r[2];
-      h += '<tr data-search="' + [r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase() + '" data-cat="' + r[4] + '"><td><code>' + name + '</code></td><td>' + desc + '</td><td data-copy="' + escapeHtml(r[5]) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
+      h += '<tr data-search="' + escapeHtml([r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase()) + '" data-cat="' + r[4] + '"><td><code>' + name + '</code><small class="api-version">' + (/Button|Card|AppBar|Navigation|Scaffold|TextField/.test(name) ? "Material 3" : "Compose") + '</small></td><td>' + desc + '</td><td data-copy="' + escapeHtml(r[5]) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
@@ -650,6 +653,8 @@ var AndroidTool = (function () {
   }
 
   function bindEvents() {
+    var apiStatus = document.getElementById("at-api-status");
+    if (apiStatus) apiStatus.addEventListener("change", function () { var value = this.value; document.querySelectorAll("#atab-api tbody tr").forEach(function (row) { row.style.display = value && row.dataset.apiStatus !== value ? "none" : ""; }); });
     // dp/px
     var dpEl = document.getElementById("at-dp");
     var pxEl = document.getElementById("at-px");

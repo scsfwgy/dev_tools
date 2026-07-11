@@ -833,6 +833,13 @@ TOOL_REGISTRY = {
     "wishes": {"order": 300, "icon": "star", "script": "/js/wishes.js?v=20260706", "global": "WishTool", "processing": "server", "indexable": False, "hidden": True},
 }
 
+TOOL_SUBPAGES = {
+    "converter": {"markdown-to-pdf": ("Markdown 转 PDF 在线工具", "浏览器本地将 Markdown 转为 PDF，提供预览、兼容性说明和示例。"), "csv-to-xlsx": ("CSV 转 XLSX 在线工具", "浏览器本地将 CSV 转换为 Excel XLSX 文件并预览表格内容。"), "docx-to-html": ("DOCX 转 HTML 在线工具", "浏览器本地提取 DOCX 标题、段落、列表和基础表格为 HTML。")},
+    "flutter": {"widgets": ("Flutter Widgets 组件速查", "Flutter Widget 组件目录、最低版本、完整示例和官方文档。"), "cli": ("Flutter CLI 命令速查", "Flutter 创建、构建、测试、分析和发布命令速查。"), "packages": ("Flutter Packages 推荐", "常用 Flutter Packages、维护状态、替代方案和 pub.dev 链接。")},
+    "android": {"compose": ("Android Compose 组件速查", "Jetpack Compose 组件、Material 版本和代码示例。"), "adb": ("ADB 命令速查", "ADB 常用命令、输出示例、常见错误和排查建议。"), "permissions": ("Android 权限速查", "Android 权限、最低版本和系统版本差异。"), "intent": ("Android Intent 速查", "Android 常用 Intent Action、权限和使用示例。")},
+    "ios": {"swiftui": ("SwiftUI 组件速查", "SwiftUI 组件、最低 iOS 版本和可复制示例。"), "uikit": ("UIKit 类速查", "UIKit 常用类、最低 iOS 版本和 Auto Layout 示例。"), "info-plist": ("Info.plist 权限配置速查", "Info.plist 权限 Key、审核说明和用户提示文案。"), "xcode": ("Xcode 快捷键速查", "Xcode 常用快捷键、场景和说明。")},
+}
+
 
 def content_last_modified():
     override = os.getenv("SEO_LAST_MODIFIED")
@@ -907,12 +914,15 @@ def sitemap():
         urls.append((f"{SITE_URL}/{lang}/", lang, None))
         for tool_id in public_tool_ids():
             urls.append((f"{SITE_URL}/{lang}/tool/{tool_id}", lang, tool_id))
+        for tool_id, subpages in TOOL_SUBPAGES.items():
+            for subpage in subpages:
+                urls.append((f"{SITE_URL}/{lang}/{tool_id}/{subpage}", lang, tool_id))
     body = "\n".join(
         (
             f"  <url><loc>{loc}</loc><lastmod>{last_modified}</lastmod>"
-            f'<xhtml:link rel="alternate" hreflang="zh-CN" href="{SITE_URL}/zh{f"/tool/{tool_id}" if tool_id else "/"}"/>'
-            f'<xhtml:link rel="alternate" hreflang="en" href="{SITE_URL}/en{f"/tool/{tool_id}" if tool_id else "/"}"/>'
-            f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE_URL}/zh{f"/tool/{tool_id}" if tool_id else "/"}"/>'
+            f'<xhtml:link rel="alternate" hreflang="zh-CN" href="{SITE_URL}/zh{loc.split(f"/{_lang}", 1)[1]}"/>'
+            f'<xhtml:link rel="alternate" hreflang="en" href="{SITE_URL}/en{loc.split(f"/{_lang}", 1)[1]}"/>'
+            f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE_URL}/zh{loc.split(f"/{_lang}", 1)[1]}"/>'
             "</url>"
         )
         for loc, _lang, tool_id in urls
@@ -949,18 +959,28 @@ def tool_lang(lang, tool_id):
     return render_spa(lang, tool_id, indexable=config["indexable"])
 
 
+@app.route("/<lang>/<tool_id>/<subpage>")
+def tool_subpage(lang, tool_id, subpage):
+    if lang not in SUPPORTED_LANGS or subpage not in TOOL_SUBPAGES.get(tool_id, {}):
+        return Response("Not found", status=404, mimetype="text/plain")
+    return render_spa(lang, tool_id, subpage=subpage)
+
+
 @app.route("/<path:filename>")
 def frontend_files(filename):
     return send_from_directory(str(FRONTEND_DIR), filename)
 
 
-def render_spa(lang, tool_id, indexable=True):
+def render_spa(lang, tool_id, indexable=True, subpage=None):
     template = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
     seo_tool_id = tool_id if tool_id and indexable else None
     meta = TOOLS[seo_tool_id][lang] if seo_tool_id else HOME_META[lang]
-    path = f"/{lang}/tool/{tool_id}" if tool_id else f"/{lang}/"
+    if subpage:
+        subpage_name, subpage_description = TOOL_SUBPAGES[tool_id][subpage]
+        meta = {**meta, "name": subpage_name, "title": f"{subpage_name} | Tools24", "description": subpage_description}
+    path = f"/{lang}/{tool_id}/{subpage}" if subpage else (f"/{lang}/tool/{tool_id}" if tool_id else f"/{lang}/")
     canonical = f"{SITE_URL}{path}"
-    paired_path = f"/tool/{tool_id}" if tool_id else "/"
+    paired_path = f"/{tool_id}/{subpage}" if subpage else (f"/tool/{tool_id}" if tool_id else "/")
     replacements = {
         "<!--SEO_HTML_LANG-->": "zh-CN" if lang == "zh" else "en",
         "<!--SEO_ROBOTS-->": "index,follow" if indexable else "noindex,nofollow",

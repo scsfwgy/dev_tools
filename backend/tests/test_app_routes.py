@@ -209,6 +209,56 @@ def test_non_indexable_server_tool_still_supports_direct_navigation(client):
     assert "/zh/tool/wishes" not in client.get("/sitemap.xml").get_data(as_text=True)
 
 
+def test_converter_regex_mobile_metadata_and_topic_routes(client):
+    converter = client.get("/js/converter-tool.js").get_data(as_text=True)
+    regex = client.get("/js/regex-tool.js").get_data(as_text=True)
+    markdown = client.get("/js/md-tool.js").get_data(as_text=True)
+    index_html = client.get("/zh/").get_data(as_text=True)
+
+    assert "renderCompatibilityMatrix" in converter
+    assert "data-converter-example" in converter
+    assert "converter-cancel" in converter
+    assert "MARKED_URL" in converter and "HTML2PDF_URL" in converter
+    assert "buildAnalysis" in regex
+    assert "riskBacktracking" in regex
+    assert "URLSearchParams" in regex
+    assert "MARKED_URL" in markdown and "HTML2PDF_URL" in markdown
+    assert "marked.min.js" not in index_html
+    assert "html2pdf.bundle.min.js" not in index_html
+
+    for path, expected in (
+        ("/zh/flutter/widgets", "Flutter Widgets 组件速查"),
+        ("/zh/android/compose", "Android Compose 组件速查"),
+        ("/zh/ios/swiftui", "SwiftUI 组件速查"),
+        ("/zh/converter/markdown-to-pdf", "Markdown 转 PDF 在线工具"),
+    ):
+        response = client.get(path)
+        assert response.status_code == 200
+        assert expected in response.get_data(as_text=True)
+        assert path in client.get("/sitemap.xml").get_data(as_text=True)
+
+    assert client.get("/zh/flutter/unknown").status_code == 404
+    assert 'escapeHtml([r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase())' in client.get("/js/android-tool.js").get_data(as_text=True)
+
+
+def test_new_platform_notes_are_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    android = client.get("/js/android-tool.js").get_data(as_text=True)
+    ios = client.get("/js/ios-tool.js").get_data(as_text=True)
+    regex = client.get("/js/regex-tool.js").get_data(as_text=True)
+
+    assert zh["android"]["adbCommonOutput"] == "常见输出："
+    assert zh["android"]["composeMaterialNote"].startswith("新 Compose 项目")
+    assert zh["ios"]["modernSwiftTitle"] == "现代 Swift："
+    assert en["regex"]["engineTitle"] == "JavaScript RegExp"
+    assert 't("android.versionNote")' in android
+    assert 't("ios.reviewGuidanceNote")' in ios
+    assert 't("regex.engineNote")' in regex
+    assert "PCRE-only recursion" not in regex
+
+
 def test_regex_and_http_tools_are_wired_with_seo_and_locales(client):
     regex_page = client.get("/zh/tool/regex")
     http_page = client.get("/en/tool/http")

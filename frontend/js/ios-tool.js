@@ -271,6 +271,7 @@ var IosTool = (function () {
   function init(parent) {
     parent.innerHTML =
       '<div class="android-tool">' +
+      '  <div class="platform-version-note"><strong>' + t("ios.versionBaseline") + '</strong><span>' + t("ios.versionNote") + '</span></div>' +
       '  <div class="b64-tabs">' +
       '    <button class="b64-tab active" data-itab="versions">' + t("ios.versions") + '</button>' +
       '    <button class="b64-tab" data-itab="swiftui">' + t("ios.swiftui") + '</button>' +
@@ -305,6 +306,8 @@ var IosTool = (function () {
     });
 
     bindEvents();
+    var requestedTab = { swiftui: "swiftui", uikit: "uikit", "info-plist": "plist", xcode: "xcode" }[window.__toolSubpage];
+    if (requestedTab) switchITab(requestedTab);
   }
 
   function switchITab(name) {
@@ -332,7 +335,7 @@ var IosTool = (function () {
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("ios.name") + '</th><th>' + t("ios.description") + '</th><th>' + t("ios.example") + '</th></tr></thead><tbody>';
     SWIFTUI_VIEWS.forEach(function (r) {
       var name = currentLang() === "en" ? r[0] : r[1];
-      h += '<tr data-search="' + r.join(" ").toLowerCase() + '" data-cat="' + r[4] + '"><td>' + name + '</td><td>' + r[3] + '</td><td data-copy="' + escapeHtml(r[5]) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
+      h += '<tr data-search="' + escapeHtml(r.join(" ").toLowerCase()) + '" data-cat="' + r[4] + '"><td>' + name + '<small class="api-version">' + minimumIosVersion(r[0]) + '</small></td><td>' + r[3] + '</td><td data-copy="' + escapeHtml(r[5]) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
     });
     h += '</tbody></table></div>';
     h += '<h3 style="margin:20px 0 8px;font-size:0.9rem;color:var(--text-muted)">' + t("ios.propertyWrappers") + '</h3>';
@@ -346,7 +349,7 @@ var IosTool = (function () {
   }
 
   function buildSwiftTab() {
-    var h = buildDocRefs("swift") + '<div class="at-search-wrap"><input id="it-search-swift" class="search-input" type="text" placeholder="' + t("ios.searchSwift") + '"></div>';
+    var h = buildDocRefs("swift") + '<div class="platform-topic-note"><strong>' + t("ios.modernSwiftTitle") + '</strong> ' + t("ios.modernSwiftNote") + '</div><div class="at-search-wrap"><input id="it-search-swift" class="search-input" type="text" placeholder="' + t("ios.searchSwift") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("ios.feature") + '</th><th>' + t("ios.name") + '</th><th>' + t("ios.example") + '</th><th>' + t("ios.note") + '</th></tr></thead><tbody>';
     SWIFT_SNIPPETS.forEach(function (r) {
       var feature = currentLang() === "en" ? r[2] : r[1];
@@ -362,7 +365,7 @@ var IosTool = (function () {
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("ios.name") + '</th><th>' + t("ios.description") + '</th><th>Class</th></tr></thead><tbody>';
     UIKIT_CLASSES.forEach(function (r) {
       var name = currentLang() === "en" ? r[2] : r[1];
-      h += '<tr data-search="' + r.join(" ").toLowerCase() + '"><td>' + name + '</td><td>' + r[3] + '</td><td><code>' + r[0] + '</code></td></tr>';
+      h += '<tr data-search="' + r.join(" ").toLowerCase() + '"><td>' + name + '<small class="api-version">iOS 2+</small></td><td>' + r[3] + '</td><td><code>' + r[0] + '</code></td></tr>';
     });
     h += '</tbody></table></div>';
     h += '<h3 style="margin:20px 0 8px;font-size:0.9rem;color:var(--text-muted)">' + t("ios.autolayout") + '</h3>';
@@ -387,7 +390,7 @@ var IosTool = (function () {
   }
 
   function buildPlistTab() {
-    var h = buildDocRefs("plist") + '<div class="at-search-wrap"><input id="it-search-plist" class="search-input" type="text" placeholder="' + t("ios.searchPlist") + '"></div>';
+    var h = buildDocRefs("plist") + '<div class="platform-topic-note"><strong>' + t("ios.reviewGuidanceTitle") + '</strong> ' + t("ios.reviewGuidanceNote") + '</div><div class="at-search-wrap"><input id="it-search-plist" class="search-input" type="text" placeholder="' + t("ios.searchPlist") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>Key</th><th>' + t("ios.description") + '</th><th>' + t("ios.note") + '</th></tr></thead><tbody>';
     PLIST_KEYS.forEach(function (r) {
       var desc = currentLang() === "en" ? r[2] : r[1];
@@ -409,7 +412,7 @@ var IosTool = (function () {
   }
 
   function buildDevicesTab() {
-    var h = buildDocRefs("devices") + '<div class="at-search-wrap"><input id="it-search-devices" class="search-input" type="text" placeholder="' + t("ios.searchDevices") + '"></div>';
+    var h = buildDocRefs("devices") + '<div class="platform-topic-note">' + t("ios.deviceSourceNote") + '</div><div class="at-search-wrap"><input id="it-search-devices" class="search-input" type="text" placeholder="' + t("ios.searchDevices") + '"></div>';
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("ios.device") + '</th><th>' + t("ios.size") + '</th><th>' + t("ios.resolution") + '</th><th>' + t("ios.scale") + '</th><th>PPI</th><th>Chip</th><th>RAM</th></tr></thead><tbody>';
     DEVICE_SPECS.forEach(function (r) {
       h += '<tr data-search="' + [r.name, r.chip, r.size].join(" ").toLowerCase() + '"><td>' + r.name + '</td><td>' + r.size + '</td><td>' + r.res + '</td><td><code>' + r.scale + '</code></td><td>' + r.ppi + '</td><td>' + r.chip + '</td><td>' + r.ram + '</td></tr>';
@@ -434,6 +437,8 @@ var IosTool = (function () {
   function currentLang() {
     return (window.__locale && window.__locale.menu && window.__locale.menu.home === "首页") ? "zh" : "en";
   }
+
+  function minimumIosVersion(name) { var versions = { AsyncImage: "iOS 15+", ShareLink: "iOS 16+", ContentUnavailableView: "iOS 17+", NavigationStack: "iOS 16+", Grid: "iOS 16+" }; return versions[name] || "iOS 13+"; }
 
   function bindEvents() {
     bindSearch("it-search-versions", "#itab-versions tbody tr", defaultFilter);

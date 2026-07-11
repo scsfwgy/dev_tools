@@ -122,6 +122,7 @@ var RegexTool = (function () {
     var preview = document.getElementById("rx-highlight");
     var captureBody = document.getElementById("rx-captures-body");
     var replacementOutput = document.getElementById("rx-replacement-output");
+    var analysis = document.getElementById("rx-analysis");
 
     if (!pattern) {
       status.className = "rx-status";
@@ -129,6 +130,7 @@ var RegexTool = (function () {
       preview.innerHTML = '<span class="rx-empty">' + t("regex.previewEmpty") + "</span>";
       captureBody.innerHTML = "";
       replacementOutput.textContent = text;
+      analysis.innerHTML = "";
       return;
     }
 
@@ -139,13 +141,28 @@ var RegexTool = (function () {
       preview.innerHTML = buildHighlight(text, matches);
       captureBody.innerHTML = buildCaptureRows(matches);
       replacementOutput.textContent = text.replace(compile(pattern, flags, false), replacement);
+      analysis.innerHTML = buildAnalysis(pattern, matches);
     } catch (error) {
       status.className = "rx-status is-error";
       status.textContent = error.message;
       preview.innerHTML = '<span class="rx-error-text">' + escapeHtml(error.message) + "</span>";
       captureBody.innerHTML = "";
       replacementOutput.textContent = "";
+      analysis.innerHTML = "";
     }
+  }
+
+  function buildAnalysis(pattern, matches) {
+    var risks = [];
+    if (/\([^)]*[+*][^)]*\)[+*{]/.test(pattern) || /\.\*[+*{]/.test(pattern)) risks.push(t("regex.riskBacktracking"));
+    if (/\([^)]*\|[^)]*\)[+*]/.test(pattern)) risks.push(t("regex.riskAmbiguous"));
+    var zeroCount = matches.filter(function (match) { return match.value === ""; }).length;
+    var parts = [];
+    if (pattern[0] === "^" || pattern.slice(-1) === "$") parts.push(t("regex.explainAnchored"));
+    if (/\\[bBdDsSwW]/.test(pattern)) parts.push(t("regex.explainClasses"));
+    if (/\((?!\?:|\?=|\?!|\?<)/.test(pattern)) parts.push(t("regex.explainCaptures"));
+    if (/\(\?<[^=!]/.test(pattern)) parts.push(t("regex.explainNamedCaptures"));
+    return '<div class="rx-analysis-card"><strong>' + t("regex.analysis") + '</strong><p>' + (parts.join(" · ") || t("regex.explainLiteral")) + '</p>' + (zeroCount ? '<p class="rx-risk">⚠ ' + t("regex.zeroLengthHint").replace("{count}", zeroCount) + '</p>' : '') + (risks.length ? '<ul class="rx-risk">' + risks.map(function (risk) { return '<li>' + risk + '</li>'; }).join("") + '</ul>' : '<p class="rx-safe">✓ ' + t("regex.noObviousRisk") + '</p>') + '</div>';
   }
 
   function renderHistory() {
@@ -214,8 +231,10 @@ var RegexTool = (function () {
       '<div class="b64-tool">' +
       '  <div class="b64-tabs"><button class="b64-tab active" data-regex-tab="tester">' + t("regex.testerTab") + '</button><button class="b64-tab" data-regex-tab="common">' + t("regex.commonTab") + '</button></div>' +
       '  <section id="rx-tab-tester" class="android-section">' +
+      '  <div class="platform-topic-note"><strong>' + t("regex.engineTitle") + '</strong> · ' + t("regex.engineNote") + '</div>' +
       '  <div class="rx-pattern-row"><span class="rx-slash">/</span><input id="rx-pattern" class="rx-pattern" spellcheck="false" placeholder="' + t("regex.patternPlaceholder") + '"><span class="rx-slash">/</span><div class="rx-flags">' + flagInputs + '</div></div>' +
       '  <div id="rx-status" class="rx-status">' + t("regex.enterPattern") + '</div>' +
+      '  <div class="rx-actions"><button id="rx-share" class="jt-btn">' + t("regex.share") + '</button></div><div id="rx-analysis"></div>' +
       '  <div class="rx-grid"><section class="rx-panel"><h3>' + t("regex.testText") + '</h3><textarea id="rx-text" class="rx-textarea" spellcheck="false" placeholder="' + t("regex.textPlaceholder") + '"></textarea></section>' +
       '  <section class="rx-panel"><h3>' + t("regex.highlight") + '</h3><pre id="rx-highlight" class="rx-highlight"><span class="rx-empty">' + t("regex.previewEmpty") + '</span></pre></section></div>' +
       '  <div class="rx-grid rx-grid-lower"><section class="rx-panel"><h3>' + t("regex.replacement") + '</h3><input id="rx-replacement" class="rx-replacement" spellcheck="false" placeholder="' + t("regex.replacementPlaceholder") + '"><pre id="rx-replacement-output" class="rx-replacement-output"></pre></section>' +
@@ -242,6 +261,7 @@ var RegexTool = (function () {
     });
     document.getElementById("rx-common-search").addEventListener("input", renderCommonPatterns);
     document.getElementById("rx-common-category").addEventListener("change", renderCommonPatterns);
+    document.getElementById("rx-share").addEventListener("click", function () { var params = new URLSearchParams({ pattern: document.getElementById("rx-pattern").value, flags: selectedFlags(), text: document.getElementById("rx-text").value }); navigator.clipboard.writeText(location.origin + location.pathname + "?" + params.toString()).then(function () { showCopyToast("✓ " + t("regex.shareCopied")); }); });
     document.getElementById("rx-tab-common").addEventListener("click", function (event) {
       var useButton = event.target.closest("[data-use-pattern]");
       if (useButton) {
@@ -255,6 +275,8 @@ var RegexTool = (function () {
     });
     renderHistory();
     renderCommonPatterns();
+    var shared = new URLSearchParams(location.search);
+    if (shared.has("pattern")) { document.getElementById("rx-pattern").value = shared.get("pattern"); document.getElementById("rx-text").value = shared.get("text") || ""; setFlags(shared.get("flags") || "g"); evaluate(); }
   }
 
   return { init: init };

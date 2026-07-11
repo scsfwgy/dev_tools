@@ -5,12 +5,15 @@ var ConverterTool = (function () {
   var MAX_FILE_SIZE = 20 * 1024 * 1024;
   var MAMMOTH_URL = "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js";
   var XLSX_URL = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+  var MARKED_URL = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+  var HTML2PDF_URL = "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js";
   var scripts = {};
   var selectedFile = null;
   var sourceType = "";
   var outputBlob = null;
   var outputExtension = "";
   var pdfReady = false;
+  var conversionId = 0;
 
   var ROUTES = {
     txt: ["html", "md", "pdf"],
@@ -31,6 +34,8 @@ var ConverterTool = (function () {
       '<div class="converter-tool">' +
       '  <div class="converter-head"><h2>' + t("converter.title") + '</h2><p>' + t("converter.subtitle") + '</p>' +
       '    <div class="converter-routes"><strong>' + t("converter.supportedRoutes") + '</strong><div class="converter-route-list">' + renderSupportedRoutes() + '</div></div>' +
+      '    <details class="converter-compat"><summary>' + t("converter.compatibility") + '</summary>' + renderCompatibilityMatrix() + '</details>' +
+      '    <div class="converter-examples"><strong>' + t("converter.examples") + '</strong><button class="jt-btn" data-converter-example="md">Markdown → PDF</button><button class="jt-btn" data-converter-example="csv">CSV → XLSX</button><button class="jt-btn" data-converter-example="html">HTML → PDF</button></div>' +
       '  </div>' +
       '  <div id="converter-dropzone" class="converter-dropzone">' +
       '    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 15h8M12 11v8"/></svg>' +
@@ -44,8 +49,9 @@ var ConverterTool = (function () {
       '      <div class="converter-arrow">→</div>' +
       '      <label><span>' + t("converter.outputFormat") + '</span><select id="converter-target" class="settings-select"></select></label>' +
       '      <button id="converter-run" class="jt-btn jt-btn-primary">' + t("converter.convert") + '</button>' +
-      '      <button id="converter-reset" class="jt-btn">' + t("converter.reset") + '</button>' +
+      '      <button id="converter-cancel" class="jt-btn hidden">' + t("converter.cancel") + '</button><button id="converter-reset" class="jt-btn">' + t("converter.reset") + '</button>' +
       '    </div>' +
+      '    <div class="converter-memory-note">' + t("converter.memoryNote") + '</div><progress id="converter-progress" class="converter-progress hidden" max="100" value="0"></progress>' +
       '    <div id="converter-status" class="converter-status"></div>' +
       '    <div class="converter-preview-head"><strong>' + t("converter.preview") + '</strong><button id="converter-download" class="jt-btn" disabled>' + t("converter.download") + '</button></div>' +
       '    <iframe id="converter-preview" class="converter-preview" sandbox=""></iframe>' +
@@ -55,6 +61,8 @@ var ConverterTool = (function () {
       '</div>';
     bindEvents();
     renderHistory();
+    var requestedExample = { "markdown-to-pdf": "md", "csv-to-xlsx": "csv" }[window.__toolSubpage];
+    if (requestedExample) loadExample(requestedExample);
   }
 
   function bindEvents() {
@@ -66,6 +74,20 @@ var ConverterTool = (function () {
     byId("converter-run").addEventListener("click", convert);
     byId("converter-reset").addEventListener("click", reset);
     byId("converter-download").addEventListener("click", download);
+    byId("converter-cancel").addEventListener("click", function () { conversionId++; byId("converter-status").textContent = t("converter.cancelled"); finishConversionUi(); });
+    document.querySelectorAll("[data-converter-example]").forEach(function (button) { button.addEventListener("click", function () { loadExample(this.dataset.converterExample); }); });
+  }
+
+  function renderCompatibilityMatrix() {
+    var rows = [["TXT → HTML/PDF", "文本、换行", "字体、原始排版"], ["TXT → Markdown", "纯文本", "语义结构"], ["HTML → TXT", "可见文本", "样式、链接地址、媒体"], ["HTML → Markdown", "标题、段落、链接、强调、列表", "脚本、复杂布局、自定义组件"], ["HTML → PDF", "浏览器可渲染内容", "交互、精确分页、部分远程资源"], ["Markdown → HTML", "标题、列表、代码块、表格", "自定义插件语法"], ["Markdown → TXT", "可见文本", "Markdown 格式标记"], ["Markdown → PDF", "标题、列表、代码块、表格", "复杂 CSS、精确分页、远程字体"], ["CSV → HTML", "行列和文本值", "数据类型、公式、样式"], ["CSV → XLSX", "单元格文本、数字、首行", "公式、合并单元格、样式"], ["XLSX → CSV", "首个工作表的值", "样式、公式定义、多工作表"], ["XLSX → HTML", "首个工作表和单元格值", "图表、宏、复杂格式"], ["DOCX → HTML", "标题、段落、列表、基础表格", "页眉页脚、浮动布局、复杂样式"], ["DOCX → TXT", "正文文本", "全部样式、图片、表格结构"]];
+    return '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("converter.route") + '</th><th>' + t("converter.preserved") + '</th><th>' + t("converter.mayLose") + '</th></tr></thead><tbody>' + rows.map(function (row) { return '<tr><td><code>' + row[0] + '</code></td><td>' + row[1] + '</td><td>' + row[2] + '</td></tr>'; }).join("") + '</tbody></table></div>';
+  }
+
+  function loadExample(type) {
+    var examples = { md: ["example.md", "# Tools24\n\n- Local processing\n- Markdown to PDF", "text/markdown"], csv: ["example.csv", "name,category,local\nJSON,Developer,true\nTranslate,AI,false", "text/csv"], html: ["example.html", "<h1>Tools24</h1><p>Local-first developer tools.</p>", "text/html"] };
+    var example = examples[type];
+    handleFile(new File([example[1]], example[0], { type: example[2] }));
+    byId("converter-target").value = type === "csv" ? "xlsx" : "pdf";
   }
 
   function renderSupportedRoutes() {
@@ -99,9 +121,15 @@ var ConverterTool = (function () {
     var button = byId("converter-run");
     button.disabled = true;
     button.textContent = t("converter.converting");
+    var currentConversion = ++conversionId;
+    byId("converter-cancel").classList.remove("hidden");
+    byId("converter-progress").classList.remove("hidden");
+    byId("converter-progress").value = 15;
     resetResult();
     try {
       var result = await convertRoute(selectedFile, sourceType, target);
+      if (currentConversion !== conversionId) return;
+      byId("converter-progress").value = 75;
       if (target === "pdf") {
         preparePdf(result.html);
       } else {
@@ -113,14 +141,16 @@ var ConverterTool = (function () {
       byId("converter-status").textContent = t("converter.done") + (outputBlob ? " · " + formatBytes(outputBlob.size) : "");
       saveHistory(selectedFile.name, sourceType, target, outputBlob ? outputBlob.size : 0);
       renderHistory();
+      byId("converter-progress").value = 100;
     } catch (error) {
       byId("converter-status").textContent = t("converter.failed") + ": " + (error.message || error);
       byId("converter-status").classList.add("error");
     } finally {
-      button.disabled = false;
-      button.textContent = t("converter.convert");
+      finishConversionUi();
     }
   }
+
+  function finishConversionUi() { byId("converter-run").disabled = false; byId("converter-run").textContent = t("converter.convert"); byId("converter-cancel").classList.add("hidden"); setTimeout(function () { byId("converter-progress").classList.add("hidden"); }, 500); }
 
   async function convertRoute(file, from, to) {
     if (from === "docx") return convertDocx(file, to);
@@ -136,6 +166,7 @@ var ConverterTool = (function () {
     if (from === "html" && to === "md") return textResult(htmlToMarkdown(text), "text/markdown");
     if (from === "html" && to === "pdf") return htmlResult(text);
     if (from === "md") {
+      await ensureScript("marked", MARKED_URL);
       var markdownHtml = window.marked.parse(text);
       if (to === "html" || to === "pdf") return htmlResult(markdownHtml);
       if (to === "txt") return textResult(htmlToText(markdownHtml), "text/plain");
@@ -219,10 +250,11 @@ var ConverterTool = (function () {
     setTimeout(function () { URL.revokeObjectURL(url); button.disabled = false; button.textContent = t("converter.download"); }, 800);
   }
 
-  function downloadPdf() {
+  async function downloadPdf() {
     var button = byId("converter-download");
     button.disabled = true;
     button.textContent = t("converter.downloading");
+    await ensureScript("html2pdf", HTML2PDF_URL);
     var filename = (selectedFile.name.replace(/\.[^.]+$/, "") || "converted") + "_converted_" + timestampName() + ".pdf";
     var options = {
       margin: [10, 10, 10, 10],

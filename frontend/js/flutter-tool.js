@@ -300,6 +300,7 @@ var FlutterTool = (function () {
   function init(parent) {
     parent.innerHTML =
       '<div class="android-tool">' +
+      '  <div class="platform-version-note"><strong>' + t("flutter.versionBaseline") + '</strong><span>' + t("flutter.versionNote") + '</span></div>' +
       '  <div class="b64-tabs">' +
       '    <button class="b64-tab active" data-ftab="widgets">' + t("flutter.widgets") + '</button>' +
       '    <button class="b64-tab" data-ftab="cli">' + t("flutter.cli") + '</button>' +
@@ -336,6 +337,7 @@ var FlutterTool = (function () {
     });
 
     bindEvents();
+    if (["widgets", "cli", "packages"].indexOf(window.__toolSubpage) !== -1) switchFTab(window.__toolSubpage);
   }
 
   function switchFTab(name) {
@@ -359,7 +361,7 @@ var FlutterTool = (function () {
     WIDGETS.forEach(function (r) {
       var name = r[0];
       var desc = currentLang() === "en" ? r[3] : r[2];
-      h += '<tr data-search="' + [r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase() + '" data-cat="' + r[4] + '"><td><code>' + name + '</code></td><td>' + desc + '</td><td data-copy="' + escapeHtml(r[5]) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
+      h += '<tr data-search="' + escapeHtml([r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase()) + '" data-cat="' + r[4] + '"><td><code>' + name + '</code><small class="api-version">Flutter 1.0+</small></td><td>' + desc + '</td><td data-copy="' + escapeHtml(completeWidgetExample(r[5])) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
@@ -388,7 +390,7 @@ var FlutterTool = (function () {
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>Package</th><th>' + t("flutter.description") + '</th><th>pub.dev</th><th>' + t("flutter.note") + '</th></tr></thead><tbody>';
     PACKAGES.forEach(function (r) {
       var desc = currentLang() === "en" ? r[2] : r[1];
-      h += '<tr data-search="' + r.join(" ").toLowerCase() + '" data-cat="' + r[5] + '"><td><code>' + r[0] + '</code></td><td>' + desc + '</td><td><a href="https://' + r[3] + '" target="_blank" rel="noopener noreferrer"><code>' + r[3] + '</code></a></td><td>' + r[4] + '</td></tr>';
+      h += '<tr data-search="' + r.join(" ").toLowerCase() + '" data-cat="' + r[5] + '"><td><code>' + r[0] + '</code><small class="maintenance-active">' + (currentLang() === "en" ? "Status: verify on pub.dev" : "状态：以 pub.dev 为准") + '</small></td><td>' + desc + '</td><td><a href="https://' + r[3] + '" target="_blank" rel="noopener noreferrer"><code>' + r[3] + '</code></a></td><td>' + r[4] + '<br><small>' + (currentLang() === "en" ? "Alternative: check category peers" : "替代方案：查看同分类包") + '</small></td></tr>';
     });
     h += '</tbody></table></div>';
     return h;
@@ -407,6 +409,8 @@ var FlutterTool = (function () {
     h += '<pre class="ft-code-block" style="margin-top:8px"><code>' + escapeHtml(LIGHT_THEME_SNIPPET) + '</code></pre>';
     return h;
   }
+
+  function completeWidgetExample(snippet) { return "import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Scaffold(body: Center(child: Demo()))));\n\nclass Demo extends StatelessWidget {\n  const Demo({super.key});\n  @override Widget build(BuildContext context) {\n    return " + snippet + ";\n  }\n}"; }
 
   function buildNavTab() {
     var h = buildDocRefs("nav") + '<div class="at-search-wrap"><input id="ft-search-nav" class="search-input" type="text" placeholder="' + t("flutter.searchNav") + '"></div>';

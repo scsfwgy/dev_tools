@@ -293,6 +293,7 @@
   }
 
   function selectMenu(id, pushState) {
+    window.__toolSubpage = null;
     if (pushState !== false) {
       history.pushState({ menuId: id }, "", buildPathForMenu(id, currentLang));
     }
@@ -306,6 +307,7 @@
   window.addEventListener("popstate", function () {
     var routed = routeFromPath();
     activeMenuId = routed.menuId;
+    window.__toolSubpage = routed.subpage || null;
     if (routed.lang) {
       applyLanguageAndRender(routed.lang);
       return;
@@ -316,6 +318,8 @@
   });
 
   function routeFromPath() {
+    var subpageMatch = location.pathname.match(/^\/(zh|en)\/(converter|flutter|android|ios)\/([\w-]+)$/);
+    if (subpageMatch) return { lang: prefixToLocale(subpageMatch[1]), menuId: subpageMatch[2], subpage: subpageMatch[3] };
     var m = location.pathname.match(/^\/(zh|en)\/tool\/(\w+)$/);
     if (m) return { lang: prefixToLocale(m[1]), menuId: m[2] };
     var m2 = location.pathname.match(/^\/(zh|en)\/?$/);
@@ -752,6 +756,7 @@
     syncLanguageUi(routed.lang);
   }
   activeMenuId = routed.menuId;
+  window.__toolSubpage = routed.subpage || null;
 
   // 首页无语言前缀 → 补上
   if (!routed.lang && location.pathname === "/") {
@@ -787,6 +792,7 @@
   }
 
   function updateSeo() {
+    if (window.__toolSubpage) return;
     var lang = currentLang === "en" ? "en" : "zh-CN";
     var prefix = currentLang === "en" ? "en" : "zh";
     var pageKey = activeMenuId || "home";
