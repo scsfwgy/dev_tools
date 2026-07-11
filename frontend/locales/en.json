@@ -37,7 +37,9 @@
     "searchPlaceholder": "Search tools...",
     "collapseMenu": "Collapse menu",
     "immersiveMenu": "Enter immersive mode",
-    "expandMenu": "Expand menu"
+    "expandMenu": "Expand menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "settings": {
     "title": "Settings",
@@ -51,8 +53,29 @@
     "linkWishes": "Wish Wall"
   },
   "welcome": {
-    "desc": "Developer Toolbox — select a tool from the sidebar to get started",
-    "openSource": "Open source — use with confidence",
+    "desc": "A fast, simple and privacy-focused developer toolbox",
+    "openSource": "Open source",
+    "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
+    "localFirst": "✓ Local by default",
+    "popularTools": "Popular tools",
+    "searchResults": "Search results",
+    "noSearchResults": "No matching tools. Try another keyword.",
+    "toolHintFallback": "Open quickly and get started",
+    "processing": {
+      "local": "Local",
+      "hybrid": "Hybrid",
+      "server": "Cloud"
+    },
+    "toolHints": {
+      "json": "Format, validate and convert JSON",
+      "format": "Format common code and markup",
+      "timestamp": "Convert timestamps and date-time values",
+      "encoder": "Convert URL, Unicode and other encodings",
+      "base64": "Encode and decode Base64 text or files",
+      "regex": "Test regular expressions in real time",
+      "http": "Look up HTTP status and request details",
+      "qrcode": "Generate and scan QR codes"
+    },
     "favorites": "Favorites",
     "favoritesEmpty": "Click the star next to a tool to add it here",
     "addFavorite": "Add to favorites",

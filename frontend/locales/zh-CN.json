@@ -37,7 +37,9 @@
     "searchPlaceholder": "搜索工具...",
     "collapseMenu": "收起菜单",
     "immersiveMenu": "进入沉浸模式",
-    "expandMenu": "展开菜单"
+    "expandMenu": "展开菜单",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
   },
   "settings": {
     "title": "设置",
@@ -51,8 +53,29 @@
     "linkWishes": "心愿墙"
   },
   "welcome": {
-    "desc": "开发工具集 — 从左侧菜单选择工具开始使用",
-    "openSource": "代码开源，使用更安心",
+    "desc": "简单、快速、注重隐私的开发工具集",
+    "openSource": "代码开源",
+    "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
+    "localFirst": "✓ 默认本地处理",
+    "popularTools": "热门工具",
+    "searchResults": "搜索结果",
+    "noSearchResults": "没有找到匹配的工具，试试其他关键词",
+    "toolHintFallback": "快速打开并开始使用",
+    "processing": {
+      "local": "本地",
+      "hybrid": "混合",
+      "server": "云端"
+    },
+    "toolHints": {
+      "json": "格式化、校验与转换 JSON",
+      "format": "格式化常见代码与标记语言",
+      "timestamp": "时间戳与日期时间互转",
+      "encoder": "URL、Unicode 与多种编码转换",
+      "base64": "文本和文件 Base64 编解码",
+      "regex": "实时测试正则表达式",
+      "http": "查询 HTTP 状态码与请求信息",
+      "qrcode": "生成与识别二维码"
+    },
     "favorites": "收藏",
     "favoritesEmpty": "点击左侧工具旁的星标即可收藏",
     "addFavorite": "添加收藏",

@@ -33,7 +33,37 @@ def test_favorites_are_localized_and_wired(client):
     assert 'const STORAGE_FAVORITES = "devtools_favorites"' in app_script
     assert "function toggleFavorite(toolId)" in app_script
     assert 'class="menu-favorite' in app_script
-    assert 't("welcome.favoritesEmpty")' in app_script
+    assert "function homeToolCard(" in app_script
+
+
+def test_home_discovery_and_mobile_navigation_are_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert zh_locale["welcome"]["popularTools"] == "热门工具"
+    assert en_locale["welcome"]["popularTools"] == "Popular tools"
+    assert zh_locale["menu"]["openMenu"] == "打开菜单"
+    assert 'id="mobile-menu-toggle"' in index_html
+    assert 'id="sidebar-scrim"' in index_html
+    assert "function renderHomeDiscovery(" in app_script
+    assert "function rankedHomeTools(" in app_script
+    assert 'window.matchMedia("(max-width: 760px)")' in app_script
+    assert ".home-tool-grid" in app_css
+    assert ".sidebar.mobile-open" in app_css
+
+
+def test_sidebar_processing_badges_stay_compact(client):
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert 'class="menu-label"' in app_script
+    assert ".menu-label { flex: 1" in app_css
+    assert ".menu-processing::before" in app_css
+    assert ".menu-processing {\n  flex: none;" in app_css
 
 
 def test_image_tool_is_local_and_wired_with_seo_and_locales(client):

@@ -1,31 +1,120 @@
 # DevTools — 项目上下文
 
+## 产品定位
+
+Tools24 / DevTools 是简洁、快速、注重隐私的在线开发者工具箱，部署于 `https://tools24.uk`。当前提供 29 个公开工具，覆盖数据与编码、文本与文件、安全与网络、计算，以及 Android / Flutter / iOS 开发速查。
+
+首页提供工具搜索、用户收藏和热门工具。热门工具优先按 `/api/tool-stats` 返回的全站累计点击量排序，无数据或点击量相同时使用前端固定顺序兜底；默认显示 8 个。收藏仅保存在当前浏览器 `localStorage`。
+
 ## 架构
-- 后端：Flask (Python)，蓝图路由
-- 前端：原生 HTML/CSS/JS，Flask 直接托管
-- 部署：Vercel serverless，入口 `api/index.py`
-- 端口：8731
-- 缓存：Upstash Redis REST（可选），`service/cache_store.py`
 
-## 关键文件
-- `backend/app.py` — Flask 入口，静态文件托管，SEO 渲染，访问计数
-- `start.sh` — 开发/生产启动脚本，venv 管理
-- `vercel.json` — Vercel 路由（所有请求 → api/index.py）
+- 后端：Flask 3，应用入口与大部分 API 位于 `backend/app.py`
+- API 蓝图：心愿墙位于 `backend/routes/wishes.py`
+- 前端：原生 HTML/CSS/JavaScript，无 npm、打包器或构建步骤
+- 页面模型：Flask 输出 SEO 壳，前端使用 History API 完成 SPA 导航
+- 部署：Vercel serverless，入口 `api/index.py`，区域 `hkg1`
+- 本地端口：默认 `8731`，可通过 `PORT` 覆盖
+- 缓存：Upstash Redis REST / Vercel KV 可选；未配置时使用安全降级
 
-## 约定
-- 无构建步骤，前端纯 HTML/CSS/JS
-- 国际化：`frontend/locales/{lang}.json`
-- 蓝图在 `app.py` 中注册
-- `.env.local` 存放密钥（gitignore）
+## 核心文件
 
-## 强制要求
-- **国际化**：所有用户可见文本使用 `data-i18n` + locale JSON，中英双语。新功能必须同步更新两个 locale 文件。
-- **换肤**：所有颜色引用 CSS 自定义属性（`:root` / `[data-theme="light"]`），深色+浅色双主题。
-- **设置面板**：语言/主题选择器在右上角齿轮菜单。
-- **SEO**：每个功能页面独立 URL（`/{lang}/tool/{id}`），`history.pushState` 同步。
-- **路由检查**：新增路由需检查 vercel.json。
-- **工作日志**：新增功能必须在 `WORK_LOG.md` 记录日期、功能、说明。
-- **历史记录**：每个工具在底部有统一 `.history-bar`，localStorage 持久化。
-- **本地处理**：文件相关操作不上传服务器，全部浏览器本地完成。
-- **自动化测试**：后续所有新功能和行为变更必须同步新增或更新自动化测试。确因特殊原因无法测试时，必须在 `WORK_LOG.md` 中说明具体原因、不可测试范围及替代人工验证方式。
-- **测试隔离**：测试不得连接真实 Redis、外部 API，或修改真实访问计数、心愿墙等持久化数据。
+- `backend/app.py` — `TOOLS` SEO 数据、`TOOL_REGISTRY`、页面路由、manifest、统计、翻译和内容生成 API
+- `frontend/index.html` — SPA 外壳、桌面侧栏、移动端顶部栏和设置面板
+- `frontend/js/app.js` — i18n、History 路由、首页、收藏、热门排序、菜单状态与工具脚本懒加载
+- `frontend/js/*-tool.js` — 各工具的独立全局模块
+- `frontend/css/app.css` — 主题变量、公共组件、工具样式和响应式规则
+- `frontend/locales/{zh-CN,en}.json` — 全部界面文案
+- `backend/tests/` — pytest 自动化测试
+- `start.sh` — 虚拟环境、依赖、测试门禁和进程管理
+- `vercel.json` — API、SEO、工具与子页面重写规则
+- `WORK_LOG.md` — 功能变更、验证范围和技术决策
+
+## 工具注册与加载
+
+`backend/app.py` 的 `TOOL_REGISTRY` 是工具运行配置的单一事实来源，包含：
+
+- `order`：默认菜单顺序
+- `icon`：前端图标键
+- `script` / `global`：懒加载脚本及加载完成后的全局对象
+- `processing`：`local`、`hybrid` 或 `server`
+- `indexable`：是否进入公开工具列表和 sitemap
+- `hidden`：是否隐藏于普通侧栏
+
+`TOOLS` 保存各工具的中英文 SEO 元数据。所有 `indexable` 工具必须同时存在于 `TOOLS`，应用启动时会检查两者一致性。
+
+## 前端交互现状
+
+- 桌面侧栏支持完整、图标窄栏、沉浸模式三级循环，并持久化状态
+- 移动端使用固定顶部栏、遮罩和抽屉菜单，不复用桌面折叠状态
+- 设置入口位于侧栏底部，包含语言、主题、GitHub、心愿墙和访问次数
+- 首页主搜索按本地化名称及工具 ID 匹配；按 Enter 打开第一项
+- 侧栏与首页通过小型状态徽标区分本地、混合和云端处理
+- 工具收藏和大部分工具历史记录使用 `localStorage`
+- 工具脚本仅在首次访问对应页面时动态加载
+
+## 路由与 SEO
+
+- 首页：`/{lang}/`
+- 工具：`/{lang}/tool/{id}`
+- 子页面：`/{lang}/{converter|flutter|android|ios}/{subpage}`
+- 语言前缀：中文 `zh`，英文 `en`
+- 每个公开页面需要独立 title、description、canonical、hreflang 和结构化数据
+- `robots.txt`、`sitemap.xml` 和页面 SEO 均由 Flask 生成
+- 新增或调整路由时必须同时检查 `vercel.json`
+
+## 强制开发约定
+
+1. **国际化**：所有新增用户可见文本必须进入 `frontend/locales/zh-CN.json` 与 `frontend/locales/en.json`；HTML 静态文本使用 `data-i18n`、`data-i18n-placeholder` 或 `data-i18n-aria-label`。
+2. **主题**：新增颜色必须先定义为 `:root` / `[data-theme="light"]` CSS 自定义属性，保证深色与浅色主题可用。
+3. **响应式**：桌面侧栏与 `max-width: 760px` 移动抽屉都要验证；交互控件应保持约 44px 的移动触控目标。
+4. **隐私标识**：新增工具必须在 `TOOL_REGISTRY.processing` 中准确声明本地、混合或云端处理模式。
+5. **本地处理**：文件、图片及敏感文本应优先完全在浏览器处理；不得无提示上传。
+6. **懒加载**：新增工具脚本通过 `TOOL_REGISTRY` 注册，不得直接写入 `frontend/index.html`。
+7. **SEO**：新增公开工具必须补齐 `TOOLS` 中英文元数据，并确认 sitemap、canonical 与 hreflang。
+8. **历史记录**：适合重复操作的工具应复用统一 `.history-bar` 与 `localStorage` 方案。
+9. **测试**：所有新功能和行为变更必须同步新增或更新自动化测试；测试不得访问真实 Redis、外部 API 或真实持久化数据。
+10. **工作日志**：功能或行为变化必须记录到 `WORK_LOG.md`；无法自动测试时写明原因、范围和替代验证方式。
+
+## 本地开发与验证
+
+要求 Python 3.10+。
+
+```bash
+./start.sh test
+./start.sh debug
+./start.sh start
+./start.sh restart
+./start.sh status
+./start.sh stop
+```
+
+`start`、`debug` 和 `restart` 都会先安装依赖并运行完整 pytest；测试失败时不会启动服务。
+
+修改前端后至少执行：
+
+```bash
+node --check frontend/js/app.js
+python -m json.tool frontend/locales/zh-CN.json >/dev/null
+python -m json.tool frontend/locales/en.json >/dev/null
+PYTHONPATH=backend backend/.venv/bin/python -m pytest backend/tests -q
+git diff --check
+```
+
+涉及布局时还需要人工检查桌面、`<=760px` 移动端、深色和浅色主题。
+
+## 环境变量
+
+- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`
+- `KV_REST_API_URL` / `KV_REST_API_TOKEN`（Vercel KV 兼容变量）
+- `WISH_ADMIN_TOKEN`
+- `DEV_TOOLS_DEEPSEEK_API_KEY`
+- `SEO_LAST_MODIFIED`
+- `HOST` / `PORT` / `FLASK_DEBUG`
+
+本地密钥放在已忽略的 `.env.local`，不得提交真实密钥。
+
+## 已知部署事项
+
+- Vercel 生产环境应配置 Redis/KV，否则 serverless 实例间无法可靠共享访问计数、工具点击、内容生成和心愿墙数据。
+- `WISH_ADMIN_TOKEN` 需要在本地与部署环境保持一致。
+- 翻译功能只有配置 `DEV_TOOLS_DEEPSEEK_API_KEY` 后才能正常调用。

@@ -228,6 +228,10 @@
       const key = el.getAttribute("data-i18n-placeholder");
       el.placeholder = t(key);
     });
+    document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
+      const key = el.getAttribute("data-i18n-aria-label");
+      el.setAttribute("aria-label", t(key));
+    });
     if (document.getElementById("sidebar") && document.getElementById("sidebar").dataset.state) {
       applySidebarState(document.getElementById("sidebar").dataset.state);
     }
@@ -269,7 +273,7 @@
             ? '<span class="menu-processing menu-processing-hybrid" title="' + (currentLang === "en" ? "Uses hybrid processing" : "使用混合处理") + '">' + (currentLang === "en" ? "Hybrid" : "混合") + '</span>'
             : "";
         return `<a class="menu-item${active}${hidden}" href="${href}" data-id="${item.id}" title="${label}">
-          ${icons[item.icon]}<span>${label}</span>${processingIndicator}${favoriteButton}
+          ${icons[item.icon]}<span class="menu-label">${label}</span>${processingIndicator}${favoriteButton}
         </a>`;
       }).join("");
 
@@ -293,6 +297,7 @@
   }
 
   function selectMenu(id, pushState) {
+    closeMobileMenu();
     window.__toolSubpage = null;
     if (pushState !== false) {
       history.pushState({ menuId: id }, "", buildPathForMenu(id, currentLang));
@@ -454,37 +459,49 @@
       setTimeout(function () { renderPrivacyBadge(el, badgeToolId); }, 0);
     }
     if (activeMenuId === "home") {
-      var privacyIntro = currentLang === "en"
-        ? "Privacy first: most tools run entirely in your browser. Tools that send data to the server are explicitly labeled."
-        : "隐私优先：绝大多数工具完全在浏览器本地运行；需要发送数据到服务端的工具会明确标记。";
       var favoriteIds = loadFavorites();
-      var favoriteLinks = '<div class="welcome-quick welcome-favorites"><h3>' + t("welcome.favorites") + '</h3>';
+      var favoriteLinks = "";
       if (favoriteIds.length) {
-        favoriteLinks += '<div class="welcome-quick-grid">';
+        favoriteLinks = '<section class="home-section home-favorites"><div class="home-section-heading"><h2 data-i18n="welcome.favorites">' + t("welcome.favorites") + '</h2><span>' + favoriteIds.length + '</span></div><div class="home-tool-grid">';
         favoriteIds.forEach(function (toolId) {
           var item = menuItems.find(function (menuItem) { return menuItem.id === toolId; });
           if (!item) return;
-          var label = t(item.i18n);
-          favoriteLinks += '<a class="welcome-tool-chip" href="' + buildPathForMenu(item.id, currentLang) + '" data-id="' + item.id + '">' + icons[item.icon] + '<span>' + label + '</span></a>';
+          favoriteLinks += homeToolCard(item);
         });
-        favoriteLinks += '</div>';
-      } else {
-        favoriteLinks += '<p class="welcome-empty">' + t("welcome.favoritesEmpty") + '</p>';
+        favoriteLinks += '</div></section>';
       }
-      favoriteLinks += '</div>';
       el.innerHTML = `
-        <div class="welcome">
-          <div class="welcome-icon">🛠️</div>
-          <h2>DevTools</h2>
-          <p data-i18n="welcome.desc">开发工具集 — 从左侧菜单选择工具开始使用</p>
-          <div class="welcome-privacy"><span class="privacy-badge privacy-badge-local">✓ ${currentLang === "en" ? "Local by default" : "默认本地处理"}</span><p>${privacyIntro}</p></div>
-          <p class="welcome-oss"><a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="welcome-oss-icon"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> <span data-i18n="welcome.openSource">代码开源，使用更安心</span></a></p>
+        <div class="home-page">
+          <header class="home-hero">
+            <div class="home-mark" aria-hidden="true">${icons.code}</div>
+            <div>
+              <h1>DevTools</h1>
+              <p data-i18n="welcome.desc">简单、快速、注重隐私的开发工具集</p>
+            </div>
+          </header>
+          <label class="home-search" for="home-search">
+            <span class="home-search-icon" aria-hidden="true">${icons.search || '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'}</span>
+            <input id="home-search" type="search" data-i18n-placeholder="welcome.searchPlaceholder" placeholder="搜索工具，例如 JSON、时间戳、Base64…" autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+          <div class="home-trust-row">
+            <span class="home-trust-local" data-i18n="welcome.localFirst">✓ 默认本地处理</span>
+            <a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span data-i18n="welcome.openSource">代码开源</span></a>
+          </div>
           ${favoriteLinks}
+          <section id="home-discovery" class="home-section"></section>
         </div>`;
-      // bind chip clicks
-      el.querySelectorAll(".welcome-tool-chip").forEach(function (chip) {
-        chip.addEventListener("click", function (e) { e.preventDefault(); selectMenu(this.dataset.id); });
+      renderHomeDiscovery(el, "");
+      var homeSearch = document.getElementById("home-search");
+      homeSearch.addEventListener("input", function () { renderHomeDiscovery(el, this.value); });
+      homeSearch.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          var firstResult = el.querySelector("#home-discovery .home-tool-card");
+          if (firstResult) selectMenu(firstResult.dataset.id);
+        }
       });
+      var favoritesSection = el.querySelector(".home-favorites");
+      if (favoritesSection) bindHomeToolCards(favoritesSection);
       applyLocale();
       return;
     }
@@ -666,6 +683,54 @@
     applyLocale();
   }
 
+  function rankedHomeTools() {
+    var tools = menuItems.filter(function (item) { return item.id !== "home" && !item.hidden; });
+    var fallbackOrder = ["json", "format", "timestamp", "encoder", "base64", "regex", "http", "qrcode"];
+    return tools.slice().sort(function (a, b) {
+      var countDiff = (globalStats[b.id] || 0) - (globalStats[a.id] || 0);
+      if (countDiff) return countDiff;
+      var aIndex = fallbackOrder.indexOf(a.id);
+      var bIndex = fallbackOrder.indexOf(b.id);
+      aIndex = aIndex === -1 ? fallbackOrder.length : aIndex;
+      bIndex = bIndex === -1 ? fallbackOrder.length : bIndex;
+      return aIndex - bIndex;
+    });
+  }
+
+  function homeToolCard(item) {
+    var hintKey = "welcome.toolHints." + item.id;
+    var hint = t(hintKey);
+    if (hint === hintKey) hint = t("welcome.toolHintFallback");
+    var processingKey = "welcome.processing." + (item.processing || "local");
+    return '<a class="home-tool-card" href="' + buildPathForMenu(item.id, currentLang) + '" data-id="' + item.id + '">' +
+      '<span class="home-tool-icon">' + icons[item.icon] + '</span>' +
+      '<span class="home-tool-copy"><strong>' + t(item.i18n) + '</strong><small>' + hint + '</small></span>' +
+      '<span class="home-tool-processing home-tool-processing-' + (item.processing || "local") + '">' + t(processingKey) + '</span>' +
+      '</a>';
+  }
+
+  function bindHomeToolCards(container) {
+    container.querySelectorAll(".home-tool-card").forEach(function (card) {
+      card.addEventListener("click", function (event) {
+        event.preventDefault();
+        selectMenu(this.dataset.id);
+      });
+    });
+  }
+
+  function renderHomeDiscovery(container, query) {
+    var section = container.querySelector("#home-discovery");
+    if (!section) return;
+    var normalized = query.trim().toLowerCase();
+    var tools = rankedHomeTools().filter(function (item) {
+      return !normalized || t(item.i18n).toLowerCase().includes(normalized) || item.id.toLowerCase().includes(normalized);
+    }).slice(0, normalized ? 12 : 8);
+    var headingKey = normalized ? "welcome.searchResults" : "welcome.popularTools";
+    section.innerHTML = '<div class="home-section-heading"><h2 data-i18n="' + headingKey + '">' + t(headingKey) + '</h2><span>' + tools.length + '</span></div>' +
+      (tools.length ? '<div class="home-tool-grid">' + tools.map(homeToolCard).join("") + '</div>' : '<div class="home-search-empty">' + t("welcome.noSearchResults") + '</div>');
+    bindHomeToolCards(section);
+  }
+
   function renderPrivacyBadge(container, toolId) {
     if (activeMenuId !== toolId || container.querySelector(".privacy-badge-runtime")) return;
     var tool = menuItems.find(function (item) { return item.id === toolId; });
@@ -682,6 +747,9 @@
   // ── 菜单折叠 ──
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menu-toggle");
+  const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+  const sidebarScrim = document.getElementById("sidebar-scrim");
+  const mobileMenuQuery = window.matchMedia("(max-width: 760px)");
   function normalizeMenuState(value) {
     if (value === "1" || value === "compact") return "compact";
     if (value === "immersive") return "immersive";
@@ -689,8 +757,8 @@
   }
   function applySidebarState(state) {
     sidebar.classList.remove("collapsed", "immersive");
-    if (state === "compact") sidebar.classList.add("collapsed");
-    if (state === "immersive") sidebar.classList.add("immersive");
+    if (!mobileMenuQuery.matches && state === "compact") sidebar.classList.add("collapsed");
+    if (!mobileMenuQuery.matches && state === "immersive") sidebar.classList.add("immersive");
     sidebar.dataset.state = state;
     localStorage.setItem(STORAGE_MENU, state);
     var label = state === "expanded" ? t("menu.collapseMenu") : (state === "compact" ? t("menu.immersiveMenu") : t("menu.expandMenu"));
@@ -701,8 +769,42 @@
   applySidebarState(normalizeMenuState(localStorage.getItem(STORAGE_MENU)));
 
   menuToggle.addEventListener("click", function () {
+    if (mobileMenuQuery.matches) {
+      closeMobileMenu();
+      return;
+    }
     var current = sidebar.dataset.state || "expanded";
     applySidebarState(current === "expanded" ? "compact" : (current === "compact" ? "immersive" : "expanded"));
+  });
+
+  function setMobileMenu(open) {
+    sidebar.classList.toggle("mobile-open", open);
+    sidebarScrim.classList.toggle("visible", open);
+    mobileMenuToggle.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("mobile-menu-open", open);
+  }
+
+  function closeMobileMenu() {
+    setMobileMenu(false);
+  }
+
+  mobileMenuToggle.addEventListener("click", function () {
+    setMobileMenu(!sidebar.classList.contains("mobile-open"));
+  });
+  sidebarScrim.addEventListener("click", closeMobileMenu);
+  mobileMenuQuery.addEventListener("change", function () {
+    closeMobileMenu();
+    applySidebarState(sidebar.dataset.state || "expanded");
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeMobileMenu();
+    if (event.key === "/" && activeMenuId === "home" && !/input|textarea|select/i.test(document.activeElement.tagName)) {
+      var homeSearch = document.getElementById("home-search");
+      if (homeSearch) {
+        event.preventDefault();
+        homeSearch.focus();
+      }
+    }
   });
 
   // ── 菜单搜索 ──

@@ -1,68 +1,109 @@
-# DevTools
+# DevTools / Tools24
 
-开发工具集 — 在线开发者工具箱。
+简洁、快速、注重隐私的在线开发者工具箱，线上地址：[tools24.uk](https://tools24.uk)。
 
-## 功能
+项目采用 Flask + 原生 HTML/CSS/JavaScript，无前端构建步骤。大多数工具完全在浏览器本地运行；需要服务端或混合处理的工具会在侧栏和工具卡片中明确标记。
 
-| 工具 | 说明 |
+## 主要特性
+
+- 近 30 个开发、文件处理、计算和移动开发速查工具
+- 中英文界面、深色/浅色主题
+- 首页搜索、收藏和按全站点击量排序的热门工具
+- 桌面端三级侧栏；移动端顶部栏 + 抽屉导航
+- 工具脚本按需加载，每个公开工具拥有独立 SEO URL
+- 文件、图片、编解码和加解密等操作优先在浏览器本地完成
+- Upstash Redis / Vercel KV 可选接入，并提供本地降级存储
+- pytest 自动化测试作为启动与重启前置门禁
+
+## 工具列表
+
+| 分类 | 工具 |
 |------|------|
-| JSON 工具 | 格式化、压缩、校验，树形折叠查看 |
-| 正则表达式测试 | 实时匹配高亮、捕获组、flags、替换预览、常用模板 |
-| HTTP 速查 | 状态码、请求头、响应头、缓存、CORS、安全 Header |
-| 时间戳转换 | 秒/毫秒戳、ISO 8601、RFC 2822、相对时间 |
-| URL 编解码 | 自动识别编码/解码模式 |
-| Base64 | 文本 + 文件编解码，文件本地处理 |
-| 文本对比 | LCS 逐行 diff，新增/删除高亮 |
-| 文本处理 | 去空行、去重、排序、大小写、多行转 JSON/CSV/SQL IN |
-| 文件详情 | MD5/SHA-1/SHA-256、Base64、图片/视频尺寸 |
-| 图片处理 | 本地压缩、缩放、旋转、翻转、PNG/JPEG/WebP 转换、移除元数据 |
-| 文件转换 | TXT/HTML/Markdown/PDF、CSV/XLSX/HTML、DOCX→HTML/TXT，本地按需转换 |
-| 心愿墙 | 匿名留言，验证码防刷，管理员回复 |
-| Markdown 编辑 | 实时预览，上传 .md，下载 HTML/DOC/PDF/MD |
-| 加解密 | AES-GCM/CBC 对称加密 + RSA-OAEP 非对称加密 |
-| Android 常用 | API、ADB、透明度、dp/px、权限、Intent、Manifest、资源限定符、官方文档速查 |
+| 数据与编码 | JSON 工具、代码格式化、时间戳转换、单位换算、正则测试、HTTP 速查、编码转换、Base64、JWT 工具 |
+| 文本与文件 | 文本对比、文本处理、Markdown 编辑、文件详情、图片处理、文件转换 |
+| 安全与网络 | AES/RSA 加解密、二维码、Curl 工具、Git 命令、终端命令 |
+| 移动开发 | Android 常用与 Compose、Flutter Widgets/CLI/Packages、iOS SwiftUI/UIKit/Xcode/Info.plist |
+| 计算与效率 | 个税计算、房贷计算、设备信息、AI 指令、翻译、内容生成 |
+
+心愿墙通过设置面板进入，不参与公开工具索引。
+
+## 处理模式
+
+| 标识 | 含义 | 示例 |
+|------|------|------|
+| 本地 | 数据只在当前浏览器处理 | JSON、图片、文件转换、JWT、加解密 |
+| 混合 | 页面本地运行，但部分信息请求服务端 | 设备信息（IP） |
+| 云端 | 输入会发送到服务端完成处理 | 翻译、内容生成、心愿墙 |
 
 ## 项目结构
 
-```
+```text
 DevTools/
-├── api/index.py           # Vercel serverless 入口
+├── api/index.py                 # Vercel serverless 入口
 ├── backend/
-│   ├── app.py             # Flask 应用 + SEO 渲染 + 访问计数
-│   ├── routes/            # API 蓝图（wishes）
-│   └── service/           # cache_store (Upstash Redis) + wishes
+│   ├── app.py                   # Flask、工具注册表、SEO、统计及 API
+│   ├── routes/wishes.py         # 心愿墙 API 蓝图
+│   ├── service/                 # Redis/本地缓存与心愿墙服务
+│   └── tests/                   # pytest 测试套件
 ├── frontend/
-│   ├── index.html         # SPA 入口
-│   ├── css/app.css        # 双主题样式
-│   ├── js/                # 各工具模块 + app.js
-│   └── locales/           # zh-CN / en
-├── start.sh               # 开发/生产启动
+│   ├── index.html               # SPA 外壳、侧栏与移动端导航
+│   ├── css/app.css              # 全局组件及深浅主题
+│   ├── js/app.js                # 路由、首页、菜单、i18n 与脚本懒加载
+│   ├── js/*-tool.js             # 各工具模块
+│   └── locales/                 # zh-CN.json / en.json
+├── WORK_LOG.md                  # 功能与技术决策记录
+├── CLAUDE.md                    # AI 编码上下文与强制约定
+├── start.sh                     # 测试、启动、停止与状态管理
 ├── requirements.txt
-├── vercel.json
-└── CLAUDE.md
+└── vercel.json
 ```
 
-## 快速开始
+## 本地运行
+
+要求：Python 3.10+、`curl`，以及 macOS/Linux 常见命令行环境。
 
 ```bash
-./start.sh start     # 生产模式（后台）
-./start.sh debug     # 调试模式（前台）
-./start.sh stop      # 停止
-./start.sh status    # 状态
+./start.sh test       # 创建虚拟环境、安装依赖并运行测试
+./start.sh debug      # 测试通过后以前台调试模式启动
+./start.sh start      # 测试通过后在后台启动
+./start.sh restart    # 测试通过后重启
+./start.sh status     # 查看运行状态
+./start.sh stop       # 停止后台服务
 ```
 
-启动后：`http://127.0.0.1:8731`
+启动后访问：<http://127.0.0.1:8731/zh/>
 
 ## 环境变量
 
-| 变量 | 说明 |
-|------|------|
-| `UPSTASH_REDIS_REST_URL` | Redis REST URL（可选，启用后访问计数/心愿墙走 Redis） |
-| `UPSTASH_REDIS_REST_TOKEN` | Redis REST Token |
-| `WISH_ADMIN_TOKEN` | 心愿墙管理员 Token（`.env.local`） |
+本地变量可放在不会提交的 `.env.local` 中。
 
-## 技术栈
+| 变量 | 必需 | 说明 |
+|------|------|------|
+| `UPSTASH_REDIS_REST_URL` | 否 | Upstash Redis REST URL |
+| `UPSTASH_REDIS_REST_TOKEN` | 否 | Upstash Redis REST Token |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | 否 | Vercel KV 兼容变量，可替代 Upstash 变量 |
+| `WISH_ADMIN_TOKEN` | 生产建议 | 心愿墙管理、工具统计管理视图的鉴权 Token |
+| `DEV_TOOLS_DEEPSEEK_API_KEY` | 翻译功能必需 | DeepSeek 翻译接口密钥 |
+| `SEO_LAST_MODIFIED` | 否 | 覆盖 sitemap 的最后修改日期 |
+| `HOST` / `PORT` / `FLASK_DEBUG` | 否 | Flask 监听地址、端口和调试开关 |
 
-- **后端**: Python Flask + Upstash Redis REST
-- **前端**: 原生 HTML/CSS/JS（无构建步骤）
-- **部署**: Vercel serverless
+未配置 Redis/KV 时，访问计数和心愿墙可使用本地降级存储，热门工具则回退到固定推荐顺序；serverless 环境应配置远程存储。
+
+## 路由与部署
+
+- 首页：`/{zh|en}/`
+- 工具页：`/{zh|en}/tool/{id}`
+- 可索引子页面：`/{zh|en}/{converter|flutter|android|ios}/{subpage}`
+- API、SEO 页面和 SPA 路由由 Vercel 重写到 `api/index.py`
+
+工具清单、处理模式、脚本路径和索引状态统一维护在 `backend/app.py` 的 `TOOL_REGISTRY` 中。
+
+## 测试
+
+```bash
+./start.sh test
+# 或
+PYTHONPATH=backend backend/.venv/bin/python -m pytest backend/tests -q
+```
+
+测试会隔离真实 Redis、外部 API、访问计数和心愿墙持久化数据。
