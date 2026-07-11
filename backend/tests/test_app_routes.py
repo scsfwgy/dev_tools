@@ -1,8 +1,18 @@
 import json
+import re
 from pathlib import Path
 from unittest.mock import Mock
 
 import requests
+
+from app import TOOLS
+
+
+def assert_tool_is_lazy_loaded(frontend_dir, filename):
+    index_html = (frontend_dir / "index.html").read_text()
+    app_script = (frontend_dir / "js" / "app.js").read_text()
+    assert filename not in index_html
+    assert f'"/js/{filename}' in app_script
 
 
 def test_health_and_ip_routes(client):
@@ -62,7 +72,7 @@ def test_image_tool_is_local_and_wired_with_seo_and_locales(client):
     assert zh_locale["menu"]["image"] == "图片处理"
     assert en_locale["menu"]["image"] == "Image Tool"
     assert zh_locale["image"]["metadataRemoved"] == "元数据已移除"
-    assert index_html.index("image-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "image-tool.js")
 
 
 def test_file_converter_routes_are_local_and_lazy_loaded(client):
@@ -93,23 +103,63 @@ def test_file_converter_routes_are_local_and_lazy_loaded(client):
     assert zh_locale["menu"]["converter"] == "文件转换"
     assert en_locale["menu"]["converter"] == "File Converter"
     assert zh_locale["converter"]["supportedRoutes"] == "当前支持的全部转换格式（15 项）"
-    assert index_html.index("converter-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "converter-tool.js")
     app_css = (frontend_dir / "css" / "app.css").read_text()
     assert ".converter-pdf-preview { min-height: 480px" in app_css
     assert ".converter-preview.hidden, .converter-pdf-preview.hidden { display: none; }" in app_css
 
 
-def test_spa_routes_render_seo_and_fallback(client):
+def test_spa_routes_render_seo_and_reject_invalid_paths(client):
     response = client.get("/en/tool/json")
     fallback = client.get("/fr/tool/unknown")
+    missing_tool = client.get("/zh/tool/unknown")
 
     html = response.get_data(as_text=True)
     assert response.status_code == 200
     assert '<html lang="en">' in html
     assert "https://www.tools24.uk/en/tool/json" in html
     assert "JSON Formatter and Validator Online" in html
-    assert fallback.status_code == 200
-    assert "<!--SEO_TITLE-->" in fallback.get_data(as_text=True)
+    assert fallback.status_code == 404
+    assert missing_tool.status_code == 404
+
+
+def test_canonical_routes_redirect_and_api_is_not_indexed(client):
+    root = client.get("/")
+    no_slash = client.get("/zh")
+    api = client.get("/api/health")
+
+    assert root.status_code == 308
+    assert root.headers["Location"].endswith("/zh/")
+    assert no_slash.status_code == 308
+    assert no_slash.headers["Location"].endswith("/zh/")
+    assert api.headers["X-Robots-Tag"] == "noindex, nofollow"
+
+
+def test_tool_registry_routes_and_sitemap_stay_in_sync(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    app_script = (frontend_dir / "js" / "app.js").read_text()
+    menu_block = app_script.split("const menuItems = [", 1)[1].split("];", 1)[0]
+    menu_tool_ids = set(re.findall(r'id: "([a-z0-9-]+)"', menu_block)) - {"home", "wishes"}
+
+    assert menu_tool_ids == set(TOOLS)
+
+    sitemap = client.get("/sitemap.xml").get_data(as_text=True)
+    assert 'xmlns:xhtml="http://www.w3.org/1999/xhtml"' in sitemap
+    assert "<lastmod>2026-07-11</lastmod>" in sitemap
+    for tool_id in TOOLS:
+        assert f"https://www.tools24.uk/zh/tool/{tool_id}" in sitemap
+        assert f"https://www.tools24.uk/en/tool/{tool_id}" in sitemap
+
+
+def test_new_tools_have_server_rendered_seo(client):
+    for tool_id, expected in (("flutter", "Flutter 常用速查"), ("ios", "iOS 常用速查"), ("jwt", "JWT 在线解析调试工具")):
+        response = client.get(f"/zh/tool/{tool_id}")
+        page = response.get_data(as_text=True)
+        assert response.status_code == 200
+        assert expected in page
+        assert f"https://www.tools24.uk/zh/tool/{tool_id}" in page
+        assert '"@type": "FAQPage"' in page
+        assert '"@type": "BreadcrumbList"' in page
 
 
 def test_regex_and_http_tools_are_wired_with_seo_and_locales(client):
@@ -137,8 +187,8 @@ def test_regex_and_http_tools_are_wired_with_seo_and_locales(client):
 
     assert zh_locale["menu"]["regex"] == "正则测试"
     assert en_locale["menu"]["http"] == "HTTP Reference"
-    assert index_html.index("regex-tool.js") < index_html.index("app.js")
-    assert index_html.index("http-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "regex-tool.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "http-tool.js")
 
 
 def test_text_tool_is_wired_with_seo_and_locales(client):
@@ -156,7 +206,7 @@ def test_text_tool_is_wired_with_seo_and_locales(client):
     index_html = (frontend_dir / "index.html").read_text()
 
     assert zh_locale["menu"]["text"] == "文本处理"
-    assert index_html.index("text-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "text-tool.js")
 
 
 def test_tax_tool_is_wired_with_seo_and_locales(client):
@@ -196,7 +246,7 @@ def test_tax_tool_is_wired_with_seo_and_locales(client):
     assert zh_locale["tax"]["guideTab"] == "计算说明"
     assert en_locale["tax"]["scheduleTab"] == "Monthly Withholding Process"
     assert en_locale["tax"]["guideTab"] == "How It Works"
-    assert index_html.index("tax-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "tax-tool.js")
 
 
 def test_mortgage_tool_is_wired_with_seo_and_locales(client):
@@ -225,7 +275,7 @@ def test_mortgage_tool_is_wired_with_seo_and_locales(client):
     assert en_locale["menu"]["mortgage"] == "Mortgage"
     assert zh_locale["mortgage"]["pbcLpr"] == "中国人民银行：LPR"
     assert en_locale["tax"]["officialWithholding"] == "STA: Cumulative Withholding Rules"
-    assert index_html.index("mortgage-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "mortgage-tool.js")
 
 
 def test_unit_converter_and_sidebar_use_shared_ui_states(client):
@@ -264,7 +314,7 @@ def test_ai_tool_uses_verified_commands_categories_and_comparison(client):
 
     assert zh_locale["ai"]["comparison"] == "功能对照"
     assert en_locale["ai"]["categories"]["review"] == "Code Review"
-    assert index_html.index("ai-tool.js") < index_html.index("app.js")
+    assert_tool_is_lazy_loaded(frontend_dir, "ai-tool.js")
 
 
 def test_visit_counter_is_read_only_then_increments(client):

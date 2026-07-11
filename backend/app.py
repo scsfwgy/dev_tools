@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 import requests
-from flask import Flask, Response, jsonify, request, send_from_directory
+from flask import Flask, Response, jsonify, redirect, request, send_from_directory
 from flask_cors import CORS
 
 from service import cache_store
@@ -25,7 +25,15 @@ app.register_blueprint(wishes_bp)
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 SITE_URL = "https://www.tools24.uk"
+SEO_LAST_MODIFIED = "2026-07-11"
 SUPPORTED_LANGS = {"zh", "en"}
+
+
+@app.after_request
+def prevent_api_indexing(response):
+    if request.path.startswith("/api/"):
+        response.headers["X-Robots-Tag"] = "noindex, nofollow"
+    return response
 
 TOOLS = {
     "device": {
@@ -338,6 +346,66 @@ TOOLS = {
                 ("Which languages can curl be converted to?", "Python (requests), JavaScript (fetch), Go (net/http), and Java (OkHttp)."),
                 ("Can I run the generated curl command?", "Yes, copy and paste into your terminal."),
             ],
+        },
+    },
+    "flutter": {
+        "zh": {
+            "name": "Flutter 常用速查",
+            "title": "Flutter 常用速查 - Widget CLI 状态管理 主题导航 | Tools24",
+            "description": "Flutter 开发者常用速查，覆盖 Widget 组件、CLI 命令、常用 Packages、主题、导航、状态管理和响应式布局。",
+            "keywords": "Flutter组件,Flutter Widget,Flutter CLI,Flutter状态管理,ThemeData,Flutter导航,Flutter速查",
+            "intro": "集中查询 Flutter 常用 Widget、命令、Packages 和工程实践，并提供可复制示例与官方文档入口。",
+            "features": ["60+ Widget 与代码示例", "Flutter CLI 命令", "常用 Packages 分类", "主题、导航与状态管理", "响应式布局与构建配置"],
+            "faq": [("代码示例可以直接使用吗？", "示例用于快速理解常见写法，复制后请结合当前 Flutter 和依赖版本调整。"), ("内容是否来自官方文档？", "页面为便捷速查，并为各分类提供 Flutter 官方文档链接。")],
+        },
+        "en": {
+            "name": "Flutter Quick Reference",
+            "title": "Flutter Quick Reference - Widgets CLI State Theming Navigation | Tools24",
+            "description": "Flutter developer reference covering widgets, CLI commands, popular packages, theming, navigation, state management and responsive layouts.",
+            "keywords": "Flutter widgets,Flutter CLI,Flutter packages,Flutter state management,ThemeData,Flutter navigation,Flutter reference",
+            "intro": "Browse common Flutter widgets, commands, packages and engineering patterns with copyable examples and links to official documentation.",
+            "features": ["60+ widgets with examples", "Flutter CLI commands", "Popular package categories", "Theming, navigation and state management", "Responsive layout and build configuration"],
+            "faq": [("Can I use the examples directly?", "The examples demonstrate common patterns. Adjust them for your current Flutter and dependency versions."), ("Is this official documentation?", "This is a quick reference with official Flutter documentation linked from each category.")],
+        },
+    },
+    "ios": {
+        "zh": {
+            "name": "iOS 常用速查",
+            "title": "iOS 常用速查 - SwiftUI UIKit Swift Xcode Info.plist | Tools24",
+            "description": "iOS 开发者常用速查，覆盖 SwiftUI、UIKit、Swift 语法、Xcode 快捷键、Info.plist、HIG 和设备参数。",
+            "keywords": "iOS开发,SwiftUI,UIKit,Swift语法,Xcode快捷键,Info.plist,HIG,iOS速查",
+            "intro": "集中查询 iOS 开发中的 SwiftUI、UIKit、Swift、Xcode、权限配置、设计规范和设备参数。",
+            "features": ["SwiftUI 视图与示例", "Swift 语法和 UIKit 类", "Xcode 快捷键", "Info.plist 权限配置", "HIG 与设备参数"],
+            "faq": [("示例支持哪些 iOS 版本？", "不同 API 的最低版本不同，使用前请结合项目 Deployment Target 检查官方文档。"), ("是否包含官方资料？", "各分类均提供 Apple 或 Swift 官方文档入口。")],
+        },
+        "en": {
+            "name": "iOS Quick Reference",
+            "title": "iOS Quick Reference - SwiftUI UIKit Swift Xcode Info.plist | Tools24",
+            "description": "iOS developer reference covering SwiftUI, UIKit, Swift syntax, Xcode shortcuts, Info.plist, HIG and device specifications.",
+            "keywords": "iOS development,SwiftUI,UIKit,Swift syntax,Xcode shortcuts,Info.plist,HIG,iOS reference",
+            "intro": "Browse SwiftUI, UIKit, Swift, Xcode, permission configuration, design guidance and device specifications in one place.",
+            "features": ["SwiftUI views and examples", "Swift syntax and UIKit classes", "Xcode shortcuts", "Info.plist permission keys", "HIG and device specifications"],
+            "faq": [("Which iOS versions are supported?", "Minimum versions differ by API. Check the linked official documentation against your deployment target."), ("Does it link to official sources?", "Each category links to Apple or Swift official documentation.")],
+        },
+    },
+    "jwt": {
+        "zh": {
+            "name": "JWT 在线解析调试工具",
+            "title": "JWT 在线解析调试工具 - 解码 验证 生成 | Tools24",
+            "description": "在线解码、验证和生成 JWT，支持 HS256、HS384、HS512 和时间戳转换，全部在浏览器本地处理。",
+            "keywords": "JWT解析,JWT解码,JWT验证,JWT生成,JSON Web Token,HS256,JWT调试",
+            "intro": "粘贴 JWT 即可查看 Header、Payload 和签名信息，也可使用 HMAC 密钥验证或生成 Token。",
+            "features": ["JWT Header 与 Payload 解码", "Claims 与时间戳解析", "HS256/HS384/HS512 验证", "JWT 生成", "浏览器本地处理，不上传 Token"],
+            "faq": [("JWT 会上传服务器吗？", "不会，解析、验证和生成均使用浏览器原生能力在本地完成。"), ("解码是否代表签名可信？", "不代表。解码只读取内容，必须使用正确密钥完成签名验证后才能确认完整性。")],
+        },
+        "en": {
+            "name": "JWT Decoder and Debugger",
+            "title": "JWT Decoder and Debugger Online - Verify Generate | Tools24",
+            "description": "Decode, verify and generate JWTs online with HS256, HS384, HS512 and timestamp inspection, entirely in your browser.",
+            "keywords": "JWT decoder,JWT verifier,JWT generator,JSON Web Token,HS256,JWT debugger",
+            "intro": "Inspect JWT headers, payloads and signatures, then verify or generate tokens using an HMAC secret locally in your browser.",
+            "features": ["Decode JWT header and payload", "Inspect claims and timestamps", "HS256/HS384/HS512 verification", "JWT generation", "Local browser processing"],
+            "faq": [("Are JWTs uploaded?", "No. Decoding, verification and generation run locally with browser APIs."), ("Does decoding prove a token is valid?", "No. Decoding only reads its contents; verify the signature with the correct secret to confirm integrity.")],
         },
     },
     "converter": {
@@ -717,17 +785,17 @@ TOOLS = {
 HOME_META = {
     "zh": {
         "name": "Tools24 在线开发者工具箱",
-        "title": "Tools24 在线开发者工具箱 - JSON格式化 加解密 QR码 Android参考 Markdown | Tools24",
-        "description": "Tools24 提供在线 JSON 格式化、编解码转换、Base64/32/16、加解密(AES/RSA)、二维码生成解析、Markdown 编辑、Android 开发速查、时间戳转换、文本对比、文件哈希等开发者工具。",
+        "title": "Tools24 在线开发者工具箱 - JSON JWT 图片文件转换与开发速查",
+        "description": "Tools24 提供 JSON 格式化、JWT 调试、图片与文件转换、编解码、加解密、二维码，以及 Android、Flutter、iOS 开发速查等免费在线工具。",
         "keywords": "在线工具,开发者工具,JSON格式化,编码转换,Base64,加解密,二维码生成,Markdown编辑器,Android速查,时间戳转换,文本对比,MD5校验",
-        "intro": "Tools24 是面向开发者和日常办公的在线工具箱，提供编码转换、加解密、二维码、Markdown、Android 速查、JSON、Base64 等十余种常用工具。",
+        "intro": "Tools24 是面向开发者和日常办公的在线工具箱，提供近三十种编码、调试、文件处理、计算和移动开发速查工具。",
     },
     "en": {
         "name": "Tools24 Online Developer Toolbox",
-        "title": "Tools24 Online Developer Toolbox - JSON Encryption QR Code Android Markdown | Tools24",
-        "description": "Tools24 provides online developer tools: JSON formatting, codec converter, Base64/32/16, AES/RSA encryption, QR code generator & parser, Markdown editor, Android dev reference, timestamp, text diff, file hashing and more.",
+        "title": "Tools24 Developer Toolbox - JSON JWT Image File Tools and References",
+        "description": "Free online tools for JSON, JWT, images, file conversion, codecs, encryption and QR codes, plus Android, Flutter and iOS developer references.",
         "keywords": "online tools,developer tools,JSON formatter,codec,Base64,encryption,QR code,Markdown editor,Android reference,timestamp converter,text diff,MD5 checker",
-        "intro": "Tools24 is an online toolbox for developers and daily work, covering codecs, encryption, QR codes, Markdown, Android reference, JSON, Base64 and more.",
+        "intro": "Tools24 provides nearly thirty browser-based tools for encoding, debugging, file processing, calculations and mobile development references.",
     },
 }
 
@@ -740,7 +808,7 @@ def health():
 @app.route("/robots.txt")
 def robots():
     return Response(
-        f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n",
+        f"User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: {SITE_URL}/sitemap.xml\n",
         mimetype="text/plain",
     )
 
@@ -749,35 +817,47 @@ def robots():
 def sitemap():
     urls = []
     for lang in ("zh", "en"):
-        urls.append((f"{SITE_URL}/{lang}/", "daily", "1.0"))
+        urls.append((f"{SITE_URL}/{lang}/", lang, None))
         for tool_id in TOOLS:
-            urls.append((f"{SITE_URL}/{lang}/tool/{tool_id}", "weekly", "0.8"))
+            urls.append((f"{SITE_URL}/{lang}/tool/{tool_id}", lang, tool_id))
     body = "\n".join(
-        f"  <url><loc>{loc}</loc><changefreq>{freq}</changefreq><priority>{priority}</priority></url>"
-        for loc, freq, priority in urls
+        (
+            f"  <url><loc>{loc}</loc><lastmod>{SEO_LAST_MODIFIED}</lastmod>"
+            f'<xhtml:link rel="alternate" hreflang="zh-CN" href="{SITE_URL}/zh{f"/tool/{tool_id}" if tool_id else "/"}"/>'
+            f'<xhtml:link rel="alternate" hreflang="en" href="{SITE_URL}/en{f"/tool/{tool_id}" if tool_id else "/"}"/>'
+            f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE_URL}/zh{f"/tool/{tool_id}" if tool_id else "/"}"/>'
+            "</url>"
+        )
+        for loc, _lang, tool_id in urls
     )
-    xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>\n'
+    xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n{body}\n</urlset>\n'
     return Response(xml, mimetype="application/xml")
 
 
 @app.route("/")
 def index():
-    return render_spa("zh", None)
+    return redirect("/zh/", code=308)
 
 
 # 语言前缀路由：/zh/、/zh/tool/json 等 → 始终返回 index.html（SPA 客户端路由）
 @app.route("/<lang>")
+def index_lang_redirect(lang):
+    if lang not in SUPPORTED_LANGS:
+        return Response("Not found", status=404, mimetype="text/plain")
+    return redirect(f"/{lang}/", code=308)
+
+
 @app.route("/<lang>/")
 def index_lang(lang):
     if lang not in SUPPORTED_LANGS:
-        return send_from_directory(str(FRONTEND_DIR), "index.html")
+        return Response("Not found", status=404, mimetype="text/plain")
     return render_spa(lang, None)
 
 
 @app.route("/<lang>/tool/<tool_id>")
 def tool_lang(lang, tool_id):
     if lang not in SUPPORTED_LANGS or tool_id not in TOOLS:
-        return send_from_directory(str(FRONTEND_DIR), "index.html")
+        return Response("Not found", status=404, mimetype="text/plain")
     return render_spa(lang, tool_id)
 
 
@@ -810,9 +890,9 @@ def render_spa(lang, tool_id):
 
 
 def build_schema(lang, tool_id, canonical, meta):
-    schema = {
-        "@context": "https://schema.org",
+    application = {
         "@type": "WebApplication",
+        "@id": f"{canonical}#application",
         "name": meta["name"],
         "url": canonical,
         "description": meta["description"],
@@ -822,8 +902,9 @@ def build_schema(lang, tool_id, canonical, meta):
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
     }
     if tool_id:
-        schema["mainEntity"] = {
+        faq = {
             "@type": "FAQPage",
+            "@id": f"{canonical}#faq",
             "mainEntity": [
                 {
                     "@type": "Question",
@@ -833,7 +914,25 @@ def build_schema(lang, tool_id, canonical, meta):
                 for question, answer in TOOLS[tool_id][lang]["faq"]
             ],
         }
-    return schema
+        application["mainEntity"] = {"@id": faq["@id"]}
+        breadcrumb = {
+            "@type": "BreadcrumbList",
+            "@id": f"{canonical}#breadcrumb",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": HOME_META[lang]["name"], "item": f"{SITE_URL}/{lang}/"},
+                {"@type": "ListItem", "position": 2, "name": meta["name"], "item": canonical},
+            ],
+        }
+        return {"@context": "https://schema.org", "@graph": [application, faq, breadcrumb]}
+    website = {
+        "@type": "WebSite",
+        "@id": f"{canonical}#website",
+        "name": meta["name"],
+        "url": canonical,
+        "description": meta["description"],
+        "inLanguage": "zh-CN" if lang == "zh" else "en",
+    }
+    return {"@context": "https://schema.org", "@graph": [website, application]}
 
 
 def _client_ip():

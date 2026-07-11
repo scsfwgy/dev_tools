@@ -4,6 +4,7 @@
   const STORAGE_THEME = "devtools_theme";
   const STORAGE_MENU = "devtools_menu_collapsed";
   const STORAGE_FAVORITES = "devtools_favorites";
+  const SITE_URL = "https://www.tools24.uk";
 
   let locale = {};
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
@@ -78,6 +79,53 @@
     { id: "jwt",      icon: "shield",     i18n: "menu.jwt" },
     { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
   ];
+
+  const toolScripts = {
+    format: ["FormatTool", "/js/format-tool.js?v=20260708"],
+    json: ["JsonTool", "/js/json-tool.js?v=20260706"],
+    timestamp: ["TimestampTool", "/js/timestamp-tool.js?v=20260706"],
+    unitconvert: ["UnitConvertTool", "/js/unitconvert-tool.js?v=20260710e"],
+    regex: ["RegexTool", "/js/regex-tool.js?v=20260710c"],
+    http: ["HttpTool", "/js/http-tool.js?v=20260710c"],
+    encoder: ["EncoderTool", "/js/encoder-tool.js?v=20260706"],
+    base64: ["Base64Tool", "/js/base64-tool.js?v=20260706"],
+    diff: ["DiffTool", "/js/diff-tool.js?v=20260706"],
+    text: ["TextTool", "/js/text-tool.js?v=20260710a"],
+    tax: ["TaxTool", "/js/tax-tool.js?v=20260710d"],
+    mortgage: ["MortgageTool", "/js/mortgage-tool.js?v=20260710d"],
+    fileinfo: ["FileInfoTool", "/js/file-info-tool.js?v=20260706"],
+    image: ["ImageTool", "/js/image-tool.js?v=20260711e"],
+    converter: ["ConverterTool", "/js/converter-tool.js?v=20260711e"],
+    git: ["GitTool", "/js/git-tool.js?v=20260708"],
+    translate: ["TranslateTool", "/js/translate-tool.js?v=20260707"],
+    android: ["AndroidTool", "/js/android-tool.js?v=20260707"],
+    flutter: ["FlutterTool", "/js/flutter-tool.js?v=20260711"],
+    ios: ["IosTool", "/js/ios-tool.js?v=20260711"],
+    ai: ["AiTool", "/js/ai-tool.js?v=20260710a"],
+    terminal: ["TerminalTool", "/js/terminal-tool.js?v=20260707"],
+    curl: ["CurlTool", "/js/curl-tool.js?v=20260706"],
+    qrcode: ["QrcodeTool", "/js/qrcode-tool.js?v=20260706"],
+    crypto: ["CryptoTool", "/js/crypto-tool.js?v=20260706"],
+    markdown: ["MdTool", "/js/md-tool.js?v=20260706"],
+    content: ["ContentTool", "/js/content-tool.js?v=20260710b"],
+    jwt: ["JwtTool", "/js/jwt-tool.js?v=20260711"],
+    wishes: ["WishTool", "/js/wishes.js?v=20260706"]
+  };
+  const toolScriptPromises = {};
+
+  function loadToolScript(toolId) {
+    var config = toolScripts[toolId];
+    if (!config || window[config[0]]) return Promise.resolve();
+    if (toolScriptPromises[toolId]) return toolScriptPromises[toolId];
+    toolScriptPromises[toolId] = new Promise(function (resolve, reject) {
+      var script = document.createElement("script");
+      script.src = config[1];
+      script.onload = resolve;
+      script.onerror = function () { reject(new Error("Failed to load " + config[1])); };
+      document.head.appendChild(script);
+    });
+    return toolScriptPromises[toolId];
+  }
 
   const seoMeta = {
     "zh-CN": {
@@ -716,6 +764,17 @@
       applyLocale();
       return;
     }
+    var scriptConfig = toolScripts[activeMenuId];
+    if (scriptConfig && !window[scriptConfig[0]]) {
+      var loadingToolId = activeMenuId;
+      el.innerHTML = '<div class="content-loader"><div class="content-skel-icon"></div><div class="content-skel-bar" style="width:160px;height:22px;margin:0 auto 10px"></div></div>';
+      loadToolScript(loadingToolId).then(function () {
+        if (activeMenuId === loadingToolId) renderContent();
+      }).catch(function () {
+        if (activeMenuId === loadingToolId) el.innerHTML = '<div class="tool-placeholder"><h3>' + (currentLang === "en" ? "Failed to load tool" : "工具加载失败") + '</h3></div>';
+      });
+      return;
+    }
     if (activeMenuId === "format" && typeof FormatTool !== "undefined") {
       el.innerHTML = "";
       FormatTool.init(el);
@@ -988,16 +1047,35 @@
     var pageKey = activeMenuId || "home";
     var meta = (seoMeta[lang] && seoMeta[lang][pageKey]) || seoMeta["zh-CN"].home;
     var path = pageKey === "home" ? "/" + prefix + "/" : "/" + prefix + "/tool/" + pageKey;
-    var canonical = location.origin + path;
+    var canonical = SITE_URL + path;
     document.title = meta.title;
     setMeta("name", "description", meta.description);
     setMeta("property", "og:title", meta.title);
     setMeta("property", "og:description", meta.description);
     setMeta("property", "og:url", canonical);
+    setMeta("name", "twitter:title", meta.title);
+    setMeta("name", "twitter:description", meta.description);
     setLink("canonical", canonical);
-    setAlternate("zh-CN", location.origin + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
-    setAlternate("en", location.origin + "/en" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
-    setAlternate("x-default", location.origin + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("zh-CN", SITE_URL + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("en", SITE_URL + "/en" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("x-default", SITE_URL + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    updateStructuredData(meta, canonical, lang);
+  }
+
+  function updateStructuredData(meta, canonical, lang) {
+    var element = document.querySelector('script[type="application/ld+json"]');
+    if (!element) return;
+    element.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: meta.title.replace(/\s*[|-].*$/, ""),
+      url: canonical,
+      description: meta.description,
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any",
+      inLanguage: lang,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+    });
   }
 
   function setMeta(attr, key, value) {
