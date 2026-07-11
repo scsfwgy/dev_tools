@@ -5,8 +5,10 @@ import json
 import logging
 import os
 import secrets
+import subprocess
 import threading
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
@@ -25,7 +27,6 @@ app.register_blueprint(wishes_bp)
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 SITE_URL = "https://www.tools24.uk"
-SEO_LAST_MODIFIED = "2026-07-11"
 SUPPORTED_LANGS = {"zh", "en"}
 
 
@@ -799,10 +800,95 @@ HOME_META = {
     },
 }
 
+TOOL_REGISTRY = {
+    "device": {"order": 10, "icon": "console", "script": None, "global": None, "processing": "hybrid", "indexable": True},
+    "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260706", "global": "JsonTool", "processing": "local", "indexable": True},
+    "format": {"order": 30, "icon": "code", "script": "/js/format-tool.js?v=20260708", "global": "FormatTool", "processing": "local", "indexable": True},
+    "timestamp": {"order": 40, "icon": "clock", "script": "/js/timestamp-tool.js?v=20260706", "global": "TimestampTool", "processing": "local", "indexable": True},
+    "unitconvert": {"order": 50, "icon": "ruler", "script": "/js/unitconvert-tool.js?v=20260710e", "global": "UnitConvertTool", "processing": "local", "indexable": True},
+    "regex": {"order": 60, "icon": "code", "script": "/js/regex-tool.js?v=20260710c", "global": "RegexTool", "processing": "local", "indexable": True},
+    "http": {"order": 70, "icon": "console", "script": "/js/http-tool.js?v=20260710c", "global": "HttpTool", "processing": "local", "indexable": True},
+    "encoder": {"order": 80, "icon": "code", "script": "/js/encoder-tool.js?v=20260706", "global": "EncoderTool", "processing": "local", "indexable": True},
+    "crypto": {"order": 90, "icon": "shield", "script": "/js/crypto-tool.js?v=20260706", "global": "CryptoTool", "processing": "local", "indexable": True},
+    "android": {"order": 100, "icon": "android", "script": "/js/android-tool.js?v=20260707", "global": "AndroidTool", "processing": "local", "indexable": True},
+    "flutter": {"order": 110, "icon": "flutter", "script": "/js/flutter-tool.js?v=20260711", "global": "FlutterTool", "processing": "local", "indexable": True},
+    "ios": {"order": 120, "icon": "ios", "script": "/js/ios-tool.js?v=20260711", "global": "IosTool", "processing": "local", "indexable": True},
+    "translate": {"order": 130, "icon": "translate", "script": "/js/translate-tool.js?v=20260707", "global": "TranslateTool", "processing": "server", "indexable": True},
+    "git": {"order": 140, "icon": "git", "script": "/js/git-tool.js?v=20260708", "global": "GitTool", "processing": "local", "indexable": True},
+    "terminal": {"order": 150, "icon": "console", "script": "/js/terminal-tool.js?v=20260707", "global": "TerminalTool", "processing": "local", "indexable": True},
+    "ai": {"order": 160, "icon": "ai", "script": "/js/ai-tool.js?v=20260710a", "global": "AiTool", "processing": "local", "indexable": True},
+    "qrcode": {"order": 170, "icon": "qr", "script": "/js/qrcode-tool.js?v=20260706", "global": "QrcodeTool", "processing": "local", "indexable": True},
+    "curl": {"order": 180, "icon": "terminal", "script": "/js/curl-tool.js?v=20260706", "global": "CurlTool", "processing": "local", "indexable": True},
+    "base64": {"order": 190, "icon": "lock", "script": "/js/base64-tool.js?v=20260706", "global": "Base64Tool", "processing": "local", "indexable": True},
+    "diff": {"order": 200, "icon": "diff", "script": "/js/diff-tool.js?v=20260706", "global": "DiffTool", "processing": "local", "indexable": True},
+    "text": {"order": 210, "icon": "code", "script": "/js/text-tool.js?v=20260710a", "global": "TextTool", "processing": "local", "indexable": True},
+    "tax": {"order": 220, "icon": "dollar", "script": "/js/tax-tool.js?v=20260710d", "global": "TaxTool", "processing": "local", "indexable": True},
+    "mortgage": {"order": 230, "icon": "home", "script": "/js/mortgage-tool.js?v=20260710d", "global": "MortgageTool", "processing": "local", "indexable": True},
+    "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
+    "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js?v=20260711e", "global": "ConverterTool", "processing": "local", "indexable": True},
+    "fileinfo": {"order": 260, "icon": "file", "script": "/js/file-info-tool.js?v=20260706", "global": "FileInfoTool", "processing": "local", "indexable": True},
+    "markdown": {"order": 270, "icon": "md", "script": "/js/md-tool.js?v=20260706", "global": "MdTool", "processing": "local", "indexable": True},
+    "content": {"order": 280, "icon": "link", "script": "/js/content-tool.js?v=20260710b", "global": "ContentTool", "processing": "server", "indexable": True},
+    "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},
+    "wishes": {"order": 300, "icon": "star", "script": "/js/wishes.js?v=20260706", "global": "WishTool", "processing": "server", "indexable": False, "hidden": True},
+}
+
+
+def content_last_modified():
+    override = os.getenv("SEO_LAST_MODIFIED")
+    if override:
+        return override
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%cs", "--", "backend/app.py", "frontend/js", "frontend/locales"],
+            cwd=FRONTEND_DIR.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=2,
+        )
+        if result.stdout.strip():
+            return result.stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        pass
+    content_paths = [Path(__file__), FRONTEND_DIR / "js" / "app.js", FRONTEND_DIR / "locales" / "zh-CN.json", FRONTEND_DIR / "locales" / "en.json"]
+    latest_mtime = max(path.stat().st_mtime for path in content_paths)
+    return datetime.fromtimestamp(latest_mtime, tz=timezone.utc).date().isoformat()
+
+
+def public_tool_ids():
+    return [tool_id for tool_id, config in sorted(TOOL_REGISTRY.items(), key=lambda item: item[1]["order"]) if config["indexable"]]
+
+
+if set(public_tool_ids()) != set(TOOLS):
+    raise RuntimeError("TOOL_REGISTRY indexable entries must match TOOLS SEO entries")
+
 
 @app.route("/api/health")
 def health():
     return jsonify({"status": "ok"})
+
+
+@app.route("/api/tool-manifest")
+def tool_manifest():
+    tools = []
+    for tool_id, config in sorted(TOOL_REGISTRY.items(), key=lambda item: item[1]["order"]):
+        seo = None
+        if config["indexable"]:
+            seo = {
+                "zh-CN": {"title": TOOLS[tool_id]["zh"]["title"], "description": TOOLS[tool_id]["zh"]["description"]},
+                "en": {"title": TOOLS[tool_id]["en"]["title"], "description": TOOLS[tool_id]["en"]["description"]},
+            }
+        tools.append({"id": tool_id, "i18n": f"menu.{tool_id}", "seo": seo, **config})
+    return jsonify({
+        "siteUrl": SITE_URL,
+        "lastModified": content_last_modified(),
+        "homeSeo": {
+            "zh-CN": {"title": HOME_META["zh"]["title"], "description": HOME_META["zh"]["description"]},
+            "en": {"title": HOME_META["en"]["title"], "description": HOME_META["en"]["description"]},
+        },
+        "tools": tools,
+    })
 
 
 @app.route("/robots.txt")
@@ -815,14 +901,15 @@ def robots():
 
 @app.route("/sitemap.xml")
 def sitemap():
+    last_modified = content_last_modified()
     urls = []
     for lang in ("zh", "en"):
         urls.append((f"{SITE_URL}/{lang}/", lang, None))
-        for tool_id in TOOLS:
+        for tool_id in public_tool_ids():
             urls.append((f"{SITE_URL}/{lang}/tool/{tool_id}", lang, tool_id))
     body = "\n".join(
         (
-            f"  <url><loc>{loc}</loc><lastmod>{SEO_LAST_MODIFIED}</lastmod>"
+            f"  <url><loc>{loc}</loc><lastmod>{last_modified}</lastmod>"
             f'<xhtml:link rel="alternate" hreflang="zh-CN" href="{SITE_URL}/zh{f"/tool/{tool_id}" if tool_id else "/"}"/>'
             f'<xhtml:link rel="alternate" hreflang="en" href="{SITE_URL}/en{f"/tool/{tool_id}" if tool_id else "/"}"/>'
             f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE_URL}/zh{f"/tool/{tool_id}" if tool_id else "/"}"/>'
@@ -856,9 +943,10 @@ def index_lang(lang):
 
 @app.route("/<lang>/tool/<tool_id>")
 def tool_lang(lang, tool_id):
-    if lang not in SUPPORTED_LANGS or tool_id not in TOOLS:
+    config = TOOL_REGISTRY.get(tool_id)
+    if lang not in SUPPORTED_LANGS or not config:
         return Response("Not found", status=404, mimetype="text/plain")
-    return render_spa(lang, tool_id)
+    return render_spa(lang, tool_id, indexable=config["indexable"])
 
 
 @app.route("/<path:filename>")
@@ -866,14 +954,16 @@ def frontend_files(filename):
     return send_from_directory(str(FRONTEND_DIR), filename)
 
 
-def render_spa(lang, tool_id):
+def render_spa(lang, tool_id, indexable=True):
     template = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
-    meta = TOOLS[tool_id][lang] if tool_id else HOME_META[lang]
+    seo_tool_id = tool_id if tool_id and indexable else None
+    meta = TOOLS[seo_tool_id][lang] if seo_tool_id else HOME_META[lang]
     path = f"/{lang}/tool/{tool_id}" if tool_id else f"/{lang}/"
     canonical = f"{SITE_URL}{path}"
     paired_path = f"/tool/{tool_id}" if tool_id else "/"
     replacements = {
         "<!--SEO_HTML_LANG-->": "zh-CN" if lang == "zh" else "en",
+        "<!--SEO_ROBOTS-->": "index,follow" if indexable else "noindex,nofollow",
         "<!--SEO_TITLE-->": html.escape(meta["title"], quote=True),
         "<!--SEO_DESCRIPTION-->": html.escape(meta["description"], quote=True),
         "<!--SEO_KEYWORDS-->": html.escape(meta["keywords"], quote=True),
@@ -881,8 +971,8 @@ def render_spa(lang, tool_id):
         "<!--SEO_HREFLANG_ZH-->": f"{SITE_URL}/zh{paired_path}",
         "<!--SEO_HREFLANG_EN-->": f"{SITE_URL}/en{paired_path}",
         "<!--SEO_HREFLANG_DEFAULT-->": f"{SITE_URL}/zh{paired_path}",
-        "<!--SEO_SCHEMA-->": html.escape(json.dumps(build_schema(lang, tool_id, canonical, meta), ensure_ascii=False), quote=False),
-        "<!--SEO_CONTENT-->": build_seo_content(lang, tool_id, meta),
+        "<!--SEO_SCHEMA-->": html.escape(json.dumps(build_schema(lang, seo_tool_id, canonical, meta), ensure_ascii=False), quote=False),
+        "<!--SEO_CONTENT-->": build_seo_content(lang, seo_tool_id, meta) if indexable else "",
     }
     for marker, value in replacements.items():
         template = template.replace(marker, value)
@@ -951,7 +1041,7 @@ def ip_info():
 def build_seo_content(lang, tool_id, meta):
     nav = "".join(
         f'<li><a href="/{lang}/tool/{tool_id_item}">{html.escape(TOOLS[tool_id_item][lang]["name"])}</a></li>'
-        for tool_id_item in TOOLS
+        for tool_id_item in public_tool_ids()
     )
     if not tool_id:
         heading = html.escape(meta["name"])
@@ -960,7 +1050,7 @@ def build_seo_content(lang, tool_id, meta):
             '<section class="seo-content">'
             f"<h1>{heading}</h1><p>{intro}</p>"
             f"<h2>{'常用在线工具' if lang == 'zh' else 'Online Developer Tools'}</h2><ul>{nav}</ul>"
-            f"<p>{'所有工具均可免费使用，常见文本与文件处理在浏览器本地完成。' if lang == 'zh' else 'All tools are free to use, and common text or file operations run locally in your browser.'}</p>"
+            f"<p>{'绝大多数工具在浏览器本地处理，数据无需上传；少数需要服务端的工具会明确标记。' if lang == 'zh' else 'Most tools process data locally in your browser. Tools that require a server are clearly identified.'}</p>"
             "</section>"
         )
 
@@ -969,9 +1059,15 @@ def build_seo_content(lang, tool_id, meta):
         f"<h3>{html.escape(question)}</h3><p>{html.escape(answer)}</p>"
         for question, answer in meta["faq"]
     )
+    processing = TOOL_REGISTRY[tool_id]["processing"]
+    processing_text = {
+        "zh": {"local": "浏览器本地处理，数据不上传", "hybrid": "部分信息需要请求服务端", "server": "服务端处理，数据会发送到服务器"},
+        "en": {"local": "Processed locally in your browser; data is not uploaded", "hybrid": "Some information requires a server request", "server": "Processed on the server; data is sent to the service"},
+    }[lang][processing]
     return (
         '<section class="seo-content">'
         f"<h1>{html.escape(meta['name'])}</h1><p>{html.escape(meta['intro'])}</p>"
+        f'<p class="privacy-badge privacy-badge-{processing}">{html.escape(processing_text)}</p>'
         f"<h2>{'功能特点' if lang == 'zh' else 'Features'}</h2><ul>{features}</ul>"
         f"<h2>{'常见问题' if lang == 'zh' else 'FAQ'}</h2>{faq}"
         f"<h2>{'更多工具' if lang == 'zh' else 'More tools'}</h2><ul>{nav}</ul>"

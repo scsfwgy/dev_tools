@@ -1,18 +1,16 @@
 import json
-import re
 from pathlib import Path
 from unittest.mock import Mock
 
 import requests
 
-from app import TOOLS
+from app import TOOLS, TOOL_REGISTRY, content_last_modified, public_tool_ids
 
 
 def assert_tool_is_lazy_loaded(frontend_dir, filename):
     index_html = (frontend_dir / "index.html").read_text()
-    app_script = (frontend_dir / "js" / "app.js").read_text()
     assert filename not in index_html
-    assert f'"/js/{filename}' in app_script
+    assert any((config["script"] or "").split("?", 1)[0].endswith(filename) for config in TOOL_REGISTRY.values())
 
 
 def test_health_and_ip_routes(client):
@@ -136,16 +134,19 @@ def test_canonical_routes_redirect_and_api_is_not_indexed(client):
 
 
 def test_tool_registry_routes_and_sitemap_stay_in_sync(client):
-    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
-    app_script = (frontend_dir / "js" / "app.js").read_text()
-    menu_block = app_script.split("const menuItems = [", 1)[1].split("];", 1)[0]
-    menu_tool_ids = set(re.findall(r'id: "([a-z0-9-]+)"', menu_block)) - {"home", "wishes"}
-
-    assert menu_tool_ids == set(TOOLS)
+    manifest = client.get("/api/tool-manifest").get_json()
+    manifest_tools = {tool["id"]: tool for tool in manifest["tools"]}
+    assert set(public_tool_ids()) == set(TOOLS)
+    assert set(manifest_tools) == set(TOOL_REGISTRY)
+    assert manifest_tools["json"]["script"].startswith("/js/json-tool.js")
+    assert manifest_tools["translate"]["processing"] == "server"
+    assert manifest_tools["device"]["processing"] == "hybrid"
+    assert manifest_tools["jwt"]["processing"] == "local"
 
     sitemap = client.get("/sitemap.xml").get_data(as_text=True)
     assert 'xmlns:xhtml="http://www.w3.org/1999/xhtml"' in sitemap
-    assert "<lastmod>2026-07-11</lastmod>" in sitemap
+    assert f"<lastmod>{content_last_modified()}</lastmod>" in sitemap
+    assert manifest["lastModified"] == content_last_modified()
     for tool_id in TOOLS:
         assert f"https://www.tools24.uk/zh/tool/{tool_id}" in sitemap
         assert f"https://www.tools24.uk/en/tool/{tool_id}" in sitemap
@@ -160,6 +161,28 @@ def test_new_tools_have_server_rendered_seo(client):
         assert f"https://www.tools24.uk/zh/tool/{tool_id}" in page
         assert '"@type": "FAQPage"' in page
         assert '"@type": "BreadcrumbList"' in page
+
+
+def test_processing_badges_distinguish_local_hybrid_and_server_tools(client):
+    local_page = client.get("/zh/tool/jwt").get_data(as_text=True)
+    hybrid_page = client.get("/zh/tool/device").get_data(as_text=True)
+    server_page = client.get("/zh/tool/translate").get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+
+    assert "浏览器本地处理，数据不上传" in local_page
+    assert "部分信息需要请求服务端" in hybrid_page
+    assert "服务端处理，数据会发送到服务器" in server_page
+    assert "privacy-badge-runtime" in app_script
+    assert 'fetch("/api/tool-manifest")' in app_script
+    assert "json-tool.js" not in app_script
+
+
+def test_non_indexable_server_tool_still_supports_direct_navigation(client):
+    response = client.get("/zh/tool/wishes")
+    page = response.get_data(as_text=True)
+    assert response.status_code == 200
+    assert '<meta name="robots" content="noindex,nofollow">' in page
+    assert "/zh/tool/wishes" not in client.get("/sitemap.xml").get_data(as_text=True)
 
 
 def test_regex_and_http_tools_are_wired_with_seo_and_locales(client):

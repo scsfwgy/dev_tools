@@ -4,7 +4,7 @@
   const STORAGE_THEME = "devtools_theme";
   const STORAGE_MENU = "devtools_menu_collapsed";
   const STORAGE_FAVORITES = "devtools_favorites";
-  const SITE_URL = "https://www.tools24.uk";
+  let siteUrl = "https://www.tools24.uk";
 
   let locale = {};
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
@@ -46,71 +46,9 @@
   }
 
   // ── 菜单定义 ──
-  const menuItems = [
-    { id: "home",     icon: "home",       i18n: "menu.home" },
-    { id: "device",   icon: "console",    i18n: "menu.device" },
-    { id: "json",     icon: "json",       i18n: "menu.json" },
-    { id: "format",   icon: "code",       i18n: "menu.format" },
-    { id: "timestamp",icon: "clock",      i18n: "menu.timestamp" },
-    { id: "unitconvert",icon: "ruler",    i18n: "menu.unitconvert" },
-    { id: "regex",    icon: "code",       i18n: "menu.regex" },
-    { id: "http",     icon: "console",    i18n: "menu.http" },
-    { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
-    { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
-    { id: "android",  icon: "android",   i18n: "menu.android" },
-    { id: "flutter",  icon: "flutter",   i18n: "menu.flutter" },
-    { id: "ios",      icon: "ios",       i18n: "menu.ios" },
-    { id: "translate",icon: "translate",i18n: "menu.translate" },
-    { id: "git",      icon: "git",      i18n: "menu.git" },
-    { id: "terminal", icon: "console",  i18n: "menu.terminal" },
-    { id: "ai",       icon: "ai",       i18n: "menu.ai" },
-    { id: "qrcode",   icon: "qr",        i18n: "menu.qrcode" },
-    { id: "curl",     icon: "terminal",  i18n: "menu.curl" },
-    { id: "base64",   icon: "lock",       i18n: "menu.base64" },
-    { id: "diff",     icon: "diff",       i18n: "menu.diff" },
-    { id: "text",     icon: "code",       i18n: "menu.text" },
-    { id: "tax",      icon: "dollar",     i18n: "menu.tax" },
-    { id: "mortgage", icon: "home",       i18n: "menu.mortgage" },
-    { id: "image",    icon: "file",       i18n: "menu.image" },
-    { id: "converter",icon: "file",       i18n: "menu.converter" },
-    { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
-    { id: "markdown", icon: "md",         i18n: "menu.markdown" },
-    { id: "content",  icon: "link",       i18n: "menu.content" },
-    { id: "jwt",      icon: "shield",     i18n: "menu.jwt" },
-    { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
-  ];
+  let menuItems = [];
 
-  const toolScripts = {
-    format: ["FormatTool", "/js/format-tool.js?v=20260708"],
-    json: ["JsonTool", "/js/json-tool.js?v=20260706"],
-    timestamp: ["TimestampTool", "/js/timestamp-tool.js?v=20260706"],
-    unitconvert: ["UnitConvertTool", "/js/unitconvert-tool.js?v=20260710e"],
-    regex: ["RegexTool", "/js/regex-tool.js?v=20260710c"],
-    http: ["HttpTool", "/js/http-tool.js?v=20260710c"],
-    encoder: ["EncoderTool", "/js/encoder-tool.js?v=20260706"],
-    base64: ["Base64Tool", "/js/base64-tool.js?v=20260706"],
-    diff: ["DiffTool", "/js/diff-tool.js?v=20260706"],
-    text: ["TextTool", "/js/text-tool.js?v=20260710a"],
-    tax: ["TaxTool", "/js/tax-tool.js?v=20260710d"],
-    mortgage: ["MortgageTool", "/js/mortgage-tool.js?v=20260710d"],
-    fileinfo: ["FileInfoTool", "/js/file-info-tool.js?v=20260706"],
-    image: ["ImageTool", "/js/image-tool.js?v=20260711e"],
-    converter: ["ConverterTool", "/js/converter-tool.js?v=20260711e"],
-    git: ["GitTool", "/js/git-tool.js?v=20260708"],
-    translate: ["TranslateTool", "/js/translate-tool.js?v=20260707"],
-    android: ["AndroidTool", "/js/android-tool.js?v=20260707"],
-    flutter: ["FlutterTool", "/js/flutter-tool.js?v=20260711"],
-    ios: ["IosTool", "/js/ios-tool.js?v=20260711"],
-    ai: ["AiTool", "/js/ai-tool.js?v=20260710a"],
-    terminal: ["TerminalTool", "/js/terminal-tool.js?v=20260707"],
-    curl: ["CurlTool", "/js/curl-tool.js?v=20260706"],
-    qrcode: ["QrcodeTool", "/js/qrcode-tool.js?v=20260706"],
-    crypto: ["CryptoTool", "/js/crypto-tool.js?v=20260706"],
-    markdown: ["MdTool", "/js/md-tool.js?v=20260706"],
-    content: ["ContentTool", "/js/content-tool.js?v=20260710b"],
-    jwt: ["JwtTool", "/js/jwt-tool.js?v=20260711"],
-    wishes: ["WishTool", "/js/wishes.js?v=20260706"]
-  };
+  let toolScripts = {};
   const toolScriptPromises = {};
 
   function loadToolScript(toolId) {
@@ -127,252 +65,32 @@
     return toolScriptPromises[toolId];
   }
 
-  const seoMeta = {
-    "zh-CN": {
-      home: {
-        title: "Tools24 在线开发者工具箱 - JSON格式化 加解密 QR码 Android参考 Markdown | Tools24",
-        description: "Tools24 提供在线 JSON 格式化、编解码转换、加解密(AES/RSA)、二维码生成解析、Markdown 编辑、Android 开发速查、时间戳转换等开发者工具。"
-      },
-      device: {
-        title: "设备信息工具 - 浏览器 平台 时区 IP User-Agent | Tools24",
-        description: "查看当前设备和浏览器环境信息：毫秒级时间、IP、平台、语言、时区、浏览器、系统、屏幕、视口、CPU、内存、主题、触控和网络。"
-      },
-      json: {
-        title: "JSON格式化校验工具 - 在线 JSON Formatter / Viewer | Tools24",
-        description: "在线 JSON 格式化、压缩、校验和树形查看工具，支持快速检查 JSON 语法错误并复制格式化结果。"
-      },
-      format: {
-        title: "代码格式化工具 - HTML CSS JS TS YAML XML Markdown | Tools24",
-        description: "在线代码格式化工具，基于 Prettier 支持 HTML、CSS、SCSS、JavaScript、TypeScript、JSON、YAML、XML、Markdown 等多种语言的智能美化。"
-      },
-      timestamp: {
-        title: "时间戳转换工具 - Unix Timestamp 在线转换 | Tools24",
-        description: "在线时间戳转换工具，支持秒/毫秒时间戳、日期时间、ISO 8601、UTC 和本地时间互转。"
-      },
-      unitconvert: {
-        title: "单位换算工具 - 长度 温度 数据存储 压力 能量 燃油经济性 | Tools24",
-        description: "在线单位换算工具，提供长度、面积、体积、质量、速度、温度、风力、数据存储、时间、压力、能量、功率、角度、流量、烹饪容量和燃油经济性 16 类实时换算。"
-      },
-      image: {
-        title: "在线图片处理工具 - 压缩 缩放 旋转 格式转换 | Tools24",
-        description: "在线图片压缩、缩放、旋转、翻转和 PNG/JPEG/WebP 格式转换，自动移除 EXIF/GPS 元数据，全部在浏览器本地完成。"
-      },
-      converter: {
-        title: "在线文件转换工具 - TXT HTML Markdown PDF CSV XLSX DOCX | Tools24",
-        description: "浏览器本地转换 TXT、HTML、Markdown、CSV、XLSX 和 DOCX，支持导出 PDF、HTML、纯文本和表格格式，文件不上传服务器。"
-      },
-      text: {
-        title: "在线文本处理工具 - 去重排序大小写多行转换 | Tools24",
-        description: "在线文本处理工具，支持去空行、去重、排序、大小写、空白整理，以及多行转 JSON、CSV、SQL IN 和带引号列表。"
-      },
-      regex: {
-        title: "正则表达式测试工具 - Regex 在线匹配替换 | Tools24",
-        description: "在线正则表达式测试工具，支持实时匹配高亮、JavaScript flags、捕获组、命名捕获组、替换预览和常用正则模板。"
-      },
-      http: {
-        title: "HTTP 状态码与 Header 速查 - 请求头响应头 | Tools24",
-        description: "HTTP 状态码和 Header 在线速查，覆盖请求头、响应头、缓存、CORS、安全 Header，支持分类搜索和一键复制。"
-      },
-      tax: {
-        title: "工资个税计算器 - 累计预扣 七级税阶明细 | Tools24",
-        description: "中国大陆工资个税估算，采用累计预扣法，展示1至12月预扣税额、七级超额累进税阶分档税额，并对比年终奖单独与合并计税。"
-      },
-      mortgage: {
-        title: "房贷计算器 - 等额本息 等额本金 月供对比 | Tools24",
-        description: "在线房贷计算器，支持等额本息和等额本金两种还款方式，对比月供、利息总额和还款总额。"
-      },
-      encoder: {
-        title: "在线编码转换工具 - URL编码 Base64 Base32 Base16 Unicode UTF-8 | Tools24",
-        description: "在线编码转换工具，支持 URL编解码、Base64、Base32、Base16、Unicode转义、UTF-8字节、ASCII 等七类互转。"
-      },
-      base64: {
-        title: "Base64编码解码工具 - Base64 Encode Decode 在线转换 | Tools24",
-        description: "在线 Base64 编码解码工具，支持文本和文件转 Base64、Base64 还原下载文件。"
-      },
-      diff: {
-        title: "文本对比工具 - 在线 Diff / 代码差异比较 | Tools24",
-        description: "在线文本对比和代码 Diff 工具，快速比较两段文本的新增、删除和相同内容。"
-      },
-      fileinfo: {
-        title: "文件详情和 MD5/SHA 哈希校验工具 | Tools24",
-        description: "在线查看文件大小、类型、图片尺寸、音视频信息，并计算 MD5、SHA-1、SHA-256 和 Base64。"
-      },
-      markdown: {
-        title: "Markdown 在线编辑预览工具 | Tools24",
-        description: "在线编辑和预览 Markdown，支持实时渲染，可下载为 HTML、DOC 或 Markdown 文件。"
-      },
-      content: {
-        title: "内容生成器 - 生成远程链接 纯文本托管 脚本分享 | Tools24",
-        description: "输入任意文本内容，生成一个远程链接，访问即可获取纯文本内容。适合远程脚本、配置文件托管和文本分享。"
-      },
-      jwt: {
-        title: "JWT 在线解析调试工具 - JSON Web Token 解码 验证 生成 | Tools24",
-        description: "JWT 在线解码、验证和生成工具，支持 HS256/HS384/HS512 签名算法，自动转换时间戳，浏览器本地处理不上传 Token。"
-      },
-      crypto: {
-        title: "在线加解密工具 - AES RSA 对称非对称加密 | Tools24",
-        description: "在线加解密工具，支持 AES-GCM/CBC 对称加密和 RSA-OAEP 非对称加密，基于浏览器 Web Crypto API 本地处理。"
-      },
-      android: {
-        title: "Android 常用速查 - API ADB 权限 Intent Gradle 对照 | Tools24",
-        description: "Android 开发者常用速查：API Level、ADB 命令、透明度、dp/px、权限、Intent、Manifest 配置、资源限定符、生命周期和官方文档地址。"
-      },
-      flutter: {
-        title: "Flutter 常用速查 - Widget 组件 CLI 命令 状态管理 主题导航 | Tools24",
-        description: "Flutter 开发者常用速查：Widget 组件目录、CLI 命令、常用 Packages、ThemeData 主题配置、导航路由、状态管理方案对比和响应式布局。"
-      },
-      ios: {
-        title: "iOS 常用速查 - SwiftUI UIKit Swift Xcode Info.plist HIG | Tools24",
-        description: "iOS 开发者常用速查：iOS 版本历史、SwiftUI 视图与属性包装、UIKit 类与 Auto Layout、Swift 语法、Xcode 快捷键、Info.plist 权限配置、HIG 规范和设备参数。"
-      },
-      qrcode: {
-        title: "在线二维码生成解析工具 - QR Code Generator Parser | Tools24",
-        description: "在线二维码生成和解析工具，支持文本/链接生成二维码图片下载，上传/粘贴二维码图片解析内容。"
-      },
-      curl: {
-        title: "在线 Curl 命令构建转换工具 - Curl Builder Converter | Tools24",
-        description: "在线 Curl 工具集：可视化构建 curl 命令、常用示例速查、curl 转 Python/JavaScript/Go/Java 代码。"
-      },
-      terminal: {
-        title: "终端常用命令速查 - Shell 命令参考 Linux 运维 | Tools24",
-        description: "终端常用命令速查表，覆盖文件操作、文本处理、进程管理、网络工具、系统信息、权限管理、压缩归档和 Shell 技巧，面向运维人员和终端用户。"
-      },
-      translate: {
-        title: "在线翻译工具 - 中英互译 单词音标 DeepSeek | Tools24",
-        description: "基于 DeepSeek 的智能翻译工具，自动检测中英文方向，短词显示音标和词性，长文纯翻译，离开输入框自动翻译。"
-      },
-      git: {
-        title: "Git 常用命令速查 - Git Cheat Sheet 远程地址替换 | Tools24",
-        description: "Git 常用命令速查表，覆盖基础操作、分支管理、撤销回退、远程管理、暂存日志、标签子模块和高级操作，支持一键替换远程地址和分支名。"
-      },
-      ai: {
-        title: "AI 指令速查 - Claude Code 与 Codex CLI 对照 | Tools24",
-        description: "Claude Code 与 Codex CLI 指令速查，涵盖快速开始、会话管理、自动化、权限安全、MCP、插件和代码审查，并提供常用功能对照。"
-      }
-    },
-    en: {
-      home: {
-        title: "Tools24 Online Developer Toolbox - JSON Encryption QR Code Android Markdown | Tools24",
-        description: "Tools24 provides online developer tools: JSON formatting, codec converter, AES/RSA encryption, QR code generator & parser, Markdown editor, Android dev reference and more."
-      },
-      device: {
-        title: "Device Info - Browser Platform Timezone IP User-Agent | Tools24",
-        description: "Inspect current device and browser info including millisecond clock, IP, platform, language, timezone, browser, OS, screen, viewport, CPU, memory, theme, touch and network."
-      },
-      json: {
-        title: "JSON Formatter and Validator Online | Tools24",
-        description: "Format, validate, compact and inspect JSON online with a tree viewer. Runs locally in your browser."
-      },
-      format: {
-        title: "Code Formatter - HTML CSS JS TS YAML XML Markdown | Tools24",
-        description: "Online code formatter powered by Prettier. Supports HTML, CSS, SCSS, Less, JavaScript, TypeScript, JSON, YAML, XML and Markdown."
-      },
-      timestamp: {
-        title: "Timestamp Converter Online - Unix Time Converter | Tools24",
-        description: "Convert Unix timestamps, milliseconds, datetime, ISO 8601, UTC and local time online."
-      },
-      unitconvert: {
-        title: "Unit Converter - Length Temperature Data Pressure Energy Fuel Economy | Tools24",
-        description: "Convert 16 categories including length, area, volume, mass, speed, temperature, wind, data storage, time, pressure, energy, power, angle, flow, cooking volume and fuel economy."
-      },
-      image: {
-        title: "Image Tool - Compress Resize Rotate Convert Online | Tools24",
-        description: "Compress, resize, rotate, flip and convert images between PNG, JPEG and WebP locally in your browser, with metadata removed."
-      },
-      converter: {
-        title: "File Converter - TXT HTML Markdown PDF CSV XLSX DOCX | Tools24",
-        description: "Convert TXT, HTML, Markdown, CSV, XLSX and DOCX locally in your browser. Export PDF, HTML, plain text and spreadsheet formats without uploads."
-      },
-      text: {
-        title: "Online Text Processing Tool - Dedupe Sort Case Convert | Tools24",
-        description: "Process text online with blank-line removal, deduplication, sorting, case conversion, whitespace cleanup and line conversion to JSON, CSV or SQL IN lists."
-      },
-      regex: {
-        title: "Regex Tester Online - Match Capture Replace | Tools24",
-        description: "Test JavaScript regular expressions online with live highlighting, flags, capture groups, named groups, replacement preview and common templates."
-      },
-      http: {
-        title: "HTTP Status Codes and Headers Reference | Tools24",
-        description: "Search HTTP status codes and headers including requests, responses, caching, CORS and security headers, with examples and one-click copy."
-      },
-      tax: {
-        title: "China IIT Calculator - Cumulative Withholding & Tax Brackets | Tools24",
-        description: "China salary IIT estimate using cumulative withholding, with monthly withholding schedule, seven progressive bracket breakdown, and year-end bonus tax comparison."
-      },
-      mortgage: {
-        title: "Mortgage Calculator - Equal Installment vs Equal Principal | Tools24",
-        description: "Online mortgage calculator comparing equal installment and equal principal repayment methods side by side."
-      },
-      encoder: {
-        title: "Online Encoding Converter - URL Base64 Base32 Base16 Unicode UTF-8 | Tools24",
-        description: "Online encoding converter: URL encode/decode, Base64, Base32, Base16, Unicode escapes, UTF-8 hex bytes, ASCII — all in one tool."
-      },
-      base64: {
-        title: "Base64 Encoder and Decoder Online | Tools24",
-        description: "Encode and decode Base64 text online, convert files to Base64 and download decoded files."
-      },
-      diff: {
-        title: "Text Diff Tool Online - Compare Text and Code | Tools24",
-        description: "Compare two text snippets online and highlight added, removed and unchanged lines."
-      },
-      fileinfo: {
-        title: "File Info and MD5/SHA Hash Checker Online | Tools24",
-        description: "Inspect file size, type, media dimensions and calculate MD5, SHA-1, SHA-256 and Base64 locally."
-      },
-      markdown: {
-        title: "Markdown Formatter and Preview Online | Tools24",
-        description: "Write and preview Markdown online with live rendering. Download as HTML, DOC or Markdown file."
-      },
-      content: {
-        title: "Content Generator - Remote Link Plain Text Hosting | Tools24",
-        description: "Generate a remote link from any text content. Access it to get raw plain text — perfect for remote scripts, config hosting and text sharing."
-      },
-      jwt: {
-        title: "JWT Decoder & Debugger Online - JSON Web Token Parser Verify Generate | Tools24",
-        description: "Online JWT decoder, verifier and generator. Supports HS256/HS384/HS512 signing, auto timestamp conversion. All processed locally, tokens never leave your browser."
-      },
-      crypto: {
-        title: "Online Encryption Tool - AES RSA Symmetric Asymmetric | Tools24",
-        description: "Online encryption tool supporting AES-GCM/CBC symmetric and RSA-OAEP asymmetric encryption, powered by browser Web Crypto API."
-      },
-      android: {
-        title: "Android Quick Reference - API ADB Permissions Intent Gradle | Tools24",
-        description: "Android developer quick reference: API levels, ADB commands, alpha values, dp/px, permissions, intents, Manifest config, resource qualifiers, lifecycle and official docs."
-      },
-      flutter: {
-        title: "Flutter Quick Reference - Widgets CLI Packages State Theming Navigation | Tools24",
-        description: "Flutter developer quick reference: Widget catalog, CLI commands, popular packages, ThemeData config, navigation & routing, state management comparison and responsive layout."
-      },
-      ios: {
-        title: "iOS Quick Reference - SwiftUI UIKit Swift Xcode Info.plist HIG | Tools24",
-        description: "iOS developer quick reference: iOS version history, SwiftUI views & property wrappers, UIKit classes & Auto Layout, Swift syntax, Xcode shortcuts, Info.plist permissions, HIG guidelines and device specs."
-      },
-      qrcode: {
-        title: "Online QR Code Generator and Parser | Tools24",
-        description: "Generate and parse QR codes online. Create QR codes from text/URLs and decode QR codes from images — all in your browser."
-      },
-      curl: {
-        title: "Online Curl Command Builder and Converter | Tools24",
-        description: "Build curl commands visually, browse common curl examples, and convert curl to Python/JavaScript/Go/Java code."
-      },
-      terminal: {
-        title: "Terminal Commands Cheat Sheet - Shell Reference Linux Ops | Tools24",
-        description: "Terminal commands quick reference covering file ops, text processing, process management, networking, system info, permissions, archives and shell tips for ops and terminal users."
-      },
-      translate: {
-        title: "Online Translator - CN/EN Translate with Phonetics DeepSeek | Tools24",
-        description: "DeepSeek-powered smart translator with auto language detection, word-level phonetics and POS tagging, paragraph-level pure translation. Translates on blur."
-      },
-      git: {
-        title: "Git Cheat Sheet - Git Commands Reference Remote Branch | Tools24",
-        description: "Git commands quick reference covering basics, branching, undo, remote management, stash/log, tags/submodules and advanced ops. Includes remote URL and branch name replacement tools."
-      },
-      ai: {
-        title: "AI CLI Reference - Claude Code and Codex Comparison | Tools24",
-        description: "Verified Claude Code and Codex CLI reference covering quick start, sessions, automation, permissions, safety, MCP, plugins, code review, and task-by-task comparison."
-      }
-    }
-  };
+  let seoMeta = {};
+
+  function loadToolManifest() {
+    return fetch("/api/tool-manifest")
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      })
+      .then(function (manifest) {
+        siteUrl = manifest.siteUrl;
+        menuItems = [{ id: "home", icon: "home", i18n: "menu.home", processing: "local" }].concat(
+          manifest.tools.map(function (tool) {
+            return { id: tool.id, icon: tool.icon, i18n: tool.i18n, processing: tool.processing, hidden: tool.hidden, indexable: tool.indexable };
+          })
+        );
+        toolScripts = {};
+        seoMeta = { "zh-CN": { home: manifest.homeSeo["zh-CN"] }, en: { home: manifest.homeSeo.en } };
+        manifest.tools.forEach(function (tool) {
+          if (tool.script && tool.global) toolScripts[tool.id] = [tool.global, tool.script];
+          if (tool.seo) {
+            seoMeta["zh-CN"][tool.id] = tool.seo["zh-CN"];
+            seoMeta.en[tool.id] = tool.seo.en;
+          }
+        });
+      });
+  }
 
   // ── SVG 图标库 ──
   const icons = {
@@ -545,8 +263,13 @@
         const active = item.id === activeMenuId ? " active" : "";
         var href = buildPathForMenu(item.id, currentLang);
         var favoriteButton = item.id === "home" ? "" : '<button class="menu-favorite' + (favorites.indexOf(item.id) !== -1 ? ' active' : '') + '" type="button" data-favorite-id="' + item.id + '" title="' + t(favorites.indexOf(item.id) !== -1 ? "welcome.removeFavorite" : "welcome.addFavorite") + '" aria-label="' + t(favorites.indexOf(item.id) !== -1 ? "welcome.removeFavorite" : "welcome.addFavorite") + '">' + icons.star + '</button>';
+        var processingIndicator = item.processing === "server"
+          ? '<span class="menu-processing menu-processing-server" title="' + (currentLang === "en" ? "Uses server processing" : "使用服务端处理") + '">' + (currentLang === "en" ? "Cloud" : "云端") + '</span>'
+          : item.processing === "hybrid"
+            ? '<span class="menu-processing menu-processing-hybrid" title="' + (currentLang === "en" ? "Uses hybrid processing" : "使用混合处理") + '">' + (currentLang === "en" ? "Hybrid" : "混合") + '</span>'
+            : "";
         return `<a class="menu-item${active}${hidden}" href="${href}" data-id="${item.id}" title="${label}">
-          ${icons[item.icon]}<span>${label}</span>${favoriteButton}
+          ${icons[item.icon]}<span>${label}</span>${processingIndicator}${favoriteButton}
         </a>`;
       }).join("");
 
@@ -594,7 +317,7 @@
 
   function routeFromPath() {
     var m = location.pathname.match(/^\/(zh|en)\/tool\/(\w+)$/);
-    if (m && menuItems.some(function (item) { return item.id === m[2]; })) return { lang: prefixToLocale(m[1]), menuId: m[2] };
+    if (m) return { lang: prefixToLocale(m[1]), menuId: m[2] };
     var m2 = location.pathname.match(/^\/(zh|en)\/?$/);
     if (m2) return { lang: prefixToLocale(m2[1]), menuId: "home" };
     return { lang: null, menuId: "home" };
@@ -722,7 +445,14 @@
   function renderContent() {
     stopClock();
     const el = document.getElementById("content");
+    if (activeMenuId !== "home") {
+      var badgeToolId = activeMenuId;
+      setTimeout(function () { renderPrivacyBadge(el, badgeToolId); }, 0);
+    }
     if (activeMenuId === "home") {
+      var privacyIntro = currentLang === "en"
+        ? "Privacy first: most tools run entirely in your browser. Tools that send data to the server are explicitly labeled."
+        : "隐私优先：绝大多数工具完全在浏览器本地运行；需要发送数据到服务端的工具会明确标记。";
       var favoriteIds = loadFavorites();
       var favoriteLinks = '<div class="welcome-quick welcome-favorites"><h3>' + t("welcome.favorites") + '</h3>';
       if (favoriteIds.length) {
@@ -743,6 +473,7 @@
           <div class="welcome-icon">🛠️</div>
           <h2>DevTools</h2>
           <p data-i18n="welcome.desc">开发工具集 — 从左侧菜单选择工具开始使用</p>
+          <div class="welcome-privacy"><span class="privacy-badge privacy-badge-local">✓ ${currentLang === "en" ? "Local by default" : "默认本地处理"}</span><p>${privacyIntro}</p></div>
           <p class="welcome-oss"><a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="welcome-oss-icon"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> <span data-i18n="welcome.openSource">代码开源，使用更安心</span></a></p>
           ${favoriteLinks}
         </div>`;
@@ -931,6 +662,19 @@
     applyLocale();
   }
 
+  function renderPrivacyBadge(container, toolId) {
+    if (activeMenuId !== toolId || container.querySelector(".privacy-badge-runtime")) return;
+    var tool = menuItems.find(function (item) { return item.id === toolId; });
+    if (!tool || !tool.processing) return;
+    var labels = {
+      local: currentLang === "en" ? "Processed locally · Data stays in your browser" : "浏览器本地处理 · 数据不上传",
+      hybrid: currentLang === "en" ? "Hybrid processing · Some data requests use the server" : "混合处理 · 部分数据请求服务端",
+      server: currentLang === "en" ? "Server processing · Data is sent to the service" : "服务端处理 · 数据会发送到服务器"
+    };
+    var iconsByMode = { local: "✓", hybrid: "◐", server: "↗" };
+    container.insertAdjacentHTML("afterbegin", '<div class="privacy-badge privacy-badge-runtime privacy-badge-' + tool.processing + '"><span aria-hidden="true">' + iconsByMode[tool.processing] + '</span>' + labels[tool.processing] + '</div>');
+  }
+
   // ── 菜单折叠 ──
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menu-toggle");
@@ -1019,14 +763,15 @@
 
   applyTheme(currentTheme);
 
-  // fetch locale + global stats in parallel → render once (no flash)
+  // fetch manifest, locale and global stats in parallel → render once (no flash)
+  var manifestReady = loadToolManifest();
   var localeReady = loadLocale(currentLang);
   var statsReady = fetch("/api/tool-stats")
     .then(function (r) { return r.json(); })
     .then(function (d) { globalStats = d; })
     .catch(function () {});
 
-  Promise.all([localeReady, statsReady]).then(function () {
+  Promise.all([manifestReady, localeReady, statsReady]).then(function () {
     renderMenu();
     updateSeo();
     renderVisitCount();
@@ -1047,7 +792,7 @@
     var pageKey = activeMenuId || "home";
     var meta = (seoMeta[lang] && seoMeta[lang][pageKey]) || seoMeta["zh-CN"].home;
     var path = pageKey === "home" ? "/" + prefix + "/" : "/" + prefix + "/tool/" + pageKey;
-    var canonical = SITE_URL + path;
+    var canonical = siteUrl + path;
     document.title = meta.title;
     setMeta("name", "description", meta.description);
     setMeta("property", "og:title", meta.title);
@@ -1056,9 +801,9 @@
     setMeta("name", "twitter:title", meta.title);
     setMeta("name", "twitter:description", meta.description);
     setLink("canonical", canonical);
-    setAlternate("zh-CN", SITE_URL + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
-    setAlternate("en", SITE_URL + "/en" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
-    setAlternate("x-default", SITE_URL + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("zh-CN", siteUrl + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("en", siteUrl + "/en" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
+    setAlternate("x-default", siteUrl + "/zh" + (pageKey === "home" ? "/" : "/tool/" + pageKey));
     updateStructuredData(meta, canonical, lang);
   }
 
