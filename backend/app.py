@@ -340,6 +340,32 @@ TOOLS = {
             ],
         },
     },
+    "image": {
+        "zh": {
+            "name": "在线图片处理工具",
+            "title": "在线图片处理工具 - 压缩 缩放 旋转 格式转换 | Tools24",
+            "description": "在线图片压缩、缩放、旋转、翻转和 PNG/JPEG/WebP 格式转换，自动移除 EXIF/GPS 元数据，全部在浏览器本地完成。",
+            "keywords": "图片压缩,图片缩放,图片旋转,图片格式转换,WebP转换,去除EXIF,在线图片工具",
+            "intro": "上传图片后可调整尺寸、旋转、翻转、设置质量并转换为 PNG、JPEG 或 WebP。处理与导出完全在浏览器本地完成。",
+            "features": ["图片压缩与质量调整", "缩放、旋转和翻转", "PNG/JPEG/WebP 格式转换", "移除 EXIF/GPS 元数据", "浏览器本地处理，不上传图片"],
+            "faq": [
+                ("图片会上传服务器吗？", "不会。读取、处理、预览和导出均由当前浏览器完成。"),
+                ("为什么导出后拍摄信息消失了？", "Canvas 重新编码不会复制原图的 EXIF、GPS 等元数据，可用于保护隐私。"),
+            ],
+        },
+        "en": {
+            "name": "Online Image Tool",
+            "title": "Image Tool - Compress Resize Rotate Convert Online | Tools24",
+            "description": "Compress, resize, rotate, flip and convert images between PNG, JPEG and WebP locally in your browser, with metadata removed.",
+            "keywords": "image compressor,image resize,image rotate,image converter,WebP converter,remove EXIF,online image tool",
+            "intro": "Resize, rotate, flip, compress and convert images to PNG, JPEG or WebP. Processing and export happen entirely in your browser.",
+            "features": ["Image compression and quality control", "Resize, rotate and flip", "PNG/JPEG/WebP conversion", "Remove EXIF/GPS metadata", "Local browser processing"],
+            "faq": [
+                ("Are images uploaded?", "No. Reading, processing, preview and export all happen in your current browser."),
+                ("Why is camera information removed?", "Canvas re-encoding does not copy EXIF or GPS metadata, which helps protect privacy."),
+            ],
+        },
+    },
     "qrcode": {
         "zh": {
             "name": "在线二维码生成解析工具",

@@ -14,6 +14,57 @@ def test_health_and_ip_routes(client):
     assert ip.get_json() == {"ip": "203.0.113.10"}
 
 
+def test_favorites_are_localized_and_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+
+    assert zh_locale["welcome"]["favorites"] == "收藏"
+    assert en_locale["welcome"]["favorites"] == "Favorites"
+    assert 'const STORAGE_FAVORITES = "devtools_favorites"' in app_script
+    assert "function toggleFavorite(toolId)" in app_script
+    assert 'class="menu-favorite' in app_script
+    assert 't("welcome.favoritesEmpty")' in app_script
+
+
+def test_image_tool_is_local_and_wired_with_seo_and_locales(client):
+    page = client.get("/zh/tool/image")
+    script = client.get("/js/image-tool.js")
+    script_text = script.get_data(as_text=True)
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert page.status_code == 200
+    assert "在线图片处理工具" in page.get_data(as_text=True)
+    assert "https://www.tools24.uk/zh/tool/image" in page.get_data(as_text=True)
+    assert script.status_code == 200
+    assert "MAX_PIXELS = 40000000" in script_text
+    assert "canvas.toBlob" in script_text
+    assert "URL.createObjectURL" in script_text
+    assert "fetch(" not in script_text
+    assert "function resetSettings()" in script_text
+    assert "exifr@7.1.3" in script_text
+    assert "heic-to@1.5.2" in script_text
+    assert "jszip@3.10.1" in script_text
+    assert "function processBatch()" in script_text
+    assert "function timestampName()" in script_text
+    assert 'multiple hidden' in script_text
+    assert 't("image.batchSizeSummary")' in script_text
+    assert zh_locale["image"]["batchReduced"] == "减少 {percent}%"
+    assert 'processButton.disabled = true' in script_text
+    assert 't("image.downloadingButton")' in script_text
+    assert 't("image.zippingButton")' in script_text
+    assert "DateTimeOriginal" in script_text
+    assert "GPSLatitude" in script_text
+    assert zh_locale["menu"]["image"] == "图片处理"
+    assert en_locale["menu"]["image"] == "Image Tool"
+    assert zh_locale["image"]["metadataRemoved"] == "元数据已移除"
+    assert index_html.index("image-tool.js") < index_html.index("app.js")
+
+
 def test_spa_routes_render_seo_and_fallback(client):
     response = client.get("/en/tool/json")
     fallback = client.get("/fr/tool/unknown")

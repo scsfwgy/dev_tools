@@ -3,7 +3,7 @@
   const STORAGE_LANG = "devtools_lang";
   const STORAGE_THEME = "devtools_theme";
   const STORAGE_MENU = "devtools_menu_collapsed";
-  const STORAGE_CLICKS = "devtools_tool_clicks";
+  const STORAGE_FAVORITES = "devtools_favorites";
 
   let locale = {};
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
@@ -13,15 +13,27 @@
   let visitCountUnavailable = false;
   var _clockTimer = null;
 
-  // ── local click tracking ──
-  function loadLocalClicks() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_CLICKS)) || {}; } catch (e) { return {}; }
+  function loadFavorites() {
+    try {
+      var stored = JSON.parse(localStorage.getItem(STORAGE_FAVORITES));
+      if (!Array.isArray(stored)) return [];
+      return stored.filter(function (toolId, index) {
+        return stored.indexOf(toolId) === index && menuItems.some(function (item) {
+          return item.id === toolId && item.id !== "home" && !item.hidden;
+        });
+      });
+    } catch (e) {
+      return [];
+    }
   }
-  function saveLocalClick(toolId) {
-    if (toolId === "home") return;
-    var clicks = loadLocalClicks();
-    clicks[toolId] = (clicks[toolId] || 0) + 1;
-    localStorage.setItem(STORAGE_CLICKS, JSON.stringify(clicks));
+  function toggleFavorite(toolId) {
+    var favorites = loadFavorites();
+    var index = favorites.indexOf(toolId);
+    if (index === -1) favorites.push(toolId);
+    else favorites.splice(index, 1);
+    localStorage.setItem(STORAGE_FAVORITES, JSON.stringify(favorites));
+    renderMenu();
+    showCopyToast(t(index === -1 ? "welcome.favoriteAdded" : "welcome.favoriteRemoved"));
   }
   function postGlobalClick(toolId) {
     if (toolId === "home") return;
@@ -45,6 +57,8 @@
     { id: "encoder",  icon: "code",       i18n: "menu.encoder" },
     { id: "crypto",   icon: "shield",    i18n: "menu.crypto" },
     { id: "android",  icon: "android",   i18n: "menu.android" },
+    { id: "flutter",  icon: "flutter",   i18n: "menu.flutter" },
+    { id: "ios",      icon: "ios",       i18n: "menu.ios" },
     { id: "translate",icon: "translate",i18n: "menu.translate" },
     { id: "git",      icon: "git",      i18n: "menu.git" },
     { id: "terminal", icon: "console",  i18n: "menu.terminal" },
@@ -56,6 +70,7 @@
     { id: "text",     icon: "code",       i18n: "menu.text" },
     { id: "tax",      icon: "dollar",     i18n: "menu.tax" },
     { id: "mortgage", icon: "home",       i18n: "menu.mortgage" },
+    { id: "image",    icon: "file",       i18n: "menu.image" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
     { id: "markdown", icon: "md",         i18n: "menu.markdown" },
     { id: "content",  icon: "link",       i18n: "menu.content" },
@@ -87,6 +102,10 @@
       unitconvert: {
         title: "单位换算工具 - 长度 温度 数据存储 压力 能量 燃油经济性 | Tools24",
         description: "在线单位换算工具，提供长度、面积、体积、质量、速度、温度、风力、数据存储、时间、压力、能量、功率、角度、流量、烹饪容量和燃油经济性 16 类实时换算。"
+      },
+      image: {
+        title: "在线图片处理工具 - 压缩 缩放 旋转 格式转换 | Tools24",
+        description: "在线图片压缩、缩放、旋转、翻转和 PNG/JPEG/WebP 格式转换，自动移除 EXIF/GPS 元数据，全部在浏览器本地完成。"
       },
       text: {
         title: "在线文本处理工具 - 去重排序大小写多行转换 | Tools24",
@@ -140,6 +159,14 @@
         title: "Android 常用速查 - API ADB 权限 Intent Gradle 对照 | Tools24",
         description: "Android 开发者常用速查：API Level、ADB 命令、透明度、dp/px、权限、Intent、Manifest 配置、资源限定符、生命周期和官方文档地址。"
       },
+      flutter: {
+        title: "Flutter 常用速查 - Widget 组件 CLI 命令 状态管理 主题导航 | Tools24",
+        description: "Flutter 开发者常用速查：Widget 组件目录、CLI 命令、常用 Packages、ThemeData 主题配置、导航路由、状态管理方案对比和响应式布局。"
+      },
+      ios: {
+        title: "iOS 常用速查 - SwiftUI UIKit Swift Xcode Info.plist HIG | Tools24",
+        description: "iOS 开发者常用速查：iOS 版本历史、SwiftUI 视图与属性包装、UIKit 类与 Auto Layout、Swift 语法、Xcode 快捷键、Info.plist 权限配置、HIG 规范和设备参数。"
+      },
       qrcode: {
         title: "在线二维码生成解析工具 - QR Code Generator Parser | Tools24",
         description: "在线二维码生成和解析工具，支持文本/链接生成二维码图片下载，上传/粘贴二维码图片解析内容。"
@@ -189,6 +216,10 @@
       unitconvert: {
         title: "Unit Converter - Length Temperature Data Pressure Energy Fuel Economy | Tools24",
         description: "Convert 16 categories including length, area, volume, mass, speed, temperature, wind, data storage, time, pressure, energy, power, angle, flow, cooking volume and fuel economy."
+      },
+      image: {
+        title: "Image Tool - Compress Resize Rotate Convert Online | Tools24",
+        description: "Compress, resize, rotate, flip and convert images between PNG, JPEG and WebP locally in your browser, with metadata removed."
       },
       text: {
         title: "Online Text Processing Tool - Dedupe Sort Case Convert | Tools24",
@@ -242,6 +273,14 @@
         title: "Android Quick Reference - API ADB Permissions Intent Gradle | Tools24",
         description: "Android developer quick reference: API levels, ADB commands, alpha values, dp/px, permissions, intents, Manifest config, resource qualifiers, lifecycle and official docs."
       },
+      flutter: {
+        title: "Flutter Quick Reference - Widgets CLI Packages State Theming Navigation | Tools24",
+        description: "Flutter developer quick reference: Widget catalog, CLI commands, popular packages, ThemeData config, navigation & routing, state management comparison and responsive layout."
+      },
+      ios: {
+        title: "iOS Quick Reference - SwiftUI UIKit Swift Xcode Info.plist HIG | Tools24",
+        description: "iOS developer quick reference: iOS version history, SwiftUI views & property wrappers, UIKit classes & Auto Layout, Swift syntax, Xcode shortcuts, Info.plist permissions, HIG guidelines and device specs."
+      },
       qrcode: {
         title: "Online QR Code Generator and Parser | Tools24",
         description: "Generate and parse QR codes online. Create QR codes from text/URLs and decode QR codes from images — all in your browser."
@@ -280,6 +319,8 @@
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
     shield: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
     android: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>',
+    flutter: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 3 19 3 11 15"/><polyline points="5 13 11 21 19 9"/><polyline points="5 13 19 3"/></svg>',
+    ios: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>',
     qr: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="17.5" y1="14" x2="17.5" y2="21"/><line x1="14" y1="17.5" x2="21" y2="17.5"/></svg>',
     terminal: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
     console: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="16" rx="2"/><path d="M6 9l2 2-2 2"/><line x1="12" y1="13" x2="16" y2="13"/></svg>',
@@ -430,14 +471,16 @@
         return (globalStats[b.id] || 0) - (globalStats[a.id] || 0);
       });
     }
+    var favorites = loadFavorites();
     list.innerHTML = items
       .map(item => {
         const label = t(item.i18n);
         const hidden = query && !label.toLowerCase().includes(query) ? " hidden" : "";
         const active = item.id === activeMenuId ? " active" : "";
         var href = buildPathForMenu(item.id, currentLang);
+        var favoriteButton = item.id === "home" ? "" : '<button class="menu-favorite' + (favorites.indexOf(item.id) !== -1 ? ' active' : '') + '" type="button" data-favorite-id="' + item.id + '" title="' + t(favorites.indexOf(item.id) !== -1 ? "welcome.removeFavorite" : "welcome.addFavorite") + '" aria-label="' + t(favorites.indexOf(item.id) !== -1 ? "welcome.removeFavorite" : "welcome.addFavorite") + '">' + icons.star + '</button>';
         return `<a class="menu-item${active}${hidden}" href="${href}" data-id="${item.id}" title="${label}">
-          ${icons[item.icon]}<span>${label}</span>
+          ${icons[item.icon]}<span>${label}</span>${favoriteButton}
         </a>`;
       }).join("");
 
@@ -446,6 +489,13 @@
       link.addEventListener("click", function (e) {
         e.preventDefault();
         selectMenu(this.dataset.id);
+      });
+    });
+    list.querySelectorAll(".menu-favorite").forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFavorite(this.dataset.favoriteId);
       });
     });
 
@@ -458,8 +508,6 @@
       history.pushState({ menuId: id }, "", buildPathForMenu(id, currentLang));
     }
     activeMenuId = id;
-    // track clicks: local + global (fire-and-forget)
-    saveLocalClick(id);
     postGlobalClick(id);
     updateSeo();
     renderMenu();
@@ -609,27 +657,27 @@
     stopClock();
     const el = document.getElementById("content");
     if (activeMenuId === "home") {
-      // build personal top tools from local clicks
-      var localClicks = loadLocalClicks();
-      var sorted = Object.entries(localClicks).sort(function (a, b) { return b[1] - a[1]; });
-      var quickLinks = "";
-      if (sorted.length) {
-        quickLinks = '<div class="welcome-quick"><h3 data-i18n="welcome.quickLinks">常用工具</h3><div class="welcome-quick-grid">';
-        sorted.forEach(function (entry) {
-          var item = menuItems.find(function (m) { return m.id === entry[0]; });
-          if (!item || item.hidden) return;
+      var favoriteIds = loadFavorites();
+      var favoriteLinks = '<div class="welcome-quick welcome-favorites"><h3>' + t("welcome.favorites") + '</h3>';
+      if (favoriteIds.length) {
+        favoriteLinks += '<div class="welcome-quick-grid">';
+        favoriteIds.forEach(function (toolId) {
+          var item = menuItems.find(function (menuItem) { return menuItem.id === toolId; });
+          if (!item) return;
           var label = t(item.i18n);
-          var href = buildPathForMenu(item.id, currentLang);
-          quickLinks += '<a class="welcome-tool-chip" href="' + href + '" data-id="' + item.id + '">' + icons[item.icon] + '<span>' + label + '</span></a>';
+          favoriteLinks += '<a class="welcome-tool-chip" href="' + buildPathForMenu(item.id, currentLang) + '" data-id="' + item.id + '">' + icons[item.icon] + '<span>' + label + '</span></a>';
         });
-        quickLinks += '</div></div>';
+        favoriteLinks += '</div>';
+      } else {
+        favoriteLinks += '<p class="welcome-empty">' + t("welcome.favoritesEmpty") + '</p>';
       }
+      favoriteLinks += '</div>';
       el.innerHTML = `
         <div class="welcome">
           <div class="welcome-icon">🛠️</div>
           <h2>DevTools</h2>
           <p data-i18n="welcome.desc">开发工具集 — 从左侧菜单选择工具开始使用</p>
-          ${quickLinks}
+          ${favoriteLinks}
         </div>`;
       // bind chip clicks
       el.querySelectorAll(".welcome-tool-chip").forEach(function (chip) {
@@ -714,6 +762,11 @@
       FileInfoTool.init(el);
       return;
     }
+    if (activeMenuId === "image" && typeof ImageTool !== "undefined") {
+      el.innerHTML = "";
+      ImageTool.init(el);
+      return;
+    }
     if (activeMenuId === "git" && typeof GitTool !== "undefined") {
       el.innerHTML = "";
       GitTool.init(el);
@@ -727,6 +780,16 @@
     if (activeMenuId === "android" && typeof AndroidTool !== "undefined") {
       el.innerHTML = "";
       AndroidTool.init(el);
+      return;
+    }
+    if (activeMenuId === "flutter" && typeof FlutterTool !== "undefined") {
+      el.innerHTML = "";
+      FlutterTool.init(el);
+      return;
+    }
+    if (activeMenuId === "ios" && typeof IosTool !== "undefined") {
+      el.innerHTML = "";
+      IosTool.init(el);
       return;
     }
     if (activeMenuId === "ai" && typeof AiTool !== "undefined") {

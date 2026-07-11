@@ -281,6 +281,65 @@ var AndroidTool = (function () {
     ["4.2", "6.7.1+",  "Arctic Fox | 2020.3"],
   ];
 
+  // ═══ Compose Components ═══ — [name, zhName, api, description, category, example]
+  var COMPOSE_WIDGETS = [
+    ["Box", "盒子", "Box", "Stack children on top of each other", "layout", "Box(modifier = Modifier.fillMaxSize()) { Text(\"Behind\") Text(\"Front\", modifier = Modifier.align(Alignment.Center)) }"],
+    ["Column", "列布局", "Column", "Vertical layout", "layout", "Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) { Text(\"Title\"); Text(\"Subtitle\") }"],
+    ["Row", "行布局", "Row", "Horizontal layout", "layout", "Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text(\"Left\"); Icon(Icons.Star, null) }"],
+    ["FlowRow", "流式行", "FlowRow", "Auto-wrapping row", "layout", "FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) { items.forEach { Chip(it) } }"],
+    ["Spacer", "弹性空间", "Spacer", "Fill available space", "layout", "Row { Text(\"Left\"); Spacer(Modifier.weight(1f)); Text(\"Right\") }"],
+    ["Modifier.padding", "内边距", "Modifier.padding", "Add padding", "layout", "Text(\"Hello\", modifier = Modifier.padding(16.dp))"],
+    ["Modifier.fillMaxWidth", "最大宽度", "fillMaxWidth", "Take full available width", "layout", "Button(onClick = {}, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(\"Full Width\") }"],
+    ["Modifier.size", "固定尺寸", "Modifier.size", "Fixed width and height", "layout", "Box(modifier = Modifier.size(100.dp))"],
+    ["Modifier.offset", "偏移", "Modifier.offset", "Offset from normal position", "layout", "Text(\"Shifted\", modifier = Modifier.offset(x = 10.dp, y = (-5).dp))"],
+    ["Modifier.clip", "裁剪", "Modifier.clip", "Clip to shape", "layout", "Image(painter = ..., modifier = Modifier.clip(CircleShape).size(48.dp))"],
+    ["Text", "文本", "Text", "Display styled text", "display", "Text(\"Hello World\", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)"],
+    ["Icon", "图标", "Icon", "Material icon", "display", "Icon(Icons.Star, contentDescription = \"Favorite\", tint = Color(0xFFFFC107))"],
+    ["Image", "图片", "Image", "Display image", "display", "Image(painter = painterResource(R.drawable.photo), contentDescription = \"Photo\", modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.Crop)"],
+    ["AsyncImage", "异步图片", "AsyncImage", "Coil image loader", "display", "AsyncImage(model = \"https://example.com/img.jpg\", contentDescription = null, modifier = Modifier.size(200.dp))"],
+    ["AnimatedVisibility", "动画显隐", "AnimatedVisibility", "Animate show/hide", "display", "AnimatedVisibility(visible = show) { Text(\"Now you see me\") }"],
+    ["LazyColumn", "懒加载列", "LazyColumn", "RecyclerView replacement", "scroll", "LazyColumn { items(items) { item -> ListItem(name = item.name, onClick = { select(item) }) } }"],
+    ["LazyRow", "懒加载行", "LazyRow", "Horizontal list", "scroll", "LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) { items(photos) { AsyncImage(model = it.url, modifier = Modifier.size(120.dp)) } }"],
+    ["LazyVerticalGrid", "懒加载网格", "LazyVerticalGrid", "Grid layout", "scroll", "LazyVerticalGrid(columns = GridCells.Fixed(3), contentPadding = PaddingValues(16.dp)) { items(items) { Card { Text(it) } } }"],
+    ["HorizontalPager", "水平翻页", "HorizontalPager", "Swipeable pages", "scroll", "HorizontalPager(pageCount = pages.size) { page -> PageContent(pages[page]) }"],
+    ["TextField", "文本输入", "TextField", "Text input", "input", "TextField(value = text, onValueChange = { text = it }, label = { Text(\"Email\") }, leadingIcon = { Icon(Icons.Email, null) })"],
+    ["OutlinedTextField", "描边输入", "OutlinedTextField", "Outlined text input", "input", "OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text(\"Password\") }, visualTransformation = PasswordVisualTransformation())"],
+    ["Button", "按钮", "Button", "Material button", "input", "Button(onClick = { submit() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) { Text(\"Submit\") }"],
+    ["OutlinedButton", "描边按钮", "OutlinedButton", "Outlined style", "input", "OutlinedButton(onClick = { cancel() }, border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) { Text(\"Cancel\") }"],
+    ["TextButton", "文字按钮", "TextButton", "Text-only button", "input", "TextButton(onClick = { showMore() }) { Text(\"See More\") }"],
+    ["IconButton", "图标按钮", "IconButton", "Icon-only button", "input", "IconButton(onClick = { remove() }) { Icon(Icons.Delete, \"Delete\", tint = MaterialTheme.colorScheme.error) }"],
+    ["FloatingActionButton", "悬浮按钮", "FloatingActionButton", "Circular FAB", "input", "FloatingActionButton(onClick = { add() }, containerColor = MaterialTheme.colorScheme.primaryContainer) { Icon(Icons.Add, \"Add\") }"],
+    ["Checkbox", "复选框", "Checkbox", "Selection control", "input", "Checkbox(checked = isChecked, onCheckedChange = { isChecked = it })"],
+    ["Switch", "开关", "Switch", "Toggle switch", "input", "Switch(checked = isOn, onCheckedChange = { isOn = it })"],
+    ["Slider", "滑块", "Slider", "Range selector", "input", "Slider(value = volume, onValueChange = { volume = it }, valueRange = 0f..100f, steps = 9)"],
+    ["DropdownMenu", "下拉菜单", "DropdownMenu", "Dropdown selector", "input", "DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) { options.forEach { DropdownMenuItem(text = { Text(it) }, onClick = { select(it); expanded = false }) } }"],
+    ["Snackbar", "提示条", "Snackbar", "Brief message with action", "feedback", "snackbarHostState.showSnackbar(Snackbar(\"Saved!\", actionLabel = \"Undo\"))"],
+    ["AlertDialog", "对话框", "AlertDialog", "Confirmation dialog", "feedback", "AlertDialog(onDismissRequest = {}, title = { Text(\"Confirm\") }, text = { Text(\"Are you sure?\") }, confirmButton = { TextButton(onClick = { confirm() }) { Text(\"OK\") } }, dismissButton = { TextButton(onClick = {}) { Text(\"Cancel\") } })"],
+    ["ModalBottomSheet", "底部抽屉", "ModalBottomSheet", "Bottom sheet", "feedback", "ModalBottomSheet(onDismissRequest = {}) { Column(Modifier.padding(16.dp)) { Text(\"Options\"); ListItem(headlineContent = { Text(\"Share\") }) } }"],
+    ["LinearProgressIndicator", "线性进度", "LinearProgressIndicator", "Progress bar", "feedback", "LinearProgressIndicator(progress = { value }, modifier = Modifier.fillMaxWidth())"],
+    ["CircularProgressIndicator", "圆形进度", "CircularProgressIndicator", "Spinner", "feedback", "CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)"],
+    ["Chip", "标签", "Chip", "Compact chip", "feedback", "Chip(onClick = {}, label = { Text(\"Tag\") }, leadingIcon = { Icon(Icons.Check, null) })"],
+    ["Scaffold", "脚手架", "Scaffold", "Page layout shell", "structure", "Scaffold(topBar = { TopAppBar(title = { Text(\"Page\") }) }, floatingActionButton = { FloatingActionButton(onClick = {}) { Icon(Icons.Add, null) } }, bottomBar = { NavigationBar { /* items */ } }) { padding -> Box(Modifier.padding(padding)) { /* body */ } }"],
+    ["TopAppBar", "顶栏", "TopAppBar", "Material top bar", "structure", "TopAppBar(title = { Text(\"Title\") }, navigationIcon = { IconButton(onClick = { navController.pop() }) { Icon(Icons.ArrowBack, null) } }, actions = { IconButton(onClick = {}) { Icon(Icons.Search, null) } })"],
+    ["NavigationBar", "底部导航", "NavigationBar", "Bottom tabs (Material 3)", "structure", "NavigationBar { NavigationBarItem(selected = idx == 0, onClick = { idx = 0 }, icon = { Icon(Icons.Home, null) }, label = { Text(\"Home\") }) }"],
+    ["TabRow", "标签栏", "TabRow", "Horizontal tabs", "structure", "TabRow(selectedTabIndex = tab) { tabs.forEach { Tab(selected = false, onClick = {}, text = { Text(it) }) } }"],
+    ["Card", "卡片", "Card", "Elevated card", "structure", "Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(4.dp)) { Column(Modifier.padding(16.dp)) { Text(\"Title\", style = MaterialTheme.typography.titleMedium); Text(\"Description\") } }"],
+    ["ListItem", "列表项", "ListItem", "Material 3 list item", "structure", "ListItem(headlineContent = { Text(\"Title\") }, supportingContent = { Text(\"Subtitle\") }, leadingContent = { Icon(Icons.Person, null) }, trailingContent = { Icon(Icons.ChevronRight, null) }, modifier = Modifier.clickable { navigate() })"],
+    ["HorizontalDivider", "分割线", "HorizontalDivider", "Thin line separator", "structure", "HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)"],
+  ];
+
+  var COMPOSE_CATEGORIES = [
+    ["all", "全部", "All"],
+    ["layout", "布局", "Layout"],
+    ["display", "显示", "Display"],
+    ["scroll", "滚动", "Scroll"],
+    ["input", "输入与交互", "Input"],
+    ["feedback", "反馈", "Feedback"],
+    ["structure", "结构", "Structure"],
+  ];
+
+  var composeActiveCat = "all";
+
   var alphaMode = "transparency"; // "transparency" | "opacity"
 
   function init(parent) {
@@ -298,6 +357,7 @@ var AndroidTool = (function () {
       '    <button class="b64-tab" data-atab="intent">' + t("android.intents") + '</button>' +
       '    <button class="b64-tab" data-atab="manifest">' + t("android.manifest") + '</button>' +
       '    <button class="b64-tab" data-atab="resources">' + t("android.resources") + '</button>' +
+      '    <button class="b64-tab" data-atab="compose">' + t("android.compose") + '</button>' +
       '  </div>' +
       '  <div id="atab-api" class="android-section">' + buildApiTable() + '</div>' +
       '  <div id="atab-docs" class="android-section hidden">' + buildDocsTable() + '</div>' +
@@ -310,6 +370,7 @@ var AndroidTool = (function () {
       '  <div id="atab-intent" class="android-section hidden">' + buildIntentTable() + '</div>' +
       '  <div id="atab-manifest" class="android-section hidden">' + buildManifestTable() + '</div>' +
       '  <div id="atab-resources" class="android-section hidden">' + buildResourcesTable() + '</div>' +
+      '  <div id="atab-compose" class="android-section hidden">' + buildComposeTab() + '</div>' +
       '</div>';
 
     document.querySelectorAll(".b64-tab[data-atab]").forEach(function (btn) {
@@ -550,6 +611,27 @@ var AndroidTool = (function () {
     return h;
   }
 
+  // ═══ Compose Components ═══
+
+  function buildComposeTab() {
+    var h = '<div class="at-search-wrap">';
+    h += '<div class="at-cat-bar">';
+    COMPOSE_CATEGORIES.forEach(function (cat) {
+      h += '<button class="ft-cat-filter' + (composeActiveCat === cat[0] ? ' active' : '') + '" data-compose-cat="' + cat[0] + '">' + (currentLang() === "en" ? cat[2] : cat[1]) + '</button>';
+    });
+    h += '</div>';
+    h += '<input id="at-search-compose" class="search-input" type="text" placeholder="' + t("android.searchCompose") + '" style="margin-top:8px">';
+    h += '</div>';
+    h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("android.component") + '</th><th>' + t("android.description") + '</th><th>' + t("android.example") + '</th></tr></thead><tbody>';
+    COMPOSE_WIDGETS.forEach(function (r) {
+      var name = r[0];
+      var desc = currentLang() === "en" ? r[3] : r[2];
+      h += '<tr data-search="' + [r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase() + '" data-cat="' + r[4] + '"><td><code>' + name + '</code></td><td>' + desc + '</td><td data-copy="' + escapeHtml(r[5]) + '"><code class="ft-example-code">' + escapeHtml(r[5]) + '</code></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    return h;
+  }
+
   // ═══ AGP ↔ Gradle ═══
 
   function buildAgpTable() {
@@ -612,6 +694,26 @@ var AndroidTool = (function () {
     bindSearch("at-search-lifecycle", "#atab-lifecycle tbody tr", function (tr, q) { tr.style.display = q && !tr.dataset.search.includes(q) ? "none" : ""; });
     // search: docs
     bindSearch("at-search-docs", "#atab-docs tbody tr", function (tr, q) { tr.style.display = q && !tr.dataset.search.includes(q) ? "none" : ""; });
+    // compose: category filter
+    document.querySelectorAll(".ft-cat-filter[data-compose-cat]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        composeActiveCat = this.dataset.composeCat;
+        document.querySelectorAll(".ft-cat-filter[data-compose-cat]").forEach(function (b) { b.classList.toggle("active", b.dataset.composeCat === composeActiveCat); });
+        filterComposeRows();
+      });
+    });
+    // compose: search
+    bindSearch("at-search-compose", "#atab-compose tbody tr", function (tr, q) {
+      var match = !q || tr.dataset.search.includes(q);
+      var catMatch = composeActiveCat === "all" || tr.dataset.cat === composeActiveCat;
+      tr.style.display = match && catMatch ? "" : "none";
+    });
+  }
+
+  function filterComposeRows() {
+    document.querySelectorAll("#atab-compose tbody tr").forEach(function (tr) {
+      tr.style.display = (composeActiveCat === "all" || tr.dataset.cat === composeActiveCat) ? "" : "none";
+    });
   }
 
   function bindSearch(inputId, rowSelector, filterFn) {
