@@ -16,6 +16,7 @@
 | 文本处理 | 去空行、去重、排序、大小写、多行转 JSON/CSV/SQL IN |
 | 文件详情 | MD5/SHA-1/SHA-256、Base64、图片/视频尺寸 |
 | 图片处理 | 本地压缩、缩放、旋转、翻转、PNG/JPEG/WebP 转换、移除元数据 |
+| 文件转换 | TXT/HTML/Markdown/PDF、CSV/XLSX/HTML、DOCX→HTML/TXT，本地按需转换 |
 | 心愿墙 | 匿名留言，验证码防刷，管理员回复 |
 | Markdown 编辑 | 实时预览，上传 .md，下载 HTML/DOC/PDF/MD |
 | 加解密 | AES-GCM/CBC 对称加密 + RSA-OAEP 非对称加密 |

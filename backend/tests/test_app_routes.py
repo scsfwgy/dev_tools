@@ -65,6 +65,40 @@ def test_image_tool_is_local_and_wired_with_seo_and_locales(client):
     assert index_html.index("image-tool.js") < index_html.index("app.js")
 
 
+def test_file_converter_routes_are_local_and_lazy_loaded(client):
+    page = client.get("/zh/tool/converter")
+    script = client.get("/js/converter-tool.js")
+    script_text = script.get_data(as_text=True)
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    index_html = (frontend_dir / "index.html").read_text()
+
+    assert page.status_code == 200
+    assert "在线文件转换工具" in page.get_data(as_text=True)
+    assert script.status_code == 200
+    assert 'md: ["html", "txt", "pdf"]' in script_text
+    assert 'docx: ["html", "txt"]' in script_text
+    assert 'xlsx: ["csv", "html"]' in script_text
+    assert "function renderSupportedRoutes()" in script_text
+    assert sum(len(targets) for targets in ({"txt": ["html", "md", "pdf"], "html": ["txt", "md", "pdf"], "md": ["html", "txt", "pdf"], "csv": ["html", "xlsx"], "xlsx": ["csv", "html"], "docx": ["html", "txt"]}).values()) == 15
+    assert "mammoth.browser.min.js" in script_text
+    assert "xlsx.full.min.js" in script_text
+    assert "function ensureScript" in script_text
+    assert "function preparePdf(html)" in script_text
+    assert "function downloadPdf()" in script_text
+    assert 'backgroundColor: "#ffffff"' in script_text
+    assert '.from(byId("converter-pdf-preview")).save()' in script_text
+    assert "fetch(" not in script_text
+    assert zh_locale["menu"]["converter"] == "文件转换"
+    assert en_locale["menu"]["converter"] == "File Converter"
+    assert zh_locale["converter"]["supportedRoutes"] == "当前支持的全部转换格式（15 项）"
+    assert index_html.index("converter-tool.js") < index_html.index("app.js")
+    app_css = (frontend_dir / "css" / "app.css").read_text()
+    assert ".converter-pdf-preview { min-height: 480px" in app_css
+    assert ".converter-preview.hidden, .converter-pdf-preview.hidden { display: none; }" in app_css
+
+
 def test_spa_routes_render_seo_and_fallback(client):
     response = client.get("/en/tool/json")
     fallback = client.get("/fr/tool/unknown")

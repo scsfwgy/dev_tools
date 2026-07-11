@@ -67,9 +67,18 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-11 | 图片推荐与批量压缩 | HEIC 解码升级为跟进 libheif 1.22.2 的 heic-to；默认推荐 WebP 82% 且最长边 2560px；支持多选/拖拽批量顺序处理、ZIP 下载，所有下载文件名追加年月日时分秒毫秒 |
 | 2026-07-11 | 批量压缩明细 | 批量图片列表同时显示每张图片的原始大小、压缩后大小及减少百分比；结果变大时明确显示增加百分比 |
 | 2026-07-11 | 图片操作防误触 | 开始处理、下载图片、下载全部 ZIP 增加 loading 文案和 disabled 状态，成功或失败后自动恢复，避免重复处理和重复下载 |
+| 2026-07-11 | 文件转换工具 | 新增 TXT/HTML/Markdown 互转及 PDF 导出、CSV→HTML/XLSX、XLSX→CSV/HTML、DOCX→HTML/TXT；marked 与 html2pdf 复用现有依赖，Mammoth/SheetJS 仅在需要时按需加载，文件全程不上传 |
+| 2026-07-11 | Markdown 转 PDF 空白修复 | PDF 渲染源从视口外改为视口内底层节点，等待字体和两次浏览器绘制后生成，并在 html2canvas 克隆文档中强制白底与可见布局，修复空白 PDF |
+| 2026-07-11 | PDF 空白二次修复 | 根据实际 3KB 空白 PDF 确认负层级节点仍未被 html2canvas 捕获；生成期间将打印节点置于最高可见层，输出 Blob 后立即移除 |
+| 2026-07-11 | PDF 内容坐标修复 | 从实际 PDF 的负数链接坐标确认克隆节点被 body flex 排到画布外；克隆时改用 `(0,0)` 绝对定位、清除 transform，并固定 html2canvas 截图窗口 |
+| 2026-07-11 | PDF 下载链路重构 | 实际 PDF 仍只有空内容流，确认 html2pdf 的中间 Blob 链提前取得空 jsPDF；改为页面内可见 PDF 预览节点，并复用 Markdown 编辑器已验证的 `.from(element).save()` 下载流程 |
+| 2026-07-11 | PDF 预览空白区修复 | 补充转换器 iframe/PDF 预览的高优先级 hidden 规则，避免 `.converter-preview { display:block }` 覆盖隐藏状态 |
+| 2026-07-11 | 转换格式总览 | 文件转换页顶部从实际 ROUTES 配置生成并穷举展示全部 15 条转换路线，方便用户上传前确认目标格式是否支持 |
 | 2026-07-11 | Flutter 常用速查 | 新增 Flutter 参考工具：Widget 组件目录（8 分类 60+ 组件含代码示例与一键复制）、CLI 命令（28 条）、常用 Packages（30 个含分类筛选）、ThemeData 主题配置 + 深/浅模板、导航路由速查、状态管理 11 方案对比、响应式布局代码片段、Android 构建配置速查；每 Tab 关联官方参考文档；移除首页常用工具及本地计数逻辑 |
 | 2026-07-11 | Android Compose 组件 | Android 常用新增 Compose 组件 Tab：7 分类 46 组件含代码示例与一键复制，按分类筛选和搜索；格式与 Flutter Widget 组件对齐 |
 | 2026-07-11 | iOS 常用速查 | 新增 iOS 参考工具：iOS 16 个版本历史、SwiftUI 48 视图含代码示例与一键复制 + 12 属性包装器、Swift 21 语法特性、UIKit 23 核心类 + 10 Auto Layout、Xcode 21 快捷键、Info.plist 22 常用 Key、HIG 17 条规范、20 款设备参数表；每 Tab 关联官方参考文档 |
+| 2026-07-11 | JWT 工具 | 新增 JWT 在线解析调试工具：解码（Header/Payload/签名分区着色 + 时间戳自动转换 + 过期/生效/签发时间人性化展示）、HMAC 签名验证（Web Crypto API）、生成（HS256/HS384/HS512 + 可编辑 Header/Payload/密钥）、Claims 参考速查表；Token 本地处理不上传服务器 |
+| 2026-07-11 | 全局样式修复 | 新增全局 a 标签样式（accent 色无下划线，hover 显下划线）；内容生成按钮补充 .b64-btn / .b64-btn-primary 样式；图片预览空状态文案改为"上传图片后在此预览"；首页新增 GitHub 开源链接 |
 
 ## 技术决策
 

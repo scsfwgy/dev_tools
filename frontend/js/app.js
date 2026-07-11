@@ -71,9 +71,11 @@
     { id: "tax",      icon: "dollar",     i18n: "menu.tax" },
     { id: "mortgage", icon: "home",       i18n: "menu.mortgage" },
     { id: "image",    icon: "file",       i18n: "menu.image" },
+    { id: "converter",icon: "file",       i18n: "menu.converter" },
     { id: "fileinfo", icon: "file",       i18n: "menu.fileinfo" },
     { id: "markdown", icon: "md",         i18n: "menu.markdown" },
     { id: "content",  icon: "link",       i18n: "menu.content" },
+    { id: "jwt",      icon: "shield",     i18n: "menu.jwt" },
     { id: "wishes",   icon: "star",       i18n: "menu.wishes", hidden: true },
   ];
 
@@ -106,6 +108,10 @@
       image: {
         title: "在线图片处理工具 - 压缩 缩放 旋转 格式转换 | Tools24",
         description: "在线图片压缩、缩放、旋转、翻转和 PNG/JPEG/WebP 格式转换，自动移除 EXIF/GPS 元数据，全部在浏览器本地完成。"
+      },
+      converter: {
+        title: "在线文件转换工具 - TXT HTML Markdown PDF CSV XLSX DOCX | Tools24",
+        description: "浏览器本地转换 TXT、HTML、Markdown、CSV、XLSX 和 DOCX，支持导出 PDF、HTML、纯文本和表格格式，文件不上传服务器。"
       },
       text: {
         title: "在线文本处理工具 - 去重排序大小写多行转换 | Tools24",
@@ -150,6 +156,10 @@
       content: {
         title: "内容生成器 - 生成远程链接 纯文本托管 脚本分享 | Tools24",
         description: "输入任意文本内容，生成一个远程链接，访问即可获取纯文本内容。适合远程脚本、配置文件托管和文本分享。"
+      },
+      jwt: {
+        title: "JWT 在线解析调试工具 - JSON Web Token 解码 验证 生成 | Tools24",
+        description: "JWT 在线解码、验证和生成工具，支持 HS256/HS384/HS512 签名算法，自动转换时间戳，浏览器本地处理不上传 Token。"
       },
       crypto: {
         title: "在线加解密工具 - AES RSA 对称非对称加密 | Tools24",
@@ -221,6 +231,10 @@
         title: "Image Tool - Compress Resize Rotate Convert Online | Tools24",
         description: "Compress, resize, rotate, flip and convert images between PNG, JPEG and WebP locally in your browser, with metadata removed."
       },
+      converter: {
+        title: "File Converter - TXT HTML Markdown PDF CSV XLSX DOCX | Tools24",
+        description: "Convert TXT, HTML, Markdown, CSV, XLSX and DOCX locally in your browser. Export PDF, HTML, plain text and spreadsheet formats without uploads."
+      },
       text: {
         title: "Online Text Processing Tool - Dedupe Sort Case Convert | Tools24",
         description: "Process text online with blank-line removal, deduplication, sorting, case conversion, whitespace cleanup and line conversion to JSON, CSV or SQL IN lists."
@@ -264,6 +278,10 @@
       content: {
         title: "Content Generator - Remote Link Plain Text Hosting | Tools24",
         description: "Generate a remote link from any text content. Access it to get raw plain text — perfect for remote scripts, config hosting and text sharing."
+      },
+      jwt: {
+        title: "JWT Decoder & Debugger Online - JSON Web Token Parser Verify Generate | Tools24",
+        description: "Online JWT decoder, verifier and generator. Supports HS256/HS384/HS512 signing, auto timestamp conversion. All processed locally, tokens never leave your browser."
       },
       crypto: {
         title: "Online Encryption Tool - AES RSA Symmetric Asymmetric | Tools24",
@@ -677,6 +695,7 @@
           <div class="welcome-icon">🛠️</div>
           <h2>DevTools</h2>
           <p data-i18n="welcome.desc">开发工具集 — 从左侧菜单选择工具开始使用</p>
+          <p class="welcome-oss"><a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" class="welcome-oss-icon"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> <span data-i18n="welcome.openSource">代码开源，使用更安心</span></a></p>
           ${favoriteLinks}
         </div>`;
       // bind chip clicks
@@ -767,6 +786,11 @@
       ImageTool.init(el);
       return;
     }
+    if (activeMenuId === "converter" && typeof ConverterTool !== "undefined") {
+      el.innerHTML = "";
+      ConverterTool.init(el);
+      return;
+    }
     if (activeMenuId === "git" && typeof GitTool !== "undefined") {
       el.innerHTML = "";
       GitTool.init(el);
@@ -825,6 +849,11 @@
     if (activeMenuId === "content" && typeof ContentTool !== "undefined") {
       el.innerHTML = "";
       ContentTool.init(el);
+      return;
+    }
+    if (activeMenuId === "jwt" && typeof JwtTool !== "undefined") {
+      el.innerHTML = "";
+      JwtTool.init(el);
       return;
     }
     if (activeMenuId === "wishes" && typeof WishTool !== "undefined") {

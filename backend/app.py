@@ -340,6 +340,26 @@ TOOLS = {
             ],
         },
     },
+    "converter": {
+        "zh": {
+            "name": "在线文件转换工具",
+            "title": "在线文件转换工具 - TXT HTML Markdown PDF CSV XLSX DOCX | Tools24",
+            "description": "浏览器本地转换 TXT、HTML、Markdown、CSV、XLSX 和 DOCX，支持导出 PDF、HTML、纯文本和表格格式，文件不上传服务器。",
+            "keywords": "文件转换,Markdown转PDF,DOCX转HTML,XLSX转CSV,CSV转XLSX,HTML转PDF,在线转换",
+            "intro": "选择文件后仅显示可靠的目标格式，支持文本、Markdown、网页、表格和 DOCX 的轻量本地转换。",
+            "features": ["Markdown 转 HTML/TXT/PDF", "TXT/HTML/Markdown 互转", "CSV 与 XLSX 转换", "DOCX 转 HTML/TXT", "浏览器本地处理，不上传文件"],
+            "faq": [("文件会上传服务器吗？", "不会，读取和转换均在当前浏览器完成。"), ("为什么不支持 PDF 转 DOCX？", "这类转换需要大型引擎且浏览器本地保真度较差，因此暂不提供。")],
+        },
+        "en": {
+            "name": "Online File Converter",
+            "title": "File Converter - TXT HTML Markdown PDF CSV XLSX DOCX | Tools24",
+            "description": "Convert TXT, HTML, Markdown, CSV, XLSX and DOCX locally in your browser. Export PDF, HTML, plain text and spreadsheet formats without uploads.",
+            "keywords": "file converter,Markdown to PDF,DOCX to HTML,XLSX to CSV,CSV to XLSX,HTML to PDF,online converter",
+            "intro": "Choose a file to see reliable output formats for lightweight local conversion across text, Markdown, web, spreadsheet and DOCX files.",
+            "features": ["Markdown to HTML/TXT/PDF", "TXT/HTML/Markdown conversion", "CSV and XLSX conversion", "DOCX to HTML/TXT", "Local browser processing"],
+            "faq": [("Are files uploaded?", "No. Reading and conversion happen in your current browser."), ("Why is PDF to DOCX unavailable?", "It requires a large engine and has poor browser-side fidelity, so it is intentionally excluded.")],
+        },
+    },
     "image": {
         "zh": {
             "name": "在线图片处理工具",

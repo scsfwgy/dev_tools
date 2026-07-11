@@ -38,7 +38,7 @@ var ImageTool = (function () {
       '  <div id="image-workspace" class="image-workspace hidden">' +
       '    <div class="image-preview-panel">' +
       '      <div class="image-preview-head"><strong>' + t("image.preview") + '</strong><button id="image-replace" class="jt-btn">' + t("image.replace") + '</button></div>' +
-      '      <div class="image-preview-stage"><img id="image-preview" alt=""><span id="image-preview-empty">' + t("image.processing") + '</span></div>' +
+      '      <div class="image-preview-stage"><img id="image-preview" alt=""><span id="image-preview-empty">' + t("image.emptyPreview") + '</span></div>' +
       '      <div id="image-source-info" class="image-file-info"></div>' +
       '      <div id="image-batch-list" class="image-batch-list"></div>' +
       '      <details id="image-metadata" class="image-metadata hidden"><summary>' + t("image.metadataTitle") + '</summary><div id="image-metadata-grid" class="image-metadata-grid"></div><p id="image-metadata-note" class="image-local-note"></p></details>' +
