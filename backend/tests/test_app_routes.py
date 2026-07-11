@@ -70,7 +70,31 @@ def test_image_tool_is_local_and_wired_with_seo_and_locales(client):
     assert zh_locale["menu"]["image"] == "图片处理"
     assert en_locale["menu"]["image"] == "Image Tool"
     assert zh_locale["image"]["metadataRemoved"] == "元数据已移除"
+    assert "image-target-kb" in script_text
+    assert "function encodeCanvas(" in script_text
+    assert "data-max-edge=\"1920\"" in script_text
+    assert zh_locale["image"]["targetReached"] == "已达到目标体积"
     assert_tool_is_lazy_loaded(frontend_dir, "image-tool.js")
+
+
+def test_json_error_location_examples_and_jwt_security_analysis(client):
+    json_script = client.get("/js/json-tool.js").get_data(as_text=True)
+    jwt_script = client.get("/js/jwt-tool.js").get_data(as_text=True)
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    assert "function locateJsonError(" in json_script
+    assert "function bindLineNumbers(" in json_script
+    assert "jt-line-numbers" in json_script
+    assert "jt-error-context" in json_script
+    assert "var EXAMPLES" in json_script
+    assert zh_locale["json"]["errorLocation"] == "第 {line} 行，第 {column} 列"
+    assert "function renderTokenAnalysis(" in jwt_script
+    assert "warningLongLifetime" in jwt_script
+    assert "decodedNotVerified" in jwt_script
+    assert "jwt-verification-state" in jwt_script
+    assert en_locale["jwt"]["statusNoExpiry"] == "Lifetime unknown: exp is missing"
 
 
 def test_file_converter_routes_are_local_and_lazy_loaded(client):

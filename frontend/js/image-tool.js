@@ -48,6 +48,7 @@ var ImageTool = (function () {
       '        <div class="image-size-row"><label><span>' + t("image.width") + '</span><input id="image-width" class="crypto-input" type="number" min="1" max="20000"></label><span>×</span><label><span>' + t("image.height") + '</span><input id="image-height" class="crypto-input" type="number" min="1" max="20000"></label></div>' +
       '        <label class="image-check"><input id="image-lock-ratio" type="checkbox" checked> ' + t("image.lockRatio") + '</label>' +
       '        <div class="image-presets"><button class="jt-btn" data-scale="0.25">25%</button><button class="jt-btn" data-scale="0.5">50%</button><button class="jt-btn" data-scale="0.75">75%</button><button class="jt-btn" data-scale="1">100%</button></div>' +
+      '        <div class="image-presets image-named-presets"><button class="jt-btn" data-max-edge="512">' + t("image.presetAvatar") + '</button><button class="jt-btn" data-max-edge="1200">' + t("image.presetWeb") + '</button><button class="jt-btn" data-max-edge="1920">' + t("image.presetFullHd") + '</button></div>' +
       '      </div>' +
       '      <div class="image-control-section"><h3>' + t("image.transformTitle") + '</h3><div class="image-action-grid">' +
       '        <button id="image-rotate-left" class="jt-btn">↶ ' + t("image.rotateLeft") + '</button><button id="image-rotate-right" class="jt-btn">↷ ' + t("image.rotateRight") + '</button>' +
@@ -57,6 +58,7 @@ var ImageTool = (function () {
       '        <button id="image-recommended" class="jt-btn image-recommended">★ ' + t("image.recommended") + '</button>' +
       '        <label class="image-field"><span>' + t("image.format") + '</span><select id="image-format" class="settings-select"><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></label>' +
       '        <label id="image-quality-row" class="image-field"><span>' + t("image.quality") + ' <b id="image-quality-value">85%</b></span><input id="image-quality" type="range" min="10" max="100" value="85"></label>' +
+      '        <label class="image-field"><span>' + t("image.targetSize") + '</span><input id="image-target-kb" class="crypto-input" type="number" min="10" max="20480" step="10" placeholder="' + t("image.targetSizePlaceholder") + '"><small>' + t("image.targetSizeHint") + '</small></label>' +
       '        <label class="image-field"><span>' + t("image.background") + '</span><input id="image-background" type="color" value="#ffffff"></label>' +
       '        <p class="image-local-note">🔒 ' + t("image.localNote") + '</p>' +
       '      </div>' +
@@ -86,6 +88,7 @@ var ImageTool = (function () {
     byId("image-height").addEventListener("input", function () { useRecommended = false; syncDimension("height"); clearOutput(); });
     byId("image-format").addEventListener("change", function () { useRecommended = false; updateQualityVisibility(); clearOutput(); });
     byId("image-quality").addEventListener("input", function () { useRecommended = false; byId("image-quality-value").textContent = this.value + "%"; clearOutput(); });
+    byId("image-target-kb").addEventListener("input", function () { useRecommended = false; clearOutput(); });
     byId("image-background").addEventListener("input", clearOutput);
     byId("image-lock-ratio").addEventListener("change", clearOutput);
     document.querySelectorAll("[data-scale]").forEach(function (button) {
@@ -93,6 +96,15 @@ var ImageTool = (function () {
         if (!sourceImage) return;
         useRecommended = false;
         setDimensions(Math.max(1, Math.round(sourceImage.naturalWidth * Number(this.dataset.scale))), Math.max(1, Math.round(sourceImage.naturalHeight * Number(this.dataset.scale))));
+        clearOutput();
+      });
+    });
+    document.querySelectorAll("[data-max-edge]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        if (!sourceImage) return;
+        useRecommended = false;
+        var scale = Math.min(1, Number(this.dataset.maxEdge) / Math.max(sourceImage.naturalWidth, sourceImage.naturalHeight));
+        setDimensions(Math.max(1, Math.round(sourceImage.naturalWidth * scale)), Math.max(1, Math.round(sourceImage.naturalHeight * scale)));
         clearOutput();
       });
     });
@@ -213,6 +225,7 @@ var ImageTool = (function () {
     byId("image-format").value = "image/webp";
     byId("image-quality").value = 82;
     byId("image-quality-value").textContent = "82%";
+    byId("image-target-kb").value = "";
     updateQualityVisibility();
     clearOutput();
     showMessage(t("image.recommendedApplied"), false);
@@ -323,7 +336,7 @@ var ImageTool = (function () {
     byId("image-quality-row").classList.toggle("hidden", byId("image-format").value === "image/png");
   }
 
-  function processImage() {
+  async function processImage() {
     if (!sourceImage) return;
     if (batchFiles.length > 1) { processBatch(); return; }
     var processButton = byId("image-process");
@@ -354,7 +367,9 @@ var ImageTool = (function () {
     context.scale(flipX ? -1 : 1, flipY ? -1 : 1);
     context.drawImage(sourceImage, -width / 2, -height / 2, width, height);
     var quality = Number(byId("image-quality").value) / 100;
-    canvas.toBlob(function (blob) {
+    var targetBytes = Math.max(0, Number(byId("image-target-kb").value) * 1024);
+    try {
+      var blob = await encodeCanvas(canvas, mime, quality, targetBytes);
       processButton.disabled = false;
       processButton.textContent = t("image.process");
       if (!blob) { showMessage(t("image.exportFailed"), true); return; }
@@ -366,11 +381,39 @@ var ImageTool = (function () {
       byId("image-download").disabled = false;
       var saved = sourceFile.size - blob.size;
       var savingText = saved > 0 ? t("image.savedSize").replace("{percent}", Math.round(saved / sourceFile.size * 100)) : t("image.sizeIncreased");
-      byId("image-result-info").innerHTML = '<strong>' + formatBytes(blob.size) + '</strong><span>' + canvas.width + ' × ' + canvas.height + ' · ' + savingText + ' · ' + t("image.metadataRemoved") + '</span>';
+      var targetText = targetBytes ? " · " + (blob.size <= targetBytes ? t("image.targetReached") : t("image.targetNotReached")) : "";
+      byId("image-result-info").innerHTML = '<strong>' + formatBytes(blob.size) + '</strong><span>' + canvas.width + ' × ' + canvas.height + ' · ' + savingText + targetText + ' · ' + t("image.metadataRemoved") + '</span>';
       saveHistory({ name: sourceFile.name, width: canvas.width, height: canvas.height, size: blob.size, format: mime, time: Date.now() });
       renderHistory();
-      showMessage(t("image.processed"), false);
-    }, mime, quality);
+    } catch (error) {
+      processButton.disabled = false;
+      processButton.textContent = t("image.process");
+      showMessage(error.message || t("image.exportFailed"), true);
+    }
+  }
+
+  async function encodeCanvas(canvas, mime, quality, targetBytes) {
+    if (!targetBytes || mime === "image/png") return canvasToBlob(canvas, mime, quality);
+    var low = 0.1;
+    var high = Math.max(low, Math.min(0.98, quality));
+    var best = null;
+    for (var attempt = 0; attempt < 7; attempt++) {
+      var candidateQuality = (low + high) / 2;
+      var candidate = await canvasToBlob(canvas, mime, candidateQuality);
+      if (candidate.size <= targetBytes) {
+        best = candidate;
+        low = candidateQuality;
+      } else {
+        high = candidateQuality;
+      }
+    }
+    return best || canvasToBlob(canvas, mime, 0.1);
+  }
+
+  function canvasToBlob(canvas, mime, quality) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error(t("image.exportFailed"))); }, mime, quality);
+    });
   }
 
   function downloadOutput() {
@@ -397,6 +440,7 @@ var ImageTool = (function () {
     var scale = Number(byId("image-width").value) / sourceImage.naturalWidth;
     var mime = byId("image-format").value;
     var quality = Number(byId("image-quality").value) / 100;
+    var targetBytes = Math.max(0, Number(byId("image-target-kb").value) * 1024);
     var stamp = timestampName();
     batchResults = [];
     button.disabled = true;
@@ -409,7 +453,7 @@ var ImageTool = (function () {
         var width = Math.max(1, Math.round(decoded.image.naturalWidth * fileScale));
         var height = Math.max(1, Math.round(decoded.image.naturalHeight * fileScale));
         if (width * height > MAX_PIXELS) throw new Error(t("image.invalidSize"));
-        var blob = await renderBlob(decoded.image, width, height, mime, quality);
+        var blob = await renderBlob(decoded.image, width, height, mime, quality, targetBytes);
         URL.revokeObjectURL(decoded.url);
         var extension = mime.split("/")[1].replace("jpeg", "jpg");
         var baseName = file.name.replace(/\.[^.]+$/, "") || "image";
@@ -444,7 +488,7 @@ var ImageTool = (function () {
     return { image: image, url: url };
   }
 
-  function renderBlob(image, width, height, mime, quality) {
+  function renderBlob(image, width, height, mime, quality, targetBytes) {
     var rotated = rotation === 90 || rotation === 270;
     var canvas = document.createElement("canvas");
     canvas.width = rotated ? height : width;
@@ -457,9 +501,7 @@ var ImageTool = (function () {
     context.rotate(rotation * Math.PI / 180);
     context.scale(flipX ? -1 : 1, flipY ? -1 : 1);
     context.drawImage(image, -width / 2, -height / 2, width, height);
-    return new Promise(function (resolve, reject) {
-      canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error(t("image.exportFailed"))); }, mime, quality);
-    });
+    return encodeCanvas(canvas, mime, quality, targetBytes);
   }
 
   async function downloadAll() {

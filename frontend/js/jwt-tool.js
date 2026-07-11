@@ -95,6 +95,7 @@ var JwtTool = (function () {
       '    <div class="jwt-decode-bar"><button id="jwt-decode-btn" class="jt-btn jt-btn-primary">' + t("jwt.decodeBtn") + '</button></div>' +
       '    <div id="jwt-error" class="jwt-error hidden"></div>' +
       '    <div id="jwt-output" class="jwt-output hidden">' +
+      '      <div id="jwt-analysis" class="jwt-analysis"></div>' +
       '      <div class="jwt-section jwt-section-header"><div class="jwt-section-label"><span class="jwt-dot jwt-dot-red"></span> ' + t("jwt.header") + ' <span class="jwt-algo" id="jwt-header-algo"></span></div><pre id="jwt-header-json" class="jwt-json"></pre></div>' +
       '      <div class="jwt-section jwt-section-payload"><div class="jwt-section-label"><span class="jwt-dot jwt-dot-purple"></span> ' + t("jwt.payload") + '</div><pre id="jwt-payload-json" class="jwt-json"></pre><div id="jwt-claims" class="jwt-claims"></div></div>' +
       '      <div class="jwt-section jwt-section-sig"><div class="jwt-section-label"><span class="jwt-dot jwt-dot-blue"></span> ' + t("jwt.signature") + '</div><pre id="jwt-signature-info" class="jwt-sig-info"></pre></div>' +
@@ -192,6 +193,8 @@ var JwtTool = (function () {
     var header = JSON.parse(headerJson);
     var payload = JSON.parse(payloadJson);
 
+    renderTokenAnalysis(header, payload);
+
     // render header
     document.getElementById("jwt-header-json").innerHTML = syntaxHighlight(JSON.stringify(header, null, 2));
     document.getElementById("jwt-header-algo").textContent = header.alg ? "· " + header.alg : "";
@@ -228,6 +231,37 @@ var JwtTool = (function () {
     // save history
     saveHistory({ jwt: jwt, issuer: payload.iss, subject: payload.sub, time: Date.now() });
     renderHistory(document.getElementById("jwt-history"));
+  }
+
+  function renderTokenAnalysis(header, payload) {
+    var now = Math.floor(Date.now() / 1000);
+    var status = "active";
+    var statusText = t("jwt.statusActive");
+    if (typeof payload.nbf === "number" && payload.nbf > now) {
+      status = "pending";
+      statusText = t("jwt.statusPending");
+    } else if (typeof payload.exp !== "number") {
+      status = "warning";
+      statusText = t("jwt.statusNoExpiry");
+    } else if (typeof payload.exp === "number" && payload.exp <= now) {
+      status = "expired";
+      statusText = t("jwt.statusExpired");
+    } else if (typeof payload.exp === "number" && payload.exp - now <= 300) {
+      status = "warning";
+      statusText = t("jwt.statusExpiring").replace("{time}", formatDuration(payload.exp));
+    }
+
+    var warnings = [];
+    if (typeof payload.exp !== "number") warnings.push(t("jwt.warningNoExpiry"));
+    if (typeof payload.iat !== "number") warnings.push(t("jwt.warningNoIssuedAt"));
+    if (typeof payload.iat === "number" && payload.iat > now + 60) warnings.push(t("jwt.warningFutureIssuedAt"));
+    if (typeof payload.exp === "number" && typeof payload.iat === "number" && payload.exp - payload.iat > 2592000) warnings.push(t("jwt.warningLongLifetime"));
+    if (typeof payload.exp === "number" && typeof payload.nbf === "number" && payload.nbf >= payload.exp) warnings.push(t("jwt.warningInvalidWindow"));
+    if (!header.alg || String(header.alg).toLowerCase() === "none") warnings.push(t("jwt.warningUnsafeAlgorithm"));
+
+    document.getElementById("jwt-analysis").innerHTML =
+      '<div class="jwt-status jwt-status-' + status + '"><strong>' + escapeHtml(statusText) + '</strong><span id="jwt-verification-state">' + escapeHtml(t("jwt.decodedNotVerified")) + '</span></div>' +
+      (warnings.length ? '<div class="jwt-security-warnings"><strong>' + escapeHtml(t("jwt.securityChecks")) + '</strong><ul>' + warnings.map(function (warning) { return '<li>' + escapeHtml(warning) + '</li>'; }).join("") + '</ul></div>' : '<div class="jwt-security-ok">✓ ' + escapeHtml(t("jwt.noBasicWarnings")) + '</div>');
   }
 
   function verifyAndRender(header, jwt, parts) {
@@ -269,6 +303,11 @@ var JwtTool = (function () {
       resultEl.innerHTML = valid
         ? '<span class="jwt-verify-ok">✅ ' + t("jwt.signatureValid") + '</span>'
         : '<span class="jwt-verify-fail">❌ ' + t("jwt.signatureInvalid") + '</span>';
+      var verificationState = document.getElementById("jwt-verification-state");
+      if (verificationState) {
+        verificationState.textContent = valid ? t("jwt.verified") : t("jwt.verificationFailed");
+        verificationState.className = valid ? "jwt-verification-ok" : "jwt-verification-fail";
+      }
     } catch (e) {
       resultEl.innerHTML = '<span class="jwt-verify-fail">❌ ' + t("jwt.verifyError") + ': ' + escapeHtml(e.message) + '</span>';
     }

@@ -1,10 +1,15 @@
 // JSON Tool — format, tree view, convert to/from JS/Kotlin/Java/Go/CSV/YAML/XML.
 var JsonTool = (function () {
-  var container, editor, output, resizer, leftPane, rightPane;
+  var container, editor, output, resizer, leftPane, rightPane, lineNumbers;
   var splitRatio = 0.5;
   var tab = "format";
   var HISTORY_KEY = "json_history";
   var MAX_HISTORY = 20;
+  var EXAMPLES = {
+    api: { status: "ok", data: [{ id: 101, name: "Tools24", active: true }], pagination: { page: 1, total: 1 } },
+    config: { app: { name: "DevTools", locale: "zh-CN", theme: "dark" }, features: ["json", "jwt", "image"], debug: false },
+    nested: { user: { id: 42, profile: { nickname: "developer", tags: ["web", "mobile"] } }, permissions: { read: true, write: false } }
+  };
 
   function t(key) { return (window.__t && window.__t(key)) || key; }
 
@@ -38,11 +43,12 @@ var JsonTool = (function () {
       '      <button id="jt-format" class="jt-btn jt-btn-primary">' + t("json.formatBtn") + '</button>' +
       '      <button id="jt-compact" class="jt-btn">' + t("json.compact") + '</button>' +
       '      <button id="jt-copy" class="jt-btn">' + t("json.copy") + '</button>' +
+      '      <select id="jt-example" class="settings-select jt-example-select"><option value="">' + t("json.loadExample") + '</option><option value="api">' + t("json.exampleApi") + '</option><option value="config">' + t("json.exampleConfig") + '</option><option value="nested">' + t("json.exampleNested") + '</option></select>' +
       '      <span id="jt-msg" class="jt-msg"></span>' +
       '    </div>' +
       '    <div class="json-panes">' +
       '      <div class="json-pane json-pane-left">' +
-      '        <textarea id="jt-editor" class="jt-editor" placeholder="' + t("json.placeholder") + '"></textarea>' +
+      '        <div class="jt-editor-wrap"><pre id="jt-line-numbers" class="jt-line-numbers" aria-hidden="true">1</pre><textarea id="jt-editor" class="jt-editor" placeholder="' + t("json.placeholder") + '"></textarea></div>' +
       '      </div>' +
       '      <div id="jt-resizer" class="jt-resizer"></div>' +
       '      <div class="json-pane json-pane-right">' +
@@ -54,7 +60,7 @@ var JsonTool = (function () {
       '  <div id="jt-pane-convert" class="b64-pane hidden">' +
       '    <div class="json-panes">' +
       '      <div class="json-pane json-pane-left">' +
-      '        <textarea id="jt-cv-input" class="jt-editor" placeholder="' + t("json.cvPlaceholder") + '"></textarea>' +
+      '        <div class="jt-editor-wrap"><pre id="jt-cv-line-numbers" class="jt-line-numbers" aria-hidden="true">1</pre><textarea id="jt-cv-input" class="jt-editor" placeholder="' + t("json.cvPlaceholder") + '"></textarea></div>' +
       '      </div>' +
       '      <div id="jt-cv-resizer" class="jt-resizer"></div>' +
       '      <div class="json-pane json-pane-right">' +
@@ -88,6 +94,7 @@ var JsonTool = (function () {
       '</div>';
 
     editor = document.getElementById("jt-editor");
+    lineNumbers = document.getElementById("jt-line-numbers");
     output = document.getElementById("jt-output");
     resizer = document.getElementById("jt-resizer");
     leftPane = container.querySelector(".json-pane-left");
@@ -103,10 +110,17 @@ var JsonTool = (function () {
     document.getElementById("jt-format").addEventListener("click", function () { formatJson(); });
     document.getElementById("jt-compact").addEventListener("click", function () { compactJson(); });
     document.getElementById("jt-copy").addEventListener("click", function () { copyOutput(); });
+    document.getElementById("jt-example").addEventListener("change", function () {
+      if (!EXAMPLES[this.value]) return;
+      editor.value = JSON.stringify(EXAMPLES[this.value], null, 2);
+      this.value = "";
+      formatJson();
+    });
 
     editor.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); formatJson(); }
     });
+    bindLineNumbers(editor, lineNumbers);
 
     // format resize
     resizer.addEventListener("mousedown", function (e) {
@@ -140,7 +154,9 @@ var JsonTool = (function () {
       if (v) navigator.clipboard.writeText(v).then(function () { showCopyToast(t("json.copied")); });
     });
     document.getElementById("jt-cv-format").addEventListener("change", doConvert);
-    document.getElementById("jt-cv-input").addEventListener("input", function () { doConvert(); });
+    var convertInput = document.getElementById("jt-cv-input");
+    convertInput.addEventListener("input", function () { doConvert(); });
+    bindLineNumbers(convertInput, document.getElementById("jt-cv-line-numbers"));
 
     renderHistory();
   }
@@ -187,13 +203,13 @@ var JsonTool = (function () {
     try {
       var obj = JSON.parse(raw);
       editor.value = JSON.stringify(obj, null, 2);
+      updateLineNumbers(editor, lineNumbers);
       setMsg("✓ " + t("json.valid"), false);
       saveHistory(raw);
       renderHistory();
       renderTree(obj);
     } catch (e) {
-      setMsg("✗ " + e.message, true);
-      output.innerHTML = '<pre class="jt-error">' + escapeHtml(e.message) + "</pre>";
+      showJsonError(e, raw);
     }
   }
 
@@ -203,13 +219,61 @@ var JsonTool = (function () {
     try {
       var obj = JSON.parse(raw);
       editor.value = JSON.stringify(obj);
+      updateLineNumbers(editor, lineNumbers);
       setMsg("✓ " + t("json.compacted"), false);
       saveHistory(raw);
       renderHistory();
       renderTree(obj);
     } catch (e) {
-      setMsg("✗ " + e.message, true);
+      showJsonError(e, raw);
     }
+  }
+
+  function showJsonError(error, raw) {
+    var details = locateJsonError(error, raw);
+    var location = details.line ? t("json.errorLocation").replace("{line}", details.line).replace("{column}", details.column) : "";
+    setMsg("✗ " + (location || error.message), true);
+    output.innerHTML = '<div class="jt-error-card"><strong>' + escapeHtml(t("json.invalid")) + '</strong><p>' + escapeHtml(error.message) + '</p>' +
+      (location ? '<div class="jt-error-location">' + escapeHtml(location) + '</div>' : '') +
+      (details.context ? '<pre class="jt-error-context">' + escapeHtml(details.context) + '\n' + " ".repeat(details.pointer) + '^</pre>' : '') + '</div>';
+    if (Number.isInteger(details.position)) {
+      editor.focus();
+      editor.setSelectionRange(details.position, Math.min(details.position + 1, raw.length));
+    }
+    updateLineNumbers(editor, lineNumbers, details.line);
+  }
+
+  function bindLineNumbers(textarea, gutter) {
+    function update() { updateLineNumbers(textarea, gutter); }
+    textarea.addEventListener("input", update);
+    textarea.addEventListener("scroll", function () { gutter.scrollTop = textarea.scrollTop; });
+    update();
+  }
+
+  function updateLineNumbers(textarea, gutter, activeLine) {
+    var count = Math.max(1, textarea.value.split("\n").length);
+    var numbers = [];
+    for (var line = 1; line <= count; line++) {
+      numbers.push(line === activeLine ? '<span class="active">' + line + '</span>' : String(line));
+    }
+    gutter.innerHTML = numbers.join("\n");
+    gutter.scrollTop = textarea.scrollTop;
+  }
+
+  function locateJsonError(error, raw) {
+    var positionMatch = String(error.message).match(/position\s+(\d+)/i);
+    var lineMatch = String(error.message).match(/line\s+(\d+)\s+column\s+(\d+)/i);
+    var position = positionMatch ? Number(positionMatch[1]) : null;
+    var line = lineMatch ? Number(lineMatch[1]) : null;
+    var column = lineMatch ? Number(lineMatch[2]) : null;
+    if (position !== null) {
+      var before = raw.slice(0, position);
+      line = before.split("\n").length;
+      column = position - before.lastIndexOf("\n");
+    }
+    if (!line || !column) return { position: position, line: null, column: null, context: "", pointer: 0 };
+    var context = raw.split("\n")[line - 1] || "";
+    return { position: position, line: line, column: column, context: context, pointer: Math.max(0, column - 1) };
   }
 
   function copyOutput() {
