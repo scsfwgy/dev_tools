@@ -473,7 +473,7 @@ def test_visit_counter_is_read_only_then_increments(client):
 def test_translate_requires_api_key(client, monkeypatch):
     import app as app_module
 
-    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "")
+    monkeypatch.setattr(app_module.app_settings, "_DEEPSEEK_KEY", "")
 
     response = client.post("/api/translate", json={"text": "hello"})
 
@@ -484,7 +484,7 @@ def test_translate_requires_api_key(client, monkeypatch):
 def test_translate_validates_input(client, monkeypatch):
     import app as app_module
 
-    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "test-key")
+    monkeypatch.setattr(app_module.app_settings, "_DEEPSEEK_KEY", "test-key")
 
     empty = client.post("/api/translate", json={"text": "  "})
     too_long = client.post("/api/translate", json={"text": "x" * 5001})
@@ -502,8 +502,8 @@ def test_translate_parses_success_response(client, monkeypatch):
         "choices": [{"message": {"content": "```json\n{\"translation\": \"你好\", \"phonetic\": \"nǐ hǎo\", \"pos\": \"感叹词\"}\n```"}}]
     }
     post = Mock(return_value=response)
-    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "test-key")
-    monkeypatch.setattr(app_module.requests, "post", post)
+    monkeypatch.setattr(app_module.app_settings, "_DEEPSEEK_KEY", "test-key")
+    monkeypatch.setattr(app_module.translate.requests, "post", post)
 
     result = client.post("/api/translate", json={"text": "hello"})
 
@@ -523,9 +523,9 @@ def test_translate_parses_success_response(client, monkeypatch):
 def test_translate_handles_request_failure(client, monkeypatch):
     import app as app_module
 
-    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "test-key")
+    monkeypatch.setattr(app_module.app_settings, "_DEEPSEEK_KEY", "test-key")
     monkeypatch.setattr(
-        app_module.requests,
+        app_module.translate.requests,
         "post",
         Mock(side_effect=requests.RequestException("unavailable")),
     )
@@ -675,12 +675,12 @@ def test_area_search_path_validation_and_intro_guards(client, monkeypatch):
     assert app_module._resolve_area_path("china", ["99"]) is None
     assert app_module._resolve_area_path("world", ["ZZZ"]) is None
 
-    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "")
+    monkeypatch.setattr(app_module.app_settings, "_DEEPSEEK_KEY", "")
     unavailable = client.post("/api/area-search/intro", json={"mode": "china", "codes": ["11"]})
     assert unavailable.status_code == 503
     assert unavailable.get_json()["error"] == "not_configured"
 
-    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "test-key")
+    monkeypatch.setattr(app_module.app_settings, "_DEEPSEEK_KEY", "test-key")
     invalid = client.post("/api/area-search/intro", json={"mode": "china", "codes": ["99"]})
     assert invalid.status_code == 400
     assert invalid.get_json()["error"] == "invalid_region"
