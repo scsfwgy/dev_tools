@@ -57,7 +57,19 @@
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
-    "popularTools": "Popular tools",
+    "homeSections": "Home tool views",
+    "categories": "Categories",
+    "categoryFilter": "Filter tool categories",
+    "category": {
+      "all": "All",
+      "files": "File tools",
+      "conversion": "Converters",
+      "data": "Data & debug",
+      "encoding": "Encoding & security",
+      "mobile": "Mobile development",
+      "reference": "Developer reference",
+      "services": "System & services"
+    },
     "searchResults": "Search results",
     "noSearchResults": "No matching tools. Try another keyword.",
     "toolHintFallback": "Open quickly and get started",
@@ -77,6 +89,7 @@
       "qrcode": "Generate and scan QR codes"
     },
     "favorites": "Favorites",
+    "favoritesEmptyTitle": "No favorite tools yet",
     "favoritesEmpty": "Click the star next to a tool to add it here",
     "addFavorite": "Add to favorites",
     "removeFavorite": "Remove from favorites",

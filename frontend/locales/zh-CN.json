@@ -57,7 +57,19 @@
     "openSource": "代码开源",
     "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
     "localFirst": "✓ 默认本地处理",
-    "popularTools": "热门工具",
+    "homeSections": "首页工具视图",
+    "categories": "分类",
+    "categoryFilter": "工具分类筛选",
+    "category": {
+      "all": "全部",
+      "files": "文件处理",
+      "conversion": "换算计算",
+      "data": "数据调试",
+      "encoding": "编码安全",
+      "mobile": "移动开发",
+      "reference": "开发速查",
+      "services": "系统服务"
+    },
     "searchResults": "搜索结果",
     "noSearchResults": "没有找到匹配的工具，试试其他关键词",
     "toolHintFallback": "快速打开并开始使用",
@@ -77,6 +89,7 @@
       "qrcode": "生成与识别二维码"
     },
     "favorites": "收藏",
+    "favoritesEmptyTitle": "还没有收藏工具",
     "favoritesEmpty": "点击左侧工具旁的星标即可收藏",
     "addFavorite": "添加收藏",
     "removeFavorite": "取消收藏",

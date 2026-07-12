@@ -460,16 +460,7 @@
     }
     if (activeMenuId === "home") {
       var favoriteIds = loadFavorites();
-      var favoriteLinks = "";
-      if (favoriteIds.length) {
-        favoriteLinks = '<section class="home-section home-favorites"><div class="home-section-heading"><h2 data-i18n="welcome.favorites">' + t("welcome.favorites") + '</h2><span>' + favoriteIds.length + '</span></div><div class="home-tool-grid">';
-        favoriteIds.forEach(function (toolId) {
-          var item = menuItems.find(function (menuItem) { return menuItem.id === toolId; });
-          if (!item) return;
-          favoriteLinks += homeToolCard(item);
-        });
-        favoriteLinks += '</div></section>';
-      }
+      var homeState = { tab: favoriteIds.length ? "favorites" : "categories", category: "all", query: "" };
       el.innerHTML = `
         <div class="home-page">
           <header class="home-hero">
@@ -488,20 +479,46 @@
             <span class="home-trust-local" data-i18n="welcome.localFirst">✓ 默认本地处理</span>
             <a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span data-i18n="welcome.openSource">代码开源</span></a>
           </div>
-          ${favoriteLinks}
-          <section id="home-discovery" class="home-section"></section>
+          <div class="home-tabs" role="tablist" aria-label="${t("welcome.homeSections")}">
+            <button class="home-tab" type="button" role="tab" data-home-tab="favorites" aria-controls="home-tab-panel">
+              <span data-i18n="welcome.favorites">${t("welcome.favorites")}</span><span class="home-tab-count">${favoriteIds.length}</span>
+            </button>
+            <button class="home-tab" type="button" role="tab" data-home-tab="categories" aria-controls="home-tab-panel" data-i18n="welcome.categories">${t("welcome.categories")}</button>
+          </div>
+          <section id="home-tab-panel" class="home-tab-panel" role="tabpanel"></section>
         </div>`;
-      renderHomeDiscovery(el, "");
+      renderHomePanel(el, homeState);
       var homeSearch = document.getElementById("home-search");
-      homeSearch.addEventListener("input", function () { renderHomeDiscovery(el, this.value); });
+      homeSearch.addEventListener("input", function () {
+        homeState.query = this.value;
+        if (homeState.query.trim()) {
+          homeState.tab = "categories";
+          homeState.category = "all";
+        }
+        renderHomePanel(el, homeState);
+      });
       homeSearch.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
-          var firstResult = el.querySelector("#home-discovery .home-tool-card");
+          var firstResult = el.querySelector("#home-tab-panel .home-tool-card");
           if (firstResult) selectMenu(firstResult.dataset.id);
         }
       });
-      var favoritesSection = el.querySelector(".home-favorites");
-      if (favoritesSection) bindHomeToolCards(favoritesSection);
+      el.querySelectorAll(".home-tab").forEach(function (tabButton) {
+        tabButton.addEventListener("click", function () {
+          homeState.tab = this.dataset.homeTab;
+          homeState.query = "";
+          homeSearch.value = "";
+          renderHomePanel(el, homeState);
+        });
+        tabButton.addEventListener("keydown", function (event) {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          var nextTab = this.dataset.homeTab === "favorites" ? "categories" : "favorites";
+          var nextButton = el.querySelector('[data-home-tab="' + nextTab + '"]');
+          nextButton.click();
+          nextButton.focus();
+        });
+      });
       applyLocale();
       return;
     }
@@ -683,18 +700,19 @@
     applyLocale();
   }
 
-  function rankedHomeTools() {
-    var tools = menuItems.filter(function (item) { return item.id !== "home" && !item.hidden; });
-    var fallbackOrder = ["json", "format", "timestamp", "encoder", "base64", "regex", "http", "qrcode"];
-    return tools.slice().sort(function (a, b) {
-      var countDiff = (globalStats[b.id] || 0) - (globalStats[a.id] || 0);
-      if (countDiff) return countDiff;
-      var aIndex = fallbackOrder.indexOf(a.id);
-      var bIndex = fallbackOrder.indexOf(b.id);
-      aIndex = aIndex === -1 ? fallbackOrder.length : aIndex;
-      bIndex = bIndex === -1 ? fallbackOrder.length : bIndex;
-      return aIndex - bIndex;
-    });
+  var HOME_CATEGORIES = [
+    { id: "all", tools: [] },
+    { id: "files", tools: ["image", "converter", "fileinfo", "markdown", "diff", "text", "content"] },
+    { id: "conversion", tools: ["timestamp", "unitconvert", "tax", "mortgage"] },
+    { id: "data", tools: ["json", "format", "regex", "http", "jwt"] },
+    { id: "encoding", tools: ["encoder", "base64", "crypto", "qrcode"] },
+    { id: "mobile", tools: ["android", "flutter", "ios"] },
+    { id: "reference", tools: ["git", "terminal", "ai", "curl"] },
+    { id: "services", tools: ["device", "translate"] }
+  ];
+
+  function allHomeTools() {
+    return menuItems.filter(function (item) { return item.id !== "home" && !item.hidden; });
   }
 
   function homeToolCard(item) {
@@ -718,17 +736,48 @@
     });
   }
 
-  function renderHomeDiscovery(container, query) {
-    var section = container.querySelector("#home-discovery");
-    if (!section) return;
-    var normalized = query.trim().toLowerCase();
-    var tools = rankedHomeTools().filter(function (item) {
-      return !normalized || t(item.i18n).toLowerCase().includes(normalized) || item.id.toLowerCase().includes(normalized);
-    }).slice(0, normalized ? 12 : 8);
-    var headingKey = normalized ? "welcome.searchResults" : "welcome.popularTools";
-    section.innerHTML = '<div class="home-section-heading"><h2 data-i18n="' + headingKey + '">' + t(headingKey) + '</h2><span>' + tools.length + '</span></div>' +
+  function renderHomePanel(container, state) {
+    var panel = container.querySelector("#home-tab-panel");
+    if (!panel) return;
+    container.querySelectorAll(".home-tab").forEach(function (button) {
+      var selected = button.dataset.homeTab === state.tab;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-selected", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+
+    if (state.tab === "favorites") {
+      var favoriteTools = loadFavorites().map(function (toolId) {
+        return menuItems.find(function (item) { return item.id === toolId; });
+      }).filter(Boolean);
+      panel.innerHTML = favoriteTools.length
+        ? '<div class="home-tool-grid">' + favoriteTools.map(homeToolCard).join("") + '</div>'
+        : '<div class="home-empty-state"><span aria-hidden="true">' + icons.star + '</span><strong>' + t("welcome.favoritesEmptyTitle") + '</strong><p>' + t("welcome.favoritesEmpty") + '</p></div>';
+      bindHomeToolCards(panel);
+      return;
+    }
+
+    var normalized = state.query.trim().toLowerCase();
+    var category = HOME_CATEGORIES.find(function (item) { return item.id === state.category; }) || HOME_CATEGORIES[0];
+    var tools = allHomeTools().filter(function (item) {
+      var categoryMatch = category.id === "all" || category.tools.indexOf(item.id) !== -1;
+      var queryMatch = !normalized || t(item.i18n).toLowerCase().includes(normalized) || item.id.toLowerCase().includes(normalized);
+      return categoryMatch && queryMatch;
+    });
+    var categoryButtons = HOME_CATEGORIES.map(function (item) {
+      var active = item.id === category.id ? " active" : "";
+      return '<button class="home-category' + active + '" type="button" data-home-category="' + item.id + '" aria-pressed="' + String(item.id === category.id) + '">' + t("welcome.category." + item.id) + '</button>';
+    }).join("");
+    panel.innerHTML = '<div class="home-categories" aria-label="' + t("welcome.categoryFilter") + '">' + categoryButtons + '</div>' +
+      '<div class="home-section-heading"><h2>' + (normalized ? t("welcome.searchResults") : t("welcome.category." + category.id)) + '</h2><span>' + tools.length + '</span></div>' +
       (tools.length ? '<div class="home-tool-grid">' + tools.map(homeToolCard).join("") + '</div>' : '<div class="home-search-empty">' + t("welcome.noSearchResults") + '</div>');
-    bindHomeToolCards(section);
+    panel.querySelectorAll(".home-category").forEach(function (button) {
+      button.addEventListener("click", function () {
+        state.category = this.dataset.homeCategory;
+        renderHomePanel(container, state);
+      });
+    });
+    bindHomeToolCards(panel);
   }
 
   function renderPrivacyBadge(container, toolId) {

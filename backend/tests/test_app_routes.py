@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -44,16 +45,28 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     app_script = client.get("/js/app.js").get_data(as_text=True)
     app_css = client.get("/css/app.css").get_data(as_text=True)
 
-    assert zh_locale["welcome"]["popularTools"] == "热门工具"
-    assert en_locale["welcome"]["popularTools"] == "Popular tools"
+    assert zh_locale["welcome"]["categories"] == "分类"
+    assert en_locale["welcome"]["categories"] == "Categories"
+    assert zh_locale["welcome"]["category"]["files"] == "文件处理"
+    assert zh_locale["welcome"]["category"]["conversion"] == "换算计算"
     assert zh_locale["menu"]["openMenu"] == "打开菜单"
     assert 'id="mobile-menu-toggle"' in index_html
     assert 'id="sidebar-scrim"' in index_html
-    assert "function renderHomeDiscovery(" in app_script
-    assert "function rankedHomeTools(" in app_script
+    assert "function renderHomePanel(" in app_script
+    assert "var HOME_CATEGORIES" in app_script
+    assert 'favoriteIds.length ? "favorites" : "categories"' in app_script
     assert 'window.matchMedia("(max-width: 760px)")' in app_script
     assert ".home-tool-grid" in app_css
+    assert ".home-tabs" in app_css
+    assert ".home-categories" in app_css
     assert ".sidebar.mobile-open" in app_css
+
+    category_block = re.search(r"var HOME_CATEGORIES = \[(.*?)\n  \];", app_script, re.DOTALL)
+    assert category_block
+    categorized_ids = re.findall(r'tools: \[([^]]*)\]', category_block.group(1))
+    categorized_ids = [tool_id for group in categorized_ids for tool_id in re.findall(r'"([^"]+)"', group)]
+    assert len(categorized_ids) == len(set(categorized_ids))
+    assert set(categorized_ids) == set(public_tool_ids())
 
 
 def test_sidebar_processing_badges_stay_compact(client):
