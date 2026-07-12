@@ -1109,6 +1109,9 @@
     "copied": "Copied",
     "noMatch": "No matches",
     "pathDelimiter": " > ",
-    "random": "Random pick"
+    "random": "Random pick",
+    "intro": "AI Region Intro",
+    "introLoading": "Generating({s}s)…",
+    "clear": "Clear all"
   }
 }

@@ -1259,11 +1259,24 @@ def tool_stats():
         # translate stats
         tr_count = cache_store.cache_get("translate_count") or "0"
         tr_history = cache_store.cache_lrange("translate_history", 0, 49)
+
+        # area intro stats
+        ai_count = cache_store.cache_get("area_intro_count") or "0"
+        ai_history = cache_store.cache_lrange("area_intro_history", 0, 49)
         tr_rows = ""
         for item in tr_history:
             try:
                 d = json.loads(item)
                 tr_rows += f'<tr><td><code>{html.escape(d.get("dir",""))}</code></td><td>{html.escape(d.get("src",""))}</td><td>{html.escape(d.get("tgt",""))}</td></tr>'
+            except Exception:
+                pass
+
+        # area intro stats
+        ai_rows = ""
+        for item in ai_history:
+            try:
+                d = json.loads(item)
+                ai_rows += f'<tr><td><code>{html.escape(d.get("mode",""))}</code></td><td>{html.escape(d.get("path",""))}</td><td>{html.escape(d.get("intro",""))}</td></tr>'
             except Exception:
                 pass
 
@@ -1317,6 +1330,7 @@ a{{text-decoration:none}}a:hover{{text-decoration:underline}}
 <div class="summary-card"><div class="num">{len(sorted_stats)}</div><div class="label">工具总数</div></div>
 <div class="summary-card"><div class="num">{tr_count}</div><div class="label">翻译次数</div></div>
 <div class="summary-card"><div class="num">{len(content_ids)}</div><div class="label">内容生成</div></div>
+<div class="summary-card"><div class="num">{ai_count}</div><div class="label">地区介绍</div></div>
 </div>
 
 <h2>🔥 工具点击排行 <span class="sub">（所有用户累计，Redis HINCRBY）</span></h2>
@@ -1325,10 +1339,13 @@ a{{text-decoration:none}}a:hover{{text-decoration:underline}}
 <h2>📝 最近翻译记录 <span class="sub">（最新 {len(tr_history)} 条）</span></h2>
 <table><thead><tr><th>方向</th><th>原文</th><th>译文</th></tr></thead><tbody>{tr_rows or '<tr><td colspan="3" style="color:#666">暂无翻译记录</td></tr>'}</tbody></table>
 
+<h2>🌍 最近地区介绍 <span class="sub">（最新 {len(ai_history)} 条）</span></h2>
+<table><thead><tr><th>模式</th><th>地区</th><th>介绍预览</th></tr></thead><tbody>{ai_rows or '<tr><td colspan="3" style="color:#666">暂无记录</td></tr>'}</tbody></table>
+
 <h2>🔗 内容生成记录 <span class="sub">（共 {len(content_ids)} 条，显示最近 50 条）</span></h2>
 <table><thead><tr><th>ID</th><th>内容预览</th><th>链接</th><th>时间</th><th>大小</th><th>IP</th></tr></thead><tbody>{content_rows or '<tr><td colspan="6" style="color:#666">暂无内容</td></tr>'}</tbody></table>
 
-<p class="sub" style="margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code> / <code>dev_tools:translate_history</code> / <code>dev_tools:content:*</code></p>"""
+<p class="sub" style="margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code> / <code>dev_tools:translate_history</code> / <code>dev_tools:area_intro_history</code> / <code>dev_tools:content:*</code></p>"""
         return html_page
 
     # API: return sorted JSON (no auth)
@@ -1624,6 +1641,79 @@ def area_search_world_all_cities():
             deduped.append(r)
     deduped.sort(key=lambda x: x["cname"] or x["name"])
     return jsonify({"ok": True, "data": deduped})
+
+
+# --- Area Search AI Intro ---
+_AREA_INTRO_PROMPT = None
+
+
+def _load_intro_prompt():
+    global _AREA_INTRO_PROMPT
+    if _AREA_INTRO_PROMPT is not None:
+        return _AREA_INTRO_PROMPT
+    path = _AREA_CONFIG_DIR / "area_intro_prompt.json"
+    if path.exists():
+        _AREA_INTRO_PROMPT = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        _AREA_INTRO_PROMPT = {
+            "china": {"system": "You are a knowledgeable geography assistant.", "user_template": "Briefly introduce: {region_path}"},
+            "world": {"system": "You are a knowledgeable geography assistant.", "user_template": "Briefly introduce: {region_path}"},
+        }
+    return _AREA_INTRO_PROMPT
+
+
+@app.route("/api/area-search/intro", methods=["POST"])
+def area_search_intro():
+    """Generate a region introduction via DeepSeek."""
+    if not _DEEPSEEK_KEY:
+        return jsonify({"ok": False, "error": "DeepSeek API key not configured"}), 503
+
+    data = request.get_json(silent=True) or {}
+    region_path = (data.get("region_path") or "").strip()
+    mode = (data.get("mode") or "china").strip()
+    if mode not in ("china", "world"):
+        mode = "china"
+    if not region_path:
+        return jsonify({"ok": False, "error": "empty region_path"}), 400
+    if len(region_path) > 200:
+        return jsonify({"ok": False, "error": "region_path too long"}), 400
+
+    cfg = _load_intro_prompt()
+    section = cfg.get(mode, cfg.get("china", {}))
+    user_prompt = section.get("user_template", "Introduce: {region_path}").replace("{region_path}", region_path)
+
+    try:
+        resp = requests.post(
+            _DEEPSEEK_URL,
+            headers={
+                "Authorization": f"Bearer {_DEEPSEEK_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "deepseek-v4-flash",
+                "messages": [
+                    {"role": "system", "content": section.get("system", "")},
+                    {"role": "user", "content": user_prompt},
+                ],
+                "temperature": 0.7,
+                "max_tokens": 1024,
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        body = resp.json()
+        intro = body["choices"][0]["message"]["content"].strip()
+    except (KeyError, requests.exceptions.RequestException) as e:
+        logger.warning("Area intro failed: %s", e)
+        return jsonify({"ok": False, "error": "Introduction generation failed, please retry"}), 500
+
+    # record stats in Redis
+    cache_store.cache_incr("area_intro_count")
+    entry = json.dumps({"path": region_path[:200], "intro": intro[:200], "mode": mode}, ensure_ascii=False)
+    cache_store.cache_lpush("area_intro_history", entry)
+    cache_store.cache_ltrim("area_intro_history", 0, 199)
+
+    return jsonify({"ok": True, "intro": intro})
 
 
 # --- Content Generator API ---

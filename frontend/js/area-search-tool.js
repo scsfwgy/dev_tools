@@ -13,6 +13,7 @@ var AreaSearchTool = (function () {
   var _openDropdown = null;
   var _highlightIdx = -1;
   var _loading = { china: false, world: false };
+  var _cachedIntro = { china: "", world: "" };
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, function (ch) {
@@ -278,8 +279,11 @@ var AreaSearchTool = (function () {
   function renderPath() {
     var pathEl = document.getElementById("as-path");
     if (!pathEl) return;
+
+    var cn = [], en = [], codes = [];
+    var wCn = [], wEn = [], wCodes = [];
+
     if (_mode === "china") {
-      var cn = [], en = [], codes = [];
       for (var i = 0; i < 3; i++) {
         if (!_chinaSel[i]) break;
         cn.push(_chinaSel[i].name);
@@ -287,13 +291,7 @@ var AreaSearchTool = (function () {
         codes.push(_chinaSel[i].code);
       }
       if (!cn.length) { pathEl.classList.add("as-path-hidden"); return; }
-      pathEl.classList.remove("as-path-hidden");
-      pathEl.innerHTML =
-        pathRow("中文", cn.join(" "), "as-path-cn") +
-        pathRow("拼音", en.join(" "), "as-path-en") +
-        pathRow("编码", codes.join(" "), "as-path-code");
     } else {
-      var wCn = [], wEn = [], wCodes = [];
       for (var j = 0; j < 2; j++) {
         if (!_worldSel[j]) break;
         wCn.push(_worldSel[j].cname || _worldSel[j].name);
@@ -301,15 +299,105 @@ var AreaSearchTool = (function () {
         wCodes.push(_worldSel[j].code);
       }
       if (!wCn.length) { pathEl.classList.add("as-path-hidden"); return; }
-      pathEl.classList.remove("as-path-hidden");
+    }
+
+    pathEl.classList.remove("as-path-hidden");
+    var introHtml = '<button class="as-intro-btn" type="button" id="as-intro-btn">🤖 ' + t("areaSearch.intro") + '</button>';
+
+    if (_mode === "china") {
+      pathEl.innerHTML =
+        pathRow("中文", cn.join(" "), "as-path-cn") +
+        pathRow("拼音", en.join(" "), "as-path-en") +
+        pathRow("编码", codes.join(" "), "as-path-code") +
+        introHtml;
+    } else {
       pathEl.innerHTML =
         pathRow("中文", wCn.join(" "), "as-path-cn") +
         pathRow("English", wEn.join(" "), "as-path-en") +
-        pathRow("编码", wCodes.join(" "), "as-path-code");
+        pathRow("编码", wCodes.join(" "), "as-path-code") +
+        introHtml;
     }
     pathEl.querySelectorAll(".as-path-line").forEach(function (line) {
       line.addEventListener("click", function () { copyLine(line); });
     });
+    var introBtn = document.getElementById("as-intro-btn");
+    if (introBtn) introBtn.addEventListener("click", doIntro);
+    // restore cached intro for this mode
+    if (_cachedIntro[_mode]) {
+      var cachedEl = document.createElement("div");
+      cachedEl.id = "as-intro-result";
+      cachedEl.className = "as-intro-result";
+      pathEl.appendChild(cachedEl);
+      renderIntroHtml(cachedEl, _cachedIntro[_mode]);
+    }
+  }
+
+  // ═══ AI Intro ═══
+  function doIntro() {
+    var btn = document.getElementById("as-intro-btn");
+    var resultEl = document.getElementById("as-intro-result");
+    if (!btn) return;
+
+    // Build region path string
+    var pathParts = [];
+    if (_mode === "china") {
+      for (var i = 0; i < 3; i++) {
+        if (_chinaSel[i]) pathParts.push(_chinaSel[i].name);
+      }
+    } else {
+      for (var j = 0; j < 2; j++) {
+        if (_worldSel[j]) pathParts.push(_worldSel[j].cname || _worldSel[j].name);
+      }
+    }
+    if (!pathParts.length) return;
+
+    btn.disabled = true;
+    var _start = Date.now();
+    var _timer = setInterval(function () {
+      btn.textContent = "⏳ " + t("areaSearch.introLoading").replace("{s}", Math.round((Date.now() - _start) / 1000));
+    }, 200);
+    btn.textContent = "⏳ " + t("areaSearch.introLoading").replace("{s}", "0");
+    if (!resultEl) {
+      resultEl = document.createElement("div");
+      resultEl.id = "as-intro-result";
+      resultEl.className = "as-intro-result";
+      btn.parentNode.appendChild(resultEl);
+    }
+    resultEl.textContent = "";
+
+    fetch("/api/area-search/intro", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ region_path: pathParts.join(" "), mode: _mode }),
+    })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || "fail"); return d; }); })
+      .then(function (d) {
+        clearInterval(_timer);
+        _cachedIntro[_mode] = d.intro;
+        renderIntroHtml(resultEl, d.intro);
+        btn.disabled = false;
+        btn.textContent = "🤖 " + t("areaSearch.intro");
+      })
+      .catch(function (e) {
+        clearInterval(_timer);
+        resultEl.innerHTML = '<span style="color:var(--text-muted)">❌ ' + escapeHtml(e.message || "Error") + '</span>';
+        btn.disabled = false;
+        btn.textContent = "🤖 " + t("areaSearch.intro");
+      });
+  }
+
+  var MARKED_URL = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+
+  function renderIntroHtml(el, text) {
+    if (window.marked) {
+      el.innerHTML = window.marked.parse(text);
+    } else {
+      el.textContent = text;
+      var s = document.createElement("script");
+      s.src = MARKED_URL;
+      s.onload = function () { if (window.marked) el.innerHTML = window.marked.parse(text); };
+      document.head.appendChild(s);
+    }
   }
 
   // ═══ Switch mode ═══
@@ -379,25 +467,41 @@ var AreaSearchTool = (function () {
   }
 
   function renderModeUi(container) {
-    var btn = '<button class="as-random-btn" type="button" title="' + t("areaSearch.random") + '">🎲</button>';
+    var randomBtn = '<button class="as-action-btn" type="button" title="' + t("areaSearch.random") + '">🎲</button>';
+    var clearBtn = '<button class="as-action-btn" type="button" title="' + t("areaSearch.clear") + '">✕</button>';
+    var btns = '<div class="as-cascade-col as-cascade-btn-col">' + randomBtn + clearBtn + '</div>';
     if (_mode === "china") {
       container.innerHTML = '<div class="as-cascade-row">' +
         cascadeCol("as-china-l1", "areaSearch.province", "…") +
         cascadeCol("as-china-l2", "areaSearch.city", "…") +
         cascadeCol("as-china-l3", "areaSearch.district", "…") +
-        '<div class="as-cascade-col as-cascade-btn-col">' + btn + '</div>' +
-        '</div>';
+        btns + '</div>';
     } else {
       container.innerHTML = '<div class="as-cascade-row">' +
         cascadeCol("as-world-l1", "areaSearch.country", "…") +
         cascadeCol("as-world-l2", "areaSearch.worldCity", "…") +
-        '<div class="as-cascade-col as-cascade-btn-col">' + btn + '</div>' +
-        '</div>';
+        btns + '</div>';
     }
     bindInputs(container);
     loadInitialData();
     restoreSelections();
-    container.querySelector(".as-random-btn").addEventListener("click", doRandom);
+    container.querySelector(".as-action-btn[title='" + t("areaSearch.random") + "']").addEventListener("click", doRandom);
+    container.querySelector(".as-action-btn[title='" + t("areaSearch.clear") + "']").addEventListener("click", doClear);
+  }
+
+  function doClear() {
+    closeDropdown();
+    _cachedIntro[_mode] = "";
+    if (_mode === "china") {
+      for (var i = 0; i < 3; i++) { _chinaSel[i] = null; _chinaOpts[i] = i === 0 ? _chinaOpts[0] : []; }
+      document.querySelectorAll("#as-china-l1, #as-china-l2, #as-china-l3").forEach(function (inp) { inp.value = ""; });
+    } else {
+      _worldSel[0] = null; _worldSel[1] = null; _worldCitiesCache = {};
+      document.querySelectorAll("#as-world-l1, #as-world-l2").forEach(function (inp) { inp.value = ""; });
+    }
+    var introEl = document.getElementById("as-intro-result");
+    if (introEl) introEl.remove();
+    renderPath();
   }
 
   function bindInputs(container) {
