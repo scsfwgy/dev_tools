@@ -673,6 +673,7 @@ a:hover {
     text-align: center;
 }
 .home-tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.home-link-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .home-tool-card {
     position: relative;
     min-width: 0;
@@ -688,7 +689,23 @@ a:hover {
     color: var(--text);
     transition: transform 0.15s ease, border-color 0.15s, background 0.15s;
 }
-.home-tool-card:hover {
+.home-link-card {
+    position: relative;
+    min-width: 0;
+    min-height: 108px;
+    padding: 15px 16px;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-card);
+    color: var(--text);
+    transition: transform 0.15s ease, border-color 0.15s, background 0.15s;
+}
+.home-tool-card:hover,
+.home-link-card:hover {
     transform: translateY(-2px);
     border-color: color-mix(in srgb, var(--accent) 65%, var(--border));
     background: var(--hover-row);
@@ -704,9 +721,69 @@ a:hover {
     background: color-mix(in srgb, var(--accent) 11%, var(--select-bg));
     color: var(--accent);
 }
+.home-link-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent) 11%, var(--select-bg));
+    color: var(--accent);
+}
 .home-tool-copy { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
 .home-tool-copy strong { overflow: hidden; color: var(--text); font-size: 0.9rem; text-overflow: ellipsis; white-space: nowrap; }
 .home-tool-copy small { overflow: hidden; color: var(--text-muted); font-size: 0.75rem; text-overflow: ellipsis; white-space: nowrap; }
+.home-link-main { min-width: 0; display: flex; flex-direction: column; gap: 5px; color: var(--text); text-decoration: none; }
+.home-link-main::after { position: absolute; inset: 0; content: ""; border-radius: 12px; }
+.home-link-main strong { overflow: hidden; color: var(--text); font-size: 0.9rem; text-overflow: ellipsis; white-space: nowrap; }
+.home-link-main small { color: var(--text-muted); font-size: 0.75rem; line-height: 1.55; }
+.home-link-domain {
+    overflow: hidden;
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.home-link-actions {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+.home-link-action {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 650;
+    white-space: nowrap;
+}
+.home-link-copy-btn {
+    pointer-events: auto;
+    min-width: 34px;
+    min-height: 34px;
+    padding: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.home-link-copy-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--hover-row); }
+.home-link-copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.home-link-copy-btn.is-copied { border-color: var(--green); color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); }
+.home-link-card:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
 .home-tool-processing { padding: 3px 7px; border-radius: 999px; font-size: 0.62rem; font-weight: 650; white-space: nowrap; }
 .home-tool-processing-local { background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); }
 .home-tool-processing-hybrid { background: color-mix(in srgb, var(--amber) 12%, transparent); color: var(--amber); }
@@ -739,8 +816,15 @@ a:hover {
     }
     .home-category { min-height: 38px; }
     .home-section { margin-top: 30px; }
-    .home-tool-grid { grid-template-columns: 1fr; }
+    .home-tool-grid,
+    .home-link-grid { grid-template-columns: 1fr; }
     .home-tool-card { min-height: 82px; padding: 13px 14px; }
+    .home-link-card {
+        min-height: 102px;
+        padding: 13px 14px;
+        grid-template-columns: 36px minmax(0, 1fr);
+    }
+    .home-link-actions { grid-column: 2; justify-self: start; }
 }
 
 .welcome {

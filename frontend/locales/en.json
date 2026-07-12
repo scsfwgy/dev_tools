@@ -67,6 +67,7 @@
     "localFirst": "✓ Local by default",
     "homeSections": "Home tool views",
     "categories": "Categories",
+    "recommended": "Recommended",
     "categoryFilter": "Filter tool categories",
     "category": {
       "all": "All",
@@ -95,6 +96,75 @@
       "regex": "Test regular expressions in real time",
       "http": "Look up HTTP status and request details",
       "qrcode": "Generate and scan QR codes"
+    },
+    "recommendations": {
+      "open": "Open",
+      "copyLink": "Copy link",
+      "groups": {
+        "investing": "Investing",
+        "resources": "Resource hubs",
+        "llm": "LLM",
+        "connectivity": "Connectivity",
+        "crypto": "Crypto trading"
+      },
+      "items": {
+        "xiaohongshu": {
+          "title": "Investing creator · Xiaohongshu",
+          "description": "SV Scholar, a well-known US value-investing creator on Xiaohongshu with 400K followers."
+        },
+        "svscholarX": {
+          "title": "SV Scholar · X/Twitter",
+          "description": "SV Scholar's X account, sharing ongoing thoughts on US value investing and market views."
+        },
+        "bilibili": {
+          "title": "Investing creator · Bilibili",
+          "description": "CLEC Investing, a major investing creator on Bilibili with 30K followers."
+        },
+        "qqqValue": {
+          "title": "Nasdaq investing starter",
+          "description": "Understand the Nasdaq index and value investing"
+        },
+        "qqqBuyStocks": {
+          "title": "US stock buying guide",
+          "description": "From account opening to placing your first order"
+        },
+        "fmhy": {
+          "title": "FMHY resource hub",
+          "description": "A curated directory of web resources and tools"
+        },
+        "llmToken": {
+          "title": "LLM Token relay hub",
+          "description": "Proven over the long term, with no fluff and excellent value for money."
+        },
+        "ytoo": {
+          "title": "y-too connectivity",
+          "description": "A highly cost-effective provider with extremely fast speeds."
+        },
+        "flzt": {
+          "title": "flzt connectivity",
+          "description": "A node-rich, high-speed connectivity service"
+        },
+        "binance": {
+          "title": "Binance",
+          "description": "The world's largest digital asset exchange, built for scale and supports US stock trading."
+        },
+        "binanceMirror": {
+          "title": "Binance (no VPN)",
+          "description": "A Binance mirror reachable without a VPN"
+        },
+        "bitget": {
+          "title": "Bitget copy trading",
+          "description": "A global top-5 digital asset exchange supporting crypto, forex, US stocks, futures, and more. Highly recommended."
+        },
+        "bitgetMirror": {
+          "title": "Bitget (no VPN)",
+          "description": "A Bitget mirror reachable without a VPN"
+        },
+        "bit": {
+          "title": "BIT derivatives",
+          "description": "One of the earliest exchanges to explore US stock trading alongside digital assets."
+        }
+      }
     },
     "favorites": "Favorites",
     "favoritesEmptyTitle": "No favorite tools yet",

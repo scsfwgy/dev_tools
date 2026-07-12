@@ -485,6 +485,7 @@
               <span data-i18n="welcome.favorites">${t("welcome.favorites")}</span><span class="home-tab-count">${favoriteIds.length}</span>
             </button>
             <button class="home-tab" type="button" role="tab" data-home-tab="categories" aria-controls="home-tab-panel" data-i18n="welcome.categories">${t("welcome.categories")}</button>
+            <button class="home-tab" type="button" role="tab" data-home-tab="recommended" aria-controls="home-tab-panel" data-i18n="welcome.recommended">${t("welcome.recommended")}</button>
           </div>
           <section id="home-tab-panel" class="home-tab-panel" role="tabpanel"></section>
         </div>`;
@@ -514,10 +515,12 @@
         tabButton.addEventListener("keydown", function (event) {
           if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
           event.preventDefault();
-          var nextTab = this.dataset.homeTab === "favorites" ? "categories" : "favorites";
-          var nextButton = el.querySelector('[data-home-tab="' + nextTab + '"]');
-          nextButton.click();
-          nextButton.focus();
+          var tabButtons = Array.from(el.querySelectorAll(".home-tab"));
+          var currentIndex = tabButtons.indexOf(this);
+          var delta = event.key === "ArrowRight" ? 1 : -1;
+          var nextIndex = (currentIndex + delta + tabButtons.length) % tabButtons.length;
+          tabButtons[nextIndex].click();
+          tabButtons[nextIndex].focus();
         });
       });
       applyLocale();
@@ -717,6 +720,48 @@
     { id: "services", tools: ["device", "translate", "area-search"] }
   ];
 
+  var HOME_RECOMMENDATIONS = [
+    {
+      id: "investing",
+      items: [
+        { titleKey: "welcome.recommendations.items.xiaohongshu.title", descriptionKey: "welcome.recommendations.items.xiaohongshu.description", domain: "xiaohongshu.com", url: "https://www.xiaohongshu.com/user/profile/64e95bd60000000001005b74" },
+        { titleKey: "welcome.recommendations.items.svscholarX.title", descriptionKey: "welcome.recommendations.items.svscholarX.description", domain: "x.com", url: "https://x.com/SVScholar" },
+        { titleKey: "welcome.recommendations.items.bilibili.title", descriptionKey: "welcome.recommendations.items.bilibili.description", domain: "bilibili.com", url: "https://space.bilibili.com/491004348" },
+        { titleKey: "welcome.recommendations.items.qqqValue.title", descriptionKey: "welcome.recommendations.items.qqqValue.description", domain: "qqq.tools24.uk", url: "https://qqq.tools24.uk/zh/knowledge/value-investing" },
+        { titleKey: "welcome.recommendations.items.qqqBuyStocks.title", descriptionKey: "welcome.recommendations.items.qqqBuyStocks.description", domain: "qqq.tools24.uk", url: "https://qqq.tools24.uk/zh/knowledge/how-to-buy-us-stocks" }
+      ]
+    },
+    {
+      id: "resources",
+      items: [
+        { titleKey: "welcome.recommendations.items.fmhy.title", descriptionKey: "welcome.recommendations.items.fmhy.description", domain: "fmhy.net", url: "https://fmhy.net" }
+      ]
+    },
+    {
+      id: "llm",
+      items: [
+        { titleKey: "welcome.recommendations.items.llmToken.title", descriptionKey: "welcome.recommendations.items.llmToken.description", domain: "llm-token.cn", url: "https://llm-token.cn/r/INVF008434B" }
+      ]
+    },
+    {
+      id: "connectivity",
+      items: [
+        { titleKey: "welcome.recommendations.items.ytoo.title", descriptionKey: "welcome.recommendations.items.ytoo.description", domain: "y-too.net", url: "https://y-too.net/aff.php?aff=4974" },
+        { titleKey: "welcome.recommendations.items.flzt.title", descriptionKey: "welcome.recommendations.items.flzt.description", domain: "flzt.org", url: "https://flzt.org/auth/register?invite_code=KpRiKFdc" }
+      ]
+    },
+    {
+      id: "crypto",
+      items: [
+        { titleKey: "welcome.recommendations.items.binance.title", descriptionKey: "welcome.recommendations.items.binance.description", domain: "binance.com", url: "https://www.binance.com/register?ref=JZTZUS" },
+        { titleKey: "welcome.recommendations.items.binanceMirror.title", descriptionKey: "welcome.recommendations.items.binanceMirror.description", domain: "bsmkweb.cc", url: "https://www.bsmkweb.cc/register?ref=JZTZUS" },
+        { titleKey: "welcome.recommendations.items.bitget.title", descriptionKey: "welcome.recommendations.items.bitget.description", domain: "bitget.com", url: "https://www.bitget.com/zh-CN/referral/register?clacCode=SUWT96JK" },
+        { titleKey: "welcome.recommendations.items.bitgetMirror.title", descriptionKey: "welcome.recommendations.items.bitgetMirror.description", domain: "hdmune.cn", url: "https://www.hdmune.cn/zh-CN/referral/register?clacCode=SUWT96JK" },
+        { titleKey: "welcome.recommendations.items.bit.title", descriptionKey: "welcome.recommendations.items.bit.description", domain: "bit.bshareweb.com", url: "https://bit.bshareweb.com/newRegister/cn?invite_code=WACZ2R" }
+      ]
+    }
+  ];
+
   function allHomeTools() {
     return menuItems.filter(function (item) { return item.id !== "home" && !item.hidden; });
   }
@@ -731,6 +776,63 @@
       '<span class="home-tool-copy"><strong>' + t(item.i18n) + '</strong><small>' + hint + '</small></span>' +
       '<span class="home-tool-processing home-tool-processing-' + (item.processing || "local") + '">' + t(processingKey) + '</span>' +
       '</a>';
+  }
+
+  var HOME_LINK_COPY_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+  var HOME_LINK_CHECK_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+  function homeRecommendationCard(item) {
+    var title = t(item.titleKey);
+    return '<article class="home-link-card">' +
+      '<span class="home-link-icon" aria-hidden="true">' + (icons.link || icons.search || "↗") + '</span>' +
+      '<a class="home-link-main" href="' + item.url + '" target="_blank" rel="noopener noreferrer">' +
+        '<strong>' + title + '</strong><small>' + t(item.descriptionKey) + '</small><span class="home-link-domain">' + item.domain + '</span>' +
+      '</a>' +
+      '<span class="home-link-actions">' +
+        '<span class="home-link-action" aria-hidden="true">' + t("welcome.recommendations.open") + '</span>' +
+        '<button class="home-link-copy-btn" type="button" data-url="' + item.url + '" aria-label="' + t("welcome.recommendations.copyLink") + '" title="' + t("welcome.recommendations.copyLink") + '">' + HOME_LINK_COPY_ICON + '</button>' +
+      '</span>' +
+      '</article>';
+  }
+
+  function legacyCopyText(text, done) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      done();
+    } catch (e) { /* clipboard unavailable */ }
+  }
+
+  function bindHomeLinkCards(container) {
+    container.querySelectorAll(".home-link-copy-btn").forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var url = this.getAttribute("data-url");
+        var markCopied = function () {
+          button.innerHTML = HOME_LINK_CHECK_ICON;
+          button.classList.add("is-copied");
+          button.setAttribute("aria-label", t("welcome.copied"));
+          setTimeout(function () {
+            button.innerHTML = HOME_LINK_COPY_ICON;
+            button.classList.remove("is-copied");
+            button.setAttribute("aria-label", t("welcome.recommendations.copyLink"));
+          }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(markCopied).catch(function () { legacyCopyText(url, markCopied); });
+        } else {
+          legacyCopyText(url, markCopied);
+        }
+      });
+    });
   }
 
   function bindHomeToolCards(container) {
@@ -760,6 +862,17 @@
         ? '<div class="home-tool-grid">' + favoriteTools.map(homeToolCard).join("") + '</div>'
         : '<div class="home-empty-state"><span aria-hidden="true">' + icons.star + '</span><strong>' + t("welcome.favoritesEmptyTitle") + '</strong><p>' + t("welcome.favoritesEmpty") + '</p></div>';
       bindHomeToolCards(panel);
+      return;
+    }
+
+    if (state.tab === "recommended") {
+      panel.innerHTML = HOME_RECOMMENDATIONS.map(function (group) {
+        return '<section class="home-section">' +
+          '<div class="home-section-heading"><h2>' + t("welcome.recommendations.groups." + group.id) + '</h2><span>' + group.items.length + '</span></div>' +
+          '<div class="home-link-grid">' + group.items.map(homeRecommendationCard).join("") + '</div>' +
+          '</section>';
+      }).join("");
+      bindHomeLinkCards(panel);
       return;
     }
 

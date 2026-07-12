@@ -31,10 +31,16 @@ def test_favorites_are_localized_and_wired(client):
 
     assert zh_locale["welcome"]["favorites"] == "收藏"
     assert en_locale["welcome"]["favorites"] == "Favorites"
+    assert zh_locale["welcome"]["recommended"] == "推荐"
+    assert en_locale["welcome"]["recommended"] == "Recommended"
+    assert zh_locale["welcome"]["recommendations"]["copyLink"] == "复制链接"
+    assert en_locale["welcome"]["recommendations"]["copyLink"] == "Copy link"
     assert 'const STORAGE_FAVORITES = "devtools_favorites"' in app_script
     assert "function toggleFavorite(toolId)" in app_script
     assert 'class="menu-favorite' in app_script
     assert "function homeToolCard(" in app_script
+    assert "function homeRecommendationCard(" in app_script
+    assert "function bindHomeLinkCards(" in app_script
 
 
 def test_home_discovery_and_mobile_navigation_are_wired(client):
@@ -49,14 +55,24 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     assert en_locale["welcome"]["categories"] == "Categories"
     assert zh_locale["welcome"]["category"]["files"] == "文件处理"
     assert zh_locale["welcome"]["category"]["conversion"] == "换算计算"
+    assert zh_locale["welcome"]["recommendations"]["groups"]["investing"] == "投资理财"
+    assert en_locale["welcome"]["recommendations"]["groups"]["crypto"] == "Crypto trading"
+    assert zh_locale["welcome"]["recommendations"]["items"]["svscholarX"]["title"] == "硅谷居士 · 推特/X"
+    assert en_locale["welcome"]["recommendations"]["items"]["svscholarX"]["title"] == "SV Scholar · X/Twitter"
     assert zh_locale["menu"]["openMenu"] == "打开菜单"
     assert 'id="mobile-menu-toggle"' in index_html
     assert 'id="sidebar-scrim"' in index_html
     assert "function renderHomePanel(" in app_script
     assert "var HOME_CATEGORIES" in app_script
+    assert "var HOME_RECOMMENDATIONS" in app_script
+    assert 'data-home-tab="recommended"' in app_script
     assert 'favoriteIds.length ? "favorites" : "categories"' in app_script
+    assert 'Array.from(el.querySelectorAll(".home-tab"))' in app_script
     assert 'window.matchMedia("(max-width: 760px)")' in app_script
     assert ".home-tool-grid" in app_css
+    assert ".home-link-grid" in app_css
+    assert ".home-link-card" in app_css
+    assert ".home-link-copy-btn" in app_css
     assert ".home-tabs" in app_css
     assert ".home-categories" in app_css
     assert ".sidebar.mobile-open" in app_css

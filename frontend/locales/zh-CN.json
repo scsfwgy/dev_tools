@@ -67,6 +67,7 @@
     "localFirst": "✓ 默认本地处理",
     "homeSections": "首页工具视图",
     "categories": "分类",
+    "recommended": "推荐",
     "categoryFilter": "工具分类筛选",
     "category": {
       "all": "全部",
@@ -95,6 +96,75 @@
       "regex": "实时测试正则表达式",
       "http": "查询 HTTP 状态码与请求信息",
       "qrcode": "生成与识别二维码"
+    },
+    "recommendations": {
+      "open": "打开",
+      "copyLink": "复制链接",
+      "groups": {
+        "investing": "投资理财",
+        "resources": "资源聚合",
+        "llm": "大模型",
+        "connectivity": "科学上网",
+        "crypto": "加密交易"
+      },
+      "items": {
+        "xiaohongshu": {
+          "title": "投资理财博主 · 小红书",
+          "description": "硅谷居士，小红书知名美股价值投资者，40W 粉丝。"
+        },
+        "svscholarX": {
+          "title": "硅谷居士 · 推特/X",
+          "description": "硅谷居士的推特账号，持续分享美股价值投资观点与市场思考。"
+        },
+        "bilibili": {
+          "title": "投资理财博主 · B站",
+          "description": "CLEC 投资理财，B站投资大佬，3W 粉丝。"
+        },
+        "qqqValue": {
+          "title": "纳指投资入门",
+          "description": "系统了解纳斯达克指数与价值投资思路"
+        },
+        "qqqBuyStocks": {
+          "title": "美股购买指南",
+          "description": "从开户到下单，一步步教你买入美股"
+        },
+        "fmhy": {
+          "title": "FMHY 资源聚合",
+          "description": "精选网络资源与工具导航，帮你发现好东西"
+        },
+        "llmToken": {
+          "title": "LLM Token 中转站",
+          "description": "经过长期验证，没有注水。性价比极高。"
+        },
+        "ytoo": {
+          "title": "y-too 科学上网",
+          "description": "性价比极高的提供商，速度极快。"
+        },
+        "flzt": {
+          "title": "flzt 科学上网",
+          "description": "节点丰富的高速机场，注册即用"
+        },
+        "binance": {
+          "title": "币安 Binance",
+          "description": "全球最大数字货币交易所，不用担心跑路。支持美股交易。"
+        },
+        "binanceMirror": {
+          "title": "币安 Binance（免翻墙）",
+          "description": "无需翻墙即可访问的币安镜像入口"
+        },
+        "bitget": {
+          "title": "Bitget 跟单交易",
+          "description": "全球前 5 数字货币交易所，支持数字货币、外汇、美股、合约等众多品种投资，非常推荐使用。"
+        },
+        "bitgetMirror": {
+          "title": "Bitget（免翻墙）",
+          "description": "无需翻墙即可访问的 Bitget 镜像入口"
+        },
+        "bit": {
+          "title": "BIT 衍生品",
+          "description": "最早探索数字货币交易美股的交易所。"
+        }
+      }
     },
     "favorites": "收藏",
     "favoritesEmptyTitle": "还没有收藏工具",
