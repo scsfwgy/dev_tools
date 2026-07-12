@@ -116,6 +116,7 @@
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
     dollar: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
     link: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+    "map-pin": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
   };
 
   function localeToPrefix(lang) {
@@ -325,7 +326,7 @@
   function routeFromPath() {
     var subpageMatch = location.pathname.match(/^\/(zh|en)\/(converter|flutter|android|ios)\/([\w-]+)$/);
     if (subpageMatch) return { lang: prefixToLocale(subpageMatch[1]), menuId: subpageMatch[2], subpage: subpageMatch[3] };
-    var m = location.pathname.match(/^\/(zh|en)\/tool\/(\w+)$/);
+    var m = location.pathname.match(/^\/(zh|en)\/tool\/([\w-]+)$/);
     if (m) return { lang: prefixToLocale(m[1]), menuId: m[2] };
     var m2 = location.pathname.match(/^\/(zh|en)\/?$/);
     if (m2) return { lang: prefixToLocale(m2[1]), menuId: "home" };
@@ -455,8 +456,8 @@
     stopClock();
     const el = document.getElementById("content");
     if (activeMenuId !== "home") {
-      var badgeToolId = activeMenuId;
-      setTimeout(function () { renderPrivacyBadge(el, badgeToolId); }, 0);
+      var headerToolId = activeMenuId;
+      setTimeout(function () { renderToolPageHeader(el, headerToolId); }, 0);
     }
     if (activeMenuId === "home") {
       var favoriteIds = loadFavorites();
@@ -689,6 +690,11 @@
       WishTool.init(el);
       return;
     }
+    if (activeMenuId === "area-search" && typeof AreaSearchTool !== "undefined") {
+      el.innerHTML = "";
+      AreaSearchTool.init(el);
+      return;
+    }
     const item = menuItems.find(m => m.id === activeMenuId);
     const label = item ? t(item.i18n) : activeMenuId;
     el.innerHTML = `
@@ -708,7 +714,7 @@
     { id: "encoding", tools: ["encoder", "base64", "crypto", "qrcode"] },
     { id: "mobile", tools: ["android", "flutter", "ios"] },
     { id: "reference", tools: ["git", "terminal", "ai", "curl"] },
-    { id: "services", tools: ["device", "translate"] }
+    { id: "services", tools: ["device", "translate", "area-search"] }
   ];
 
   function allHomeTools() {
@@ -780,17 +786,13 @@
     bindHomeToolCards(panel);
   }
 
-  function renderPrivacyBadge(container, toolId) {
-    if (activeMenuId !== toolId || container.querySelector(".privacy-badge-runtime")) return;
+  function renderToolPageHeader(container, toolId) {
+    if (activeMenuId !== toolId || container.querySelector(".tool-page-header")) return;
     var tool = menuItems.find(function (item) { return item.id === toolId; });
     if (!tool || !tool.processing) return;
-    var labels = {
-      local: currentLang === "en" ? "Processed locally · Data stays in your browser" : "浏览器本地处理 · 数据不上传",
-      hybrid: currentLang === "en" ? "Hybrid processing · Some data requests use the server" : "混合处理 · 部分数据请求服务端",
-      server: currentLang === "en" ? "Server processing · Data is sent to the service" : "服务端处理 · 数据会发送到服务器"
-    };
     var iconsByMode = { local: "✓", hybrid: "◐", server: "↗" };
-    container.insertAdjacentHTML("afterbegin", '<div class="privacy-badge privacy-badge-runtime privacy-badge-' + tool.processing + '"><span aria-hidden="true">' + iconsByMode[tool.processing] + '</span>' + labels[tool.processing] + '</div>');
+    var processingLabel = t("toolHeader.processing." + tool.processing);
+    container.insertAdjacentHTML("afterbegin", '<header class="tool-page-header"><h1>' + t(tool.i18n) + '</h1><div class="privacy-badge privacy-badge-runtime privacy-badge-' + tool.processing + '"><span aria-hidden="true">' + iconsByMode[tool.processing] + '</span>' + processingLabel + '</div></header>');
   }
 
   // ── 菜单折叠 ──

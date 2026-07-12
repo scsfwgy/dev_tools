@@ -1,0 +1,5308 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "AFG",
+      "properties": {
+        "capital": "Kabul",
+        "latitude": "33.00000000",
+        "longitude": "65.00000000",
+        "region": "Asia",
+        "subregion": "Southern Asia",
+        "phone_code": "93",
+        "cities": [
+          {
+            "id": "1",
+            "state_id": "1",
+            "code": "HEA",
+            "name": "Herat",
+            "cname": "赫拉特",
+            "lower_name": "herat",
+            "code_full": "AFG000HEA"
+          },
+          {
+            "id": "2",
+            "state_id": "1",
+            "code": "KBL",
+            "name": "Kabul",
+            "cname": "喀布尔",
+            "lower_name": "kabul",
+            "code_full": "AFG000KBL"
+          },
+          {
+            "id": "3",
+            "state_id": "1",
+            "code": "KDH",
+            "name": "Kandahar",
+            "cname": "坎大哈",
+            "lower_name": "kandahar",
+            "code_full": "AFG000KDH"
+          },
+          {
+            "id": "4",
+            "state_id": "1",
+            "code": "MZR",
+            "name": "Mazar-i Sharif",
+            "cname": "马扎里沙里夫",
+            "lower_name": "mazar-i sharif",
+            "code_full": "AFG000MZR"
+          }
+        ],
+        "name_used": "Afghanistan",
+        "id": "2",
+        "continent_id": "1",
+        "code": "AFG",
+        "name": "Afghanistan",
+        "full_name": "the Islamic Republic of Afghanistan",
+        "cname": "阿富汗",
+        "full_cname": "阿富汗斯坦伊斯兰共和国",
+        "lower_name": "the islamic republic of afghanistan",
+        "remark": "阿富汗位于西亚、南亚和中亚交汇处，北接土库曼斯坦、乌兹别克斯坦和塔吉克斯坦，东北突出的狭长地带与中国接壤，东和东南与巴基斯坦毗邻，西与伊朗交界。[2] "
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [61.210817, 35.650072],
+            [62.230651, 35.270664],
+            [62.984662, 35.404041],
+            [63.193538, 35.857166],
+            [63.982896, 36.007957],
+            [64.546479, 36.312073],
+            [64.746105, 37.111818],
+            [65.588948, 37.305217],
+            [65.745631, 37.661164],
+            [66.217385, 37.39379],
+            [66.518607, 37.362784],
+            [67.075782, 37.356144],
+            [67.83, 37.144994],
+            [68.135562, 37.023115],
+            [68.859446, 37.344336],
+            [69.196273, 37.151144],
+            [69.518785, 37.608997],
+            [70.116578, 37.588223],
+            [70.270574, 37.735165],
+            [70.376304, 38.138396],
+            [70.806821, 38.486282],
+            [71.348131, 38.258905],
+            [71.239404, 37.953265],
+            [71.541918, 37.905774],
+            [71.448693, 37.065645],
+            [71.844638, 36.738171],
+            [72.193041, 36.948288],
+            [72.63689, 37.047558],
+            [73.260056, 37.495257],
+            [73.948696, 37.421566],
+            [74.980002, 37.41999],
+            [75.158028, 37.133031],
+            [74.575893, 37.020841],
+            [74.067552, 36.836176],
+            [72.920025, 36.720007],
+            [71.846292, 36.509942],
+            [71.262348, 36.074388],
+            [71.498768, 35.650563],
+            [71.613076, 35.153203],
+            [71.115019, 34.733126],
+            [71.156773, 34.348911],
+            [70.881803, 33.988856],
+            [69.930543, 34.02012],
+            [70.323594, 33.358533],
+            [69.687147, 33.105499],
+            [69.262522, 32.501944],
+            [69.317764, 31.901412],
+            [68.926677, 31.620189],
+            [68.556932, 31.71331],
+            [67.792689, 31.58293],
+            [67.683394, 31.303154],
+            [66.938891, 31.304911],
+            [66.381458, 30.738899],
+            [66.346473, 29.887943],
+            [65.046862, 29.472181],
+            [64.350419, 29.560031],
+            [64.148002, 29.340819],
+            [63.550261, 29.468331],
+            [62.549857, 29.318572],
+            [60.874248, 29.829239],
+            [61.781222, 30.73585],
+            [61.699314, 31.379506],
+            [60.941945, 31.548075],
+            [60.863655, 32.18292],
+            [60.536078, 32.981269],
+            [60.9637, 33.528832],
+            [60.52843, 33.676446],
+            [60.803193, 34.404102],
+            [61.210817, 35.650072]
+          ]
+        ]
+      }
+    },
+
+    {
+      "type": "Feature",
+      "id": "CHL",
+      "properties": {
+        "capital": "Santiago",
+        "latitude": "-30.00000000",
+        "longitude": "-71.00000000",
+        "region": "Americas",
+        "subregion": "South America",
+        "phone_code": "56",
+        "cities": [
+          {
+            "id": "408",
+            "state_id": "34",
+            "code": "AI",
+            "name": "Region de Alsen del General Carlos Ibanez del",
+            "cname": "伊瓦涅斯将军的艾森大区",
+            "lower_name": "region de alsen del general carlos ibanez del",
+            "code_full": "CHL0000AI"
+          },
+          {
+            "id": "409",
+            "state_id": "34",
+            "code": "AN",
+            "name": "Region de Antofagasta",
+            "cname": "安托法加斯塔大区",
+            "lower_name": "region de antofagasta",
+            "code_full": "CHL0000AN"
+          },
+          {
+            "id": "410",
+            "state_id": "34",
+            "code": "AR",
+            "name": "Region de la Araucania",
+            "cname": "阿劳卡尼亚大区",
+            "lower_name": "region de la araucania",
+            "code_full": "CHL0000AR"
+          },
+          {
+            "id": "411",
+            "state_id": "34",
+            "code": "AT",
+            "name": "Region de Atacama",
+            "cname": "阿塔卡马大区",
+            "lower_name": "region de atacama",
+            "code_full": "CHL0000AT"
+          },
+          {
+            "id": "412",
+            "state_id": "34",
+            "code": "BI",
+            "name": "Region del Biobio",
+            "cname": "比奥比奥大区",
+            "lower_name": "region del biobio",
+            "code_full": "CHL0000BI"
+          },
+          {
+            "id": "413",
+            "state_id": "34",
+            "code": "CO",
+            "name": "Region de Coquimbo",
+            "cname": "科金博大区",
+            "lower_name": "region de coquimbo",
+            "code_full": "CHL0000CO"
+          },
+          {
+            "id": "414",
+            "state_id": "34",
+            "code": "LI",
+            "name": "Libertador",
+            "cname": "复活节岛",
+            "lower_name": "libertador",
+            "code_full": "CHL0000LI"
+          },
+          {
+            "id": "415",
+            "state_id": "34",
+            "code": "LL",
+            "name": "Region de los Lagos",
+            "cname": "湖大区",
+            "lower_name": "region de los lagos",
+            "code_full": "CHL0000LL"
+          },
+          {
+            "id": "416",
+            "state_id": "34",
+            "code": "MA",
+            "name": "Magallanes y Antartica Chilena",
+            "cname": "麦哲伦-智利南极大区",
+            "lower_name": "magallanes y antartica chilena",
+            "code_full": "CHL0000MA"
+          },
+          {
+            "id": "417",
+            "state_id": "34",
+            "code": "ML",
+            "name": "Region del Maule",
+            "cname": "马乌莱大区",
+            "lower_name": "region del maule",
+            "code_full": "CHL0000ML"
+          },
+          {
+            "id": "418",
+            "state_id": "34",
+            "code": "RM",
+            "name": "Santiago de Cuba",
+            "cname": "圣地亚哥",
+            "lower_name": "santiago de cuba",
+            "code_full": "CHL0000RM"
+          },
+          {
+            "id": "419",
+            "state_id": "34",
+            "code": "TA",
+            "name": "Region de Tarapaca",
+            "cname": "塔拉帕卡大区",
+            "lower_name": "region de tarapaca",
+            "code_full": "CHL0000TA"
+          },
+          {
+            "id": "420",
+            "state_id": "34",
+            "code": "VS",
+            "name": "Region de Valparaiso",
+            "cname": "瓦尔帕莱索大区",
+            "lower_name": "region de valparaiso",
+            "code_full": "CHL0000VS"
+          }
+        ],
+        "name_used": "Chile",
+        "id": "43",
+        "continent_id": "7",
+        "code": "CHL",
+        "name": "Chile",
+        "full_name": "Republic of Chile",
+        "cname": "智利",
+        "full_cname": "智利共和国",
+        "lower_name": "republic of chile",
+        "remark": "智利共和国（西班牙语：República de Chile）位于南美洲西南部，安第斯山脉西麓。东同阿根廷为邻，北与秘鲁、玻利维亚接壤，西临太平洋，南与南极洲隔海相望，是世界上地形最狭长的国家，国土面积756626平方公里。为南美洲国家联盟的成员国，在南美洲与阿根廷及巴西并列为ABC强国。"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [-68.63401, -52.63637],
+              [-68.63335, -54.8695],
+              [-67.56244, -54.87001],
+              [-66.95992, -54.89681],
+              [-67.29103, -55.30124],
+              [-68.14863, -55.61183],
+              [-68.639991, -55.580018],
+              [-69.2321, -55.49906],
+              [-69.95809, -55.19843],
+              [-71.00568, -55.05383],
+              [-72.2639, -54.49514],
+              [-73.2852, -53.95752],
+              [-74.66253, -52.83749],
+              [-73.8381, -53.04743],
+              [-72.43418, -53.7154],
+              [-71.10773, -54.07433],
+              [-70.59178, -53.61583],
+              [-70.26748, -52.93123],
+              [-69.34565, -52.5183],
+              [-68.63401, -52.63637]
+            ]
+          ],
+          [
+            [
+              [-68.219913, -21.494347],
+              [-67.82818, -22.872919],
+              [-67.106674, -22.735925],
+              [-66.985234, -22.986349],
+              [-67.328443, -24.025303],
+              [-68.417653, -24.518555],
+              [-68.386001, -26.185016],
+              [-68.5948, -26.506909],
+              [-68.295542, -26.89934],
+              [-69.001235, -27.521214],
+              [-69.65613, -28.459141],
+              [-70.01355, -29.367923],
+              [-69.919008, -30.336339],
+              [-70.535069, -31.36501],
+              [-70.074399, -33.09121],
+              [-69.814777, -33.273886],
+              [-69.817309, -34.193571],
+              [-70.388049, -35.169688],
+              [-70.364769, -36.005089],
+              [-71.121881, -36.658124],
+              [-71.118625, -37.576827],
+              [-70.814664, -38.552995],
+              [-71.413517, -38.916022],
+              [-71.680761, -39.808164],
+              [-71.915734, -40.832339],
+              [-71.746804, -42.051386],
+              [-72.148898, -42.254888],
+              [-71.915424, -43.408565],
+              [-71.464056, -43.787611],
+              [-71.793623, -44.207172],
+              [-71.329801, -44.407522],
+              [-71.222779, -44.784243],
+              [-71.659316, -44.973689],
+              [-71.552009, -45.560733],
+              [-71.917258, -46.884838],
+              [-72.447355, -47.738533],
+              [-72.331161, -48.244238],
+              [-72.648247, -48.878618],
+              [-73.415436, -49.318436],
+              [-73.328051, -50.378785],
+              [-72.975747, -50.74145],
+              [-72.309974, -50.67701],
+              [-72.329404, -51.425956],
+              [-71.914804, -52.009022],
+              [-69.498362, -52.142761],
+              [-68.571545, -52.299444],
+              [-69.461284, -52.291951],
+              [-69.94278, -52.537931],
+              [-70.845102, -52.899201],
+              [-71.006332, -53.833252],
+              [-71.429795, -53.856455],
+              [-72.557943, -53.53141],
+              [-73.702757, -52.835069],
+              [-73.702757, -52.83507],
+              [-74.946763, -52.262754],
+              [-75.260026, -51.629355],
+              [-74.976632, -51.043396],
+              [-75.479754, -50.378372],
+              [-75.608015, -48.673773],
+              [-75.18277, -47.711919],
+              [-74.126581, -46.939253],
+              [-75.644395, -46.647643],
+              [-74.692154, -45.763976],
+              [-74.351709, -44.103044],
+              [-73.240356, -44.454961],
+              [-72.717804, -42.383356],
+              [-73.3889, -42.117532],
+              [-73.701336, -43.365776],
+              [-74.331943, -43.224958],
+              [-74.017957, -41.794813],
+              [-73.677099, -39.942213],
+              [-73.217593, -39.258689],
+              [-73.505559, -38.282883],
+              [-73.588061, -37.156285],
+              [-73.166717, -37.12378],
+              [-72.553137, -35.50884],
+              [-71.861732, -33.909093],
+              [-71.43845, -32.418899],
+              [-71.668721, -30.920645],
+              [-71.370083, -30.095682],
+              [-71.489894, -28.861442],
+              [-70.905124, -27.64038],
+              [-70.724954, -25.705924],
+              [-70.403966, -23.628997],
+              [-70.091246, -21.393319],
+              [-70.16442, -19.756468],
+              [-70.372572, -18.347975],
+              [-69.858444, -18.092694],
+              [-69.590424, -17.580012],
+              [-69.100247, -18.260125],
+              [-68.966818, -18.981683],
+              [-68.442225, -19.405068],
+              [-68.757167, -20.372658],
+              [-68.219913, -21.494347]
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CHN",
+      "properties": {
+        "capital": "Beijing",
+        "latitude": "35.00000000",
+        "longitude": "105.00000000",
+        "region": "Asia",
+        "subregion": "Eastern Asia",
+        "phone_code": "86",
+        "cities": [
+          {
+            "id": "421",
+            "state_id": "35",
+            "code": "1",
+            "name": "Dongcheng",
+            "cname": "东城",
+            "lower_name": "dongcheng",
+            "code_full": "CHN011001"
+          },
+          {
+            "id": "422",
+            "state_id": "35",
+            "code": "2",
+            "name": "Xicheng",
+            "cname": "西城",
+            "lower_name": "xicheng",
+            "code_full": "CHN011002"
+          },
+          {
+            "id": "423",
+            "state_id": "35",
+            "code": "5",
+            "name": "Chaoyang",
+            "cname": "朝阳",
+            "lower_name": "chaoyang",
+            "code_full": "CHN011005"
+          },
+          {
+            "id": "424",
+            "state_id": "35",
+            "code": "6",
+            "name": "Fengtai",
+            "cname": "丰台",
+            "lower_name": "fengtai",
+            "code_full": "CHN011006"
+          },
+          {
+            "id": "425",
+            "state_id": "35",
+            "code": "7",
+            "name": "Shijingshan",
+            "cname": "石景山",
+            "lower_name": "shijingshan",
+            "code_full": "CHN011007"
+          },
+          {
+            "id": "426",
+            "state_id": "35",
+            "code": "8",
+            "name": "Haidian",
+            "cname": "海淀",
+            "lower_name": "haidian",
+            "code_full": "CHN011008"
+          },
+          {
+            "id": "427",
+            "state_id": "35",
+            "code": "9",
+            "name": "Mentougou",
+            "cname": "门头沟",
+            "lower_name": "mentougou",
+            "code_full": "CHN011009"
+          },
+          {
+            "id": "428",
+            "state_id": "35",
+            "code": "11",
+            "name": "Fangshan",
+            "cname": "房山",
+            "lower_name": "fangshan",
+            "code_full": "CHN011011"
+          },
+          {
+            "id": "429",
+            "state_id": "35",
+            "code": "12",
+            "name": "Tongzhou",
+            "cname": "通州",
+            "lower_name": "tongzhou",
+            "code_full": "CHN011012"
+          },
+          {
+            "id": "430",
+            "state_id": "35",
+            "code": "13",
+            "name": "Shunyi",
+            "cname": "顺义",
+            "lower_name": "shunyi",
+            "code_full": "CHN011013"
+          },
+          {
+            "id": "431",
+            "state_id": "35",
+            "code": "21",
+            "name": "Changping",
+            "cname": "昌平",
+            "lower_name": "changping",
+            "code_full": "CHN011021"
+          },
+          {
+            "id": "432",
+            "state_id": "35",
+            "code": "24",
+            "name": "Daxing",
+            "cname": "大兴",
+            "lower_name": "daxing",
+            "code_full": "CHN011024"
+          },
+          {
+            "id": "433",
+            "state_id": "35",
+            "code": "26",
+            "name": "Pinggu",
+            "cname": "平谷",
+            "lower_name": "pinggu",
+            "code_full": "CHN011026"
+          },
+          {
+            "id": "434",
+            "state_id": "35",
+            "code": "27",
+            "name": "Huairou",
+            "cname": "怀柔",
+            "lower_name": "huairou",
+            "code_full": "CHN011027"
+          },
+          {
+            "id": "435",
+            "state_id": "35",
+            "code": "28",
+            "name": "Miyun",
+            "cname": "密云",
+            "lower_name": "miyun",
+            "code_full": "CHN011028"
+          },
+          {
+            "id": "436",
+            "state_id": "35",
+            "code": "29",
+            "name": "Yanqing",
+            "cname": "延庆",
+            "lower_name": "yanqing",
+            "code_full": "CHN011029"
+          },
+          {
+            "id": "437",
+            "state_id": "36",
+            "code": "1",
+            "name": "Heping",
+            "cname": "和平",
+            "lower_name": "heping",
+            "code_full": "CHN012001"
+          },
+          {
+            "id": "438",
+            "state_id": "36",
+            "code": "2",
+            "name": "Hedong",
+            "cname": "河东",
+            "lower_name": "hedong",
+            "code_full": "CHN012002"
+          },
+          {
+            "id": "439",
+            "state_id": "36",
+            "code": "3",
+            "name": "Hexi",
+            "cname": "河西",
+            "lower_name": "hexi",
+            "code_full": "CHN012003"
+          },
+          {
+            "id": "440",
+            "state_id": "36",
+            "code": "4",
+            "name": "Nankai",
+            "cname": "南开",
+            "lower_name": "nankai",
+            "code_full": "CHN012004"
+          },
+          {
+            "id": "441",
+            "state_id": "36",
+            "code": "5",
+            "name": "Hebei",
+            "cname": "河北",
+            "lower_name": "hebei",
+            "code_full": "CHN012005"
+          },
+          {
+            "id": "442",
+            "state_id": "36",
+            "code": "6",
+            "name": "Hongqiao",
+            "cname": "红桥",
+            "lower_name": "hongqiao",
+            "code_full": "CHN012006"
+          },
+          {
+            "id": "443",
+            "state_id": "36",
+            "code": "10",
+            "name": "Dongli",
+            "cname": "东丽",
+            "lower_name": "dongli",
+            "code_full": "CHN012010"
+          },
+          {
+            "id": "444",
+            "state_id": "36",
+            "code": "11",
+            "name": "Xiqing",
+            "cname": "西青",
+            "lower_name": "xiqing",
+            "code_full": "CHN012011"
+          },
+          {
+            "id": "445",
+            "state_id": "36",
+            "code": "12",
+            "name": "Jinnan",
+            "cname": "津南",
+            "lower_name": "jinnan",
+            "code_full": "CHN012012"
+          },
+          {
+            "id": "446",
+            "state_id": "36",
+            "code": "13",
+            "name": "Beichen",
+            "cname": "北辰",
+            "lower_name": "beichen",
+            "code_full": "CHN012013"
+          },
+          {
+            "id": "447",
+            "state_id": "36",
+            "code": "21",
+            "name": "Ninghe",
+            "cname": "宁河",
+            "lower_name": "ninghe",
+            "code_full": "CHN012021"
+          },
+          {
+            "id": "448",
+            "state_id": "36",
+            "code": "22",
+            "name": "Wuqing",
+            "cname": "武清",
+            "lower_name": "wuqing",
+            "code_full": "CHN012022"
+          },
+          {
+            "id": "449",
+            "state_id": "36",
+            "code": "23",
+            "name": "Jinghai",
+            "cname": "静海",
+            "lower_name": "jinghai",
+            "code_full": "CHN012023"
+          },
+          {
+            "id": "450",
+            "state_id": "36",
+            "code": "24",
+            "name": "Baodi",
+            "cname": "宝坻",
+            "lower_name": "baodi",
+            "code_full": "CHN012024"
+          },
+          {
+            "id": "451",
+            "state_id": "36",
+            "code": "25",
+            "name": "Jixian",
+            "cname": "蓟县",
+            "lower_name": "jixian",
+            "code_full": "CHN012025"
+          },
+          {
+            "id": "452",
+            "state_id": "36",
+            "code": "26",
+            "name": "Binghaixinqu",
+            "cname": "滨海新区",
+            "lower_name": "binghaixinqu",
+            "code_full": "CHN012026"
+          },
+          {
+            "id": "453",
+            "state_id": "37",
+            "code": "1",
+            "name": "Shijiazhuang",
+            "cname": "石家庄",
+            "lower_name": "shijiazhuang",
+            "code_full": "CHN013001"
+          },
+          {
+            "id": "454",
+            "state_id": "37",
+            "code": "2",
+            "name": "Tangshan",
+            "cname": "唐山",
+            "lower_name": "tangshan",
+            "code_full": "CHN013002"
+          },
+          {
+            "id": "455",
+            "state_id": "37",
+            "code": "3",
+            "name": "Qinhuangdao",
+            "cname": "秦皇岛",
+            "lower_name": "qinhuangdao",
+            "code_full": "CHN013003"
+          },
+          {
+            "id": "456",
+            "state_id": "37",
+            "code": "4",
+            "name": "Handan",
+            "cname": "邯郸",
+            "lower_name": "handan",
+            "code_full": "CHN013004"
+          },
+          {
+            "id": "457",
+            "state_id": "37",
+            "code": "5",
+            "name": "Xingtai",
+            "cname": "邢台",
+            "lower_name": "xingtai",
+            "code_full": "CHN013005"
+          },
+          {
+            "id": "458",
+            "state_id": "37",
+            "code": "6",
+            "name": "Baoding",
+            "cname": "保定",
+            "lower_name": "baoding",
+            "code_full": "CHN013006"
+          },
+          {
+            "id": "459",
+            "state_id": "37",
+            "code": "7",
+            "name": "Zhangjiakou",
+            "cname": "张家口",
+            "lower_name": "zhangjiakou",
+            "code_full": "CHN013007"
+          },
+          {
+            "id": "460",
+            "state_id": "37",
+            "code": "8",
+            "name": "Chengde",
+            "cname": "承德",
+            "lower_name": "chengde",
+            "code_full": "CHN013008"
+          },
+          {
+            "id": "461",
+            "state_id": "37",
+            "code": "9",
+            "name": "Cangzhou",
+            "cname": "沧州",
+            "lower_name": "cangzhou",
+            "code_full": "CHN013009"
+          },
+          {
+            "id": "462",
+            "state_id": "37",
+            "code": "10",
+            "name": "Langfang",
+            "cname": "廊坊",
+            "lower_name": "langfang",
+            "code_full": "CHN013010"
+          },
+          {
+            "id": "463",
+            "state_id": "37",
+            "code": "11",
+            "name": "Hengshui",
+            "cname": "衡水",
+            "lower_name": "hengshui",
+            "code_full": "CHN013011"
+          },
+          {
+            "id": "464",
+            "state_id": "38",
+            "code": "1",
+            "name": "Taiyuan",
+            "cname": "太原",
+            "lower_name": "taiyuan",
+            "code_full": "CHN014001"
+          },
+          {
+            "id": "465",
+            "state_id": "38",
+            "code": "2",
+            "name": "Datong",
+            "cname": "大同",
+            "lower_name": "datong",
+            "code_full": "CHN014002"
+          },
+          {
+            "id": "466",
+            "state_id": "38",
+            "code": "3",
+            "name": "Yangquan",
+            "cname": "阳泉",
+            "lower_name": "yangquan",
+            "code_full": "CHN014003"
+          },
+          {
+            "id": "467",
+            "state_id": "38",
+            "code": "4",
+            "name": "Changzhi",
+            "cname": "长治",
+            "lower_name": "changzhi",
+            "code_full": "CHN014004"
+          },
+          {
+            "id": "468",
+            "state_id": "38",
+            "code": "5",
+            "name": "Jincheng",
+            "cname": "晋城",
+            "lower_name": "jincheng",
+            "code_full": "CHN014005"
+          },
+          {
+            "id": "469",
+            "state_id": "38",
+            "code": "6",
+            "name": "Shuozhou",
+            "cname": "朔州",
+            "lower_name": "shuozhou",
+            "code_full": "CHN014006"
+          },
+          {
+            "id": "470",
+            "state_id": "38",
+            "code": "7",
+            "name": "Jinzhong",
+            "cname": "晋中",
+            "lower_name": "jinzhong",
+            "code_full": "CHN014007"
+          },
+          {
+            "id": "471",
+            "state_id": "38",
+            "code": "8",
+            "name": "Yuncheng",
+            "cname": "运城",
+            "lower_name": "yuncheng",
+            "code_full": "CHN014008"
+          },
+          {
+            "id": "472",
+            "state_id": "38",
+            "code": "9",
+            "name": "Xinzhou",
+            "cname": "忻州",
+            "lower_name": "xinzhou",
+            "code_full": "CHN014009"
+          },
+          {
+            "id": "473",
+            "state_id": "38",
+            "code": "10",
+            "name": "Linfen",
+            "cname": "临汾",
+            "lower_name": "linfen",
+            "code_full": "CHN014010"
+          },
+          {
+            "id": "474",
+            "state_id": "38",
+            "code": "11",
+            "name": "luliang",
+            "cname": "吕梁",
+            "lower_name": "luliang",
+            "code_full": "CHN014011"
+          },
+          {
+            "id": "475",
+            "state_id": "39",
+            "code": "1",
+            "name": "Hohhot",
+            "cname": "呼和浩特",
+            "lower_name": "hohhot",
+            "code_full": "CHN015001"
+          },
+          {
+            "id": "476",
+            "state_id": "39",
+            "code": "2",
+            "name": "Baotou",
+            "cname": "包头",
+            "lower_name": "baotou",
+            "code_full": "CHN015002"
+          },
+          {
+            "id": "477",
+            "state_id": "39",
+            "code": "3",
+            "name": "Wuhai",
+            "cname": "乌海",
+            "lower_name": "wuhai",
+            "code_full": "CHN015003"
+          },
+          {
+            "id": "478",
+            "state_id": "39",
+            "code": "4",
+            "name": "Chifeng",
+            "cname": "赤峰",
+            "lower_name": "chifeng",
+            "code_full": "CHN015004"
+          },
+          {
+            "id": "479",
+            "state_id": "39",
+            "code": "5",
+            "name": "Tongliao",
+            "cname": "通辽",
+            "lower_name": "tongliao",
+            "code_full": "CHN015005"
+          },
+          {
+            "id": "480",
+            "state_id": "39",
+            "code": "6",
+            "name": "Ordos",
+            "cname": "鄂尔多斯",
+            "lower_name": "ordos",
+            "code_full": "CHN015006"
+          },
+          {
+            "id": "481",
+            "state_id": "39",
+            "code": "7",
+            "name": "Hulun Buir",
+            "cname": "呼伦贝尔",
+            "lower_name": "hulun buir",
+            "code_full": "CHN015007"
+          },
+          {
+            "id": "482",
+            "state_id": "39",
+            "code": "8",
+            "name": "Bayannur",
+            "cname": "巴彦淖尔",
+            "lower_name": "bayannur",
+            "code_full": "CHN015008"
+          },
+          {
+            "id": "483",
+            "state_id": "39",
+            "code": "9",
+            "name": "Ulan Qab",
+            "cname": "乌兰察布",
+            "lower_name": "ulan qab",
+            "code_full": "CHN015009"
+          },
+          {
+            "id": "484",
+            "state_id": "39",
+            "code": "22",
+            "name": "Xing'an",
+            "cname": "兴安",
+            "lower_name": "xing'an",
+            "code_full": "CHN015022"
+          },
+          {
+            "id": "485",
+            "state_id": "39",
+            "code": "25",
+            "name": "Xilin Gol",
+            "cname": "锡林郭勒",
+            "lower_name": "xilin gol",
+            "code_full": "CHN015025"
+          },
+          {
+            "id": "486",
+            "state_id": "39",
+            "code": "29",
+            "name": "Alxa",
+            "cname": "阿拉善",
+            "lower_name": "alxa",
+            "code_full": "CHN015029"
+          },
+          {
+            "id": "487",
+            "state_id": "40",
+            "code": "1",
+            "name": "Shenyang",
+            "cname": "沈阳",
+            "lower_name": "shenyang",
+            "code_full": "CHN021001"
+          },
+          {
+            "id": "488",
+            "state_id": "40",
+            "code": "2",
+            "name": "Dalian",
+            "cname": "大连",
+            "lower_name": "dalian",
+            "code_full": "CHN021002"
+          },
+          {
+            "id": "489",
+            "state_id": "40",
+            "code": "3",
+            "name": "Anshan",
+            "cname": "鞍山",
+            "lower_name": "anshan",
+            "code_full": "CHN021003"
+          },
+          {
+            "id": "490",
+            "state_id": "40",
+            "code": "4",
+            "name": "Fushun",
+            "cname": "抚顺",
+            "lower_name": "fushun",
+            "code_full": "CHN021004"
+          },
+          {
+            "id": "491",
+            "state_id": "40",
+            "code": "5",
+            "name": "Benxi",
+            "cname": "本溪",
+            "lower_name": "benxi",
+            "code_full": "CHN021005"
+          },
+          {
+            "id": "492",
+            "state_id": "40",
+            "code": "6",
+            "name": "Dandong",
+            "cname": "丹东",
+            "lower_name": "dandong",
+            "code_full": "CHN021006"
+          },
+          {
+            "id": "493",
+            "state_id": "40",
+            "code": "7",
+            "name": "Jinzhou",
+            "cname": "锦州",
+            "lower_name": "jinzhou",
+            "code_full": "CHN021007"
+          },
+          {
+            "id": "494",
+            "state_id": "40",
+            "code": "8",
+            "name": "Yingkou",
+            "cname": "营口",
+            "lower_name": "yingkou",
+            "code_full": "CHN021008"
+          },
+          {
+            "id": "495",
+            "state_id": "40",
+            "code": "9",
+            "name": "Fuxin",
+            "cname": "阜新",
+            "lower_name": "fuxin",
+            "code_full": "CHN021009"
+          },
+          {
+            "id": "496",
+            "state_id": "40",
+            "code": "10",
+            "name": "Liaoyang",
+            "cname": "辽阳",
+            "lower_name": "liaoyang",
+            "code_full": "CHN021010"
+          },
+          {
+            "id": "497",
+            "state_id": "40",
+            "code": "11",
+            "name": "Panjin",
+            "cname": "盘锦",
+            "lower_name": "panjin",
+            "code_full": "CHN021011"
+          },
+          {
+            "id": "498",
+            "state_id": "40",
+            "code": "12",
+            "name": "Tieling",
+            "cname": "铁岭",
+            "lower_name": "tieling",
+            "code_full": "CHN021012"
+          },
+          {
+            "id": "499",
+            "state_id": "40",
+            "code": "13",
+            "name": "Chaoyang",
+            "cname": "朝阳",
+            "lower_name": "chaoyang",
+            "code_full": "CHN021013"
+          },
+          {
+            "id": "500",
+            "state_id": "40",
+            "code": "14",
+            "name": "Huludao",
+            "cname": "葫芦岛",
+            "lower_name": "huludao",
+            "code_full": "CHN021014"
+          },
+          {
+            "id": "501",
+            "state_id": "41",
+            "code": "1",
+            "name": "Changchun",
+            "cname": "长春",
+            "lower_name": "changchun",
+            "code_full": "CHN022001"
+          },
+          {
+            "id": "502",
+            "state_id": "41",
+            "code": "2",
+            "name": "Jilin",
+            "cname": "吉林",
+            "lower_name": "jilin",
+            "code_full": "CHN022002"
+          },
+          {
+            "id": "503",
+            "state_id": "41",
+            "code": "3",
+            "name": "Siping",
+            "cname": "四平",
+            "lower_name": "siping",
+            "code_full": "CHN022003"
+          },
+          {
+            "id": "504",
+            "state_id": "41",
+            "code": "4",
+            "name": "Liaoyuan",
+            "cname": "辽源",
+            "lower_name": "liaoyuan",
+            "code_full": "CHN022004"
+          },
+          {
+            "id": "505",
+            "state_id": "41",
+            "code": "5",
+            "name": "Tonghua",
+            "cname": "通化",
+            "lower_name": "tonghua",
+            "code_full": "CHN022005"
+          },
+          {
+            "id": "506",
+            "state_id": "41",
+            "code": "6",
+            "name": "Baishan",
+            "cname": "白山",
+            "lower_name": "baishan",
+            "code_full": "CHN022006"
+          },
+          {
+            "id": "507",
+            "state_id": "41",
+            "code": "7",
+            "name": "Songyuan",
+            "cname": "松原",
+            "lower_name": "songyuan",
+            "code_full": "CHN022007"
+          },
+          {
+            "id": "508",
+            "state_id": "41",
+            "code": "8",
+            "name": "Baicheng",
+            "cname": "白城",
+            "lower_name": "baicheng",
+            "code_full": "CHN022008"
+          },
+          {
+            "id": "509",
+            "state_id": "41",
+            "code": "24",
+            "name": "Yanbian Korean Autonomous Prefecture",
+            "cname": "延边",
+            "lower_name": "yanbian korean autonomous prefecture",
+            "code_full": "CHN022024"
+          },
+          {
+            "id": "510",
+            "state_id": "42",
+            "code": "1",
+            "name": "Harbin",
+            "cname": "哈尔滨",
+            "lower_name": "harbin",
+            "code_full": "CHN023001"
+          },
+          {
+            "id": "511",
+            "state_id": "42",
+            "code": "2",
+            "name": "Qiqihar",
+            "cname": "齐齐哈尔",
+            "lower_name": "qiqihar",
+            "code_full": "CHN023002"
+          },
+          {
+            "id": "512",
+            "state_id": "42",
+            "code": "3",
+            "name": "Jixi",
+            "cname": "鸡西",
+            "lower_name": "jixi",
+            "code_full": "CHN023003"
+          },
+          {
+            "id": "513",
+            "state_id": "42",
+            "code": "4",
+            "name": "Hegang",
+            "cname": "鹤岗",
+            "lower_name": "hegang",
+            "code_full": "CHN023004"
+          },
+          {
+            "id": "514",
+            "state_id": "42",
+            "code": "5",
+            "name": "Shuangyashan",
+            "cname": "双鸭山",
+            "lower_name": "shuangyashan",
+            "code_full": "CHN023005"
+          },
+          {
+            "id": "515",
+            "state_id": "42",
+            "code": "6",
+            "name": "Daqing",
+            "cname": "大庆",
+            "lower_name": "daqing",
+            "code_full": "CHN023006"
+          },
+          {
+            "id": "516",
+            "state_id": "42",
+            "code": "7",
+            "name": "Yichun",
+            "cname": "伊春",
+            "lower_name": "yichun",
+            "code_full": "CHN023007"
+          },
+          {
+            "id": "517",
+            "state_id": "42",
+            "code": "8",
+            "name": "Jiamusi",
+            "cname": "佳木斯",
+            "lower_name": "jiamusi",
+            "code_full": "CHN023008"
+          },
+          {
+            "id": "518",
+            "state_id": "42",
+            "code": "9",
+            "name": "Qitaihe",
+            "cname": "七台河",
+            "lower_name": "qitaihe",
+            "code_full": "CHN023009"
+          },
+          {
+            "id": "519",
+            "state_id": "42",
+            "code": "10",
+            "name": "Mudanjiang",
+            "cname": "牡丹江",
+            "lower_name": "mudanjiang",
+            "code_full": "CHN023010"
+          },
+          {
+            "id": "520",
+            "state_id": "42",
+            "code": "11",
+            "name": "Heihe",
+            "cname": "黑河",
+            "lower_name": "heihe",
+            "code_full": "CHN023011"
+          },
+          {
+            "id": "521",
+            "state_id": "42",
+            "code": "12",
+            "name": "Suihua",
+            "cname": "绥化",
+            "lower_name": "suihua",
+            "code_full": "CHN023012"
+          },
+          {
+            "id": "522",
+            "state_id": "42",
+            "code": "27",
+            "name": "Da Hinggan Ling",
+            "cname": "大兴安岭",
+            "lower_name": "da hinggan ling",
+            "code_full": "CHN023027"
+          },
+          {
+            "id": "523",
+            "state_id": "43",
+            "code": "1",
+            "name": "Huangpu",
+            "cname": "黄浦",
+            "lower_name": "huangpu",
+            "code_full": "CHN031001"
+          },
+          {
+            "id": "524",
+            "state_id": "43",
+            "code": "3",
+            "name": "Luwan",
+            "cname": "卢湾",
+            "lower_name": "luwan",
+            "code_full": "CHN031003"
+          },
+          {
+            "id": "525",
+            "state_id": "43",
+            "code": "4",
+            "name": "Xuhui",
+            "cname": "徐汇",
+            "lower_name": "xuhui",
+            "code_full": "CHN031004"
+          },
+          {
+            "id": "526",
+            "state_id": "43",
+            "code": "5",
+            "name": "Changning",
+            "cname": "长宁",
+            "lower_name": "changning",
+            "code_full": "CHN031005"
+          },
+          {
+            "id": "527",
+            "state_id": "43",
+            "code": "6",
+            "name": "Jing'an",
+            "cname": "静安",
+            "lower_name": "jing'an",
+            "code_full": "CHN031006"
+          },
+          {
+            "id": "528",
+            "state_id": "43",
+            "code": "7",
+            "name": "Putuo",
+            "cname": "普陀",
+            "lower_name": "putuo",
+            "code_full": "CHN031007"
+          },
+          {
+            "id": "529",
+            "state_id": "43",
+            "code": "8",
+            "name": "Zhabei",
+            "cname": "闸北",
+            "lower_name": "zhabei",
+            "code_full": "CHN031008"
+          },
+          {
+            "id": "530",
+            "state_id": "43",
+            "code": "9",
+            "name": "Hongkou",
+            "cname": "虹口",
+            "lower_name": "hongkou",
+            "code_full": "CHN031009"
+          },
+          {
+            "id": "531",
+            "state_id": "43",
+            "code": "11",
+            "name": "Yangpu",
+            "cname": "杨浦",
+            "lower_name": "yangpu",
+            "code_full": "CHN031011"
+          },
+          {
+            "id": "532",
+            "state_id": "43",
+            "code": "12",
+            "name": "Minhang",
+            "cname": "闵行",
+            "lower_name": "minhang",
+            "code_full": "CHN031012"
+          },
+          {
+            "id": "533",
+            "state_id": "43",
+            "code": "13",
+            "name": "Baoshan",
+            "cname": "宝山",
+            "lower_name": "baoshan",
+            "code_full": "CHN031013"
+          },
+          {
+            "id": "534",
+            "state_id": "43",
+            "code": "14",
+            "name": "Jiading",
+            "cname": "嘉定",
+            "lower_name": "jiading",
+            "code_full": "CHN031014"
+          },
+          {
+            "id": "535",
+            "state_id": "43",
+            "code": "15",
+            "name": "Pudong New Area",
+            "cname": "浦东新区",
+            "lower_name": "pudong new area",
+            "code_full": "CHN031015"
+          },
+          {
+            "id": "536",
+            "state_id": "43",
+            "code": "16",
+            "name": "Jinshan",
+            "cname": "金山",
+            "lower_name": "jinshan",
+            "code_full": "CHN031016"
+          },
+          {
+            "id": "537",
+            "state_id": "43",
+            "code": "17",
+            "name": "Songjiang",
+            "cname": "松江",
+            "lower_name": "songjiang",
+            "code_full": "CHN031017"
+          },
+          {
+            "id": "538",
+            "state_id": "43",
+            "code": "26",
+            "name": "Fengxian",
+            "cname": "奉贤",
+            "lower_name": "fengxian",
+            "code_full": "CHN031026"
+          },
+          {
+            "id": "539",
+            "state_id": "43",
+            "code": "29",
+            "name": "Qingpu",
+            "cname": "青浦",
+            "lower_name": "qingpu",
+            "code_full": "CHN031029"
+          },
+          {
+            "id": "540",
+            "state_id": "43",
+            "code": "30",
+            "name": "Chongming",
+            "cname": "崇明",
+            "lower_name": "chongming",
+            "code_full": "CHN031030"
+          },
+          {
+            "id": "541",
+            "state_id": "44",
+            "code": "1",
+            "name": "Nanjing",
+            "cname": "南京",
+            "lower_name": "nanjing",
+            "code_full": "CHN032001"
+          },
+          {
+            "id": "542",
+            "state_id": "44",
+            "code": "2",
+            "name": "Wuxi",
+            "cname": "无锡",
+            "lower_name": "wuxi",
+            "code_full": "CHN032002"
+          },
+          {
+            "id": "543",
+            "state_id": "44",
+            "code": "3",
+            "name": "Xuzhou",
+            "cname": "徐州",
+            "lower_name": "xuzhou",
+            "code_full": "CHN032003"
+          },
+          {
+            "id": "544",
+            "state_id": "44",
+            "code": "4",
+            "name": "Changzhou",
+            "cname": "常州",
+            "lower_name": "changzhou",
+            "code_full": "CHN032004"
+          },
+          {
+            "id": "545",
+            "state_id": "44",
+            "code": "5",
+            "name": "Suzhou",
+            "cname": "苏州",
+            "lower_name": "suzhou",
+            "code_full": "CHN032005"
+          },
+          {
+            "id": "546",
+            "state_id": "44",
+            "code": "6",
+            "name": "Nantong",
+            "cname": "南通",
+            "lower_name": "nantong",
+            "code_full": "CHN032006"
+          },
+          {
+            "id": "547",
+            "state_id": "44",
+            "code": "7",
+            "name": "Lianyungang",
+            "cname": "连云港",
+            "lower_name": "lianyungang",
+            "code_full": "CHN032007"
+          },
+          {
+            "id": "548",
+            "state_id": "44",
+            "code": "8",
+            "name": "Huai'an",
+            "cname": "淮安",
+            "lower_name": "huai'an",
+            "code_full": "CHN032008"
+          },
+          {
+            "id": "549",
+            "state_id": "44",
+            "code": "9",
+            "name": "Yancheng",
+            "cname": "盐城",
+            "lower_name": "yancheng",
+            "code_full": "CHN032009"
+          },
+          {
+            "id": "550",
+            "state_id": "44",
+            "code": "10",
+            "name": "Yangzhou",
+            "cname": "扬州",
+            "lower_name": "yangzhou",
+            "code_full": "CHN032010"
+          },
+          {
+            "id": "551",
+            "state_id": "44",
+            "code": "11",
+            "name": "Zhenjiang",
+            "cname": "镇江",
+            "lower_name": "zhenjiang",
+            "code_full": "CHN032011"
+          },
+          {
+            "id": "552",
+            "state_id": "44",
+            "code": "12",
+            "name": "Taizhou",
+            "cname": "泰州",
+            "lower_name": "taizhou",
+            "code_full": "CHN032012"
+          },
+          {
+            "id": "553",
+            "state_id": "44",
+            "code": "13",
+            "name": "Suqian",
+            "cname": "宿迁",
+            "lower_name": "suqian",
+            "code_full": "CHN032013"
+          },
+          {
+            "id": "554",
+            "state_id": "45",
+            "code": "1",
+            "name": "Hangzhou",
+            "cname": "杭州",
+            "lower_name": "hangzhou",
+            "code_full": "CHN033001"
+          },
+          {
+            "id": "555",
+            "state_id": "45",
+            "code": "2",
+            "name": "Ningbo",
+            "cname": "宁波",
+            "lower_name": "ningbo",
+            "code_full": "CHN033002"
+          },
+          {
+            "id": "556",
+            "state_id": "45",
+            "code": "3",
+            "name": "Wenzhou",
+            "cname": "温州",
+            "lower_name": "wenzhou",
+            "code_full": "CHN033003"
+          },
+          {
+            "id": "557",
+            "state_id": "45",
+            "code": "4",
+            "name": "Jiaxing",
+            "cname": "嘉兴",
+            "lower_name": "jiaxing",
+            "code_full": "CHN033004"
+          },
+          {
+            "id": "558",
+            "state_id": "45",
+            "code": "5",
+            "name": "Huzhou",
+            "cname": "湖州",
+            "lower_name": "huzhou",
+            "code_full": "CHN033005"
+          },
+          {
+            "id": "559",
+            "state_id": "45",
+            "code": "6",
+            "name": "Shaoxing",
+            "cname": "绍兴",
+            "lower_name": "shaoxing",
+            "code_full": "CHN033006"
+          },
+          {
+            "id": "560",
+            "state_id": "45",
+            "code": "7",
+            "name": "Jinhua",
+            "cname": "金华",
+            "lower_name": "jinhua",
+            "code_full": "CHN033007"
+          },
+          {
+            "id": "561",
+            "state_id": "45",
+            "code": "8",
+            "name": "Quzhou",
+            "cname": "衢州",
+            "lower_name": "quzhou",
+            "code_full": "CHN033008"
+          },
+          {
+            "id": "562",
+            "state_id": "45",
+            "code": "9",
+            "name": "Zhoushan",
+            "cname": "舟山",
+            "lower_name": "zhoushan",
+            "code_full": "CHN033009"
+          },
+          {
+            "id": "563",
+            "state_id": "45",
+            "code": "10",
+            "name": "Taizhou",
+            "cname": "台州",
+            "lower_name": "taizhou",
+            "code_full": "CHN033010"
+          },
+          {
+            "id": "564",
+            "state_id": "45",
+            "code": "11",
+            "name": "Lishui",
+            "cname": "丽水",
+            "lower_name": "lishui",
+            "code_full": "CHN033011"
+          },
+          {
+            "id": "565",
+            "state_id": "46",
+            "code": "1",
+            "name": "Hefei",
+            "cname": "合肥",
+            "lower_name": "hefei",
+            "code_full": "CHN034001"
+          },
+          {
+            "id": "566",
+            "state_id": "46",
+            "code": "2",
+            "name": "Wuhu",
+            "cname": "芜湖",
+            "lower_name": "wuhu",
+            "code_full": "CHN034002"
+          },
+          {
+            "id": "567",
+            "state_id": "46",
+            "code": "3",
+            "name": "Bengbu",
+            "cname": "蚌埠",
+            "lower_name": "bengbu",
+            "code_full": "CHN034003"
+          },
+          {
+            "id": "568",
+            "state_id": "46",
+            "code": "4",
+            "name": "Huainan",
+            "cname": "淮南",
+            "lower_name": "huainan",
+            "code_full": "CHN034004"
+          },
+          {
+            "id": "569",
+            "state_id": "46",
+            "code": "5",
+            "name": "Ma'anshan",
+            "cname": "马鞍山",
+            "lower_name": "ma'anshan",
+            "code_full": "CHN034005"
+          },
+          {
+            "id": "570",
+            "state_id": "46",
+            "code": "6",
+            "name": "Huaibei",
+            "cname": "淮北",
+            "lower_name": "huaibei",
+            "code_full": "CHN034006"
+          },
+          {
+            "id": "571",
+            "state_id": "46",
+            "code": "7",
+            "name": "Tongling",
+            "cname": "铜陵",
+            "lower_name": "tongling",
+            "code_full": "CHN034007"
+          },
+          {
+            "id": "572",
+            "state_id": "46",
+            "code": "8",
+            "name": "Anqing",
+            "cname": "安庆",
+            "lower_name": "anqing",
+            "code_full": "CHN034008"
+          },
+          {
+            "id": "573",
+            "state_id": "46",
+            "code": "10",
+            "name": "Huangshan",
+            "cname": "黄山",
+            "lower_name": "huangshan",
+            "code_full": "CHN034010"
+          },
+          {
+            "id": "574",
+            "state_id": "46",
+            "code": "11",
+            "name": "Chuzhou",
+            "cname": "滁州",
+            "lower_name": "chuzhou",
+            "code_full": "CHN034011"
+          },
+          {
+            "id": "575",
+            "state_id": "46",
+            "code": "12",
+            "name": "Fuyang",
+            "cname": "阜阳",
+            "lower_name": "fuyang",
+            "code_full": "CHN034012"
+          },
+          {
+            "id": "576",
+            "state_id": "46",
+            "code": "13",
+            "name": "Suzhou",
+            "cname": "宿州",
+            "lower_name": "suzhou",
+            "code_full": "CHN034013"
+          },
+          {
+            "id": "577",
+            "state_id": "46",
+            "code": "15",
+            "name": "Lu'an",
+            "cname": "六安",
+            "lower_name": "lu'an",
+            "code_full": "CHN034015"
+          },
+          {
+            "id": "578",
+            "state_id": "46",
+            "code": "16",
+            "name": "Bozhou",
+            "cname": "亳州",
+            "lower_name": "bozhou",
+            "code_full": "CHN034016"
+          },
+          {
+            "id": "579",
+            "state_id": "46",
+            "code": "17",
+            "name": "Chizhou",
+            "cname": "池州",
+            "lower_name": "chizhou",
+            "code_full": "CHN034017"
+          },
+          {
+            "id": "580",
+            "state_id": "46",
+            "code": "18",
+            "name": "Xuancheng",
+            "cname": "宣城",
+            "lower_name": "xuancheng",
+            "code_full": "CHN034018"
+          },
+          {
+            "id": "581",
+            "state_id": "47",
+            "code": "1",
+            "name": "Fuzhou",
+            "cname": "福州",
+            "lower_name": "fuzhou",
+            "code_full": "CHN035001"
+          },
+          {
+            "id": "582",
+            "state_id": "47",
+            "code": "2",
+            "name": "Xiamen",
+            "cname": "厦门",
+            "lower_name": "xiamen",
+            "code_full": "CHN035002"
+          },
+          {
+            "id": "583",
+            "state_id": "47",
+            "code": "3",
+            "name": "Putian",
+            "cname": "莆田",
+            "lower_name": "putian",
+            "code_full": "CHN035003"
+          },
+          {
+            "id": "584",
+            "state_id": "47",
+            "code": "4",
+            "name": "Sanming",
+            "cname": "三明",
+            "lower_name": "sanming",
+            "code_full": "CHN035004"
+          },
+          {
+            "id": "585",
+            "state_id": "47",
+            "code": "5",
+            "name": "Quanzhou",
+            "cname": "泉州",
+            "lower_name": "quanzhou",
+            "code_full": "CHN035005"
+          },
+          {
+            "id": "586",
+            "state_id": "47",
+            "code": "6",
+            "name": "Zhangzhou",
+            "cname": "漳州",
+            "lower_name": "zhangzhou",
+            "code_full": "CHN035006"
+          },
+          {
+            "id": "587",
+            "state_id": "47",
+            "code": "7",
+            "name": "Nanping",
+            "cname": "南平",
+            "lower_name": "nanping",
+            "code_full": "CHN035007"
+          },
+          {
+            "id": "588",
+            "state_id": "47",
+            "code": "8",
+            "name": "Longyan",
+            "cname": "龙岩",
+            "lower_name": "longyan",
+            "code_full": "CHN035008"
+          },
+          {
+            "id": "589",
+            "state_id": "47",
+            "code": "9",
+            "name": "Ningde",
+            "cname": "宁德",
+            "lower_name": "ningde",
+            "code_full": "CHN035009"
+          },
+          {
+            "id": "590",
+            "state_id": "48",
+            "code": "1",
+            "name": "Nanchang",
+            "cname": "南昌",
+            "lower_name": "nanchang",
+            "code_full": "CHN036001"
+          },
+          {
+            "id": "591",
+            "state_id": "48",
+            "code": "2",
+            "name": "Jingdezhen",
+            "cname": "景德镇",
+            "lower_name": "jingdezhen",
+            "code_full": "CHN036002"
+          },
+          {
+            "id": "592",
+            "state_id": "48",
+            "code": "3",
+            "name": "Pingxiang",
+            "cname": "萍乡",
+            "lower_name": "pingxiang",
+            "code_full": "CHN036003"
+          },
+          {
+            "id": "593",
+            "state_id": "48",
+            "code": "4",
+            "name": "Jiujiang",
+            "cname": "九江",
+            "lower_name": "jiujiang",
+            "code_full": "CHN036004"
+          },
+          {
+            "id": "594",
+            "state_id": "48",
+            "code": "5",
+            "name": "Xinyu",
+            "cname": "新余",
+            "lower_name": "xinyu",
+            "code_full": "CHN036005"
+          },
+          {
+            "id": "595",
+            "state_id": "48",
+            "code": "6",
+            "name": "Yingtan",
+            "cname": "鹰潭",
+            "lower_name": "yingtan",
+            "code_full": "CHN036006"
+          },
+          {
+            "id": "596",
+            "state_id": "48",
+            "code": "7",
+            "name": "Ganzhou",
+            "cname": "赣州",
+            "lower_name": "ganzhou",
+            "code_full": "CHN036007"
+          },
+          {
+            "id": "597",
+            "state_id": "48",
+            "code": "8",
+            "name": "Ji'an",
+            "cname": "吉安",
+            "lower_name": "ji'an",
+            "code_full": "CHN036008"
+          },
+          {
+            "id": "598",
+            "state_id": "48",
+            "code": "9",
+            "name": "Yichun",
+            "cname": "宜春",
+            "lower_name": "yichun",
+            "code_full": "CHN036009"
+          },
+          {
+            "id": "599",
+            "state_id": "48",
+            "code": "10",
+            "name": "Fuzhou",
+            "cname": "抚州",
+            "lower_name": "fuzhou",
+            "code_full": "CHN036010"
+          },
+          {
+            "id": "600",
+            "state_id": "48",
+            "code": "11",
+            "name": "Shangrao",
+            "cname": "上饶",
+            "lower_name": "shangrao",
+            "code_full": "CHN036011"
+          },
+          {
+            "id": "601",
+            "state_id": "49",
+            "code": "1",
+            "name": "Jinan",
+            "cname": "济南",
+            "lower_name": "jinan",
+            "code_full": "CHN037001"
+          },
+          {
+            "id": "602",
+            "state_id": "49",
+            "code": "2",
+            "name": "Qingdao",
+            "cname": "青岛",
+            "lower_name": "qingdao",
+            "code_full": "CHN037002"
+          },
+          {
+            "id": "603",
+            "state_id": "49",
+            "code": "3",
+            "name": "Zibo",
+            "cname": "淄博",
+            "lower_name": "zibo",
+            "code_full": "CHN037003"
+          },
+          {
+            "id": "604",
+            "state_id": "49",
+            "code": "4",
+            "name": "Zaozhuang",
+            "cname": "枣庄",
+            "lower_name": "zaozhuang",
+            "code_full": "CHN037004"
+          },
+          {
+            "id": "605",
+            "state_id": "49",
+            "code": "5",
+            "name": "Dongying",
+            "cname": "东营",
+            "lower_name": "dongying",
+            "code_full": "CHN037005"
+          },
+          {
+            "id": "606",
+            "state_id": "49",
+            "code": "6",
+            "name": "Yantai",
+            "cname": "烟台",
+            "lower_name": "yantai",
+            "code_full": "CHN037006"
+          },
+          {
+            "id": "607",
+            "state_id": "49",
+            "code": "7",
+            "name": "Weifang",
+            "cname": "潍坊",
+            "lower_name": "weifang",
+            "code_full": "CHN037007"
+          },
+          {
+            "id": "608",
+            "state_id": "49",
+            "code": "8",
+            "name": "Jining",
+            "cname": "济宁",
+            "lower_name": "jining",
+            "code_full": "CHN037008"
+          },
+          {
+            "id": "609",
+            "state_id": "49",
+            "code": "9",
+            "name": "Tai'an",
+            "cname": "泰安",
+            "lower_name": "tai'an",
+            "code_full": "CHN037009"
+          },
+          {
+            "id": "610",
+            "state_id": "49",
+            "code": "10",
+            "name": "Weihai",
+            "cname": "威海",
+            "lower_name": "weihai",
+            "code_full": "CHN037010"
+          },
+          {
+            "id": "611",
+            "state_id": "49",
+            "code": "11",
+            "name": "Rizhao",
+            "cname": "日照",
+            "lower_name": "rizhao",
+            "code_full": "CHN037011"
+          },
+          {
+            "id": "612",
+            "state_id": "49",
+            "code": "12",
+            "name": "Laiwu",
+            "cname": "莱芜",
+            "lower_name": "laiwu",
+            "code_full": "CHN037012"
+          },
+          {
+            "id": "613",
+            "state_id": "49",
+            "code": "13",
+            "name": "Linyi",
+            "cname": "临沂",
+            "lower_name": "linyi",
+            "code_full": "CHN037013"
+          },
+          {
+            "id": "614",
+            "state_id": "49",
+            "code": "14",
+            "name": "Dezhou",
+            "cname": "德州",
+            "lower_name": "dezhou",
+            "code_full": "CHN037014"
+          },
+          {
+            "id": "615",
+            "state_id": "49",
+            "code": "15",
+            "name": "Liaocheng",
+            "cname": "聊城",
+            "lower_name": "liaocheng",
+            "code_full": "CHN037015"
+          },
+          {
+            "id": "616",
+            "state_id": "49",
+            "code": "16",
+            "name": "Binzhou",
+            "cname": "滨州",
+            "lower_name": "binzhou",
+            "code_full": "CHN037016"
+          },
+          {
+            "id": "617",
+            "state_id": "49",
+            "code": "17",
+            "name": "Heze",
+            "cname": "菏泽",
+            "lower_name": "heze",
+            "code_full": "CHN037017"
+          },
+          {
+            "id": "618",
+            "state_id": "50",
+            "code": "1",
+            "name": "Zhengzhou",
+            "cname": "郑州",
+            "lower_name": "zhengzhou",
+            "code_full": "CHN041001"
+          },
+          {
+            "id": "619",
+            "state_id": "50",
+            "code": "2",
+            "name": "Kaifeng",
+            "cname": "开封",
+            "lower_name": "kaifeng",
+            "code_full": "CHN041002"
+          },
+          {
+            "id": "620",
+            "state_id": "50",
+            "code": "3",
+            "name": "Luoyang",
+            "cname": "洛阳",
+            "lower_name": "luoyang",
+            "code_full": "CHN041003"
+          },
+          {
+            "id": "621",
+            "state_id": "50",
+            "code": "4",
+            "name": "Pingdingshan",
+            "cname": "平顶山",
+            "lower_name": "pingdingshan",
+            "code_full": "CHN041004"
+          },
+          {
+            "id": "622",
+            "state_id": "50",
+            "code": "5",
+            "name": "Anyang",
+            "cname": "安阳",
+            "lower_name": "anyang",
+            "code_full": "CHN041005"
+          },
+          {
+            "id": "623",
+            "state_id": "50",
+            "code": "6",
+            "name": "Hebi",
+            "cname": "鹤壁",
+            "lower_name": "hebi",
+            "code_full": "CHN041006"
+          },
+          {
+            "id": "624",
+            "state_id": "50",
+            "code": "7",
+            "name": "Xinxiang",
+            "cname": "新乡",
+            "lower_name": "xinxiang",
+            "code_full": "CHN041007"
+          },
+          {
+            "id": "625",
+            "state_id": "50",
+            "code": "8",
+            "name": "Jiaozuo",
+            "cname": "焦作",
+            "lower_name": "jiaozuo",
+            "code_full": "CHN041008"
+          },
+          {
+            "id": "626",
+            "state_id": "50",
+            "code": "9",
+            "name": "Puyang",
+            "cname": "濮阳",
+            "lower_name": "puyang",
+            "code_full": "CHN041009"
+          },
+          {
+            "id": "627",
+            "state_id": "50",
+            "code": "10",
+            "name": "Xuchang",
+            "cname": "许昌",
+            "lower_name": "xuchang",
+            "code_full": "CHN041010"
+          },
+          {
+            "id": "628",
+            "state_id": "50",
+            "code": "11",
+            "name": "Luohe",
+            "cname": "漯河",
+            "lower_name": "luohe",
+            "code_full": "CHN041011"
+          },
+          {
+            "id": "629",
+            "state_id": "50",
+            "code": "12",
+            "name": "Sanmenxia",
+            "cname": "三门峡",
+            "lower_name": "sanmenxia",
+            "code_full": "CHN041012"
+          },
+          {
+            "id": "630",
+            "state_id": "50",
+            "code": "13",
+            "name": "Nanyang",
+            "cname": "南阳",
+            "lower_name": "nanyang",
+            "code_full": "CHN041013"
+          },
+          {
+            "id": "631",
+            "state_id": "50",
+            "code": "14",
+            "name": "Shangqiu",
+            "cname": "商丘",
+            "lower_name": "shangqiu",
+            "code_full": "CHN041014"
+          },
+          {
+            "id": "632",
+            "state_id": "50",
+            "code": "15",
+            "name": "Xinyang",
+            "cname": "信阳",
+            "lower_name": "xinyang",
+            "code_full": "CHN041015"
+          },
+          {
+            "id": "633",
+            "state_id": "50",
+            "code": "16",
+            "name": "Zhoukou",
+            "cname": "周口",
+            "lower_name": "zhoukou",
+            "code_full": "CHN041016"
+          },
+          {
+            "id": "634",
+            "state_id": "50",
+            "code": "17",
+            "name": "Zhumadian",
+            "cname": "驻马店",
+            "lower_name": "zhumadian",
+            "code_full": "CHN041017"
+          },
+          {
+            "id": "635",
+            "state_id": "50",
+            "code": "18",
+            "name": "Jiyuan",
+            "cname": "济源",
+            "lower_name": "jiyuan",
+            "code_full": "CHN041018"
+          },
+          {
+            "id": "636",
+            "state_id": "51",
+            "code": "1",
+            "name": "Wuhan",
+            "cname": "武汉",
+            "lower_name": "wuhan",
+            "code_full": "CHN042001"
+          },
+          {
+            "id": "637",
+            "state_id": "51",
+            "code": "2",
+            "name": "Huangshi",
+            "cname": "黄石",
+            "lower_name": "huangshi",
+            "code_full": "CHN042002"
+          },
+          {
+            "id": "638",
+            "state_id": "51",
+            "code": "3",
+            "name": "Shiyan",
+            "cname": "十堰",
+            "lower_name": "shiyan",
+            "code_full": "CHN042003"
+          },
+          {
+            "id": "639",
+            "state_id": "51",
+            "code": "5",
+            "name": "Yichang",
+            "cname": "宜昌",
+            "lower_name": "yichang",
+            "code_full": "CHN042005"
+          },
+          {
+            "id": "640",
+            "state_id": "51",
+            "code": "6",
+            "name": "Xiangyang",
+            "cname": "襄阳",
+            "lower_name": "xiangyang",
+            "code_full": "CHN042006"
+          },
+          {
+            "id": "641",
+            "state_id": "51",
+            "code": "7",
+            "name": "Ezhou",
+            "cname": "鄂州",
+            "lower_name": "ezhou",
+            "code_full": "CHN042007"
+          },
+          {
+            "id": "642",
+            "state_id": "51",
+            "code": "8",
+            "name": "Jingmen",
+            "cname": "荆门",
+            "lower_name": "jingmen",
+            "code_full": "CHN042008"
+          },
+          {
+            "id": "643",
+            "state_id": "51",
+            "code": "9",
+            "name": "Xiaogan",
+            "cname": "孝感",
+            "lower_name": "xiaogan",
+            "code_full": "CHN042009"
+          },
+          {
+            "id": "644",
+            "state_id": "51",
+            "code": "10",
+            "name": "Jingzhou",
+            "cname": "荆州",
+            "lower_name": "jingzhou",
+            "code_full": "CHN042010"
+          },
+          {
+            "id": "645",
+            "state_id": "51",
+            "code": "11",
+            "name": "Huanggang",
+            "cname": "黄冈",
+            "lower_name": "huanggang",
+            "code_full": "CHN042011"
+          },
+          {
+            "id": "646",
+            "state_id": "51",
+            "code": "12",
+            "name": "Xianning",
+            "cname": "咸宁",
+            "lower_name": "xianning",
+            "code_full": "CHN042012"
+          },
+          {
+            "id": "647",
+            "state_id": "51",
+            "code": "13",
+            "name": "Suizhou",
+            "cname": "随州",
+            "lower_name": "suizhou",
+            "code_full": "CHN042013"
+          },
+          {
+            "id": "648",
+            "state_id": "51",
+            "code": "28",
+            "name": "Enshi Tujia-Miao Autonomous Prefecture",
+            "cname": "恩施",
+            "lower_name": "enshi tujia-miao autonomous prefecture",
+            "code_full": "CHN042028"
+          },
+          {
+            "id": "649",
+            "state_id": "51",
+            "code": "94",
+            "name": "Xiantao",
+            "cname": "仙桃",
+            "lower_name": "xiantao",
+            "code_full": "CHN042094"
+          },
+          {
+            "id": "650",
+            "state_id": "51",
+            "code": "95",
+            "name": "Qianjiang",
+            "cname": "潜江",
+            "lower_name": "qianjiang",
+            "code_full": "CHN042095"
+          },
+          {
+            "id": "651",
+            "state_id": "51",
+            "code": "96",
+            "name": "Tianmen",
+            "cname": "天门",
+            "lower_name": "tianmen",
+            "code_full": "CHN042096"
+          },
+          {
+            "id": "652",
+            "state_id": "51",
+            "code": "A21",
+            "name": "Shennongjia",
+            "cname": "神农架",
+            "lower_name": "shennongjia",
+            "code_full": "CHN042A21"
+          },
+          {
+            "id": "653",
+            "state_id": "52",
+            "code": "1",
+            "name": "Changsha",
+            "cname": "长沙",
+            "lower_name": "changsha",
+            "code_full": "CHN043001"
+          },
+          {
+            "id": "654",
+            "state_id": "52",
+            "code": "2",
+            "name": "Zhuzhou",
+            "cname": "株洲",
+            "lower_name": "zhuzhou",
+            "code_full": "CHN043002"
+          },
+          {
+            "id": "655",
+            "state_id": "52",
+            "code": "3",
+            "name": "Xiangtan",
+            "cname": "湘潭",
+            "lower_name": "xiangtan",
+            "code_full": "CHN043003"
+          },
+          {
+            "id": "656",
+            "state_id": "52",
+            "code": "4",
+            "name": "Hengyang",
+            "cname": "衡阳",
+            "lower_name": "hengyang",
+            "code_full": "CHN043004"
+          },
+          {
+            "id": "657",
+            "state_id": "52",
+            "code": "5",
+            "name": "Shaoyang",
+            "cname": "邵阳",
+            "lower_name": "shaoyang",
+            "code_full": "CHN043005"
+          },
+          {
+            "id": "658",
+            "state_id": "52",
+            "code": "6",
+            "name": "Yueyang",
+            "cname": "岳阳",
+            "lower_name": "yueyang",
+            "code_full": "CHN043006"
+          },
+          {
+            "id": "659",
+            "state_id": "52",
+            "code": "7",
+            "name": "Changde",
+            "cname": "常德",
+            "lower_name": "changde",
+            "code_full": "CHN043007"
+          },
+          {
+            "id": "660",
+            "state_id": "52",
+            "code": "8",
+            "name": "Zhangjiajie",
+            "cname": "张家界",
+            "lower_name": "zhangjiajie",
+            "code_full": "CHN043008"
+          },
+          {
+            "id": "661",
+            "state_id": "52",
+            "code": "9",
+            "name": "Yiyang",
+            "cname": "益阳",
+            "lower_name": "yiyang",
+            "code_full": "CHN043009"
+          },
+          {
+            "id": "662",
+            "state_id": "52",
+            "code": "10",
+            "name": "Chenzhou",
+            "cname": "郴州",
+            "lower_name": "chenzhou",
+            "code_full": "CHN043010"
+          },
+          {
+            "id": "663",
+            "state_id": "52",
+            "code": "11",
+            "name": "Yongzhou",
+            "cname": "永州",
+            "lower_name": "yongzhou",
+            "code_full": "CHN043011"
+          },
+          {
+            "id": "664",
+            "state_id": "52",
+            "code": "12",
+            "name": "Huaihua",
+            "cname": "怀化",
+            "lower_name": "huaihua",
+            "code_full": "CHN043012"
+          },
+          {
+            "id": "665",
+            "state_id": "52",
+            "code": "13",
+            "name": "Loudi",
+            "cname": "娄底",
+            "lower_name": "loudi",
+            "code_full": "CHN043013"
+          },
+          {
+            "id": "666",
+            "state_id": "52",
+            "code": "31",
+            "name": "Xiangxi Tujia-Miao Autonomous Prefecture",
+            "cname": "湘西",
+            "lower_name": "xiangxi tujia-miao autonomous prefecture",
+            "code_full": "CHN043031"
+          },
+          {
+            "id": "667",
+            "state_id": "53",
+            "code": "1",
+            "name": "Guangzhou",
+            "cname": "广州",
+            "lower_name": "guangzhou",
+            "code_full": "CHN044001"
+          },
+          {
+            "id": "668",
+            "state_id": "53",
+            "code": "2",
+            "name": "Shaoguan",
+            "cname": "韶关",
+            "lower_name": "shaoguan",
+            "code_full": "CHN044002"
+          },
+          {
+            "id": "669",
+            "state_id": "53",
+            "code": "3",
+            "name": "Shenzhen",
+            "cname": "深圳",
+            "lower_name": "shenzhen",
+            "code_full": "CHN044003"
+          },
+          {
+            "id": "670",
+            "state_id": "53",
+            "code": "4",
+            "name": "Zhuhai",
+            "cname": "珠海",
+            "lower_name": "zhuhai",
+            "code_full": "CHN044004"
+          },
+          {
+            "id": "671",
+            "state_id": "53",
+            "code": "5",
+            "name": "Shantou",
+            "cname": "汕头",
+            "lower_name": "shantou",
+            "code_full": "CHN044005"
+          },
+          {
+            "id": "672",
+            "state_id": "53",
+            "code": "6",
+            "name": "Foshan",
+            "cname": "佛山",
+            "lower_name": "foshan",
+            "code_full": "CHN044006"
+          },
+          {
+            "id": "673",
+            "state_id": "53",
+            "code": "7",
+            "name": "Jiangmen",
+            "cname": "江门",
+            "lower_name": "jiangmen",
+            "code_full": "CHN044007"
+          },
+          {
+            "id": "674",
+            "state_id": "53",
+            "code": "8",
+            "name": "Zhanjiang",
+            "cname": "湛江",
+            "lower_name": "zhanjiang",
+            "code_full": "CHN044008"
+          },
+          {
+            "id": "675",
+            "state_id": "53",
+            "code": "9",
+            "name": "Maoming",
+            "cname": "茂名",
+            "lower_name": "maoming",
+            "code_full": "CHN044009"
+          },
+          {
+            "id": "676",
+            "state_id": "53",
+            "code": "12",
+            "name": "Zhaoqing",
+            "cname": "肇庆",
+            "lower_name": "zhaoqing",
+            "code_full": "CHN044012"
+          },
+          {
+            "id": "677",
+            "state_id": "53",
+            "code": "13",
+            "name": "Huizhou",
+            "cname": "惠州",
+            "lower_name": "huizhou",
+            "code_full": "CHN044013"
+          },
+          {
+            "id": "678",
+            "state_id": "53",
+            "code": "14",
+            "name": "Meizhou",
+            "cname": "梅州",
+            "lower_name": "meizhou",
+            "code_full": "CHN044014"
+          },
+          {
+            "id": "679",
+            "state_id": "53",
+            "code": "15",
+            "name": "Shanwei",
+            "cname": "汕尾",
+            "lower_name": "shanwei",
+            "code_full": "CHN044015"
+          },
+          {
+            "id": "680",
+            "state_id": "53",
+            "code": "16",
+            "name": "Heyuan",
+            "cname": "河源",
+            "lower_name": "heyuan",
+            "code_full": "CHN044016"
+          },
+          {
+            "id": "681",
+            "state_id": "53",
+            "code": "17",
+            "name": "Yangjiang",
+            "cname": "阳江",
+            "lower_name": "yangjiang",
+            "code_full": "CHN044017"
+          },
+          {
+            "id": "682",
+            "state_id": "53",
+            "code": "18",
+            "name": "Qingyuan",
+            "cname": "清远",
+            "lower_name": "qingyuan",
+            "code_full": "CHN044018"
+          },
+          {
+            "id": "683",
+            "state_id": "53",
+            "code": "19",
+            "name": "Dongguan",
+            "cname": "东莞",
+            "lower_name": "dongguan",
+            "code_full": "CHN044019"
+          },
+          {
+            "id": "684",
+            "state_id": "53",
+            "code": "20",
+            "name": "Zhongshan",
+            "cname": "中山",
+            "lower_name": "zhongshan",
+            "code_full": "CHN044020"
+          },
+          {
+            "id": "685",
+            "state_id": "53",
+            "code": "51",
+            "name": "Chaozhou",
+            "cname": "潮州",
+            "lower_name": "chaozhou",
+            "code_full": "CHN044051"
+          },
+          {
+            "id": "686",
+            "state_id": "53",
+            "code": "52",
+            "name": "Jieyang",
+            "cname": "揭阳",
+            "lower_name": "jieyang",
+            "code_full": "CHN044052"
+          },
+          {
+            "id": "687",
+            "state_id": "53",
+            "code": "53",
+            "name": "Yunfu",
+            "cname": "云浮",
+            "lower_name": "yunfu",
+            "code_full": "CHN044053"
+          },
+          {
+            "id": "688",
+            "state_id": "54",
+            "code": "1",
+            "name": "Nanning",
+            "cname": "南宁",
+            "lower_name": "nanning",
+            "code_full": "CHN045001"
+          },
+          {
+            "id": "689",
+            "state_id": "54",
+            "code": "2",
+            "name": "Liuzhou",
+            "cname": "柳州",
+            "lower_name": "liuzhou",
+            "code_full": "CHN045002"
+          },
+          {
+            "id": "690",
+            "state_id": "54",
+            "code": "3",
+            "name": "Guilin",
+            "cname": "桂林",
+            "lower_name": "guilin",
+            "code_full": "CHN045003"
+          },
+          {
+            "id": "691",
+            "state_id": "54",
+            "code": "4",
+            "name": "Wuzhou",
+            "cname": "梧州",
+            "lower_name": "wuzhou",
+            "code_full": "CHN045004"
+          },
+          {
+            "id": "692",
+            "state_id": "54",
+            "code": "5",
+            "name": "Beihai",
+            "cname": "北海",
+            "lower_name": "beihai",
+            "code_full": "CHN045005"
+          },
+          {
+            "id": "693",
+            "state_id": "54",
+            "code": "6",
+            "name": "Fangchenggang",
+            "cname": "防城港",
+            "lower_name": "fangchenggang",
+            "code_full": "CHN045006"
+          },
+          {
+            "id": "694",
+            "state_id": "54",
+            "code": "7",
+            "name": "Qinzhou",
+            "cname": "钦州",
+            "lower_name": "qinzhou",
+            "code_full": "CHN045007"
+          },
+          {
+            "id": "695",
+            "state_id": "54",
+            "code": "8",
+            "name": "Guigang",
+            "cname": "贵港",
+            "lower_name": "guigang",
+            "code_full": "CHN045008"
+          },
+          {
+            "id": "696",
+            "state_id": "54",
+            "code": "9",
+            "name": "Yulin",
+            "cname": "玉林",
+            "lower_name": "yulin",
+            "code_full": "CHN045009"
+          },
+          {
+            "id": "697",
+            "state_id": "54",
+            "code": "10",
+            "name": "Baise",
+            "cname": "百色",
+            "lower_name": "baise",
+            "code_full": "CHN045010"
+          },
+          {
+            "id": "698",
+            "state_id": "54",
+            "code": "11",
+            "name": "Hezhou",
+            "cname": "贺州",
+            "lower_name": "hezhou",
+            "code_full": "CHN045011"
+          },
+          {
+            "id": "699",
+            "state_id": "54",
+            "code": "12",
+            "name": "Hechi",
+            "cname": "河池",
+            "lower_name": "hechi",
+            "code_full": "CHN045012"
+          },
+          {
+            "id": "700",
+            "state_id": "54",
+            "code": "13",
+            "name": "Laibin",
+            "cname": "来宾",
+            "lower_name": "laibin",
+            "code_full": "CHN045013"
+          },
+          {
+            "id": "701",
+            "state_id": "54",
+            "code": "14",
+            "name": "Chongzuo",
+            "cname": "崇左",
+            "lower_name": "chongzuo",
+            "code_full": "CHN045014"
+          },
+          {
+            "id": "702",
+            "state_id": "55",
+            "code": "1",
+            "name": "Haikou",
+            "cname": "海口",
+            "lower_name": "haikou",
+            "code_full": "CHN046001"
+          },
+          {
+            "id": "703",
+            "state_id": "55",
+            "code": "2",
+            "name": "Sanya",
+            "cname": "三亚",
+            "lower_name": "sanya",
+            "code_full": "CHN046002"
+          },
+          {
+            "id": "704",
+            "state_id": "55",
+            "code": "3",
+            "name": "Shansha",
+            "cname": "三沙",
+            "lower_name": "shansha",
+            "code_full": "CHN046003"
+          },
+          {
+            "id": "705",
+            "state_id": "55",
+            "code": "91",
+            "name": "Wuzhishan",
+            "cname": "五指山",
+            "lower_name": "wuzhishan",
+            "code_full": "CHN046091"
+          },
+          {
+            "id": "706",
+            "state_id": "55",
+            "code": "92",
+            "name": "Qionghai",
+            "cname": "琼海",
+            "lower_name": "qionghai",
+            "code_full": "CHN046092"
+          },
+          {
+            "id": "707",
+            "state_id": "55",
+            "code": "93",
+            "name": "Danzhou",
+            "cname": "儋州",
+            "lower_name": "danzhou",
+            "code_full": "CHN046093"
+          },
+          {
+            "id": "708",
+            "state_id": "55",
+            "code": "95",
+            "name": "Wenchang",
+            "cname": "文昌",
+            "lower_name": "wenchang",
+            "code_full": "CHN046095"
+          },
+          {
+            "id": "709",
+            "state_id": "55",
+            "code": "96",
+            "name": "Wanning",
+            "cname": "万宁",
+            "lower_name": "wanning",
+            "code_full": "CHN046096"
+          },
+          {
+            "id": "710",
+            "state_id": "55",
+            "code": "97",
+            "name": "Dornod",
+            "cname": "东方",
+            "lower_name": "dornod",
+            "code_full": "CHN046097"
+          },
+          {
+            "id": "711",
+            "state_id": "55",
+            "code": "A25",
+            "name": "Ding'an",
+            "cname": "定安",
+            "lower_name": "ding'an",
+            "code_full": "CHN046A25"
+          },
+          {
+            "id": "712",
+            "state_id": "55",
+            "code": "A26",
+            "name": "Tunchang",
+            "cname": "屯昌",
+            "lower_name": "tunchang",
+            "code_full": "CHN046A26"
+          },
+          {
+            "id": "713",
+            "state_id": "55",
+            "code": "A27",
+            "name": "Cengmai",
+            "cname": "澄迈",
+            "lower_name": "cengmai",
+            "code_full": "CHN046A27"
+          },
+          {
+            "id": "714",
+            "state_id": "55",
+            "code": "A28",
+            "name": "Lingao",
+            "cname": "临高",
+            "lower_name": "lingao",
+            "code_full": "CHN046A28"
+          },
+          {
+            "id": "715",
+            "state_id": "55",
+            "code": "A3",
+            "name": "Baisha Li Autonomous County",
+            "cname": "白沙",
+            "lower_name": "baisha li autonomous county",
+            "code_full": "CHN046A30"
+          },
+          {
+            "id": "716",
+            "state_id": "55",
+            "code": "A31",
+            "name": "Jiang Li Autonomous County",
+            "cname": "昌江",
+            "lower_name": "jiang li autonomous county",
+            "code_full": "CHN046A31"
+          },
+          {
+            "id": "717",
+            "state_id": "55",
+            "code": "A33",
+            "name": "Ledong Li Autonomous County",
+            "cname": "乐东",
+            "lower_name": "ledong li autonomous county",
+            "code_full": "CHN046A33"
+          },
+          {
+            "id": "718",
+            "state_id": "55",
+            "code": "A34",
+            "name": "Lingshui Li Autonomous County",
+            "cname": "陵水",
+            "lower_name": "lingshui li autonomous county",
+            "code_full": "CHN046A34"
+          },
+          {
+            "id": "719",
+            "state_id": "55",
+            "code": "A35",
+            "name": "Baoting Li-Miao Autonomous County",
+            "cname": "保亭",
+            "lower_name": "baoting li-miao autonomous county",
+            "code_full": "CHN046A35"
+          },
+          {
+            "id": "720",
+            "state_id": "55",
+            "code": "A36",
+            "name": "Qiongzhong Li-Miao Autonomous County",
+            "cname": "琼中",
+            "lower_name": "qiongzhong li-miao autonomous county",
+            "code_full": "CHN046A36"
+          },
+          {
+            "id": "721",
+            "state_id": "56",
+            "code": "1",
+            "name": "Wanzhou",
+            "cname": "万州",
+            "lower_name": "wanzhou",
+            "code_full": "CHN050001"
+          },
+          {
+            "id": "722",
+            "state_id": "56",
+            "code": "2",
+            "name": "Fuling",
+            "cname": "涪陵",
+            "lower_name": "fuling",
+            "code_full": "CHN050002"
+          },
+          {
+            "id": "723",
+            "state_id": "56",
+            "code": "3",
+            "name": "Yuzhong",
+            "cname": "渝中",
+            "lower_name": "yuzhong",
+            "code_full": "CHN050003"
+          },
+          {
+            "id": "724",
+            "state_id": "56",
+            "code": "4",
+            "name": "Dadukou",
+            "cname": "大渡口",
+            "lower_name": "dadukou",
+            "code_full": "CHN050004"
+          },
+          {
+            "id": "725",
+            "state_id": "56",
+            "code": "5",
+            "name": "Jiangbei",
+            "cname": "江北",
+            "lower_name": "jiangbei",
+            "code_full": "CHN050005"
+          },
+          {
+            "id": "726",
+            "state_id": "56",
+            "code": "6",
+            "name": "Shapingba",
+            "cname": "沙坪坝",
+            "lower_name": "shapingba",
+            "code_full": "CHN050006"
+          },
+          {
+            "id": "727",
+            "state_id": "56",
+            "code": "7",
+            "name": "Jiulongpo",
+            "cname": "九龙坡",
+            "lower_name": "jiulongpo",
+            "code_full": "CHN050007"
+          },
+          {
+            "id": "728",
+            "state_id": "56",
+            "code": "8",
+            "name": "Nan'an",
+            "cname": "南岸",
+            "lower_name": "nan'an",
+            "code_full": "CHN050008"
+          },
+          {
+            "id": "729",
+            "state_id": "56",
+            "code": "9",
+            "name": "Beibei",
+            "cname": "北碚",
+            "lower_name": "beibei",
+            "code_full": "CHN050009"
+          },
+          {
+            "id": "730",
+            "state_id": "56",
+            "code": "10",
+            "name": "Wansheng",
+            "cname": "万盛",
+            "lower_name": "wansheng",
+            "code_full": "CHN050010"
+          },
+          {
+            "id": "731",
+            "state_id": "56",
+            "code": "11",
+            "name": "Shuangqiao",
+            "cname": "双桥",
+            "lower_name": "shuangqiao",
+            "code_full": "CHN050011"
+          },
+          {
+            "id": "732",
+            "state_id": "56",
+            "code": "12",
+            "name": "Yubei",
+            "cname": "渝北",
+            "lower_name": "yubei",
+            "code_full": "CHN050012"
+          },
+          {
+            "id": "733",
+            "state_id": "56",
+            "code": "13",
+            "name": "Ba'nan",
+            "cname": "巴南",
+            "lower_name": "ba'nan",
+            "code_full": "CHN050013"
+          },
+          {
+            "id": "734",
+            "state_id": "56",
+            "code": "21",
+            "name": "Changshou",
+            "cname": "长寿",
+            "lower_name": "changshou",
+            "code_full": "CHN050021"
+          },
+          {
+            "id": "735",
+            "state_id": "56",
+            "code": "22",
+            "name": "Qijiang",
+            "cname": "綦江",
+            "lower_name": "qijiang",
+            "code_full": "CHN050022"
+          },
+          {
+            "id": "736",
+            "state_id": "56",
+            "code": "23",
+            "name": "Tongnan",
+            "cname": "潼南",
+            "lower_name": "tongnan",
+            "code_full": "CHN050023"
+          },
+          {
+            "id": "737",
+            "state_id": "56",
+            "code": "24",
+            "name": "Tongliang",
+            "cname": "铜梁",
+            "lower_name": "tongliang",
+            "code_full": "CHN050024"
+          },
+          {
+            "id": "738",
+            "state_id": "56",
+            "code": "25",
+            "name": "Dazu",
+            "cname": "大足",
+            "lower_name": "dazu",
+            "code_full": "CHN050025"
+          },
+          {
+            "id": "739",
+            "state_id": "56",
+            "code": "26",
+            "name": "Rongchang",
+            "cname": "荣昌",
+            "lower_name": "rongchang",
+            "code_full": "CHN050026"
+          },
+          {
+            "id": "740",
+            "state_id": "56",
+            "code": "27",
+            "name": "Bishan",
+            "cname": "璧山",
+            "lower_name": "bishan",
+            "code_full": "CHN050027"
+          },
+          {
+            "id": "741",
+            "state_id": "56",
+            "code": "28",
+            "name": "Liangping",
+            "cname": "梁平",
+            "lower_name": "liangping",
+            "code_full": "CHN050028"
+          },
+          {
+            "id": "742",
+            "state_id": "56",
+            "code": "29",
+            "name": "Chengkou",
+            "cname": "城口",
+            "lower_name": "chengkou",
+            "code_full": "CHN050029"
+          },
+          {
+            "id": "743",
+            "state_id": "56",
+            "code": "30",
+            "name": "Fengdu",
+            "cname": "丰都",
+            "lower_name": "fengdu",
+            "code_full": "CHN050030"
+          },
+          {
+            "id": "744",
+            "state_id": "56",
+            "code": "31",
+            "name": "Dianjiang",
+            "cname": "垫江",
+            "lower_name": "dianjiang",
+            "code_full": "CHN050031"
+          },
+          {
+            "id": "745",
+            "state_id": "56",
+            "code": "32",
+            "name": "Wulong",
+            "cname": "武隆",
+            "lower_name": "wulong",
+            "code_full": "CHN050032"
+          },
+          {
+            "id": "746",
+            "state_id": "56",
+            "code": "33",
+            "name": "Zhongxian",
+            "cname": "忠县",
+            "lower_name": "zhongxian",
+            "code_full": "CHN050033"
+          },
+          {
+            "id": "747",
+            "state_id": "56",
+            "code": "34",
+            "name": "Kaixian",
+            "cname": "开县",
+            "lower_name": "kaixian",
+            "code_full": "CHN050034"
+          },
+          {
+            "id": "748",
+            "state_id": "56",
+            "code": "35",
+            "name": "Yunyang",
+            "cname": "云阳",
+            "lower_name": "yunyang",
+            "code_full": "CHN050035"
+          },
+          {
+            "id": "749",
+            "state_id": "56",
+            "code": "36",
+            "name": "Fengjie",
+            "cname": "奉节",
+            "lower_name": "fengjie",
+            "code_full": "CHN050036"
+          },
+          {
+            "id": "750",
+            "state_id": "56",
+            "code": "37",
+            "name": "Wushan",
+            "cname": "巫山",
+            "lower_name": "wushan",
+            "code_full": "CHN050037"
+          },
+          {
+            "id": "751",
+            "state_id": "56",
+            "code": "38",
+            "name": "Wuxi",
+            "cname": "巫溪",
+            "lower_name": "wuxi",
+            "code_full": "CHN050038"
+          },
+          {
+            "id": "752",
+            "state_id": "56",
+            "code": "39",
+            "name": "Qianjiang",
+            "cname": "黔江",
+            "lower_name": "qianjiang",
+            "code_full": "CHN050039"
+          },
+          {
+            "id": "753",
+            "state_id": "56",
+            "code": "40",
+            "name": "Shizhu Tujia Autonomous Country",
+            "cname": "石柱",
+            "lower_name": "shizhu tujia autonomous country",
+            "code_full": "CHN050040"
+          },
+          {
+            "id": "754",
+            "state_id": "56",
+            "code": "41",
+            "name": "Xiushan Tujia-Miao Autonomous Country",
+            "cname": "秀山",
+            "lower_name": "xiushan tujia-miao autonomous country",
+            "code_full": "CHN050041"
+          },
+          {
+            "id": "755",
+            "state_id": "56",
+            "code": "42",
+            "name": "Youyang Tujia-Miao Autonomous Country",
+            "cname": "酉阳",
+            "lower_name": "youyang tujia-miao autonomous country",
+            "code_full": "CHN050042"
+          },
+          {
+            "id": "756",
+            "state_id": "56",
+            "code": "43",
+            "name": "Pengshui Miao-Tujia Autonomous Country",
+            "cname": "彭水",
+            "lower_name": "pengshui miao-tujia autonomous country",
+            "code_full": "CHN050043"
+          },
+          {
+            "id": "757",
+            "state_id": "56",
+            "code": "81",
+            "name": "Jiangjin",
+            "cname": "江津",
+            "lower_name": "jiangjin",
+            "code_full": "CHN050081"
+          },
+          {
+            "id": "758",
+            "state_id": "56",
+            "code": "82",
+            "name": "Hechuan",
+            "cname": "合川",
+            "lower_name": "hechuan",
+            "code_full": "CHN050082"
+          },
+          {
+            "id": "759",
+            "state_id": "56",
+            "code": "83",
+            "name": "Yongchuan",
+            "cname": "永川",
+            "lower_name": "yongchuan",
+            "code_full": "CHN050083"
+          },
+          {
+            "id": "760",
+            "state_id": "56",
+            "code": "84",
+            "name": "Liangjiangxinqu",
+            "cname": "南川",
+            "lower_name": "liangjiangxinqu",
+            "code_full": "CHN050084"
+          },
+          {
+            "id": "761",
+            "state_id": "56",
+            "code": "85",
+            "name": "Kaixian",
+            "cname": "两江新区",
+            "lower_name": "kaixian",
+            "code_full": "CHN050085"
+          },
+          {
+            "id": "762",
+            "state_id": "57",
+            "code": "1",
+            "name": "Chengdu",
+            "cname": "成都",
+            "lower_name": "chengdu",
+            "code_full": "CHN051001"
+          },
+          {
+            "id": "763",
+            "state_id": "57",
+            "code": "3",
+            "name": "Zigong",
+            "cname": "自贡",
+            "lower_name": "zigong",
+            "code_full": "CHN051003"
+          },
+          {
+            "id": "764",
+            "state_id": "57",
+            "code": "4",
+            "name": "Panzhihua",
+            "cname": "攀枝花",
+            "lower_name": "panzhihua",
+            "code_full": "CHN051004"
+          },
+          {
+            "id": "765",
+            "state_id": "57",
+            "code": "5",
+            "name": "Luzhou",
+            "cname": "泸州",
+            "lower_name": "luzhou",
+            "code_full": "CHN051005"
+          },
+          {
+            "id": "766",
+            "state_id": "57",
+            "code": "6",
+            "name": "Deyang",
+            "cname": "德阳",
+            "lower_name": "deyang",
+            "code_full": "CHN051006"
+          },
+          {
+            "id": "767",
+            "state_id": "57",
+            "code": "7",
+            "name": "Mianyang",
+            "cname": "绵阳",
+            "lower_name": "mianyang",
+            "code_full": "CHN051007"
+          },
+          {
+            "id": "768",
+            "state_id": "57",
+            "code": "8",
+            "name": "Guangyuan",
+            "cname": "广元",
+            "lower_name": "guangyuan",
+            "code_full": "CHN051008"
+          },
+          {
+            "id": "769",
+            "state_id": "57",
+            "code": "9",
+            "name": "Suining",
+            "cname": "遂宁",
+            "lower_name": "suining",
+            "code_full": "CHN051009"
+          },
+          {
+            "id": "770",
+            "state_id": "57",
+            "code": "10",
+            "name": "Neijiang",
+            "cname": "内江",
+            "lower_name": "neijiang",
+            "code_full": "CHN051010"
+          },
+          {
+            "id": "771",
+            "state_id": "57",
+            "code": "11",
+            "name": "Leshan",
+            "cname": "乐山",
+            "lower_name": "leshan",
+            "code_full": "CHN051011"
+          },
+          {
+            "id": "772",
+            "state_id": "57",
+            "code": "13",
+            "name": "Nanchong",
+            "cname": "南充",
+            "lower_name": "nanchong",
+            "code_full": "CHN051013"
+          },
+          {
+            "id": "773",
+            "state_id": "57",
+            "code": "14",
+            "name": "Meishan",
+            "cname": "眉山",
+            "lower_name": "meishan",
+            "code_full": "CHN051014"
+          },
+          {
+            "id": "774",
+            "state_id": "57",
+            "code": "15",
+            "name": "Yibin",
+            "cname": "宜宾",
+            "lower_name": "yibin",
+            "code_full": "CHN051015"
+          },
+          {
+            "id": "775",
+            "state_id": "57",
+            "code": "16",
+            "name": "Guang'an",
+            "cname": "广安",
+            "lower_name": "guang'an",
+            "code_full": "CHN051016"
+          },
+          {
+            "id": "776",
+            "state_id": "57",
+            "code": "17",
+            "name": "Dazhou",
+            "cname": "达州",
+            "lower_name": "dazhou",
+            "code_full": "CHN051017"
+          },
+          {
+            "id": "777",
+            "state_id": "57",
+            "code": "18",
+            "name": "Ya'an",
+            "cname": "雅安",
+            "lower_name": "ya'an",
+            "code_full": "CHN051018"
+          },
+          {
+            "id": "778",
+            "state_id": "57",
+            "code": "19",
+            "name": "Bazhong",
+            "cname": "巴中",
+            "lower_name": "bazhong",
+            "code_full": "CHN051019"
+          },
+          {
+            "id": "779",
+            "state_id": "57",
+            "code": "20",
+            "name": "Ziyang",
+            "cname": "资阳",
+            "lower_name": "ziyang",
+            "code_full": "CHN051020"
+          },
+          {
+            "id": "780",
+            "state_id": "57",
+            "code": "32",
+            "name": "Aba Tibetan-Qiang Autonomous Prefecture",
+            "cname": "阿坝",
+            "lower_name": "aba tibetan-qiang autonomous prefecture",
+            "code_full": "CHN051032"
+          },
+          {
+            "id": "781",
+            "state_id": "57",
+            "code": "33",
+            "name": "Garze Tibetan Autonomous Prefecture",
+            "cname": "甘孜",
+            "lower_name": "garze tibetan autonomous prefecture",
+            "code_full": "CHN051033"
+          },
+          {
+            "id": "782",
+            "state_id": "57",
+            "code": "34",
+            "name": "Liangshan Yi Autonomous Prefecture",
+            "cname": "凉山",
+            "lower_name": "liangshan yi autonomous prefecture",
+            "code_full": "CHN051034"
+          },
+          {
+            "id": "783",
+            "state_id": "58",
+            "code": "1",
+            "name": "Guiyang",
+            "cname": "贵阳",
+            "lower_name": "guiyang",
+            "code_full": "CHN052001"
+          },
+          {
+            "id": "784",
+            "state_id": "58",
+            "code": "2",
+            "name": "Liupanshui",
+            "cname": "六盘水",
+            "lower_name": "liupanshui",
+            "code_full": "CHN052002"
+          },
+          {
+            "id": "785",
+            "state_id": "58",
+            "code": "3",
+            "name": "Zunyi",
+            "cname": "遵义",
+            "lower_name": "zunyi",
+            "code_full": "CHN052003"
+          },
+          {
+            "id": "786",
+            "state_id": "58",
+            "code": "4",
+            "name": "Anshun",
+            "cname": "安顺",
+            "lower_name": "anshun",
+            "code_full": "CHN052004"
+          },
+          {
+            "id": "787",
+            "state_id": "58",
+            "code": "22",
+            "name": "Tongren",
+            "cname": "铜仁",
+            "lower_name": "tongren",
+            "code_full": "CHN052022"
+          },
+          {
+            "id": "788",
+            "state_id": "58",
+            "code": "23",
+            "name": "Qianxinan Buyi-Miao Autonomous Prefecture",
+            "cname": "黔西南",
+            "lower_name": "qianxinan buyi-miao autonomous prefecture",
+            "code_full": "CHN052023"
+          },
+          {
+            "id": "789",
+            "state_id": "58",
+            "code": "24",
+            "name": "Bijie",
+            "cname": "毕节",
+            "lower_name": "bijie",
+            "code_full": "CHN052024"
+          },
+          {
+            "id": "790",
+            "state_id": "58",
+            "code": "26",
+            "name": "Qiandongnan Miao-Dong Autonomous Prefecture",
+            "cname": "黔东南",
+            "lower_name": "qiandongnan miao-dong autonomous prefecture",
+            "code_full": "CHN052026"
+          },
+          {
+            "id": "791",
+            "state_id": "58",
+            "code": "27",
+            "name": "Qiannan Buyi Autonomous Prefecture",
+            "cname": "黔南",
+            "lower_name": "qiannan buyi autonomous prefecture",
+            "code_full": "CHN052027"
+          },
+          {
+            "id": "792",
+            "state_id": "59",
+            "code": "1",
+            "name": "Kunming",
+            "cname": "昆明",
+            "lower_name": "kunming",
+            "code_full": "CHN053001"
+          },
+          {
+            "id": "793",
+            "state_id": "59",
+            "code": "3",
+            "name": "Qujing",
+            "cname": "曲靖",
+            "lower_name": "qujing",
+            "code_full": "CHN053003"
+          },
+          {
+            "id": "794",
+            "state_id": "59",
+            "code": "4",
+            "name": "Yuxi",
+            "cname": "玉溪",
+            "lower_name": "yuxi",
+            "code_full": "CHN053004"
+          },
+          {
+            "id": "795",
+            "state_id": "59",
+            "code": "5",
+            "name": "Baoshan",
+            "cname": "保山",
+            "lower_name": "baoshan",
+            "code_full": "CHN053005"
+          },
+          {
+            "id": "796",
+            "state_id": "59",
+            "code": "6",
+            "name": "Zhaotong",
+            "cname": "昭通",
+            "lower_name": "zhaotong",
+            "code_full": "CHN053006"
+          },
+          {
+            "id": "797",
+            "state_id": "59",
+            "code": "7",
+            "name": "Lijiang",
+            "cname": "丽江",
+            "lower_name": "lijiang",
+            "code_full": "CHN053007"
+          },
+          {
+            "id": "798",
+            "state_id": "59",
+            "code": "8",
+            "name": "Pu'er",
+            "cname": "普洱",
+            "lower_name": "pu'er",
+            "code_full": "CHN053008"
+          },
+          {
+            "id": "799",
+            "state_id": "59",
+            "code": "9",
+            "name": "Lincang",
+            "cname": "临沧",
+            "lower_name": "lincang",
+            "code_full": "CHN053009"
+          },
+          {
+            "id": "800",
+            "state_id": "59",
+            "code": "23",
+            "name": "Chuxiong Yi Autonomous Prefecture",
+            "cname": "楚雄",
+            "lower_name": "chuxiong yi autonomous prefecture",
+            "code_full": "CHN053023"
+          },
+          {
+            "id": "801",
+            "state_id": "59",
+            "code": "25",
+            "name": "Honghe Hani-Yi Autonomous Prefecture",
+            "cname": "红河",
+            "lower_name": "honghe hani-yi autonomous prefecture",
+            "code_full": "CHN053025"
+          },
+          {
+            "id": "802",
+            "state_id": "59",
+            "code": "26",
+            "name": "Wenshan Zhuang-Miao Autonomous Prefecture",
+            "cname": "文山",
+            "lower_name": "wenshan zhuang-miao autonomous prefecture",
+            "code_full": "CHN053026"
+          },
+          {
+            "id": "803",
+            "state_id": "59",
+            "code": "28",
+            "name": "Xishuangbanna Dai Autonomous Prefecture",
+            "cname": "西双版纳",
+            "lower_name": "xishuangbanna dai autonomous prefecture",
+            "code_full": "CHN053028"
+          },
+          {
+            "id": "804",
+            "state_id": "59",
+            "code": "29",
+            "name": "Dali Bai Autonomous Prefecture",
+            "cname": "大理",
+            "lower_name": "dali bai autonomous prefecture",
+            "code_full": "CHN053029"
+          },
+          {
+            "id": "805",
+            "state_id": "59",
+            "code": "31",
+            "name": "Dehong Dai-Jingpo Autonomous Prefecture",
+            "cname": "德宏",
+            "lower_name": "dehong dai-jingpo autonomous prefecture",
+            "code_full": "CHN053031"
+          },
+          {
+            "id": "806",
+            "state_id": "59",
+            "code": "33",
+            "name": "Nujiang Lisu Autonomous Prefecture",
+            "cname": "怒江",
+            "lower_name": "nujiang lisu autonomous prefecture",
+            "code_full": "CHN053033"
+          },
+          {
+            "id": "807",
+            "state_id": "59",
+            "code": "34",
+            "name": "Diqing Tibetan Autonomous Prefecture",
+            "cname": "迪庆",
+            "lower_name": "diqing tibetan autonomous prefecture",
+            "code_full": "CHN053034"
+          },
+          {
+            "id": "808",
+            "state_id": "60",
+            "code": "1",
+            "name": "Lhasa",
+            "cname": "拉萨",
+            "lower_name": "lhasa",
+            "code_full": "CHN054001"
+          },
+          {
+            "id": "809",
+            "state_id": "60",
+            "code": "21",
+            "name": "Qamdo",
+            "cname": "昌都",
+            "lower_name": "qamdo",
+            "code_full": "CHN054021"
+          },
+          {
+            "id": "810",
+            "state_id": "60",
+            "code": "22",
+            "name": "Shannan",
+            "cname": "山南",
+            "lower_name": "shannan",
+            "code_full": "CHN054022"
+          },
+          {
+            "id": "811",
+            "state_id": "60",
+            "code": "23",
+            "name": "Xigaze",
+            "cname": "日喀则",
+            "lower_name": "xigaze",
+            "code_full": "CHN054023"
+          },
+          {
+            "id": "812",
+            "state_id": "60",
+            "code": "24",
+            "name": "Nagqu",
+            "cname": "那曲",
+            "lower_name": "nagqu",
+            "code_full": "CHN054024"
+          },
+          {
+            "id": "813",
+            "state_id": "60",
+            "code": "25",
+            "name": "Ngari",
+            "cname": "阿里",
+            "lower_name": "ngari",
+            "code_full": "CHN054025"
+          },
+          {
+            "id": "814",
+            "state_id": "60",
+            "code": "26",
+            "name": "Nyingchi",
+            "cname": "林芝",
+            "lower_name": "nyingchi",
+            "code_full": "CHN054026"
+          },
+          {
+            "id": "815",
+            "state_id": "61",
+            "code": "1",
+            "name": "Xi'an",
+            "cname": "西安",
+            "lower_name": "xi'an",
+            "code_full": "CHN061001"
+          },
+          {
+            "id": "816",
+            "state_id": "61",
+            "code": "2",
+            "name": "Tongchuan",
+            "cname": "铜川",
+            "lower_name": "tongchuan",
+            "code_full": "CHN061002"
+          },
+          {
+            "id": "817",
+            "state_id": "61",
+            "code": "3",
+            "name": "Baoji",
+            "cname": "宝鸡",
+            "lower_name": "baoji",
+            "code_full": "CHN061003"
+          },
+          {
+            "id": "818",
+            "state_id": "61",
+            "code": "4",
+            "name": "Xianyang",
+            "cname": "咸阳",
+            "lower_name": "xianyang",
+            "code_full": "CHN061004"
+          },
+          {
+            "id": "819",
+            "state_id": "61",
+            "code": "5",
+            "name": "Weinan",
+            "cname": "渭南",
+            "lower_name": "weinan",
+            "code_full": "CHN061005"
+          },
+          {
+            "id": "820",
+            "state_id": "61",
+            "code": "6",
+            "name": "Yan'an",
+            "cname": "延安",
+            "lower_name": "yan'an",
+            "code_full": "CHN061006"
+          },
+          {
+            "id": "821",
+            "state_id": "61",
+            "code": "7",
+            "name": "Hanzhong",
+            "cname": "汉中",
+            "lower_name": "hanzhong",
+            "code_full": "CHN061007"
+          },
+          {
+            "id": "822",
+            "state_id": "61",
+            "code": "8",
+            "name": "Yulin",
+            "cname": "榆林",
+            "lower_name": "yulin",
+            "code_full": "CHN061008"
+          },
+          {
+            "id": "823",
+            "state_id": "61",
+            "code": "9",
+            "name": "Ankang",
+            "cname": "安康",
+            "lower_name": "ankang",
+            "code_full": "CHN061009"
+          },
+          {
+            "id": "824",
+            "state_id": "61",
+            "code": "10",
+            "name": "Shangluo",
+            "cname": "商洛",
+            "lower_name": "shangluo",
+            "code_full": "CHN061010"
+          },
+          {
+            "id": "825",
+            "state_id": "62",
+            "code": "1",
+            "name": "Lanzhou",
+            "cname": "兰州市",
+            "lower_name": "lanzhou",
+            "code_full": "CHN062001"
+          },
+          {
+            "id": "826",
+            "state_id": "62",
+            "code": "2",
+            "name": "Jinchang",
+            "cname": "嘉峪关",
+            "lower_name": "jinchang",
+            "code_full": "CHN062002"
+          },
+          {
+            "id": "827",
+            "state_id": "62",
+            "code": "3",
+            "name": "Baiyin",
+            "cname": "金昌",
+            "lower_name": "baiyin",
+            "code_full": "CHN062003"
+          },
+          {
+            "id": "828",
+            "state_id": "62",
+            "code": "4",
+            "name": "Tianshui",
+            "cname": "白银",
+            "lower_name": "tianshui",
+            "code_full": "CHN062004"
+          },
+          {
+            "id": "829",
+            "state_id": "62",
+            "code": "5",
+            "name": "Jiayuguan",
+            "cname": "天水",
+            "lower_name": "jiayuguan",
+            "code_full": "CHN062005"
+          },
+          {
+            "id": "830",
+            "state_id": "62",
+            "code": "6",
+            "name": "Wuwei",
+            "cname": "武威",
+            "lower_name": "wuwei",
+            "code_full": "CHN062006"
+          },
+          {
+            "id": "831",
+            "state_id": "62",
+            "code": "7",
+            "name": "Zhangye",
+            "cname": "张掖",
+            "lower_name": "zhangye",
+            "code_full": "CHN062007"
+          },
+          {
+            "id": "832",
+            "state_id": "62",
+            "code": "8",
+            "name": "Pingliang",
+            "cname": "平凉",
+            "lower_name": "pingliang",
+            "code_full": "CHN062008"
+          },
+          {
+            "id": "833",
+            "state_id": "62",
+            "code": "9",
+            "name": "Jiuquan",
+            "cname": "酒泉",
+            "lower_name": "jiuquan",
+            "code_full": "CHN062009"
+          },
+          {
+            "id": "834",
+            "state_id": "62",
+            "code": "10",
+            "name": "Qingyang",
+            "cname": "庆阳",
+            "lower_name": "qingyang",
+            "code_full": "CHN062010"
+          },
+          {
+            "id": "835",
+            "state_id": "62",
+            "code": "11",
+            "name": "Dingxi",
+            "cname": "定西",
+            "lower_name": "dingxi",
+            "code_full": "CHN062011"
+          },
+          {
+            "id": "836",
+            "state_id": "62",
+            "code": "12",
+            "name": "Longnan",
+            "cname": "陇南",
+            "lower_name": "longnan",
+            "code_full": "CHN062012"
+          },
+          {
+            "id": "837",
+            "state_id": "62",
+            "code": "29",
+            "name": "Linxia Hui Autonomous Prefecture",
+            "cname": "临夏",
+            "lower_name": "linxia hui autonomous prefecture",
+            "code_full": "CHN062029"
+          },
+          {
+            "id": "838",
+            "state_id": "62",
+            "code": "30",
+            "name": "Gannan Tibetan Autonomous Prefecture",
+            "cname": "甘南",
+            "lower_name": "gannan tibetan autonomous prefecture",
+            "code_full": "CHN062030"
+          },
+          {
+            "id": "839",
+            "state_id": "63",
+            "code": "1",
+            "name": "Xining",
+            "cname": "西宁",
+            "lower_name": "xining",
+            "code_full": "CHN063001"
+          },
+          {
+            "id": "840",
+            "state_id": "63",
+            "code": "21",
+            "name": "Haidong",
+            "cname": "海东",
+            "lower_name": "haidong",
+            "code_full": "CHN063021"
+          },
+          {
+            "id": "841",
+            "state_id": "63",
+            "code": "22",
+            "name": "Haibei Tibetan Autonomous Prefecture",
+            "cname": "海北",
+            "lower_name": "haibei tibetan autonomous prefecture",
+            "code_full": "CHN063022"
+          },
+          {
+            "id": "842",
+            "state_id": "63",
+            "code": "23",
+            "name": "Huangnan Tibetan Autonomous Prefecture",
+            "cname": "黄南",
+            "lower_name": "huangnan tibetan autonomous prefecture",
+            "code_full": "CHN063023"
+          },
+          {
+            "id": "843",
+            "state_id": "63",
+            "code": "25",
+            "name": "Hainan Tibetan Autonomous Prefecture",
+            "cname": "海南",
+            "lower_name": "hainan tibetan autonomous prefecture",
+            "code_full": "CHN063025"
+          },
+          {
+            "id": "844",
+            "state_id": "63",
+            "code": "26",
+            "name": "Guoluo Tibetan Autonomous Prefecture",
+            "cname": "果洛",
+            "lower_name": "guoluo tibetan autonomous prefecture",
+            "code_full": "CHN063026"
+          },
+          {
+            "id": "845",
+            "state_id": "63",
+            "code": "27",
+            "name": "Yushu Tibetan Autonomous Prefecture",
+            "cname": "玉树",
+            "lower_name": "yushu tibetan autonomous prefecture",
+            "code_full": "CHN063027"
+          },
+          {
+            "id": "846",
+            "state_id": "63",
+            "code": "28",
+            "name": "Haixi Mongol-Tibetan Autonomous Prefecture",
+            "cname": "海西",
+            "lower_name": "haixi mongol-tibetan autonomous prefecture",
+            "code_full": "CHN063028"
+          },
+          {
+            "id": "847",
+            "state_id": "64",
+            "code": "1",
+            "name": "Yinchuan",
+            "cname": "银川",
+            "lower_name": "yinchuan",
+            "code_full": "CHN064001"
+          },
+          {
+            "id": "848",
+            "state_id": "64",
+            "code": "2",
+            "name": "Shizuishan",
+            "cname": "石嘴山",
+            "lower_name": "shizuishan",
+            "code_full": "CHN064002"
+          },
+          {
+            "id": "849",
+            "state_id": "64",
+            "code": "3",
+            "name": "Wuzhong",
+            "cname": "吴忠",
+            "lower_name": "wuzhong",
+            "code_full": "CHN064003"
+          },
+          {
+            "id": "850",
+            "state_id": "64",
+            "code": "4",
+            "name": "Guyuan",
+            "cname": "固原",
+            "lower_name": "guyuan",
+            "code_full": "CHN064004"
+          },
+          {
+            "id": "851",
+            "state_id": "64",
+            "code": "5",
+            "name": "Zhongwei",
+            "cname": "中卫",
+            "lower_name": "zhongwei",
+            "code_full": "CHN064005"
+          },
+          {
+            "id": "852",
+            "state_id": "65",
+            "code": "1",
+            "name": "Urumqi",
+            "cname": "乌鲁木齐",
+            "lower_name": "urumqi",
+            "code_full": "CHN065001"
+          },
+          {
+            "id": "853",
+            "state_id": "65",
+            "code": "2",
+            "name": "Karamay",
+            "cname": "克拉玛依",
+            "lower_name": "karamay",
+            "code_full": "CHN065002"
+          },
+          {
+            "id": "854",
+            "state_id": "65",
+            "code": "21",
+            "name": "Turpan",
+            "cname": "吐鲁番",
+            "lower_name": "turpan",
+            "code_full": "CHN065021"
+          },
+          {
+            "id": "855",
+            "state_id": "65",
+            "code": "22",
+            "name": "Hami",
+            "cname": "哈密",
+            "lower_name": "hami",
+            "code_full": "CHN065022"
+          },
+          {
+            "id": "856",
+            "state_id": "65",
+            "code": "23",
+            "name": "Changji Hui Autonomous Prefecture",
+            "cname": "昌吉",
+            "lower_name": "changji hui autonomous prefecture",
+            "code_full": "CHN065023"
+          },
+          {
+            "id": "857",
+            "state_id": "65",
+            "code": "27",
+            "name": "Bortala Mongol Autonomous Prefecture",
+            "cname": "博尔塔拉",
+            "lower_name": "bortala mongol autonomous prefecture",
+            "code_full": "CHN065027"
+          },
+          {
+            "id": "858",
+            "state_id": "65",
+            "code": "28",
+            "name": "Bayingolin Mongol Autonomous Prefecture",
+            "cname": "巴音郭楞",
+            "lower_name": "bayingolin mongol autonomous prefecture",
+            "code_full": "CHN065028"
+          },
+          {
+            "id": "859",
+            "state_id": "65",
+            "code": "29",
+            "name": "Aksu",
+            "cname": "阿克苏",
+            "lower_name": "aksu",
+            "code_full": "CHN065029"
+          },
+          {
+            "id": "860",
+            "state_id": "65",
+            "code": "30",
+            "name": "Kizilsu Kirgiz Autonomous Prefecture",
+            "cname": "克孜勒苏",
+            "lower_name": "kizilsu kirgiz autonomous prefecture",
+            "code_full": "CHN065030"
+          },
+          {
+            "id": "861",
+            "state_id": "65",
+            "code": "31",
+            "name": "Kashi",
+            "cname": "喀什",
+            "lower_name": "kashi",
+            "code_full": "CHN065031"
+          },
+          {
+            "id": "862",
+            "state_id": "65",
+            "code": "32",
+            "name": "Hotan",
+            "cname": "和田",
+            "lower_name": "hotan",
+            "code_full": "CHN065032"
+          },
+          {
+            "id": "863",
+            "state_id": "65",
+            "code": "40",
+            "name": "Ili Kazakh Autonomous Prefecture",
+            "cname": "伊犁",
+            "lower_name": "ili kazakh autonomous prefecture",
+            "code_full": "CHN065040"
+          },
+          {
+            "id": "864",
+            "state_id": "65",
+            "code": "42",
+            "name": "Tacheng",
+            "cname": "塔城",
+            "lower_name": "tacheng",
+            "code_full": "CHN065042"
+          },
+          {
+            "id": "865",
+            "state_id": "65",
+            "code": "43",
+            "name": "Altay",
+            "cname": "阿勒泰",
+            "lower_name": "altay",
+            "code_full": "CHN065043"
+          },
+          {
+            "id": "866",
+            "state_id": "65",
+            "code": "91",
+            "name": "Shihezi",
+            "cname": "石河子",
+            "lower_name": "shihezi",
+            "code_full": "CHN065091"
+          },
+          {
+            "id": "867",
+            "state_id": "65",
+            "code": "92",
+            "name": "Alar",
+            "cname": "阿拉尔",
+            "lower_name": "alar",
+            "code_full": "CHN065092"
+          },
+          {
+            "id": "868",
+            "state_id": "65",
+            "code": "93",
+            "name": "Tumsuk",
+            "cname": "图木舒克",
+            "lower_name": "tumsuk",
+            "code_full": "CHN065093"
+          },
+          {
+            "id": "869",
+            "state_id": "65",
+            "code": "94",
+            "name": "Wujiaqu",
+            "cname": "五家渠",
+            "lower_name": "wujiaqu",
+            "code_full": "CHN065094"
+          },
+          {
+            "id": "870",
+            "state_id": "65",
+            "code": "95",
+            "name": "Beitun",
+            "cname": "北屯",
+            "lower_name": "beitun",
+            "code_full": "CHN065095"
+          },
+          {
+            "id": "871",
+            "state_id": "66",
+            "code": "1",
+            "name": "Taipei City",
+            "cname": "台北市",
+            "lower_name": "taipei city",
+            "code_full": "CHN071001"
+          },
+          {
+            "id": "872",
+            "state_id": "66",
+            "code": "2",
+            "name": "Kaohsiung City",
+            "cname": "高雄市",
+            "lower_name": "kaohsiung city",
+            "code_full": "CHN071002"
+          },
+          {
+            "id": "873",
+            "state_id": "66",
+            "code": "3",
+            "name": "Keelung City",
+            "cname": "基隆市",
+            "lower_name": "keelung city",
+            "code_full": "CHN071003"
+          },
+          {
+            "id": "874",
+            "state_id": "66",
+            "code": "4",
+            "name": "Taichung City",
+            "cname": "台中市",
+            "lower_name": "taichung city",
+            "code_full": "CHN071004"
+          },
+          {
+            "id": "875",
+            "state_id": "66",
+            "code": "5",
+            "name": "Tainan City",
+            "cname": "台南市",
+            "lower_name": "tainan city",
+            "code_full": "CHN071005"
+          },
+          {
+            "id": "876",
+            "state_id": "66",
+            "code": "6",
+            "name": "Hsinchu City",
+            "cname": "新竹市",
+            "lower_name": "hsinchu city",
+            "code_full": "CHN071006"
+          },
+          {
+            "id": "877",
+            "state_id": "66",
+            "code": "7",
+            "name": "Chiayi City",
+            "cname": "嘉义市",
+            "lower_name": "chiayi city",
+            "code_full": "CHN071007"
+          },
+          {
+            "id": "878",
+            "state_id": "66",
+            "code": "8",
+            "name": "Taipei County",
+            "cname": "台北县",
+            "lower_name": "taipei county",
+            "code_full": "CHN071008"
+          },
+          {
+            "id": "879",
+            "state_id": "66",
+            "code": "9",
+            "name": "Ilan County",
+            "cname": "宜兰县",
+            "lower_name": "ilan county",
+            "code_full": "CHN071009"
+          },
+          {
+            "id": "880",
+            "state_id": "66",
+            "code": "10",
+            "name": "Taoyuan County",
+            "cname": "桃园县",
+            "lower_name": "taoyuan county",
+            "code_full": "CHN071010"
+          },
+          {
+            "id": "881",
+            "state_id": "66",
+            "code": "11",
+            "name": "Hsinchu County",
+            "cname": "新竹县",
+            "lower_name": "hsinchu county",
+            "code_full": "CHN071011"
+          },
+          {
+            "id": "882",
+            "state_id": "66",
+            "code": "12",
+            "name": "Miaoli County",
+            "cname": "苗栗县",
+            "lower_name": "miaoli county",
+            "code_full": "CHN071012"
+          },
+          {
+            "id": "883",
+            "state_id": "66",
+            "code": "13",
+            "name": "Taichung County",
+            "cname": "台中县",
+            "lower_name": "taichung county",
+            "code_full": "CHN071013"
+          },
+          {
+            "id": "884",
+            "state_id": "66",
+            "code": "14",
+            "name": "Changhwa County",
+            "cname": "彰化县",
+            "lower_name": "changhwa county",
+            "code_full": "CHN071014"
+          },
+          {
+            "id": "885",
+            "state_id": "66",
+            "code": "15",
+            "name": "Nantou County",
+            "cname": "南投县",
+            "lower_name": "nantou county",
+            "code_full": "CHN071015"
+          },
+          {
+            "id": "886",
+            "state_id": "66",
+            "code": "16",
+            "name": "Yunnlin County",
+            "cname": "云林县",
+            "lower_name": "yunnlin county",
+            "code_full": "CHN071016"
+          },
+          {
+            "id": "887",
+            "state_id": "66",
+            "code": "17",
+            "name": "Chiayi County",
+            "cname": "嘉义县",
+            "lower_name": "chiayi county",
+            "code_full": "CHN071017"
+          },
+          {
+            "id": "888",
+            "state_id": "66",
+            "code": "18",
+            "name": "Tainan County",
+            "cname": "台南县",
+            "lower_name": "tainan county",
+            "code_full": "CHN071018"
+          },
+          {
+            "id": "889",
+            "state_id": "66",
+            "code": "19",
+            "name": "Kaohsiung County",
+            "cname": "高雄县",
+            "lower_name": "kaohsiung county",
+            "code_full": "CHN071019"
+          },
+          {
+            "id": "890",
+            "state_id": "66",
+            "code": "20",
+            "name": "Pingtung County",
+            "cname": "屏东县",
+            "lower_name": "pingtung county",
+            "code_full": "CHN071020"
+          },
+          {
+            "id": "891",
+            "state_id": "66",
+            "code": "21",
+            "name": "Penghu County",
+            "cname": "澎湖县",
+            "lower_name": "penghu county",
+            "code_full": "CHN071021"
+          },
+          {
+            "id": "892",
+            "state_id": "66",
+            "code": "22",
+            "name": "Taitung County",
+            "cname": "台东县",
+            "lower_name": "taitung county",
+            "code_full": "CHN071022"
+          },
+          {
+            "id": "893",
+            "state_id": "66",
+            "code": "23",
+            "name": "Hualian County",
+            "cname": "花莲县",
+            "lower_name": "hualian county",
+            "code_full": "CHN071023"
+          },
+          {
+            "id": "894",
+            "state_id": "67",
+            "code": "HCW",
+            "name": "",
+            "cname": "中西区",
+            "lower_name": "",
+            "code_full": "CHN081HCW"
+          },
+          {
+            "id": "895",
+            "state_id": "67",
+            "code": "HEA",
+            "name": "",
+            "cname": "东区",
+            "lower_name": "",
+            "code_full": "CHN081HEA"
+          },
+          {
+            "id": "896",
+            "state_id": "67",
+            "code": "HSO",
+            "name": "",
+            "cname": "南区",
+            "lower_name": "",
+            "code_full": "CHN081HSO"
+          },
+          {
+            "id": "897",
+            "state_id": "67",
+            "code": "HWC",
+            "name": "",
+            "cname": "湾仔区",
+            "lower_name": "",
+            "code_full": "CHN081HWC"
+          },
+          {
+            "id": "898",
+            "state_id": "67",
+            "code": "KKC",
+            "name": "",
+            "cname": "九龙城区",
+            "lower_name": "",
+            "code_full": "CHN081KKC"
+          },
+          {
+            "id": "899",
+            "state_id": "67",
+            "code": "KKT",
+            "name": "",
+            "cname": "观塘区",
+            "lower_name": "",
+            "code_full": "CHN081KKT"
+          },
+          {
+            "id": "900",
+            "state_id": "67",
+            "code": "KSS",
+            "name": "",
+            "cname": "深水埗区",
+            "lower_name": "",
+            "code_full": "CHN081KSS"
+          },
+          {
+            "id": "901",
+            "state_id": "67",
+            "code": "KWT",
+            "name": "",
+            "cname": "黄大仙区",
+            "lower_name": "",
+            "code_full": "CHN081KWT"
+          },
+          {
+            "id": "902",
+            "state_id": "67",
+            "code": "KYT",
+            "name": "",
+            "cname": "油尖旺区",
+            "lower_name": "",
+            "code_full": "CHN081KYT"
+          },
+          {
+            "id": "903",
+            "state_id": "67",
+            "code": "NIS",
+            "name": "",
+            "cname": "离岛区",
+            "lower_name": "",
+            "code_full": "CHN081NIS"
+          },
+          {
+            "id": "904",
+            "state_id": "67",
+            "code": "NKT",
+            "name": "",
+            "cname": "葵青区",
+            "lower_name": "",
+            "code_full": "CHN081NKT"
+          },
+          {
+            "id": "905",
+            "state_id": "67",
+            "code": "NNO",
+            "name": "",
+            "cname": "北区",
+            "lower_name": "",
+            "code_full": "CHN081NNO"
+          },
+          {
+            "id": "906",
+            "state_id": "67",
+            "code": "NSK",
+            "name": "",
+            "cname": "西贡区",
+            "lower_name": "",
+            "code_full": "CHN081NSK"
+          },
+          {
+            "id": "907",
+            "state_id": "67",
+            "code": "NST",
+            "name": "",
+            "cname": "沙田区",
+            "lower_name": "",
+            "code_full": "CHN081NST"
+          },
+          {
+            "id": "908",
+            "state_id": "67",
+            "code": "NTM",
+            "name": "",
+            "cname": "屯门区",
+            "lower_name": "",
+            "code_full": "CHN081NTM"
+          },
+          {
+            "id": "909",
+            "state_id": "67",
+            "code": "NTP",
+            "name": "",
+            "cname": "大埔区",
+            "lower_name": "",
+            "code_full": "CHN081NTP"
+          },
+          {
+            "id": "910",
+            "state_id": "67",
+            "code": "NTW",
+            "name": "",
+            "cname": "荃湾区",
+            "lower_name": "",
+            "code_full": "CHN081NTW"
+          },
+          {
+            "id": "911",
+            "state_id": "67",
+            "code": "NYL",
+            "name": "",
+            "cname": "元朗区",
+            "lower_name": "",
+            "code_full": "CHN081NYL"
+          },
+          {
+            "id": "912",
+            "state_id": "68",
+            "code": "ANT",
+            "name": "",
+            "cname": "圣安多尼堂区",
+            "lower_name": "",
+            "code_full": "CHN082ANT"
+          },
+          {
+            "id": "913",
+            "state_id": "68",
+            "code": "CAT",
+            "name": "",
+            "cname": "大堂区",
+            "lower_name": "",
+            "code_full": "CHN082CAT"
+          },
+          {
+            "id": "914",
+            "state_id": "68",
+            "code": "CLN",
+            "name": "",
+            "cname": "路环",
+            "lower_name": "",
+            "code_full": "CHN082CLN"
+          },
+          {
+            "id": "915",
+            "state_id": "68",
+            "code": "LAW",
+            "name": "",
+            "cname": "望德堂区",
+            "lower_name": "",
+            "code_full": "CHN082LAW"
+          },
+          {
+            "id": "916",
+            "state_id": "68",
+            "code": "LAZ",
+            "name": "",
+            "cname": "风顺堂区",
+            "lower_name": "",
+            "code_full": "CHN082LAZ"
+          },
+          {
+            "id": "917",
+            "state_id": "68",
+            "code": "OLF",
+            "name": "",
+            "cname": "花地玛堂区",
+            "lower_name": "",
+            "code_full": "CHN082OLF"
+          },
+          {
+            "id": "918",
+            "state_id": "68",
+            "code": "TPA",
+            "name": "",
+            "cname": "氹仔",
+            "lower_name": "",
+            "code_full": "CHN082TPA"
+          }
+        ],
+        "name_used": "China",
+        "id": "44",
+        "continent_id": "1",
+        "code": "CHN",
+        "name": "China",
+        "full_name": "People's Republic of China",
+        "cname": "中国",
+        "full_cname": "中华人民共和国",
+        "lower_name": "people's republic of china",
+        "remark": "中国是四大文明古国之一，[18-19]  有着悠久的历史文化，是世界国土面积第三大的国家，[20-21]  世界第一大人口国，与英、法、美、俄并为联合国安理会五大常任理事国。中国是世界第二大经济体，[22-23]  世界第一贸易大国，[24]  世界第一大外汇储备国，[25]  世界第一大钢铁生产国和世界第一大农业国，[26-27]  世界第一大粮食总产量国以及世界上经济成长最快的国家之一。[28-29]  第二大吸引外资国，[30]  还是世界许多国际组织的重要成员，[31]  被认为是潜在超级大国之一。"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [121.777818, 24.394274],
+              [121.175632, 22.790857],
+              [120.74708, 21.970571],
+              [120.220083, 22.814861],
+              [120.106189, 23.556263],
+              [120.69468, 24.538451],
+              [121.495044, 25.295459],
+              [121.951244, 24.997596],
+              [121.777818, 24.394274]
+            ],
+            [
+              [110.339188, 18.678395],
+              [109.47521, 18.197701],
+              [108.655208, 18.507682],
+              [108.626217, 19.367888],
+              [109.119056, 19.821039],
+              [110.211599, 20.101254],
+              [110.786551, 20.077534],
+              [111.010051, 19.69593],
+              [110.570647, 19.255879],
+              [110.339188, 18.678395]
+            ]
+          ],
+          [
+            [
+              [127.657407, 49.76027],
+              [129.397818, 49.4406],
+              [130.582293, 48.729687],
+              [130.987282, 47.790132],
+              [132.506672, 47.78897],
+              [133.373596, 48.183442],
+              [135.026311, 48.47823],
+              [134.500814, 47.57844],
+              [134.112362, 47.212467],
+              [133.769644, 46.116927],
+              [133.097127, 45.144066],
+              [131.883454, 45.321162],
+              [131.025212, 44.967953],
+              [131.288555, 44.11152],
+              [131.144688, 42.92999],
+              [130.633866, 42.903015],
+              [130.640016, 42.395009],
+              [129.994267, 42.985387],
+              [129.596669, 42.424982],
+              [128.052215, 41.994285],
+              [128.208433, 41.466772],
+              [127.343783, 41.503152],
+              [126.869083, 41.816569],
+              [126.182045, 41.107336],
+              [125.079942, 40.569824],
+              [124.265625, 39.928493],
+              [122.86757, 39.637788],
+              [122.131388, 39.170452],
+              [121.054554, 38.897471],
+              [121.585995, 39.360854],
+              [121.376757, 39.750261],
+              [122.168595, 40.422443],
+              [121.640359, 40.94639],
+              [120.768629, 40.593388],
+              [119.639602, 39.898056],
+              [119.023464, 39.252333],
+              [118.042749, 39.204274],
+              [117.532702, 38.737636],
+              [118.059699, 38.061476],
+              [118.87815, 37.897325],
+              [118.911636, 37.448464],
+              [119.702802, 37.156389],
+              [120.823457, 37.870428],
+              [121.711259, 37.481123],
+              [122.357937, 37.454484],
+              [122.519995, 36.930614],
+              [121.104164, 36.651329],
+              [120.637009, 36.11144],
+              [119.664562, 35.609791],
+              [119.151208, 34.909859],
+              [120.227525, 34.360332],
+              [120.620369, 33.376723],
+              [121.229014, 32.460319],
+              [121.908146, 31.692174],
+              [121.891919, 30.949352],
+              [121.264257, 30.676267],
+              [121.503519, 30.142915],
+              [122.092114, 29.83252],
+              [121.938428, 29.018022],
+              [121.684439, 28.225513],
+              [121.125661, 28.135673],
+              [120.395473, 27.053207],
+              [119.585497, 25.740781],
+              [118.656871, 24.547391],
+              [117.281606, 23.624501],
+              [115.890735, 22.782873],
+              [114.763827, 22.668074],
+              [114.152547, 22.22376],
+              [113.80678, 22.54834],
+              [113.241078, 22.051367],
+              [111.843592, 21.550494],
+              [110.785466, 21.397144],
+              [110.444039, 20.341033],
+              [109.889861, 20.282457],
+              [109.627655, 21.008227],
+              [109.864488, 21.395051],
+              [108.522813, 21.715212],
+              [108.05018, 21.55238],
+              [107.04342, 21.811899],
+              [106.567273, 22.218205],
+              [106.725403, 22.794268],
+              [105.811247, 22.976892],
+              [105.329209, 23.352063],
+              [104.476858, 22.81915],
+              [103.504515, 22.703757],
+              [102.706992, 22.708795],
+              [102.170436, 22.464753],
+              [101.652018, 22.318199],
+              [101.80312, 21.174367],
+              [101.270026, 21.201652],
+              [101.180005, 21.436573],
+              [101.150033, 21.849984],
+              [100.416538, 21.558839],
+              [99.983489, 21.742937],
+              [99.240899, 22.118314],
+              [99.531992, 22.949039],
+              [98.898749, 23.142722],
+              [98.660262, 24.063286],
+              [97.60472, 23.897405],
+              [97.724609, 25.083637],
+              [98.671838, 25.918703],
+              [98.712094, 26.743536],
+              [98.68269, 27.508812],
+              [98.246231, 27.747221],
+              [97.911988, 28.335945],
+              [97.327114, 28.261583],
+              [97.402561, 27.882536],
+              [97.051989, 27.699059],
+              [95.767822, 28.139816],
+              [94.306641, 27.547242],
+              [93.746338, 27.108034],
+              [92.033484, 26.83831],
+              [92.103712, 27.452614],
+              [91.696657, 27.771742],
+              [91.258854, 28.040614],
+              [90.730514, 28.064954],
+              [90.015829, 28.296439],
+              [89.47581, 28.042759],
+              [88.814248, 27.299316],
+              [88.730326, 28.086865],
+              [88.120441, 27.876542],
+              [86.954517, 27.974262],
+              [85.82332, 28.203576],
+              [85.011638, 28.642774],
+              [84.23458, 28.839894],
+              [83.898993, 29.320226],
+              [83.337115, 29.463732],
+              [82.327513, 30.115268],
+              [81.525804, 30.422717],
+              [81.111256, 30.183481],
+              [79.721367, 30.882715],
+              [78.738894, 31.515906],
+              [78.458446, 32.618164],
+              [79.176129, 32.48378],
+              [79.208892, 32.994395],
+              [78.811086, 33.506198],
+              [78.912269, 34.321936],
+              [77.837451, 35.49401],
+              [76.192848, 35.898403],
+              [75.896897, 36.666806],
+              [75.158028, 37.133031],
+              [74.980002, 37.41999],
+              [74.829986, 37.990007],
+              [74.864816, 38.378846],
+              [74.257514, 38.606507],
+              [73.928852, 38.505815],
+              [73.675379, 39.431237],
+              [73.960013, 39.660008],
+              [73.822244, 39.893973],
+              [74.776862, 40.366425],
+              [75.467828, 40.562072],
+              [76.526368, 40.427946],
+              [76.904484, 41.066486],
+              [78.187197, 41.185316],
+              [78.543661, 41.582243],
+              [80.11943, 42.123941],
+              [80.25999, 42.349999],
+              [80.18015, 42.920068],
+              [80.866206, 43.180362],
+              [79.966106, 44.917517],
+              [81.947071, 45.317027],
+              [82.458926, 45.53965],
+              [83.180484, 47.330031],
+              [85.16429, 47.000956],
+              [85.720484, 47.452969],
+              [85.768233, 48.455751],
+              [86.598776, 48.549182],
+              [87.35997, 49.214981],
+              [87.751264, 49.297198],
+              [88.013832, 48.599463],
+              [88.854298, 48.069082],
+              [90.280826, 47.693549],
+              [90.970809, 46.888146],
+              [90.585768, 45.719716],
+              [90.94554, 45.286073],
+              [92.133891, 45.115076],
+              [93.480734, 44.975472],
+              [94.688929, 44.352332],
+              [95.306875, 44.241331],
+              [95.762455, 43.319449],
+              [96.349396, 42.725635],
+              [97.451757, 42.74889],
+              [99.515817, 42.524691],
+              [100.845866, 42.663804],
+              [101.83304, 42.514873],
+              [103.312278, 41.907468],
+              [104.522282, 41.908347],
+              [104.964994, 41.59741],
+              [106.129316, 42.134328],
+              [107.744773, 42.481516],
+              [109.243596, 42.519446],
+              [110.412103, 42.871234],
+              [111.129682, 43.406834],
+              [111.829588, 43.743118],
+              [111.667737, 44.073176],
+              [111.348377, 44.457442],
+              [111.873306, 45.102079],
+              [112.436062, 45.011646],
+              [113.463907, 44.808893],
+              [114.460332, 45.339817],
+              [115.985096, 45.727235],
+              [116.717868, 46.388202],
+              [117.421701, 46.672733],
+              [118.874326, 46.805412],
+              [119.66327, 46.69268],
+              [119.772824, 47.048059],
+              [118.866574, 47.74706],
+              [118.064143, 48.06673],
+              [117.295507, 47.697709],
+              [116.308953, 47.85341],
+              [115.742837, 47.726545],
+              [115.485282, 48.135383],
+              [116.191802, 49.134598],
+              [116.678801, 49.888531],
+              [117.879244, 49.510983],
+              [119.288461, 50.142883],
+              [119.279366, 50.582908],
+              [120.18205, 51.643566],
+              [120.738191, 51.964115],
+              [120.725789, 52.516226],
+              [120.177089, 52.753886],
+              [121.003085, 53.251401],
+              [122.245748, 53.431726],
+              [123.571507, 53.458804],
+              [125.068211, 53.161045],
+              [125.946349, 52.792799],
+              [126.564399, 51.784255],
+              [126.939157, 51.353894],
+              [127.287456, 50.739797],
+              [127.657407, 49.76027]
+            ]
+          ],
+          [
+            [
+              [122.50662231445312, 23.467723846435547],
+              [122.78874206542969, 24.572216033935547],
+              [122.50662231445312, 23.467723846435547]
+            ]
+          ],
+          [
+            [
+              [121.17402648925781, 20.826547622680664],
+              [121.91168975830078, 21.6975154876709],
+              [121.17402648925781, 20.826547622680664]
+            ]
+          ],
+          [
+            [
+              [120.003662109375, 19.03096327846469],
+              [119.47631835937499, 18.020527657852337],
+              [120.003662109375, 19.03096327846469]
+            ]
+          ],
+          [
+            [
+              [119.06982421874999, 16.024695711685315],
+              [119.05883789062501, 15.040295996106765],
+              [119.06982421874999, 16.024695711685315]
+            ]
+          ],
+          [
+            [
+              [118.98193359375, 11.953349393643416],
+              [118.531494140625, 10.908830155722107],
+              [118.98193359375, 11.953349393643416]
+            ]
+          ],
+          [
+            [
+              [116.23535156249999, 7.993957436359008],
+              [115.55419921875, 7.18810087117902],
+              [116.23535156249999, 7.993957436359008]
+            ]
+          ],
+          [
+            [
+              [112.8515625, 3.743671274749731],
+              [111.785888671875, 3.4147247646241174],
+              [112.8515625, 3.743671274749731]
+            ]
+          ],
+          [
+            [
+              [108.30322265624999, 5.998533174329341],
+              [108.226318359375, 7.089990476360545],
+              [108.30322265624999, 5.998533174329341]
+            ]
+          ],
+          [
+            [
+              [110.06103515625, 11.26461221250444],
+              [110.31372070312499, 12.264863532756566],
+              [110.06103515625, 11.26461221250444]
+            ]
+          ],
+          [
+            [
+              [109.852294921875, 15.178180945596376],
+              [109.302978515625, 16.214674588248556],
+              [109.852294921875, 15.178180945596376]
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CIV",
+      "properties": { "name": "Ivory Coast" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-2.856125, 4.994476],
+            [-3.311084, 4.984296],
+            [-4.00882, 5.179813],
+            [-4.649917, 5.168264],
+            [-5.834496, 4.993701],
+            [-6.528769, 4.705088],
+            [-7.518941, 4.338288],
+            [-7.712159, 4.364566],
+            [-7.635368, 5.188159],
+            [-7.539715, 5.313345],
+            [-7.570153, 5.707352],
+            [-7.993693, 6.12619],
+            [-8.311348, 6.193033],
+            [-8.60288, 6.467564],
+            [-8.385452, 6.911801],
+            [-8.485446, 7.395208],
+            [-8.439298, 7.686043],
+            [-8.280703, 7.68718],
+            [-8.221792, 8.123329],
+            [-8.299049, 8.316444],
+            [-8.203499, 8.455453],
+            [-7.8321, 8.575704],
+            [-8.079114, 9.376224],
+            [-8.309616, 9.789532],
+            [-8.229337, 10.12902],
+            [-8.029944, 10.206535],
+            [-7.89959, 10.297382],
+            [-7.622759, 10.147236],
+            [-6.850507, 10.138994],
+            [-6.666461, 10.430811],
+            [-6.493965, 10.411303],
+            [-6.205223, 10.524061],
+            [-6.050452, 10.096361],
+            [-5.816926, 10.222555],
+            [-5.404342, 10.370737],
+            [-4.954653, 10.152714],
+            [-4.779884, 9.821985],
+            [-4.330247, 9.610835],
+            [-3.980449, 9.862344],
+            [-3.511899, 9.900326],
+            [-2.827496, 9.642461],
+            [-2.56219, 8.219628],
+            [-2.983585, 7.379705],
+            [-3.24437, 6.250472],
+            [-2.810701, 5.389051],
+            [-2.856125, 4.994476]
+          ]
+        ]
+      }
+    }
+  ]
+}

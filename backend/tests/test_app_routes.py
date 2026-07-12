@@ -235,11 +235,17 @@ def test_processing_badges_distinguish_local_hybrid_and_server_tools(client):
     hybrid_page = client.get("/zh/tool/device").get_data(as_text=True)
     server_page = client.get("/zh/tool/translate").get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
 
     assert "浏览器本地处理，数据不上传" in local_page
     assert "部分信息需要请求服务端" in hybrid_page
     assert "服务端处理，数据会发送到服务器" in server_page
-    assert "privacy-badge-runtime" in app_script
+    assert "function renderToolPageHeader(" in app_script
+    assert 'class="tool-page-header"' in app_script
+    assert zh_locale["toolHeader"]["processing"]["local"] == "浏览器本地处理 · 数据不上传"
+    assert zh_locale["toolHeader"]["processing"]["hybrid"] == "混合处理 · 部分数据请求服务端"
+    assert zh_locale["toolHeader"]["processing"]["server"] == "服务端处理 · 数据会发送到服务器"
     assert 'fetch("/api/tool-manifest")' in app_script
     assert "json-tool.js" not in app_script
 
@@ -539,3 +545,91 @@ def test_translation_helpers_cover_language_and_length():
     assert app_module._is_short("one two three four five six") is False
     assert "English translation" in app_module._build_prompt("你好")
     assert "Simplified Chinese" in app_module._build_prompt("hello world")
+
+
+def test_area_search_api_and_seo(client):
+    """Verify area-search tool: SEO, API endpoints, lazy loading, i18n, and CSS."""
+    # SEO page renders
+    zh_page = client.get("/zh/tool/area-search")
+    en_page = client.get("/en/tool/area-search")
+    assert zh_page.status_code == 200
+    assert en_page.status_code == 200
+    assert "地区搜索" in zh_page.get_data(as_text=True)
+    assert "Area Search" in en_page.get_data(as_text=True)
+
+    # China API — provinces
+    china_provinces = client.get("/api/area-search/china").get_json()
+    assert china_provinces["ok"] is True
+    assert len(china_provinces["data"]) >= 2
+    province_names = {p["name"] for p in china_provinces["data"]}
+    assert "北京" in province_names
+
+    # China API — children of province 11 (Beijing)
+    bj_children = client.get("/api/area-search/china?parent=11").get_json()
+    assert bj_children["ok"] is True
+    for c in bj_children["data"]:
+        assert c["code"].startswith("11")
+
+    # China API — children of city 1101 (Beijing districts)
+    bj_districts = client.get("/api/area-search/china?parent=1101").get_json()
+    assert bj_districts["ok"] is True
+    district_names = {d["name"] for d in bj_districts["data"]}
+    assert len(district_names) >= 1
+
+    # China API — invalid parent
+    bad = client.get("/api/area-search/china?parent=999999")
+    assert bad.status_code == 400
+
+    # World API — countries
+    countries = client.get("/api/area-search/world/countries").get_json()
+    assert countries["ok"] is True
+    assert len(countries["data"]) >= 2
+    country_codes = {c["code"] for c in countries["data"]}
+    assert "CHN" in country_codes or "AFG" in country_codes
+
+    # World API — cities
+    cities = client.get("/api/area-search/world/cities?country=AFG").get_json()
+    assert cities["ok"] is True
+    assert len(cities["data"]) >= 1
+
+    # World API — missing country param
+    bad_cities = client.get("/api/area-search/world/cities")
+    assert bad_cities.status_code == 400
+
+    # World API — unknown country
+    unknown = client.get("/api/area-search/world/cities?country=ZZZ")
+    assert unknown.status_code == 404
+
+    # Lazy loading check
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    assert_tool_is_lazy_loaded(frontend_dir, "area-search-tool.js")
+
+    # i18n check
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    assert zh_locale["menu"]["area-search"] == "地区搜索"
+    assert en_locale["menu"]["area-search"] == "Area Search"
+    assert zh_locale["areaSearch"]["china"] == "中国地区"
+    assert en_locale["areaSearch"]["world"] == "World"
+    assert zh_locale["areaSearch"]["copyPath"] == "复制路径"
+
+    # CSS check
+    app_css = (frontend_dir / "css" / "app.css").read_text()
+    assert ".as-tool" in app_css
+    assert ".as-dropdown" in app_css
+    assert ".as-path" in app_css
+
+    # JS tool script exists and matches conventions
+    script = client.get("/js/area-search-tool.js")
+    assert script.status_code == 200
+    script_text = script.get_data(as_text=True)
+    assert "var AreaSearchTool" in script_text
+    assert "function init(" in script_text
+    assert "area-search/china" in script_text
+    assert "area-search/world" in script_text
+
+    # Registry check
+    import app as app_module
+    assert "area-search" in app_module.TOOL_REGISTRY
+    assert app_module.TOOL_REGISTRY["area-search"]["processing"] == "server"
+    assert app_module.TOOL_REGISTRY["area-search"]["indexable"] is True

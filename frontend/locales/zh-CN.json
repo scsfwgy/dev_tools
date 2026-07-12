@@ -34,6 +34,7 @@
     "flutter": "Flutter 常用",
     "ios": "iOS 常用",
     "wishes": "心愿墙",
+    "area-search": "地区搜索",
     "searchPlaceholder": "搜索工具...",
     "collapseMenu": "收起菜单",
     "immersiveMenu": "进入沉浸模式",
@@ -51,6 +52,13 @@
     "visitCountUnavailable": "暂不可用",
     "linkGithub": "GitHub",
     "linkWishes": "心愿墙"
+  },
+  "toolHeader": {
+    "processing": {
+      "local": "浏览器本地处理 · 数据不上传",
+      "hybrid": "混合处理 · 部分数据请求服务端",
+      "server": "服务端处理 · 数据会发送到服务器"
+    }
   },
   "welcome": {
     "desc": "简单、快速、注重隐私的开发工具集",
@@ -1081,5 +1089,26 @@
     "description": "说明",
     "example": "示例值",
     "searchRef": "搜索 Claim 名称或说明..."
+  },
+  "areaSearch": {
+    "china": "中国地区",
+    "world": "国际地区",
+    "province": "省份/直辖市",
+    "city": "城市",
+    "district": "区/县",
+    "country": "国家",
+    "worldCity": "城市",
+    "searchProvince": "搜索省份...",
+    "searchCity": "搜索城市...",
+    "searchDistrict": "搜索区县...",
+    "searchCountry": "搜索国家...",
+    "searchWorldCity": "搜索城市...",
+    "selectedPath": "已选路径",
+    "copyPath": "复制路径",
+    "copyCode": "复制编码",
+    "copied": "已复制",
+    "noMatch": "无匹配结果",
+    "pathDelimiter": " > ",
+    "random": "随机选择"
   }
 }

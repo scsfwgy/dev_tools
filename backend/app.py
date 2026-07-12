@@ -28,6 +28,41 @@ app.register_blueprint(wishes_bp)
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 SITE_URL = "https://www.tools24.uk"
 SUPPORTED_LANGS = {"zh", "en"}
+_AREA_CONFIG_DIR = Path(__file__).resolve().parent / "config"
+
+
+# --- Area Search data loaders (lazy, cached) ---
+_AREA_CHINA_CACHE = None
+_AREA_WORLD_CACHE = None
+
+
+def _load_china_tree():
+    global _AREA_CHINA_CACHE
+    if _AREA_CHINA_CACHE is not None:
+        return _AREA_CHINA_CACHE
+    path = _AREA_CONFIG_DIR / "area_format_object_level3.json"
+    _AREA_CHINA_CACHE = json.loads(path.read_text(encoding="utf-8-sig"))
+    return _AREA_CHINA_CACHE
+
+
+def _load_world_countries():
+    global _AREA_WORLD_CACHE
+    if _AREA_WORLD_CACHE is not None:
+        return _AREA_WORLD_CACHE
+    path = _AREA_CONFIG_DIR / "allCountriesGeojson.json"
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    # Keep only metadata, discard geometry
+    countries = []
+    for feat in raw.get("features", []):
+        props = feat.get("properties", {})
+        countries.append({
+            "code": props.get("code", feat.get("id", "")),
+            "name": props.get("name", ""),
+            "cname": props.get("cname", ""),
+            "cities": props.get("cities", []),
+        })
+    _AREA_WORLD_CACHE = countries
+    return _AREA_WORLD_CACHE
 
 
 @app.after_request
@@ -781,6 +816,32 @@ TOOLS = {
             ],
         },
     },
+    "area-search": {
+        "zh": {
+            "name": "地区搜索",
+            "title": "地区搜索 - 中国省市地区编码查询 全球国家城市 | Tools24",
+            "description": "在线中国省市区三级地区编码查询工具，支持全球国家城市搜索，GB/T 2260 标准编码，级联选择和名称搜索，一键复制完整路径。",
+            "keywords": "地区搜索,中国省市区,地区编码,GB/T 2260,全球国家,城市搜索,区域代码,行政区域",
+            "intro": "提供中国省市区三级地区编码查询（GB/T 2260 标准）以及全球国家城市搜索，支持级联选择、名称过滤和一键复制完整路径。",
+            "features": ["中国省市区三级级联", "GB/T 2260 标准编码", "全球 250+ 国家城市", "输入即搜即时过滤", "完整路径一键复制"],
+            "faq": [
+                ("编码遵循什么标准？", "中国地区编码遵循 GB/T 2260 中华人民共和国行政区划代码标准，省份 2 位、城市 4 位、区县 6 位。"),
+                ("数据会上传服务器吗？", "查询时的搜索请求会发送到服务器进行匹配，但不会记录或存储您的查询内容。"),
+            ],
+        },
+        "en": {
+            "name": "Area Search",
+            "title": "Area Search - China Region Code Lookup Global Countries Cities | Tools24",
+            "description": "Online China province/city/district code lookup with GB/T 2260 standards, global country and city search with cascading selection and one-click path copy.",
+            "keywords": "area search,china region code,GB/T 2260,administrative division,global countries,city search,region lookup",
+            "intro": "Look up China's three-level administrative region codes (GB/T 2260) and browse global countries and cities with cascading selection, name filtering and one-click path copy.",
+            "features": ["3-level China cascading lookup", "GB/T 2260 standard codes", "250+ global countries and cities", "Type-to-filter on every level", "One-click full path copy"],
+            "faq": [
+                ("What standard do the codes follow?", "China region codes follow GB/T 2260 (Administrative Division Codes of the PRC): 2-digit province, 4-digit city, 6-digit district."),
+                ("Is my search data uploaded?", "Search queries are sent to the server for matching but are not logged or stored."),
+            ],
+        },
+    },
 }
 
 HOME_META = {
@@ -831,6 +892,7 @@ TOOL_REGISTRY = {
     "content": {"order": 280, "icon": "link", "script": "/js/content-tool.js?v=20260710b", "global": "ContentTool", "processing": "server", "indexable": True},
     "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},
     "wishes": {"order": 300, "icon": "star", "script": "/js/wishes.js?v=20260706", "global": "WishTool", "processing": "server", "indexable": False, "hidden": True},
+    "area-search": {"order": 310, "icon": "map-pin", "script": "/js/area-search-tool.js?v=20260712", "global": "AreaSearchTool", "processing": "server", "indexable": True},
 }
 
 TOOL_SUBPAGES = {
@@ -1407,6 +1469,161 @@ def translate():
         "target_lang": target_lang,
     })
 
+
+# --- Area Search API ---
+
+
+@app.route("/api/area-search/china")
+def area_search_china():
+    parent = request.args.get("parent", "")
+    tree = _load_china_tree()
+
+    if not parent:
+        result = [{"code": k, "name": v["n"], "pinyin": v.get("y", "")} for k, v in tree.items()]
+        result.sort(key=lambda x: x["code"])
+        return jsonify({"ok": True, "data": result})
+
+    if len(parent) == 2:
+        node = tree.get(parent)
+    elif len(parent) == 4:
+        prov = tree.get(parent[:2])
+        node = prov["c"].get(parent) if prov else None
+    else:
+        return jsonify({"ok": False, "error": "Invalid parent code"}), 400
+
+    if not node or "c" not in node:
+        return jsonify({"ok": True, "data": []})
+
+    children = [{"code": k, "name": v["n"], "pinyin": v.get("y", "")} for k, v in node["c"].items()]
+    children.sort(key=lambda x: x["code"])
+    return jsonify({"ok": True, "data": children})
+
+
+@app.route("/api/area-search/world/countries")
+def area_search_world_countries():
+    countries = _load_world_countries()
+    result = [{"code": c["code"], "name": c["name"], "cname": c["cname"]} for c in countries]
+    result.sort(key=lambda x: x["cname"] or x["name"])
+    return jsonify({"ok": True, "data": result})
+
+
+@app.route("/api/area-search/world/cities")
+def area_search_world_cities():
+    country_code = request.args.get("country", "").upper()
+    if not country_code:
+        return jsonify({"ok": False, "error": "country parameter required"}), 400
+
+    countries = _load_world_countries()
+    country = next((c for c in countries if c["code"] == country_code), None)
+    if not country:
+        return jsonify({"ok": False, "error": "Country not found"}), 404
+
+    cities_data = country.get("cities") or []
+    result = []
+    for city in cities_data:
+        result.append({
+            "code": city.get("code", ""),
+            "name": city.get("name", ""),
+            "cname": city.get("cname", ""),
+            "code_full": city.get("code_full", ""),
+        })
+    # Dedupe by code_full
+    seen = set()
+    deduped = []
+    for c in result:
+        key = c["code_full"] or c["cname"] or c["name"]
+        if key not in seen:
+            seen.add(key)
+            deduped.append(c)
+    deduped.sort(key=lambda x: x["cname"] or x["name"])
+    return jsonify({"ok": True, "data": deduped})
+
+
+@app.route("/api/area-search/china/ancestors")
+def area_search_china_ancestors():
+    """Return full ancestor chain (self included) for a China area code."""
+    code = request.args.get("code", "").strip()
+    if not code or len(code) not in (2, 4, 6) or not code.isdigit():
+        return jsonify({"ok": False, "error": "Invalid code"}), 400
+
+    tree = _load_china_tree()
+    chain = []
+    if len(code) >= 2:
+        prov = tree.get(code[:2])
+        if prov:
+            chain.append({"code": code[:2], "name": prov["n"], "pinyin": prov.get("y", "")})
+    if len(code) >= 4:
+        prov = tree.get(code[:2])
+        if prov and prov.get("c"):
+            city = prov["c"].get(code[:4])
+            if city:
+                chain.append({"code": code[:4], "name": city["n"], "pinyin": city.get("y", "")})
+    if len(code) == 6:
+        prov = tree.get(code[:2])
+        if prov and prov.get("c"):
+            city = prov["c"].get(code[:4])
+            if city and city.get("c"):
+                district = city["c"].get(code)
+                if district:
+                    chain.append({"code": code, "name": district["n"], "pinyin": district.get("y", "")})
+    return jsonify({"ok": True, "data": chain})
+
+
+@app.route("/api/area-search/china/all")
+def area_search_china_all():
+    """Return all nodes at a given level (2=cities, 3=districts) with parent info."""
+    level = request.args.get("level", "2")
+    if level not in ("2", "3"):
+        return jsonify({"ok": False, "error": "level must be 2 or 3"}), 400
+
+    tree = _load_china_tree()
+    result = []
+    for prov_code, prov in tree.items():
+        if "c" not in prov:
+            continue
+        for city_code, city in prov["c"].items():
+            if level == "2":
+                result.append({
+                    "code": city_code, "name": city["n"], "pinyin": city.get("y", ""),
+                    "parentCode": prov_code, "parentName": prov["n"], "parentPinyin": prov.get("y", ""),
+                })
+            elif "c" in city:
+                for dist_code, dist in city["c"].items():
+                    result.append({
+                        "code": dist_code, "name": dist["n"], "pinyin": dist.get("y", ""),
+                        "parentCode": city_code, "parentName": city["n"], "parentPinyin": city.get("y", ""),
+                        "grandparentCode": prov_code, "grandparentName": prov["n"], "grandparentPinyin": prov.get("y", ""),
+                    })
+    result.sort(key=lambda x: x["code"])
+    return jsonify({"ok": True, "data": result})
+
+
+@app.route("/api/area-search/world/all-cities")
+def area_search_world_all_cities():
+    """Return all cities across all countries with country info."""
+    countries = _load_world_countries()
+    result = []
+    for c in countries:
+        for city in (c.get("cities") or []):
+            result.append({
+                "code": city.get("code", ""),
+                "name": city.get("name", ""),
+                "cname": city.get("cname", ""),
+                "code_full": city.get("code_full", ""),
+                "countryCode": c["code"],
+                "countryName": c["name"],
+                "countryCname": c["cname"],
+            })
+    # Dedupe
+    seen = set()
+    deduped = []
+    for r in result:
+        key = r["code_full"] or (r["countryCode"] + r["cname"])
+        if key not in seen:
+            seen.add(key)
+            deduped.append(r)
+    deduped.sort(key=lambda x: x["cname"] or x["name"])
+    return jsonify({"ok": True, "data": deduped})
 
 
 # --- Content Generator API ---

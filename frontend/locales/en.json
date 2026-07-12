@@ -34,6 +34,7 @@
     "flutter": "Flutter Ref",
     "ios": "iOS Ref",
     "wishes": "Wish Wall",
+    "area-search": "Area Search",
     "searchPlaceholder": "Search tools...",
     "collapseMenu": "Collapse menu",
     "immersiveMenu": "Enter immersive mode",
@@ -51,6 +52,13 @@
     "visitCountUnavailable": "Unavailable",
     "linkGithub": "GitHub",
     "linkWishes": "Wish Wall"
+  },
+  "toolHeader": {
+    "processing": {
+      "local": "Processed in your browser · Data is not uploaded",
+      "hybrid": "Hybrid processing · Some requests use the server",
+      "server": "Server processing · Data is sent to the server"
+    }
   },
   "welcome": {
     "desc": "A fast, simple and privacy-focused developer toolbox",
@@ -1081,5 +1089,26 @@
     "description": "Description",
     "example": "Example",
     "searchRef": "Search claim name or description..."
+  },
+  "areaSearch": {
+    "china": "China",
+    "world": "World",
+    "province": "Province",
+    "city": "City",
+    "district": "District",
+    "country": "Country",
+    "worldCity": "City",
+    "searchProvince": "Search provinces...",
+    "searchCity": "Search cities...",
+    "searchDistrict": "Search districts...",
+    "searchCountry": "Search countries...",
+    "searchWorldCity": "Search cities...",
+    "selectedPath": "Selected Path",
+    "copyPath": "Copy Path",
+    "copyCode": "Copy Code",
+    "copied": "Copied",
+    "noMatch": "No matches",
+    "pathDelimiter": " > ",
+    "random": "Random pick"
   }
 }
