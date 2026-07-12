@@ -93,8 +93,8 @@ def _resolve_area_path(mode: str, codes: list) -> str | None:
 
 
 def _area_intro_cache_key(mode: str, region_path: str) -> str:
-    digest = hashlib.sha256(f"{mode}:{region_path}".encode()).hexdigest()
-    return f"area_intro_cache:{digest}"
+    digest = hashlib.sha256(f"v2:{mode}:{region_path}".encode()).hexdigest()
+    return f"area_intro_cache:v2:{digest}"
 
 
 def _area_intro_cache_get(key: str) -> str | None:
@@ -420,13 +420,16 @@ def area_search_intro():
                     {"role": "user", "content": user_prompt},
                 ],
                 "temperature": 0.7,
-                "max_tokens": 1024,
+                "max_tokens": 2048,
             },
             timeout=30,
         )
         resp.raise_for_status()
         body = resp.json()
-        intro = body["choices"][0]["message"]["content"].strip()
+        choice = body["choices"][0]
+        if choice.get("finish_reason") == "length":
+            return jsonify({"ok": False, "error": "generation_incomplete"}), 502
+        intro = choice["message"]["content"].strip()
     except (KeyError, requests.exceptions.RequestException) as e:
         logger.warning("Area intro failed: %s", e)
         return jsonify({"ok": False, "error": "generation_failed"}), 500

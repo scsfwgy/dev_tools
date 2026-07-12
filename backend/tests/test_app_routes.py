@@ -632,6 +632,7 @@ def test_area_search_api_and_seo(client):
     assert ".as-tool" in app_css
     assert ".as-dropdown" in app_css
     assert ".as-path" in app_css
+    assert ".as-tool { width: min(100%, 960px);" in app_css
 
     # JS tool script exists and matches conventions
     script = client.get("/js/area-search-tool.js")
@@ -656,6 +657,22 @@ def test_area_search_api_and_seo(client):
     assert 'cn.join(" ")' in script_text
     assert 'codes.join(" ")' in script_text
     assert 'join(" > ")' not in script_text
+    assert "https://www.amap.com/search?query=" in script_text
+    assert "https://www.google.com/maps/search/?api=1&query=" in script_text
+    assert 'rel="noopener noreferrer"' in script_text
+    assert "pathEl.appendChild(cachedEl)" in script_text
+    assert "btn.parentNode.appendChild(resultEl)" not in script_text
+    assert "function randomChinaDistrict(city)" in script_text
+    assert "function randomWorldCity(country)" in script_text
+    assert "function randomPickDifferent(options, currentCode)" in script_text
+    assert "if (_randomBusy) return" in script_text
+    assert "selectOption(prov, 0, true)" in script_text
+    assert "selectOption(city, 1, true)" in script_text
+    assert "var _introPending = {}" in script_text
+    assert "function refreshIntroLoadingUi()" in script_text
+    assert "_introPending[selection.key]" in script_text
+    assert "signal: _introController.signal" not in script_text
+    assert 'showStatus(t("areaSearch.loadFailed"), true)' in script_text
 
     # Registry check
     import app as app_module
@@ -706,3 +723,28 @@ def test_area_search_intro_local_cache_and_rate_limit(monkeypatch):
 
     app_module._AREA_INTRO_LOCAL_CACHE.clear()
     app_module._AREA_INTRO_RATE_STORE.clear()
+
+
+def test_area_search_intro_rejects_truncated_model_output(client, monkeypatch):
+    import app_settings
+    from routes import area_search
+
+    response = Mock()
+    response.raise_for_status.return_value = None
+    response.json.return_value = {
+        "choices": [{"finish_reason": "length", "message": {"content": "**还有小磨"}}]
+    }
+    post = Mock(return_value=response)
+    cache_set = Mock()
+    monkeypatch.setattr(app_settings, "_DEEPSEEK_KEY", "test-key")
+    monkeypatch.setattr(area_search.requests, "post", post)
+    monkeypatch.setattr(area_search, "_area_intro_cache_get", lambda _key: None)
+    monkeypatch.setattr(area_search, "_check_area_intro_rate_limit", lambda _ip: (True, 0))
+    monkeypatch.setattr(area_search, "_area_intro_cache_set", cache_set)
+
+    result = client.post("/api/area-search/intro", json={"mode": "china", "codes": ["11"]})
+
+    assert result.status_code == 502
+    assert result.get_json()["error"] == "generation_incomplete"
+    assert post.call_args.kwargs["json"]["max_tokens"] == 2048
+    cache_set.assert_not_called()

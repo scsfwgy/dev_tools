@@ -2696,7 +2696,7 @@ a:hover {
 @media (max-width: 700px) { .jwt-encode-grid { grid-template-columns: 1fr; } }
 
 /* ── Area Search ── */
-.as-tool { max-width: 720px; margin: 18px auto 0; }
+.as-tool { width: min(100%, 960px); margin: 18px auto 0; }
 .as-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--border); }
 .as-tab {
   padding: 8px 20px; border: none; background: none; color: var(--text-muted);
@@ -2718,6 +2718,7 @@ a:hover {
 }
 .as-action-btn + .as-action-btn { margin-left: 4px; }
 .as-action-btn:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.as-action-btn:disabled { opacity: 0.55; cursor: wait; }
 .as-row-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px; display: block; }
 .as-input-group { position: relative; }
 .as-input {
@@ -2769,17 +2770,18 @@ a:hover {
 .as-path-en { font-size: 0.83rem; color: var(--text-muted); }
 .as-path-code { font-size: 0.78rem; color: var(--text-muted); font-family: "SF Mono", "Cascadia Code", monospace; }
 
-.as-intro-btn {
-  margin-top: 8px; width: 100%; min-height: 36px; padding: 6px 12px;
+.as-result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.as-intro-btn, .as-map-link {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 6px 12px;
   border: 1px dashed var(--border); border-radius: 6px;
   background: transparent; color: var(--accent); font-size: 0.82rem; cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  text-decoration: none; transition: border-color 0.15s, background 0.15s;
 }
-.as-intro-btn:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.as-intro-btn:hover, .as-map-link:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
 .as-intro-btn:disabled { opacity: 0.6; cursor: wait; }
 
 .as-intro-result {
-  margin-top: 10px; padding: 12px 14px; background: color-mix(in srgb, var(--accent) 4%, var(--bg-card));
+  width: 100%; box-sizing: border-box; margin-top: 10px; padding: 16px 18px; background: color-mix(in srgb, var(--accent) 4%, var(--bg-card));
   border: 1px solid var(--border); border-radius: 6px;
   font-size: 0.85rem; color: var(--text); line-height: 1.7;
 }
@@ -2793,6 +2795,8 @@ a:hover {
 
 @media (max-width: 760px) {
   .as-cascade-row { flex-direction: column; gap: 12px; }
+  .as-result-actions { grid-template-columns: 1fr; }
+  .as-intro-btn, .as-map-link { min-height: 44px; }
 }
 
 @media (max-width: 760px) {

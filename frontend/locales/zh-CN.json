@@ -1119,6 +1119,8 @@
     "pathDelimiter": " > ",
     "random": "随机选择",
     "intro": "AI 地区介绍",
+    "openAmap": "在高德地图中查看",
+    "openGoogleMaps": "在 Google Maps 中查看",
     "introLoading": "生成中({s}s)…",
     "clear": "清空选择",
     "pathChinese": "中文",
@@ -1131,6 +1133,7 @@
       "invalid_region": "地区信息无效，请重新选择",
       "rate_limited": "请求较频繁，请在 {minutes} 分钟后重试",
       "generation_failed": "地区介绍生成失败，请稍后重试",
+      "generation_incomplete": "本次内容生成不完整，请重新生成",
       "unknown": "请求失败，请稍后重试"
     }
   }

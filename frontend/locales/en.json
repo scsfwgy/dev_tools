@@ -1119,6 +1119,8 @@
     "pathDelimiter": " > ",
     "random": "Random pick",
     "intro": "AI Region Intro",
+    "openAmap": "Open in Amap",
+    "openGoogleMaps": "Open in Google Maps",
     "introLoading": "Generating({s}s)…",
     "clear": "Clear all",
     "pathChinese": "Chinese",
@@ -1131,6 +1133,7 @@
       "invalid_region": "Invalid region. Please select it again.",
       "rate_limited": "Too many requests. Please try again in {minutes} minute(s).",
       "generation_failed": "Failed to generate the introduction. Please retry.",
+      "generation_incomplete": "The generated introduction was incomplete. Please generate it again.",
       "unknown": "Request failed. Please retry."
     }
   }
