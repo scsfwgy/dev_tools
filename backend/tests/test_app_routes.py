@@ -600,6 +600,20 @@ def test_area_search_api_and_seo(client):
     unknown = client.get("/api/area-search/world/cities?country=ZZZ")
     assert unknown.status_code == 404
 
+    # Server-side limited search includes ancestor context for ambiguous names
+    china_search = client.get("/api/area-search/china/search?q=朝阳&level=3&limit=2").get_json()
+    assert china_search["ok"] is True
+    assert len(china_search["data"]) <= 2
+    assert all(item["parentName"] and item["grandparentName"] for item in china_search["data"])
+    assert client.get("/api/area-search/china/search?q=&level=3").status_code == 400
+    assert client.get("/api/area-search/china/search?q=北京&level=4").status_code == 400
+
+    world_search = client.get("/api/area-search/world/search?q=Kabul&limit=1").get_json()
+    assert world_search["ok"] is True
+    assert len(world_search["data"]) <= 1
+    assert all(item["countryCode"] and item["countryName"] for item in world_search["data"])
+    assert client.get("/api/area-search/world/search?q=").status_code == 400
+
     # Lazy loading check
     frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
     assert_tool_is_lazy_loaded(frontend_dir, "area-search-tool.js")
@@ -627,9 +641,66 @@ def test_area_search_api_and_seo(client):
     assert "function init(" in script_text
     assert "area-search/china" in script_text
     assert "area-search/world" in script_text
+    assert "/china/all" not in script_text
+    assert "/world/all-cities" not in script_text
+    assert "_chinaAllCities" not in script_text
+    assert "_chinaAllDistricts" not in script_text
+    assert "_worldAllCities" not in script_text
+    assert "MARKED_URL" not in script_text
+    assert "window.marked" not in script_text
+    assert "renderIntroText" in script_text
+    assert "function inlineMarkdown" in script_text
+    assert "escapeHtml(value)" in script_text
+    assert 'el.innerHTML = html.join("")' in script_text
+    assert 'var text = el.dataset.copy || ""' in script_text
+    assert 'cn.join(" ")' in script_text
+    assert 'codes.join(" ")' in script_text
+    assert 'join(" > ")' not in script_text
 
     # Registry check
     import app as app_module
     assert "area-search" in app_module.TOOL_REGISTRY
-    assert app_module.TOOL_REGISTRY["area-search"]["processing"] == "server"
+    assert app_module.TOOL_REGISTRY["area-search"]["processing"] == "hybrid"
     assert app_module.TOOL_REGISTRY["area-search"]["indexable"] is True
+
+
+def test_area_search_path_validation_and_intro_guards(client, monkeypatch):
+    import app as app_module
+
+    assert app_module._resolve_area_path("china", ["11", "1101", "110105"]) == "北京 北京 朝阳"
+    afghanistan = next(country for country in app_module._load_world_countries() if country["code"] == "AFG")
+    city = afghanistan["cities"][0]
+    world_path = app_module._resolve_area_path("world", ["AFG", city["code"]])
+    assert world_path
+    assert app_module._resolve_area_path("china", ["99"]) is None
+    assert app_module._resolve_area_path("world", ["ZZZ"]) is None
+
+    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "")
+    unavailable = client.post("/api/area-search/intro", json={"mode": "china", "codes": ["11"]})
+    assert unavailable.status_code == 503
+    assert unavailable.get_json()["error"] == "not_configured"
+
+    monkeypatch.setattr(app_module, "_DEEPSEEK_KEY", "test-key")
+    invalid = client.post("/api/area-search/intro", json={"mode": "china", "codes": ["99"]})
+    assert invalid.status_code == 400
+    assert invalid.get_json()["error"] == "invalid_region"
+
+
+def test_area_search_intro_local_cache_and_rate_limit(monkeypatch):
+    import app as app_module
+
+    app_module._AREA_INTRO_LOCAL_CACHE.clear()
+    app_module._AREA_INTRO_RATE_STORE.clear()
+    monkeypatch.setattr(app_module.cache_store, "is_enabled", lambda: False)
+    monkeypatch.setattr(app_module.cache_store, "cache_get", lambda _key: None)
+    monkeypatch.setattr(app_module.cache_store, "cache_set", lambda *_args: False)
+
+    key = app_module._area_intro_cache_key("china", "北京 北京 朝阳")
+    app_module._area_intro_cache_set(key, "安全的纯文本介绍")
+    assert app_module._area_intro_cache_get(key) == "安全的纯文本介绍"
+
+    assert all(app_module._check_area_intro_rate_limit("203.0.113.8") for _ in range(5))
+    assert app_module._check_area_intro_rate_limit("203.0.113.8") is False
+
+    app_module._AREA_INTRO_LOCAL_CACHE.clear()
+    app_module._AREA_INTRO_RATE_STORE.clear()

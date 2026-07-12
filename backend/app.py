@@ -1,5 +1,6 @@
 """DevTools — Flask app."""
 import hmac
+import hashlib
 import html
 import json
 import logging
@@ -34,6 +35,14 @@ _AREA_CONFIG_DIR = Path(__file__).resolve().parent / "config"
 # --- Area Search data loaders (lazy, cached) ---
 _AREA_CHINA_CACHE = None
 _AREA_WORLD_CACHE = None
+_AREA_SEARCH_DEFAULT_LIMIT = 30
+_AREA_SEARCH_MAX_LIMIT = 50
+_AREA_INTRO_RATE_MAX = 5
+_AREA_INTRO_RATE_WINDOW = 600
+_AREA_INTRO_CACHE_TTL = 7 * 24 * 3600
+_AREA_INTRO_LOCAL_CACHE = {}
+_AREA_INTRO_RATE_STORE = {}
+_AREA_INTRO_LOCK = threading.Lock()
 
 
 def _load_china_tree():
@@ -63,6 +72,99 @@ def _load_world_countries():
         })
     _AREA_WORLD_CACHE = countries
     return _AREA_WORLD_CACHE
+
+
+def _area_search_limit() -> int:
+    try:
+        return min(max(int(request.args.get("limit", _AREA_SEARCH_DEFAULT_LIMIT)), 1), _AREA_SEARCH_MAX_LIMIT)
+    except (TypeError, ValueError):
+        return _AREA_SEARCH_DEFAULT_LIMIT
+
+
+def _contains_query(item: dict, query: str) -> bool:
+    query = query.casefold()
+    return any(query in str(item.get(key, "")).casefold() for key in ("name", "cname", "pinyin", "code", "code_full"))
+
+
+def _resolve_area_path(mode: str, codes: list) -> str | None:
+    if not isinstance(codes, list) or not codes:
+        return None
+    codes = [str(code).strip() for code in codes[:3] if str(code).strip()]
+    if mode == "china":
+        final_code = codes[-1]
+        if len(final_code) not in (2, 4, 6) or not final_code.isdigit():
+            return None
+        tree = _load_china_tree()
+        names = []
+        province = tree.get(final_code[:2])
+        if not province:
+            return None
+        names.append(province["n"])
+        if len(final_code) >= 4:
+            city = (province.get("c") or {}).get(final_code[:4])
+            if not city:
+                return None
+            names.append(city["n"])
+        if len(final_code) == 6:
+            district = (city.get("c") or {}).get(final_code)
+            if not district:
+                return None
+            names.append(district["n"])
+        return " ".join(names)
+
+    country = next((item for item in _load_world_countries() if item["code"] == codes[0].upper()), None)
+    if not country:
+        return None
+    names = [country.get("cname") or country.get("name")]
+    if len(codes) > 1:
+        city_code = codes[1]
+        city = next((item for item in country.get("cities", []) if str(item.get("code", "")) == city_code), None)
+        if not city:
+            return None
+        names.append(city.get("cname") or city.get("name"))
+    return " ".join(names)
+
+
+def _area_intro_cache_key(mode: str, region_path: str) -> str:
+    digest = hashlib.sha256(f"{mode}:{region_path}".encode()).hexdigest()
+    return f"area_intro_cache:{digest}"
+
+
+def _area_intro_cache_get(key: str) -> str | None:
+    cached = cache_store.cache_get(key)
+    if cached:
+        return cached
+    now = time.time()
+    with _AREA_INTRO_LOCK:
+        item = _AREA_INTRO_LOCAL_CACHE.get(key)
+        if item and item[1] > now:
+            return item[0]
+        _AREA_INTRO_LOCAL_CACHE.pop(key, None)
+    return None
+
+
+def _area_intro_cache_set(key: str, value: str) -> None:
+    cache_store.cache_set(key, value, _AREA_INTRO_CACHE_TTL)
+    with _AREA_INTRO_LOCK:
+        _AREA_INTRO_LOCAL_CACHE[key] = (value, time.time() + _AREA_INTRO_CACHE_TTL)
+
+
+def _check_area_intro_rate_limit(ip: str) -> bool:
+    key = f"area_intro_rate:{ip or 'unknown'}"
+    if cache_store.is_enabled():
+        count = cache_store.cache_incr(key)
+        if count == 1:
+            cache_store.cache_expire(key, _AREA_INTRO_RATE_WINDOW)
+        return count is not None and count <= _AREA_INTRO_RATE_MAX
+    now = time.time()
+    with _AREA_INTRO_LOCK:
+        hits = [timestamp for timestamp in _AREA_INTRO_RATE_STORE.get(key, []) if now - timestamp < _AREA_INTRO_RATE_WINDOW]
+        if len(hits) >= _AREA_INTRO_RATE_MAX:
+            _AREA_INTRO_RATE_STORE[key] = hits
+            return False
+        hits.append(now)
+        _AREA_INTRO_RATE_STORE[key] = hits
+    return True
 
 
 @app.after_request
@@ -892,7 +994,7 @@ TOOL_REGISTRY = {
     "content": {"order": 280, "icon": "link", "script": "/js/content-tool.js?v=20260710b", "global": "ContentTool", "processing": "server", "indexable": True},
     "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},
     "wishes": {"order": 300, "icon": "star", "script": "/js/wishes.js?v=20260706", "global": "WishTool", "processing": "server", "indexable": False, "hidden": True},
-    "area-search": {"order": 310, "icon": "map-pin", "script": "/js/area-search-tool.js?v=20260712", "global": "AreaSearchTool", "processing": "server", "indexable": True},
+    "area-search": {"order": 310, "icon": "map-pin", "script": "/js/area-search-tool.js?v=20260712a", "global": "AreaSearchTool", "processing": "hybrid", "indexable": True},
 }
 
 TOOL_SUBPAGES = {
@@ -1615,6 +1717,38 @@ def area_search_china_all():
     return jsonify({"ok": True, "data": result})
 
 
+@app.route("/api/area-search/china/search")
+def area_search_china_search():
+    query = request.args.get("q", "").strip()
+    level = request.args.get("level", "3")
+    if len(query) < 1 or level not in ("2", "3"):
+        return jsonify({"ok": False, "error": "invalid_search"}), 400
+    tree = _load_china_tree()
+    result = []
+    limit = _area_search_limit()
+    for province_code, province in tree.items():
+        for city_code, city in (province.get("c") or {}).items():
+            if level == "2":
+                item = {
+                    "code": city_code, "name": city["n"], "pinyin": city.get("y", ""),
+                    "parentCode": province_code, "parentName": province["n"], "parentPinyin": province.get("y", ""),
+                }
+                if _contains_query(item, query):
+                    result.append(item)
+            else:
+                for district_code, district in (city.get("c") or {}).items():
+                    item = {
+                        "code": district_code, "name": district["n"], "pinyin": district.get("y", ""),
+                        "parentCode": city_code, "parentName": city["n"], "parentPinyin": city.get("y", ""),
+                        "grandparentCode": province_code, "grandparentName": province["n"], "grandparentPinyin": province.get("y", ""),
+                    }
+                    if _contains_query(item, query):
+                        result.append(item)
+            if len(result) >= limit:
+                return jsonify({"ok": True, "data": result, "limited": True})
+    return jsonify({"ok": True, "data": result, "limited": False})
+
+
 @app.route("/api/area-search/world/all-cities")
 def area_search_world_all_cities():
     """Return all cities across all countries with country info."""
@@ -1643,6 +1777,31 @@ def area_search_world_all_cities():
     return jsonify({"ok": True, "data": deduped})
 
 
+@app.route("/api/area-search/world/search")
+def area_search_world_search():
+    query = request.args.get("q", "").strip()
+    if len(query) < 1:
+        return jsonify({"ok": False, "error": "invalid_search"}), 400
+    limit = _area_search_limit()
+    result = []
+    seen = set()
+    for country in _load_world_countries():
+        for city in country.get("cities") or []:
+            item = {
+                "code": city.get("code", ""), "name": city.get("name", ""), "cname": city.get("cname", ""),
+                "code_full": city.get("code_full", ""), "countryCode": country["code"],
+                "countryName": country["name"], "countryCname": country["cname"],
+            }
+            key = item["code_full"] or (item["countryCode"] + item["cname"])
+            if key in seen or not _contains_query(item, query):
+                continue
+            seen.add(key)
+            result.append(item)
+            if len(result) >= limit:
+                return jsonify({"ok": True, "data": result, "limited": True})
+    return jsonify({"ok": True, "data": result, "limited": False})
+
+
 # --- Area Search AI Intro ---
 _AREA_INTRO_PROMPT = None
 
@@ -1666,17 +1825,22 @@ def _load_intro_prompt():
 def area_search_intro():
     """Generate a region introduction via DeepSeek."""
     if not _DEEPSEEK_KEY:
-        return jsonify({"ok": False, "error": "DeepSeek API key not configured"}), 503
+        return jsonify({"ok": False, "error": "not_configured"}), 503
 
     data = request.get_json(silent=True) or {}
-    region_path = (data.get("region_path") or "").strip()
     mode = (data.get("mode") or "china").strip()
     if mode not in ("china", "world"):
-        mode = "china"
+        return jsonify({"ok": False, "error": "invalid_region"}), 400
+    region_path = _resolve_area_path(mode, data.get("codes"))
     if not region_path:
-        return jsonify({"ok": False, "error": "empty region_path"}), 400
-    if len(region_path) > 200:
-        return jsonify({"ok": False, "error": "region_path too long"}), 400
+        return jsonify({"ok": False, "error": "invalid_region"}), 400
+
+    cache_key = _area_intro_cache_key(mode, region_path)
+    cached_intro = _area_intro_cache_get(cache_key)
+    if cached_intro:
+        return jsonify({"ok": True, "intro": cached_intro, "cached": True})
+    if not _check_area_intro_rate_limit(_client_ip()):
+        return jsonify({"ok": False, "error": "rate_limited"}), 429
 
     cfg = _load_intro_prompt()
     section = cfg.get(mode, cfg.get("china", {}))
@@ -1705,9 +1869,9 @@ def area_search_intro():
         intro = body["choices"][0]["message"]["content"].strip()
     except (KeyError, requests.exceptions.RequestException) as e:
         logger.warning("Area intro failed: %s", e)
-        return jsonify({"ok": False, "error": "Introduction generation failed, please retry"}), 500
+        return jsonify({"ok": False, "error": "generation_failed"}), 500
 
-    # record stats in Redis
+    _area_intro_cache_set(cache_key, intro)
     cache_store.cache_incr("area_intro_count")
     entry = json.dumps({"path": region_path[:200], "intro": intro[:200], "mode": mode}, ensure_ascii=False)
     cache_store.cache_lpush("area_intro_history", entry)

@@ -1091,6 +1091,7 @@
     "searchRef": "搜索 Claim 名称或说明..."
   },
   "areaSearch": {
+    "modeLabel": "地区数据范围",
     "china": "中国地区",
     "world": "国际地区",
     "province": "省份/直辖市",
@@ -1103,15 +1104,34 @@
     "searchDistrict": "搜索区县...",
     "searchCountry": "搜索国家...",
     "searchWorldCity": "搜索城市...",
-    "selectedPath": "已选路径",
+    "dataNote": "中国行政区划与国际城市均为项目数据快照；国际城市仅覆盖已收录城市，城市编码为数据集内部编码。",
+    "typeToSearch": "输入名称或编码开始搜索",
+    "loading": "正在加载地区数据…",
+    "searching": "正在搜索…",
+    "loadFailed": "地区数据加载失败，请稍后重试",
+    "resultLimited": "仅显示前 50 条，请输入更完整的关键词",
+    "selectedPath": "已选地区",
     "copyPath": "复制路径",
     "copyCode": "复制编码",
     "copied": "已复制",
+    "copyFailed": "复制失败，请手动选择文本",
     "noMatch": "无匹配结果",
     "pathDelimiter": " > ",
     "random": "随机选择",
     "intro": "AI 地区介绍",
     "introLoading": "生成中({s}s)…",
-    "clear": "清空选择"
+    "clear": "清空选择",
+    "pathChinese": "中文",
+    "pathInitials": "拼音首字母",
+    "pathEnglish": "English",
+    "pathCode": "行政编码",
+    "pathDatasetCode": "数据编码",
+    "errors": {
+      "not_configured": "AI 地区介绍暂不可用",
+      "invalid_region": "地区信息无效，请重新选择",
+      "rate_limited": "请求过于频繁，请稍后再试",
+      "generation_failed": "地区介绍生成失败，请稍后重试",
+      "unknown": "请求失败，请稍后重试"
+    }
   }
 }

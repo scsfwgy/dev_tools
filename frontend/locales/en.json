@@ -1091,6 +1091,7 @@
     "searchRef": "Search claim name or description..."
   },
   "areaSearch": {
+    "modeLabel": "Region data scope",
     "china": "China",
     "world": "World",
     "province": "Province",
@@ -1103,15 +1104,34 @@
     "searchDistrict": "Search districts...",
     "searchCountry": "Search countries...",
     "searchWorldCity": "Search cities...",
-    "selectedPath": "Selected Path",
+    "dataNote": "China divisions and international cities are project data snapshots. International coverage is limited to included cities; city codes are dataset-specific.",
+    "typeToSearch": "Type a name or code to search",
+    "loading": "Loading region data…",
+    "searching": "Searching…",
+    "loadFailed": "Failed to load region data. Please retry.",
+    "resultLimited": "Showing the first 50 results. Enter a more specific query.",
+    "selectedPath": "Selected region",
     "copyPath": "Copy Path",
     "copyCode": "Copy Code",
     "copied": "Copied",
+    "copyFailed": "Copy failed. Select the text manually.",
     "noMatch": "No matches",
     "pathDelimiter": " > ",
     "random": "Random pick",
     "intro": "AI Region Intro",
     "introLoading": "Generating({s}s)…",
-    "clear": "Clear all"
+    "clear": "Clear all",
+    "pathChinese": "Chinese",
+    "pathInitials": "Pinyin initials",
+    "pathEnglish": "English",
+    "pathCode": "Admin code",
+    "pathDatasetCode": "Dataset code",
+    "errors": {
+      "not_configured": "AI region introductions are currently unavailable",
+      "invalid_region": "Invalid region. Please select it again.",
+      "rate_limited": "Too many requests. Please try again later.",
+      "generation_failed": "Failed to generate the introduction. Please retry.",
+      "unknown": "Request failed. Please retry."
+    }
   }
 }

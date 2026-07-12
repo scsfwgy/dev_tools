@@ -6,14 +6,16 @@ var AreaSearchTool = (function () {
   var _chinaSel = [null, null, null];   // [{code, name, pinyin}, ...]
   var _worldSel = [null, null];         // [{code, name, cname}, ...]
   var _chinaOpts = [[], [], []];        // cached options per level: L1=provinces, L2=cities, L3=districts
-  var _chinaAllCities = [];             // flat list of all cities (for reverse search)
-  var _chinaAllDistricts = [];          // flat list of all districts (for reverse search)
   var _worldCountries = [];             // cached country list
   var _worldCitiesCache = {};           // country code -> city list
   var _openDropdown = null;
+  var _openDropdownInput = null;
   var _highlightIdx = -1;
   var _loading = { china: false, world: false };
-  var _cachedIntro = { china: "", world: "" };
+  var _cachedIntro = {};
+  var _searchTimers = {};
+  var _searchRequestId = 0;
+  var _documentListenersBound = false;
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, function (ch) {
@@ -32,12 +34,8 @@ var AreaSearchTool = (function () {
     return fetchJson(url).then(function (d) { return d.data; });
   }
 
-  function loadChinaAll(level) {
-    return fetchJson("/api/area-search/china/all?level=" + level).then(function (d) { return d.data; });
-  }
-
-  function loadChinaAncestors(code) {
-    return fetchJson("/api/area-search/china/ancestors?code=" + code).then(function (d) { return d.data; });
+  function searchChina(level, query) {
+    return fetchJson("/api/area-search/china/search?level=" + level + "&limit=30&q=" + encodeURIComponent(query)).then(function (d) { return d.data; });
   }
 
   function loadWorldCountries() {
@@ -48,8 +46,16 @@ var AreaSearchTool = (function () {
     return fetchJson("/api/area-search/world/cities?country=" + countryCode).then(function (d) { return d.data; });
   }
 
-  function loadWorldAllCities() {
-    return fetchJson("/api/area-search/world/all-cities").then(function (d) { return d.data; });
+  function searchWorldCities(query) {
+    return fetchJson("/api/area-search/world/search?limit=30&q=" + encodeURIComponent(query)).then(function (d) { return d.data; });
+  }
+
+  function showStatus(message, isError) {
+    var status = document.getElementById("as-status");
+    if (!status) return;
+    status.textContent = message || "";
+    status.classList.toggle("as-status-error", Boolean(isError));
+    status.classList.toggle("as-status-hidden", !message);
   }
 
   // ═══ Dropdown ═══
@@ -69,33 +75,53 @@ var AreaSearchTool = (function () {
     if (!dd) {
       dd = document.createElement("div");
       dd.className = "as-dropdown";
+      dd.setAttribute("role", "listbox");
       wrapper.appendChild(dd);
     }
     return dd;
   }
 
-  function openDropdownDom(dd, html) {
+  function openDropdownDom(dd, html, input) {
     closeDropdown();
     dd.innerHTML = html;
     dd.classList.add("open");
     _openDropdown = dd;
+    _openDropdownInput = input || null;
+    if (input) {
+      if (!dd.id) dd.id = input.id + "-listbox";
+      input.setAttribute("aria-controls", dd.id);
+      input.setAttribute("aria-expanded", "true");
+    }
+  }
+
+  function optionContext(opt) {
+    if (_mode === "china") {
+      return [opt.grandparentName, opt.parentName].filter(Boolean).join(" / ");
+    }
+    return opt.countryCname || opt.countryName || "";
   }
 
   function showDropdown(inputEl, options, levelIdx) {
     var wrapper = inputEl.parentNode;
     var dd = ensureDropdownEl(wrapper);
     if (!options.length) {
-      openDropdownDom(dd, '<div class="as-dropdown-empty">' + t("areaSearch.noMatch") + '</div>');
+      openDropdownDom(dd, '<div class="as-dropdown-empty">' + t("areaSearch.noMatch") + '</div>', inputEl);
       return;
     }
     _highlightIdx = -1;
-    dd.innerHTML = options.map(function (opt, i) {
+    dd.innerHTML = options.slice(0, 50).map(function (opt, i) {
       var label = _mode === "china" ? opt.name : (opt.cname ? opt.name + " (" + opt.cname + ")" : opt.name);
-      var sub = opt.code ? '<small>' + opt.code + '</small>' : "";
-      return '<button class="as-dropdown-item" type="button" data-idx="' + i + '">' + escapeHtml(label) + (sub ? ' ' + sub : '') + '</button>';
-    }).join("");
+      var context = optionContext(opt);
+      return '<button class="as-dropdown-item" type="button" role="option" id="' + inputEl.id + '-option-' + i + '" data-idx="' + i + '"><span>' + escapeHtml(label) + '</span>' +
+        (context ? '<small class="as-dropdown-context">' + escapeHtml(context) + '</small>' : '') +
+        (opt.code ? '<code>' + escapeHtml(opt.code) + '</code>' : '') + '</button>';
+    }).join("") + (options.length > 50 ? '<div class="as-dropdown-empty">' + t("areaSearch.resultLimited") + '</div>' : '');
     dd.classList.add("open");
     _openDropdown = dd;
+    _openDropdownInput = inputEl;
+    if (!dd.id) dd.id = inputEl.id + "-listbox";
+    inputEl.setAttribute("aria-controls", dd.id);
+    inputEl.setAttribute("aria-expanded", "true");
     dd.onclick = function (e) {
       var btn = e.target.closest(".as-dropdown-item");
       if (!btn) return;
@@ -106,21 +132,22 @@ var AreaSearchTool = (function () {
 
   function closeDropdown() {
     if (_openDropdown) { _openDropdown.classList.remove("open"); _openDropdown = null; }
+    if (_openDropdownInput) {
+      _openDropdownInput.setAttribute("aria-expanded", "false");
+      _openDropdownInput.removeAttribute("aria-activedescendant");
+      _openDropdownInput = null;
+    }
     _highlightIdx = -1;
   }
 
   function levelOpts(levelIdx) {
     if (_mode === "china") {
       if (_chinaOpts[levelIdx].length) return _chinaOpts[levelIdx];
-      if (levelIdx === 1 && _chinaAllCities.length) return _chinaAllCities;
-      if (levelIdx === 2 && _chinaAllDistricts.length) return _chinaAllDistricts;
       return [];
     }
     if (levelIdx === 0) return _worldCountries;
-    // L2: use parent-specific cache first, then all-cities fallback
     var cc = _worldSel[0] && _worldSel[0].code;
     if (cc && _worldCitiesCache[cc] && _worldCitiesCache[cc].length) return _worldCitiesCache[cc];
-    if (_worldAllCities.length) return _worldAllCities;
     return _worldCitiesCache[cc] || [];
   }
 
@@ -132,6 +159,7 @@ var AreaSearchTool = (function () {
   // ═══ Selection ═══
   function selectOption(opt, levelIdx) {
     closeDropdown();
+    showStatus("", false);
     if (_mode === "china") {
       if (levelIdx > 0 && opt.parentCode) {
         // Reverse fill: selected a city (idx=1) or district (idx=2) directly
@@ -191,29 +219,6 @@ var AreaSearchTool = (function () {
     }
   }
 
-  function fillWorldAncestors(cityOpt) {
-    // cityOpt from world cities API — need to find country
-    // world cities have code_full which encodes country, or use the country param
-    loadWorldCountries().then(function (countries) {
-      // try matching by city's code_full prefix
-      var countryCode = cityOpt.code_full ? cityOpt.code_full.substring(0, 3) : "";
-      var country = null;
-      for (var i = 0; i < countries.length; i++) {
-        if (countries[i].code === countryCode) { country = countries[i]; break; }
-      }
-      if (country) {
-        _worldSel[0] = country;
-        _worldSel[1] = { code: cityOpt.code, name: cityOpt.name, cname: cityOpt.cname };
-        setWorldInput(0, country.cname || country.name);
-        setWorldInput(1, cityOpt.cname || cityOpt.name);
-        loadWorldCities(country.code).then(function (cities) {
-          _worldCitiesCache[country.code] = cities;
-        }).catch(function () {});
-        renderPath();
-      }
-    }).catch(function () {});
-  }
-
   function clearChinaBelow(from) {
     for (var i = from; i < 3; i++) {
       _chinaSel[i] = null;
@@ -245,7 +250,7 @@ var AreaSearchTool = (function () {
     loadChinaChildren(parentCode).then(function (children) {
       _chinaOpts[levelIdx] = children;
       if (!_chinaSel[levelIdx]) input.value = "";
-    }).catch(function () {});
+    }).catch(function () { showStatus(t("areaSearch.loadFailed"), true); });
   }
 
   // ═══ Restore selections into DOM (after mode-switch rebuild) ═══
@@ -264,16 +269,26 @@ var AreaSearchTool = (function () {
 
   // ═══ Path display ═══
   function copyLine(el) {
-    var label = el.querySelector(".as-path-label");
-    var text = label ? el.textContent.slice(label.textContent.length).trim() : el.textContent;
+    var text = el.dataset.copy || "";
     navigator.clipboard.writeText(text).then(function () {
       el.classList.add("copied");
+      if (window.showCopyToast) window.showCopyToast(t("areaSearch.copied"));
       setTimeout(function () { el.classList.remove("copied"); }, 1200);
-    });
+    }).catch(function () { showStatus(t("areaSearch.copyFailed"), true); });
   }
 
   function pathRow(label, text, cls) {
-    return '<div class="as-path-line ' + cls + '"><span class="as-path-label">' + escapeHtml(label) + '</span>' + escapeHtml(text) + '</div>';
+    return '<button class="as-path-line ' + cls + '" type="button" data-copy="' + escapeHtml(text) + '"><span class="as-path-label">' + escapeHtml(label) + '</span><span>' + escapeHtml(text) + '</span><span class="as-copy-icon" aria-hidden="true">⧉</span></button>';
+  }
+
+  function currentSelection() {
+    var selected = _mode === "china" ? _chinaSel : _worldSel;
+    var items = selected.filter(Boolean);
+    return {
+      key: _mode + ":" + items.map(function (item) { return item.code; }).join("/"),
+      codes: items.map(function (item) { return item.code; }),
+      path: items.map(function (item) { return _mode === "china" ? item.name : (item.cname || item.name); }).join(" ")
+    };
   }
 
   function renderPath() {
@@ -303,18 +318,21 @@ var AreaSearchTool = (function () {
 
     pathEl.classList.remove("as-path-hidden");
     var introHtml = '<button class="as-intro-btn" type="button" id="as-intro-btn">🤖 ' + t("areaSearch.intro") + '</button>';
+    var titleHtml = '<div class="as-result-title">' + t("areaSearch.selectedPath") + '</div>';
 
     if (_mode === "china") {
       pathEl.innerHTML =
-        pathRow("中文", cn.join(" "), "as-path-cn") +
-        pathRow("拼音", en.join(" "), "as-path-en") +
-        pathRow("编码", codes.join(" "), "as-path-code") +
+        titleHtml +
+        pathRow(t("areaSearch.pathChinese"), cn.join(" "), "as-path-cn") +
+        pathRow(t("areaSearch.pathInitials"), en.join(" "), "as-path-en") +
+        pathRow(t("areaSearch.pathCode"), codes.join(" "), "as-path-code") +
         introHtml;
     } else {
       pathEl.innerHTML =
-        pathRow("中文", wCn.join(" "), "as-path-cn") +
-        pathRow("English", wEn.join(" "), "as-path-en") +
-        pathRow("编码", wCodes.join(" "), "as-path-code") +
+        titleHtml +
+        pathRow(t("areaSearch.pathChinese"), wCn.join(" "), "as-path-cn") +
+        pathRow(t("areaSearch.pathEnglish"), wEn.join(" "), "as-path-en") +
+        pathRow(t("areaSearch.pathDatasetCode"), wCodes.join(" "), "as-path-code") +
         introHtml;
     }
     pathEl.querySelectorAll(".as-path-line").forEach(function (line) {
@@ -322,13 +340,13 @@ var AreaSearchTool = (function () {
     });
     var introBtn = document.getElementById("as-intro-btn");
     if (introBtn) introBtn.addEventListener("click", doIntro);
-    // restore cached intro for this mode
-    if (_cachedIntro[_mode]) {
+    var selection = currentSelection();
+    if (_cachedIntro[selection.key]) {
       var cachedEl = document.createElement("div");
       cachedEl.id = "as-intro-result";
       cachedEl.className = "as-intro-result";
       pathEl.appendChild(cachedEl);
-      renderIntroHtml(cachedEl, _cachedIntro[_mode]);
+      renderIntroText(cachedEl, _cachedIntro[selection.key]);
     }
   }
 
@@ -338,18 +356,8 @@ var AreaSearchTool = (function () {
     var resultEl = document.getElementById("as-intro-result");
     if (!btn) return;
 
-    // Build region path string
-    var pathParts = [];
-    if (_mode === "china") {
-      for (var i = 0; i < 3; i++) {
-        if (_chinaSel[i]) pathParts.push(_chinaSel[i].name);
-      }
-    } else {
-      for (var j = 0; j < 2; j++) {
-        if (_worldSel[j]) pathParts.push(_worldSel[j].cname || _worldSel[j].name);
-      }
-    }
-    if (!pathParts.length) return;
+    var selection = currentSelection();
+    if (!selection.codes.length) return;
 
     btn.disabled = true;
     var _start = Date.now();
@@ -368,36 +376,69 @@ var AreaSearchTool = (function () {
     fetch("/api/area-search/intro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ region_path: pathParts.join(" "), mode: _mode }),
+      body: JSON.stringify({ codes: selection.codes, mode: _mode }),
     })
       .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || "fail"); return d; }); })
       .then(function (d) {
         clearInterval(_timer);
-        _cachedIntro[_mode] = d.intro;
-        renderIntroHtml(resultEl, d.intro);
+        _cachedIntro[selection.key] = d.intro;
+        renderIntroText(resultEl, d.intro);
         btn.disabled = false;
         btn.textContent = "🤖 " + t("areaSearch.intro");
       })
       .catch(function (e) {
         clearInterval(_timer);
-        resultEl.innerHTML = '<span style="color:var(--text-muted)">❌ ' + escapeHtml(e.message || "Error") + '</span>';
+        var errorKey = "areaSearch.errors." + (e.message || "unknown");
+        var errorMessage = t(errorKey);
+        resultEl.textContent = "❌ " + (errorMessage === errorKey ? t("areaSearch.errors.unknown") : errorMessage);
         btn.disabled = false;
         btn.textContent = "🤖 " + t("areaSearch.intro");
       });
   }
 
-  var MARKED_URL = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
+  function renderIntroText(el, text) {
+    var lines = String(text || "").replace(/\r\n?/g, "\n").split("\n");
+    var html = [];
+    var listType = "";
 
-  function renderIntroHtml(el, text) {
-    if (window.marked) {
-      el.innerHTML = window.marked.parse(text);
-    } else {
-      el.textContent = text;
-      var s = document.createElement("script");
-      s.src = MARKED_URL;
-      s.onload = function () { if (window.marked) el.innerHTML = window.marked.parse(text); };
-      document.head.appendChild(s);
+    function closeList() {
+      if (listType) html.push("</" + listType + ">");
+      listType = "";
     }
+
+    function inlineMarkdown(value) {
+      return escapeHtml(value)
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/__([^_]+)__/g, "<strong>$1</strong>")
+        .replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+    }
+
+    lines.forEach(function (line) {
+      var heading = line.match(/^(#{1,3})\s+(.+)$/);
+      var unordered = line.match(/^\s*[-*+]\s+(.+)$/);
+      var ordered = line.match(/^\s*\d+[.)]\s+(.+)$/);
+      if (heading) {
+        closeList();
+        var level = heading[1].length;
+        html.push("<h" + level + ">" + inlineMarkdown(heading[2]) + "</h" + level + ">");
+      } else if (unordered || ordered) {
+        var nextListType = unordered ? "ul" : "ol";
+        if (listType !== nextListType) {
+          closeList();
+          listType = nextListType;
+          html.push("<" + listType + ">");
+        }
+        html.push("<li>" + inlineMarkdown((unordered || ordered)[1]) + "</li>");
+      } else if (line.trim()) {
+        closeList();
+        html.push("<p>" + inlineMarkdown(line.trim()) + "</p>");
+      } else {
+        closeList();
+      }
+    });
+    closeList();
+    el.innerHTML = html.join("");
   }
 
   // ═══ Switch mode ═══
@@ -412,7 +453,7 @@ var AreaSearchTool = (function () {
 
   function cascadeCol(id, labelKey, placeholder) {
     return '<div class="as-cascade-col"><label class="as-row-label" for="' + id + '">' + t(labelKey) + '</label>' +
-      '<div class="as-input-group"><input id="' + id + '" class="as-input" type="text" placeholder="' + placeholder + '" autocomplete="off"></div></div>';
+      '<div class="as-input-group"><input id="' + id + '" class="as-input" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" placeholder="' + placeholder + '" autocomplete="off"></div></div>';
   }
 
   // ═══ Random ═══
@@ -467,8 +508,8 @@ var AreaSearchTool = (function () {
   }
 
   function renderModeUi(container) {
-    var randomBtn = '<button class="as-action-btn" type="button" title="' + t("areaSearch.random") + '">🎲</button>';
-    var clearBtn = '<button class="as-action-btn" type="button" title="' + t("areaSearch.clear") + '">✕</button>';
+    var randomBtn = '<button class="as-action-btn" type="button" title="' + t("areaSearch.random") + '" aria-label="' + t("areaSearch.random") + '">🎲</button>';
+    var clearBtn = '<button class="as-action-btn" type="button" title="' + t("areaSearch.clear") + '" aria-label="' + t("areaSearch.clear") + '">✕</button>';
     var btns = '<div class="as-cascade-col as-cascade-btn-col">' + randomBtn + clearBtn + '</div>';
     if (_mode === "china") {
       container.innerHTML = '<div class="as-cascade-row">' +
@@ -491,7 +532,6 @@ var AreaSearchTool = (function () {
 
   function doClear() {
     closeDropdown();
-    _cachedIntro[_mode] = "";
     if (_mode === "china") {
       for (var i = 0; i < 3; i++) { _chinaSel[i] = null; _chinaOpts[i] = i === 0 ? _chinaOpts[0] : []; }
       document.querySelectorAll("#as-china-l1, #as-china-l2, #as-china-l3").forEach(function (inp) { inp.value = ""; });
@@ -517,11 +557,15 @@ var AreaSearchTool = (function () {
 
     input.addEventListener("focus", function () {
       input.dataset.selected = "";
-      ensureLevelOpts(levelIdx);
       var opts = levelOpts(levelIdx);
-      if (!opts.length && isLoading(levelIdx)) {
+      if (!opts.length && (isLoading(levelIdx) || levelIdx === 0)) {
         var dd = ensureDropdownEl(input.parentNode);
-        openDropdownDom(dd, '<div class="as-dropdown-empty">…</div>');
+        openDropdownDom(dd, '<div class="as-dropdown-empty">' + t("areaSearch.loading") + '</div>', input);
+        return;
+      }
+      if (!opts.length) {
+        var emptyDropdown = ensureDropdownEl(input.parentNode);
+        openDropdownDom(emptyDropdown, '<div class="as-dropdown-empty">' + t("areaSearch.typeToSearch") + '</div>', input);
         return;
       }
       showDropdown(input, filterOpts(opts, input.value), levelIdx);
@@ -529,9 +573,6 @@ var AreaSearchTool = (function () {
 
     input.addEventListener("input", function () {
       input.dataset.selected = "";
-      ensureLevelOpts(levelIdx);
-      var filtered = filterOpts(levelOpts(levelIdx), input.value);
-      showDropdown(input, filtered, levelIdx);
       if (_mode === "china") {
         _chinaSel[levelIdx] = null;
         clearChinaBelow(levelIdx + 1);
@@ -539,6 +580,21 @@ var AreaSearchTool = (function () {
         _worldSel[levelIdx] = null;
       }
       renderPath();
+      var query = input.value.trim();
+      var opts = levelOpts(levelIdx);
+      var needsRemote = _mode === "china"
+        ? (levelIdx === 1 && !_chinaSel[0]) || (levelIdx === 2 && !_chinaSel[1])
+        : levelIdx === 1 && !_worldSel[0];
+      if (needsRemote) {
+        if (!query) {
+          var dd = ensureDropdownEl(input.parentNode);
+          openDropdownDom(dd, '<div class="as-dropdown-empty">' + t("areaSearch.typeToSearch") + '</div>', input);
+          return;
+        }
+        scheduleRemoteSearch(input, levelIdx, query);
+      } else {
+        showDropdown(input, filterOpts(opts, query), levelIdx);
+      }
     });
 
     input.addEventListener("blur", function () {
@@ -555,11 +611,13 @@ var AreaSearchTool = (function () {
       if (e.key === "ArrowDown") {
         e.preventDefault();
         _highlightIdx = Math.min(_highlightIdx + 1, items.length - 1);
-        items.forEach(function (item, i) { item.classList.toggle("highlight", i === _highlightIdx); });
+        items.forEach(function (item, i) { item.classList.toggle("highlight", i === _highlightIdx); item.setAttribute("aria-selected", String(i === _highlightIdx)); });
+        if (items[_highlightIdx]) input.setAttribute("aria-activedescendant", items[_highlightIdx].id);
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         _highlightIdx = Math.max(_highlightIdx - 1, 0);
-        items.forEach(function (item, i) { item.classList.toggle("highlight", i === _highlightIdx); });
+        items.forEach(function (item, i) { item.classList.toggle("highlight", i === _highlightIdx); item.setAttribute("aria-selected", String(i === _highlightIdx)); });
+        if (items[_highlightIdx]) input.setAttribute("aria-activedescendant", items[_highlightIdx].id);
       } else if (e.key === "Enter") {
         e.preventDefault();
         if (_highlightIdx >= 0 && items[_highlightIdx]) items[_highlightIdx].click();
@@ -569,43 +627,23 @@ var AreaSearchTool = (function () {
     });
   }
 
-  // ═══ Lazy-load per-level options ═══
-  var _worldAllCities = [];
-
-  function ensureLevelOpts(levelIdx) {
-    if (_mode === "china") {
-      if (levelIdx === 1 && !_chinaOpts[1].length && !_chinaAllCities.length) {
-        loadChinaAll("2").then(function (data) {
-          _chinaAllCities = data;
-          if (!_chinaOpts[1].length) _chinaOpts[1] = data;
-          updatePlaceholder("as-china-l2", t("areaSearch.searchCity"), data);
-          refreshIfFocused("as-china-l2", 1);
-        }).catch(function () {});
-      }
-      if (levelIdx === 2 && !_chinaOpts[2].length && !_chinaAllDistricts.length) {
-        loadChinaAll("3").then(function (data) {
-          _chinaAllDistricts = data;
-          if (!_chinaOpts[2].length) _chinaOpts[2] = data;
-          updatePlaceholder("as-china-l3", t("areaSearch.searchDistrict"), data);
-          refreshIfFocused("as-china-l3", 2);
-        }).catch(function () {});
-      }
-    } else {
-      if (levelIdx === 1 && !_worldAllCities.length) {
-        loadWorldAllCities().then(function (data) {
-          _worldAllCities = data;
-          updatePlaceholder("as-world-l2", t("areaSearch.searchWorldCity"), data);
-          refreshIfFocused("as-world-l2", 1);
-        }).catch(function () {});
-      }
-    }
-  }
-
-  function refreshIfFocused(inputId, levelIdx) {
-    var input = document.getElementById(inputId);
-    if (!input || document.activeElement !== input) return;
-    var filtered = filterOpts(levelOpts(levelIdx), input.value);
-    showDropdown(input, filtered, levelIdx);
+  function scheduleRemoteSearch(input, levelIdx, query) {
+    clearTimeout(_searchTimers[input.id]);
+    var requestId = ++_searchRequestId;
+    _searchTimers[input.id] = setTimeout(function () {
+      showStatus(t("areaSearch.searching"), false);
+      var request = _mode === "china" ? searchChina(String(levelIdx + 1), query) : searchWorldCities(query);
+      request.then(function (data) {
+        if (requestId !== _searchRequestId || document.activeElement !== input || input.value.trim() !== query) return;
+        showStatus("", false);
+        showDropdown(input, data, levelIdx);
+      }).catch(function () {
+        if (requestId !== _searchRequestId) return;
+        showStatus(t("areaSearch.loadFailed"), true);
+        var dd = ensureDropdownEl(input.parentNode);
+        openDropdownDom(dd, '<div class="as-dropdown-empty">' + t("areaSearch.loadFailed") + '</div>', input);
+      });
+    }, 220);
   }
 
   // ═══ Initial data ═══
@@ -616,7 +654,7 @@ var AreaSearchTool = (function () {
         _chinaOpts[0] = provinces;
         _loading.china = false;
         updatePlaceholder("as-china-l1", t("areaSearch.searchProvince"), provinces);
-      }).catch(function () { _loading.china = false; });
+      }).catch(function () { _loading.china = false; showStatus(t("areaSearch.loadFailed"), true); });
     }
     if (_mode === "world" && !_worldCountries.length && !_loading.world) {
       _loading.world = true;
@@ -624,7 +662,7 @@ var AreaSearchTool = (function () {
         _worldCountries = countries;
         _loading.world = false;
         updatePlaceholder("as-world-l1", t("areaSearch.searchCountry"), countries);
-      }).catch(function () { _loading.world = false; });
+      }).catch(function () { _loading.world = false; showStatus(t("areaSearch.loadFailed"), true); });
     }
   }
 
@@ -633,25 +671,34 @@ var AreaSearchTool = (function () {
     if (!input) return;
     input.placeholder = text;
     if (document.activeElement === input) {
-      showDropdown(input, filterOpts(data, input.value), 0);
+      var levelIdx = inputId.indexOf("l3") !== -1 ? 2 : (inputId.indexOf("l2") !== -1 ? 1 : 0);
+      showDropdown(input, filterOpts(data, input.value), levelIdx);
     }
   }
 
   // ═══ Tabs ═══
   function renderTabs(parent) {
-    parent.querySelector(".as-tab-china").className = "as-tab as-tab-china" + (_mode === "china" ? " active" : "");
-    parent.querySelector(".as-tab-world").className = "as-tab as-tab-world" + (_mode === "world" ? " active" : "");
+    var chinaTab = parent.querySelector(".as-tab-china");
+    var worldTab = parent.querySelector(".as-tab-world");
+    chinaTab.className = "as-tab as-tab-china" + (_mode === "china" ? " active" : "");
+    worldTab.className = "as-tab as-tab-world" + (_mode === "world" ? " active" : "");
+    chinaTab.setAttribute("aria-selected", String(_mode === "china"));
+    worldTab.setAttribute("aria-selected", String(_mode === "world"));
+    chinaTab.tabIndex = _mode === "china" ? 0 : -1;
+    worldTab.tabIndex = _mode === "world" ? 0 : -1;
   }
 
   // ═══ Init ═══
   function init(parent) {
     parent.innerHTML =
       '<div class="as-tool">' +
-      '<div class="as-tabs">' +
-      '<button class="as-tab as-tab-china active" type="button">' + t("areaSearch.china") + '</button>' +
-      '<button class="as-tab as-tab-world" type="button">' + t("areaSearch.world") + '</button>' +
+      '<div class="as-tabs" role="tablist" aria-label="' + t("areaSearch.modeLabel") + '">' +
+      '<button class="as-tab as-tab-china active" type="button" role="tab" aria-selected="true">' + t("areaSearch.china") + '</button>' +
+      '<button class="as-tab as-tab-world" type="button" role="tab" aria-selected="false" tabindex="-1">' + t("areaSearch.world") + '</button>' +
       '</div>' +
+      '<p class="as-data-note">' + t("areaSearch.dataNote") + '</p>' +
       '<div id="as-container"></div>' +
+      '<div id="as-status" class="as-status as-status-hidden" role="status" aria-live="polite"></div>' +
       '<div id="as-path" class="as-path"></div>' +
       '</div>';
 
@@ -662,12 +709,15 @@ var AreaSearchTool = (function () {
     chinaTab.addEventListener("click", function () { switchMode("china"); renderTabs(parent); });
     worldTab.addEventListener("click", function () { switchMode("world"); renderTabs(parent); });
 
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest(".as-input-group")) closeDropdown();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeDropdown();
-    });
+    if (!_documentListenersBound) {
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".as-input-group")) closeDropdown();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closeDropdown();
+      });
+      _documentListenersBound = true;
+    }
   }
 
   return { init: init };

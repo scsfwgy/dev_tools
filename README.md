@@ -6,7 +6,7 @@
 
 ## 主要特性
 
-- 近 30 个开发、文件处理、计算和移动开发速查工具
+- 30 个开发、文件处理、计算和移动开发速查工具
 - 中英文界面、深色/浅色主题
 - 首页搜索，以及“收藏 / 分类”双 Tab；无收藏时默认进入分类
 - 桌面端三级侧栏；移动端顶部栏 + 抽屉导航
@@ -21,7 +21,7 @@
 |------|------|
 | 数据与编码 | JSON 工具、代码格式化、时间戳转换、单位换算、正则测试、HTTP 速查、编码转换、Base64、JWT 工具 |
 | 文本与文件 | 文本对比、文本处理、Markdown 编辑、文件详情、图片处理、文件转换 |
-| 安全与网络 | AES/RSA 加解密、二维码、Curl 工具、Git 命令、终端命令 |
+| 安全与网络 | AES/RSA 加解密、二维码、Curl 工具、Git 命令、终端命令、地区搜索 |
 | 移动开发 | Android 常用与 Compose、Flutter Widgets/CLI/Packages、iOS SwiftUI/UIKit/Xcode/Info.plist |
 | 计算与效率 | 个税计算、房贷计算、设备信息、AI 指令、翻译、内容生成 |
 
@@ -32,7 +32,7 @@
 | 标识 | 含义 | 示例 |
 |------|------|------|
 | 本地 | 数据只在当前浏览器处理 | JSON、图片、文件转换、JWT、加解密 |
-| 混合 | 页面本地运行，但部分信息请求服务端 | 设备信息（IP） |
+| 混合 | 页面本地运行，但部分信息请求服务端 | 设备信息（IP）、地区搜索（检索与 AI 介绍） |
 | 云端 | 输入会发送到服务端完成处理 | 翻译、内容生成、心愿墙 |
 
 ## 项目结构
@@ -83,7 +83,7 @@ DevTools/
 | `UPSTASH_REDIS_REST_TOKEN` | 否 | Upstash Redis REST Token |
 | `KV_REST_API_URL` / `KV_REST_API_TOKEN` | 否 | Vercel KV 兼容变量，可替代 Upstash 变量 |
 | `WISH_ADMIN_TOKEN` | 生产建议 | 心愿墙管理、工具统计管理视图的鉴权 Token |
-| `DEV_TOOLS_DEEPSEEK_API_KEY` | 翻译功能必需 | DeepSeek 翻译接口密钥 |
+| `DEV_TOOLS_DEEPSEEK_API_KEY` | 翻译与地区 AI 介绍必需 | DeepSeek 接口密钥 |
 | `SEO_LAST_MODIFIED` | 否 | 覆盖 sitemap 的最后修改日期 |
 | `HOST` / `PORT` / `FLASK_DEBUG` | 否 | Flask 监听地址、端口和调试开关 |
 
