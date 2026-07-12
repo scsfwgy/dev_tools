@@ -699,8 +699,10 @@ def test_area_search_intro_local_cache_and_rate_limit(monkeypatch):
     app_module._area_intro_cache_set(key, "安全的纯文本介绍")
     assert app_module._area_intro_cache_get(key) == "安全的纯文本介绍"
 
-    assert all(app_module._check_area_intro_rate_limit("203.0.113.8") for _ in range(5))
-    assert app_module._check_area_intro_rate_limit("203.0.113.8") is False
+    assert all(app_module._check_area_intro_rate_limit("203.0.113.8")[0] for _ in range(10))
+    allowed, retry_after = app_module._check_area_intro_rate_limit("203.0.113.8")
+    assert allowed is False
+    assert 1 <= retry_after <= 600
 
     app_module._AREA_INTRO_LOCAL_CACHE.clear()
     app_module._AREA_INTRO_RATE_STORE.clear()

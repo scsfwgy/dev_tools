@@ -1129,7 +1129,7 @@
     "errors": {
       "not_configured": "AI region introductions are currently unavailable",
       "invalid_region": "Invalid region. Please select it again.",
-      "rate_limited": "Too many requests. Please try again later.",
+      "rate_limited": "Too many requests. Please try again in {minutes} minute(s).",
       "generation_failed": "Failed to generate the introduction. Please retry.",
       "unknown": "Request failed. Please retry."
     }

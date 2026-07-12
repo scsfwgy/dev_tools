@@ -1129,7 +1129,7 @@
     "errors": {
       "not_configured": "AI 地区介绍暂不可用",
       "invalid_region": "地区信息无效，请重新选择",
-      "rate_limited": "请求过于频繁，请稍后再试",
+      "rate_limited": "请求较频繁，请在 {minutes} 分钟后重试",
       "generation_failed": "地区介绍生成失败，请稍后重试",
       "unknown": "请求失败，请稍后重试"
     }

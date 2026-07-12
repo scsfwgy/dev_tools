@@ -37,7 +37,7 @@ _AREA_CHINA_CACHE = None
 _AREA_WORLD_CACHE = None
 _AREA_SEARCH_DEFAULT_LIMIT = 30
 _AREA_SEARCH_MAX_LIMIT = 50
-_AREA_INTRO_RATE_MAX = 5
+_AREA_INTRO_RATE_MAX = 10
 _AREA_INTRO_RATE_WINDOW = 600
 _AREA_INTRO_CACHE_TTL = 7 * 24 * 3600
 _AREA_INTRO_LOCAL_CACHE = {}
@@ -149,22 +149,24 @@ def _area_intro_cache_set(key: str, value: str) -> None:
         _AREA_INTRO_LOCAL_CACHE[key] = (value, time.time() + _AREA_INTRO_CACHE_TTL)
 
 
-def _check_area_intro_rate_limit(ip: str) -> bool:
+def _check_area_intro_rate_limit(ip: str) -> tuple[bool, int]:
     key = f"area_intro_rate:{ip or 'unknown'}"
     if cache_store.is_enabled():
         count = cache_store.cache_incr(key)
         if count == 1:
             cache_store.cache_expire(key, _AREA_INTRO_RATE_WINDOW)
-        return count is not None and count <= _AREA_INTRO_RATE_MAX
+        allowed = count is not None and count <= _AREA_INTRO_RATE_MAX
+        return allowed, 0 if allowed else (cache_store.cache_ttl(key) or _AREA_INTRO_RATE_WINDOW)
     now = time.time()
     with _AREA_INTRO_LOCK:
         hits = [timestamp for timestamp in _AREA_INTRO_RATE_STORE.get(key, []) if now - timestamp < _AREA_INTRO_RATE_WINDOW]
         if len(hits) >= _AREA_INTRO_RATE_MAX:
             _AREA_INTRO_RATE_STORE[key] = hits
-            return False
+            retry_after = max(1, int(_AREA_INTRO_RATE_WINDOW - (now - hits[0])))
+            return False, retry_after
         hits.append(now)
         _AREA_INTRO_RATE_STORE[key] = hits
-    return True
+    return True, 0
 
 
 @app.after_request
@@ -1839,8 +1841,11 @@ def area_search_intro():
     cached_intro = _area_intro_cache_get(cache_key)
     if cached_intro:
         return jsonify({"ok": True, "intro": cached_intro, "cached": True})
-    if not _check_area_intro_rate_limit(_client_ip()):
-        return jsonify({"ok": False, "error": "rate_limited"}), 429
+    allowed, retry_after = _check_area_intro_rate_limit(_client_ip())
+    if not allowed:
+        response = jsonify({"ok": False, "error": "rate_limited", "retry_after": retry_after})
+        response.headers["Retry-After"] = str(retry_after)
+        return response, 429
 
     cfg = _load_intro_prompt()
     section = cfg.get(mode, cfg.get("china", {}))

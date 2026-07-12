@@ -378,7 +378,14 @@ var AreaSearchTool = (function () {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ codes: selection.codes, mode: _mode }),
     })
-      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || "fail"); return d; }); })
+      .then(function (r) { return r.json().then(function (d) {
+        if (!r.ok) {
+          var error = new Error(d.error || "fail");
+          error.retryAfter = d.retry_after || 0;
+          throw error;
+        }
+        return d;
+      }); })
       .then(function (d) {
         clearInterval(_timer);
         _cachedIntro[selection.key] = d.intro;
@@ -390,6 +397,9 @@ var AreaSearchTool = (function () {
         clearInterval(_timer);
         var errorKey = "areaSearch.errors." + (e.message || "unknown");
         var errorMessage = t(errorKey);
+        if (e.message === "rate_limited") {
+          errorMessage = errorMessage.replace("{minutes}", String(Math.max(1, Math.ceil(e.retryAfter / 60))));
+        }
         resultEl.textContent = "❌ " + (errorMessage === errorKey ? t("areaSearch.errors.unknown") : errorMessage);
         btn.disabled = false;
         btn.textContent = "🤖 " + t("areaSearch.intro");

@@ -88,6 +88,14 @@ def cache_expire(key: str, ttl_seconds: int) -> bool:
     return result == 1
 
 
+def cache_ttl(key: str) -> Optional[int]:
+    result = _command(["TTL", _KEY_PREFIX + key])
+    try:
+        return max(int(result), 0) if result is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
 def cache_lpush(key: str, value: str) -> Optional[int]:
     result = _command(["LPUSH", _KEY_PREFIX + key, value])
     try:

@@ -12,6 +12,7 @@ def test_disabled_cache_is_a_safe_noop(monkeypatch):
     assert cache_store.cache_get("key") is None
     assert cache_store.cache_set("key", "value", 60) is False
     assert cache_store.cache_incr("key") is None
+    assert cache_store.cache_ttl("key") is None
     assert cache_store.cache_lrange("key", 0, 10) == []
     session.assert_not_called()
 
@@ -49,11 +50,12 @@ def test_command_handles_http_and_redis_errors(monkeypatch):
 
 
 def test_cache_helpers_convert_results(monkeypatch):
-    results = iter(["42", "not-a-number", ["a", 1, "b"], ["x", "2", "name", "value"]])
+    results = iter(["42", "not-a-number", "59", ["a", 1, "b"], ["x", "2", "name", "value"]])
     monkeypatch.setattr(cache_store, "_command", lambda _args: next(results))
 
     assert cache_store.cache_incr("counter") == 42
     assert cache_store.cache_lpush("items", "value") is None
+    assert cache_store.cache_ttl("counter") == 59
     assert cache_store.cache_lrange("items", 0, -1) == ["a", "b"]
     assert cache_store.cache_hgetall("stats") == {"x": 2, "name": "value"}
 
