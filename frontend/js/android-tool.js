@@ -69,6 +69,9 @@ var AndroidTool = (function () {
     ["REQUEST_INSTALL_PACKAGES",   "安装未知来源应用", "Install packages",     "special"],
     ["SYSTEM_ALERT_WINDOW",        "悬浮窗",          "Draw over apps",       "special"],
     ["WRITE_SETTINGS",             "修改系统设置",    "Write settings",       "special"],
+    ["EXPAND_STATUS_BAR",          "展开或收起状态栏", "Expand/collapse status bar", "normal(API1+)"],
+    ["STATUS_BAR",                 "控制或禁用状态栏（第三方应用不可用）", "Control/disable status bar (not for third-party apps)", "restricted(API1+)"],
+    ["MANAGE_DEVICE_POLICY_STATUS_BAR", "设备策略状态栏管理", "Device policy status bar management", "internal|role(API34+)"],
     ["MANAGE_EXTERNAL_STORAGE",    "所有文件访问",    "All files access",     "special(API30+)"],
     ["FOREGROUND_SERVICE",         "前台服务",        "Foreground service",   "normal(API28+)"],
     ["FOREGROUND_SERVICE_CAMERA",  "相机前台服务",    "FGS camera",           "normal(API34+)"],
@@ -498,7 +501,8 @@ var AndroidTool = (function () {
     h += '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>Permission</th><th>' + t("android.description") + '</th><th>' + t("android.level") + '</th></tr></thead><tbody>';
     PERMISSIONS.forEach(function (r) {
       var desc = currentLang() === "en" ? r[2] : r[1];
-      h += '<tr data-search="' + r[0].toLowerCase() + ' ' + desc.toLowerCase() + '"><td><code>' + r[0] + '</code></td><td>' + desc + '</td><td>' + r[3] + '</td></tr>';
+      var fullName = "android.permission." + r[0];
+      h += '<tr data-search="' + fullName.toLowerCase() + ' ' + desc.toLowerCase() + '"><td><code>' + fullName + '</code></td><td>' + desc + '</td><td>' + r[3] + '</td></tr>';
     });
     h += '</tbody></table></div>';
     return h;

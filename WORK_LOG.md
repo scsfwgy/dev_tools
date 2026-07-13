@@ -91,6 +91,7 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 | 2026-07-13 | 品牌化 404 页面 | 新增独立轻量 404 页面，延续 Tools24 深浅主题与蓝色品牌视觉；支持根据 URL 和本地设置切换中英文、展示请求路径、返回首页/上一页及常用工具入口；Flask 未匹配路由统一返回该页面并设置 noindex，Vercel 静态部署可直接使用 `frontend/404.html` |
 | 2026-07-13 | 专注力训练 | 新增舒尔特方格视觉搜索小游戏：3×3 至 6×6 四档难度、随机数字顺序点击、百分之一秒计时、错误与当前目标反馈、个人最佳和最近成绩；全部在浏览器本地运行，提供中英文、深浅主题、移动端布局和科学边界说明 |
 | 2026-07-13 | 静态资源版本号自动失效 | CSS/JS 及懒加载工具脚本的 `?v=` 版本号改为按 git 提交自动注入，无需手动维护：后端 `asset_version()` 优先读取 Vercel 注入的 `VERCEL_GIT_COMMIT_SHA`，本地回退 `git rev-parse --short HEAD`，最终兜底常量，并用 `lru_cache` 进程级缓存；`render_spa` 通过 `<!--SEO_ASSET_VERSION-->` 占位符替换 index.html 的 app.css/app.js 版本，`tool-manifest` 给每个工具 script 拼接同一版本号；配合 immutable 长缓存实现每次部署自动刷新，即使本次未改 JS 也只损失一次拉取 |
+| 2026-07-13 | 搜索查询驱动的工具页优化 | 根据 Search Console 的代码对比、JSON checker、MD5 checker 与 Android STATUS_BAR 查询优化高价值页面：全部专题子页改为双语独立元数据，Android 权限页增加独立正文/FAQ/结构化数据及完整权限名搜索；代码对比工具升级文件导入、忽略空白/大小写、左右/行内视图和字符级高亮；JSON 页覆盖 format checker/test 意图；文件信息工具增加 MD5/SHA-1/SHA-256 预期哈希匹配；相关页面使用上下文内链替代全量工具链接，并同步双语、响应式样式与自动化测试 |
 
 ## 技术决策
 

@@ -915,7 +915,13 @@
     if (!tool || !tool.processing) return;
     var iconsByMode = { local: "✓", hybrid: "◐", server: "↗" };
     var processingLabel = t("toolHeader.processing." + tool.processing);
-    container.insertAdjacentHTML("afterbegin", '<header class="tool-page-header"><h1>' + t(tool.i18n) + '</h1><div class="privacy-badge privacy-badge-runtime privacy-badge-' + tool.processing + '"><span aria-hidden="true">' + iconsByMode[tool.processing] + '</span>' + processingLabel + '</div></header>');
+    var label = t(tool.i18n);
+    if (window.__toolSubpage) {
+      var subpageKey = "subpageTitles." + toolId + "." + window.__toolSubpage;
+      var subpageLabel = t(subpageKey);
+      if (subpageLabel !== subpageKey) label = subpageLabel;
+    }
+    container.insertAdjacentHTML("afterbegin", '<header class="tool-page-header"><h1>' + label + '</h1><div class="privacy-badge privacy-badge-runtime privacy-badge-' + tool.processing + '"><span aria-hidden="true">' + iconsByMode[tool.processing] + '</span>' + processingLabel + '</div></header>');
   }
 
   // ── 菜单折叠 ──

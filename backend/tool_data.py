@@ -119,15 +119,16 @@ TOOLS = {
             ],
         },
         "en": {
-            "name": "JSON Formatter and Validator",
-            "title": "JSON Formatter and Validator Online | Tools24",
-            "description": "Format, validate, compact and inspect JSON online with a tree viewer. Runs locally in your browser.",
-            "keywords": "JSON formatter,JSON validator,JSON viewer,JSON compact,online JSON tool",
-            "intro": "Paste JSON to format, compact, validate syntax and inspect nested data in a tree view for API debugging and config editing.",
+            "name": "JSON Formatter, Validator and Format Checker",
+            "title": "JSON Format Checker Online - Formatter & Validator | Tools24",
+            "description": "Paste or test JSON online to validate syntax, locate errors, format, compact and inspect nested data in a tree view.",
+            "keywords": "JSON format checker,JSON formatter,JSON validator,test JSON online,JSON viewer,JSON compact",
+            "intro": "Paste or test JSON online to check syntax, locate errors, format or compact the document, and inspect nested data in a tree view.",
             "features": ["Format and compact JSON", "Syntax validation", "Tree view", "Convert JSON to YAML/XML/CSV/JS/Kotlin/Java/Go", "Local browser processing"],
             "faq": [
-                ("Is my JSON uploaded?", "No. The JSON tool runs in your browser."),
-                ("Can it compact JSON?", "Yes. It can output a minified single-line JSON string."),
+                ("How can I test whether JSON is valid online?", "Paste the JSON and choose Format or Validate. The checker reports syntax errors with their line and column when available."),
+                ("Does the JSON checker show the error location?", "Yes. Invalid JSON is reported with a line, column and nearby source context to help you fix it."),
+                ("Is my JSON uploaded?", "No. Formatting and validation run locally in your browser."),
             ],
         },
     },
@@ -211,26 +212,28 @@ TOOLS = {
     },
     "diff": {
         "zh": {
-            "name": "文本对比工具",
-            "title": "文本对比工具 - 在线 Diff / 代码差异比较 | Tools24",
-            "description": "在线文本对比和代码 Diff 工具，快速比较两段文本的新增、删除和相同内容。",
-            "keywords": "文本对比,代码对比,Diff工具,在线Diff,文本差异比较",
-            "intro": "粘贴原始文本和修改后文本，即可查看逐行新增、删除和未变化内容。",
-            "features": ["逐行文本对比", "新增删除高亮", "左右文本交换", "适合代码和配置对比"],
+            "name": "代码与文本对比工具",
+            "title": "代码对比工具 - 在线 Text Diff / 字符差异比较 | Tools24",
+            "description": "在线比较代码或文本的逐行和字符差异，支持文件导入、忽略空白与大小写，全部在浏览器本地处理。",
+            "keywords": "代码对比,在线代码比较,文本对比,Diff工具,字符串差异,文件对比",
+            "intro": "粘贴或导入两个版本的代码、配置、日志或普通文本，在浏览器本地查看逐行和字符级差异。",
+            "features": ["代码和文本逐行对比", "字符级差异高亮", "忽略空白或大小写", "导入本地文本与代码文件", "浏览器本地处理"],
             "faq": [
-                ("支持代码对比吗？", "支持，可以对比代码、配置、日志或普通文本。"),
+                ("如何在线对比两段代码？", "粘贴或导入原始代码和修改后代码，选择比较选项后点击对比。"),
+                ("支持字符串、配置文件和日志 Diff 吗？", "支持，可比较源代码、JSON、XML、YAML、SQL、配置、日志和普通文本。"),
                 ("文本会上传服务器吗？", "不会，对比在浏览器本地完成。"),
             ],
         },
         "en": {
-            "name": "Text Diff Tool",
-            "title": "Text Diff Tool Online - Compare Text and Code | Tools24",
-            "description": "Compare two text snippets online and highlight added, removed and unchanged lines.",
-            "keywords": "text diff,code diff,compare text online,diff tool,text comparison",
-            "intro": "Paste original and modified text to compare line-by-line changes for code, configs and logs.",
-            "features": ["Line-by-line diff", "Added and removed highlights", "Swap inputs", "Useful for code and config comparison"],
+            "name": "Code Compare and Text Diff Tool",
+            "title": "Code Compare Tool Online - Text & Code Diff | Tools24",
+            "description": "Compare code or text online line by line. Highlight additions and deletions instantly with private browser-only processing and no uploads.",
+            "keywords": "code compare tool,compare code online,code comparison,text diff,diff string,online diff tool",
+            "intro": "Paste or import two versions of code, configuration, logs or plain text to compare line and character changes directly in your browser.",
+            "features": ["Code and text comparison", "Line and character change highlights", "Ignore whitespace or letter case", "Import local text and code files", "Private browser-only processing"],
             "faq": [
-                ("Can it compare code?", "Yes. It works for code, configs, logs and plain text."),
+                ("How do I compare two code snippets online?", "Paste or import the original and modified code, choose comparison options, and select Compare."),
+                ("Can I diff strings, configuration files and logs?", "Yes. It compares any text-based content, including source code, JSON, XML, YAML, SQL, configs and logs."),
                 ("Is my text uploaded?", "No. The comparison runs locally in your browser."),
             ],
         },
@@ -473,27 +476,29 @@ TOOLS = {
     },
     "fileinfo": {
         "zh": {
-            "name": "文件详情和哈希校验工具",
-            "title": "文件详情和 MD5/SHA 哈希校验工具 | Tools24",
-            "description": "在线查看文件大小、类型、图片尺寸、音视频信息，并计算 MD5、SHA-1、SHA-256 和 Base64。",
-            "keywords": "文件MD5,MD5校验,SHA256校验,文件哈希,文件信息,图片尺寸,Base64文件",
-            "intro": "拖拽文件即可查看基础信息、媒体尺寸，并计算 MD5、SHA-1、SHA-256 和 Base64 预览。",
-            "features": ["文件大小和类型识别", "MD5/SHA-1/SHA-256 计算", "图片和音视频信息", "文件内容本地处理"],
+            "name": "MD5 哈希校验和文件信息工具",
+            "title": "MD5 哈希校验工具 - 文件 MD5/SHA-256 在线验证 | Tools24",
+            "description": "在线计算并校验文件 MD5、SHA-1 或 SHA-256，查看文件信息与媒体尺寸，全部在浏览器本地完成。",
+            "keywords": "MD5哈希校验,文件MD5验证,SHA256校验,文件哈希,校验和,文件信息",
+            "intro": "拖拽文件即可计算 MD5、SHA-1 和 SHA-256，与预期哈希进行匹配，并在本地查看文件及媒体信息。",
+            "features": ["MD5/SHA-1/SHA-256 计算与校验", "文件大小和类型识别", "图片和音视频信息", "文件内容本地处理"],
             "faq": [
                 ("文件会上传吗？", "不会，文件信息和哈希计算在浏览器本地完成。"),
-                ("支持哪些哈希？", "当前支持 MD5、SHA-1 和 SHA-256。"),
+                ("如何校验文件哈希？", "选择文件后，选择 MD5、SHA-1 或 SHA-256，再粘贴预期哈希即可查看是否匹配。"),
+                ("MD5 适合用于密码安全吗？", "不适合。MD5 可用于兼容旧系统的文件完整性校验，但不应当用于密码存储或加密安全。"),
             ],
         },
         "en": {
-            "name": "File Info and Hash Checker",
-            "title": "File Info and MD5/SHA Hash Checker Online | Tools24",
-            "description": "Inspect file size, type, media dimensions and calculate MD5, SHA-1, SHA-256 and Base64 locally.",
-            "keywords": "file MD5,MD5 checker,SHA256 checker,file hash,file info,Base64 file",
-            "intro": "Drop a file to inspect metadata, media dimensions and calculate MD5, SHA-1, SHA-256 and Base64 preview locally.",
-            "features": ["File size and type", "MD5/SHA-1/SHA-256", "Image/audio/video info", "Local file processing"],
+            "name": "MD5 Hash Checker and File Info",
+            "title": "MD5 Hash Checker Online - Verify File MD5 & SHA-256 | Tools24",
+            "description": "Calculate and verify file MD5, SHA-1 or SHA-256 hashes online, inspect metadata and media dimensions, entirely in your browser.",
+            "keywords": "MD5 hash checker,verify file MD5,SHA256 checker,file checksum,file hash,file info",
+            "intro": "Drop a file to calculate its MD5, SHA-1 and SHA-256 hashes, compare an expected checksum, and inspect file or media metadata locally.",
+            "features": ["Calculate and verify MD5/SHA-1/SHA-256", "File size and type", "Image/audio/video info", "Local file processing"],
             "faq": [
                 ("Is my file uploaded?", "No. Files are processed locally in your browser."),
-                ("Which hashes are supported?", "MD5, SHA-1 and SHA-256 are supported."),
+                ("How do I verify a file checksum?", "Choose the file, select MD5, SHA-1 or SHA-256, then paste the expected hash to see whether it matches."),
+                ("Is MD5 suitable for password security?", "No. MD5 is useful for legacy file integrity checks, but it should not be used to store passwords or provide cryptographic security."),
             ],
         },
     },
@@ -852,8 +857,90 @@ TOOL_REGISTRY = {
 }
 
 TOOL_SUBPAGES = {
-    "converter": {"markdown-to-pdf": ("Markdown 转 PDF 在线工具", "浏览器本地将 Markdown 转为 PDF，提供预览、兼容性说明和示例。"), "csv-to-xlsx": ("CSV 转 XLSX 在线工具", "浏览器本地将 CSV 转换为 Excel XLSX 文件并预览表格内容。"), "docx-to-html": ("DOCX 转 HTML 在线工具", "浏览器本地提取 DOCX 标题、段落、列表和基础表格为 HTML。")},
-    "flutter": {"widgets": ("Flutter Widgets 组件速查", "Flutter Widget 组件目录、最低版本、完整示例和官方文档。"), "cli": ("Flutter CLI 命令速查", "Flutter 创建、构建、测试、分析和发布命令速查。"), "packages": ("Flutter Packages 推荐", "常用 Flutter Packages、维护状态、替代方案和 pub.dev 链接。")},
-    "android": {"compose": ("Android Compose 组件速查", "Jetpack Compose 组件、Material 版本和代码示例。"), "adb": ("ADB 命令速查", "ADB 常用命令、输出示例、常见错误和排查建议。"), "permissions": ("Android 权限速查", "Android 权限、最低版本和系统版本差异。"), "intent": ("Android Intent 速查", "Android 常用 Intent Action、权限和使用示例。")},
-    "ios": {"swiftui": ("SwiftUI 组件速查", "SwiftUI 组件、最低 iOS 版本和可复制示例。"), "uikit": ("UIKit 类速查", "UIKit 常用类、最低 iOS 版本和 Auto Layout 示例。"), "info-plist": ("Info.plist 权限配置速查", "Info.plist 权限 Key、审核说明和用户提示文案。"), "xcode": ("Xcode 快捷键速查", "Xcode 常用快捷键、场景和说明。")},
+    "converter": {
+        "markdown-to-pdf": {
+            "zh": {"name": "Markdown 转 PDF 在线工具", "title": "Markdown 转 PDF 在线工具 | Tools24", "description": "浏览器本地将 Markdown 转为 PDF，提供预览、兼容性说明和示例。"},
+            "en": {"name": "Markdown to PDF Online Tool", "title": "Markdown to PDF Online Tool | Tools24", "description": "Convert Markdown to PDF locally in your browser with preview, compatibility guidance and examples."},
+        },
+        "csv-to-xlsx": {
+            "zh": {"name": "CSV 转 XLSX 在线工具", "title": "CSV 转 XLSX 在线工具 | Tools24", "description": "浏览器本地将 CSV 转换为 Excel XLSX 文件并预览表格内容。"},
+            "en": {"name": "CSV to XLSX Online Converter", "title": "CSV to XLSX Online Converter | Tools24", "description": "Convert CSV to an Excel XLSX file and preview table content locally in your browser."},
+        },
+        "docx-to-html": {
+            "zh": {"name": "DOCX 转 HTML 在线工具", "title": "DOCX 转 HTML 在线工具 | Tools24", "description": "浏览器本地提取 DOCX 标题、段落、列表和基础表格为 HTML。"},
+            "en": {"name": "DOCX to HTML Online Converter", "title": "DOCX to HTML Online Converter | Tools24", "description": "Extract DOCX headings, paragraphs, lists and basic tables as HTML locally in your browser."},
+        },
+    },
+    "flutter": {
+        "widgets": {
+            "zh": {"name": "Flutter Widgets 组件速查", "title": "Flutter Widgets 组件速查 | Tools24", "description": "Flutter Widget 组件目录、最低版本、完整示例和官方文档。"},
+            "en": {"name": "Flutter Widgets Reference", "title": "Flutter Widgets Reference | Tools24", "description": "Flutter widget directory with minimum versions, complete examples and official documentation."},
+        },
+        "cli": {
+            "zh": {"name": "Flutter CLI 命令速查", "title": "Flutter CLI 命令速查 | Tools24", "description": "Flutter 创建、构建、测试、分析和发布命令速查。"},
+            "en": {"name": "Flutter CLI Command Reference", "title": "Flutter CLI Command Reference | Tools24", "description": "Flutter commands for project creation, builds, testing, analysis and releases."},
+        },
+        "packages": {
+            "zh": {"name": "Flutter Packages 推荐", "title": "Flutter Packages 推荐 | Tools24", "description": "常用 Flutter Packages、维护状态、替代方案和 pub.dev 链接。"},
+            "en": {"name": "Recommended Flutter Packages", "title": "Recommended Flutter Packages | Tools24", "description": "Popular Flutter packages with maintenance status, alternatives and pub.dev links."},
+        },
+    },
+    "android": {
+        "compose": {
+            "zh": {"name": "Android Compose 组件速查", "title": "Android Compose 组件速查 | Tools24", "description": "Jetpack Compose 组件、Material 版本和代码示例。"},
+            "en": {"name": "Android Compose Component Reference", "title": "Android Compose Component Reference | Tools24", "description": "Jetpack Compose components, Material versions and code examples."},
+        },
+        "adb": {
+            "zh": {"name": "ADB 命令速查", "title": "ADB 命令速查 | Tools24", "description": "ADB 常用命令、输出示例、常见错误和排查建议。"},
+            "en": {"name": "ADB Command Reference", "title": "ADB Command Reference | Tools24", "description": "Common ADB commands, output examples, errors and troubleshooting guidance."},
+        },
+        "permissions": {
+            "zh": {
+                "name": "Android Manifest 权限速查",
+                "title": "Android 权限速查 - Manifest Permission 查询 | Tools24",
+                "description": "查询 Android Manifest 权限、保护级别、最低 API 和第三方应用限制，覆盖危险、普通、特殊及系统权限。",
+                "keywords": "Android权限,Manifest permission,android.permission.STATUS_BAR,权限保护级别,危险权限,系统权限",
+                "intro": "搜索 Android Manifest 权限常量，查看用途、保护级别、API 版本和第三方应用限制，包括 STATUS_BAR 等系统权限。",
+                "features": ["Manifest 权限常量搜索", "危险/普通/特殊/系统权限分类", "API 版本与平台限制", "STATUS_BAR 等系统权限说明", "Android 官方文档链接"],
+                "faq": [
+                    ("android.permission.STATUS_BAR 可以用于普通应用吗？", "不可以。该权限用于打开、关闭或禁用状态栏及其图标，Android 官方明确说明它不适用于第三方应用。"),
+                    ("EXPAND_STATUS_BAR 和 STATUS_BAR 有什么区别？", "EXPAND_STATUS_BAR 是普通权限，可用于展开或收起状态栏；STATUS_BAR 是受限系统权限，普通第三方应用不能使用。"),
+                ],
+            },
+            "en": {
+                "name": "Android Manifest Permissions Reference",
+                "title": "Android Permissions Reference - Manifest Permission Lookup | Tools24",
+                "description": "Look up Android manifest permissions, protection levels, API requirements and restrictions for normal, dangerous, special and privileged permissions.",
+                "keywords": "Android permissions,Manifest permission lookup,android.permission.STATUS_BAR,protection level,dangerous permission,privileged permission",
+                "intro": "Search Android manifest permission constants and check their purpose, protection level, API requirements and third-party app restrictions, including STATUS_BAR.",
+                "features": ["Manifest permission lookup", "Normal, dangerous, special and privileged levels", "API and platform restrictions", "STATUS_BAR and other system permissions", "Official Android documentation"],
+                "faq": [
+                    ("Can a third-party app use android.permission.STATUS_BAR?", "No. It controls opening, closing or disabling the status bar and its icons, and Android documents it as unavailable to third-party applications."),
+                    ("What is the difference between EXPAND_STATUS_BAR and STATUS_BAR?", "EXPAND_STATUS_BAR is a normal permission for expanding or collapsing the status bar. STATUS_BAR is a restricted system permission unavailable to regular third-party apps."),
+                ],
+            },
+        },
+        "intent": {
+            "zh": {"name": "Android Intent 速查", "title": "Android Intent 速查 | Tools24", "description": "Android 常用 Intent Action、权限和使用示例。"},
+            "en": {"name": "Android Intent Reference", "title": "Android Intent Reference | Tools24", "description": "Common Android Intent actions, required permissions and usage examples."},
+        },
+    },
+    "ios": {
+        "swiftui": {
+            "zh": {"name": "SwiftUI 组件速查", "title": "SwiftUI 组件速查 | Tools24", "description": "SwiftUI 组件、最低 iOS 版本和可复制示例。"},
+            "en": {"name": "SwiftUI Component Reference", "title": "SwiftUI Component Reference | Tools24", "description": "SwiftUI components, minimum iOS versions and copyable examples."},
+        },
+        "uikit": {
+            "zh": {"name": "UIKit 类速查", "title": "UIKit 类速查 | Tools24", "description": "UIKit 常用类、最低 iOS 版本和 Auto Layout 示例。"},
+            "en": {"name": "UIKit Class Reference", "title": "UIKit Class Reference | Tools24", "description": "Common UIKit classes, minimum iOS versions and Auto Layout examples."},
+        },
+        "info-plist": {
+            "zh": {"name": "Info.plist 权限配置速查", "title": "Info.plist 权限配置速查 | Tools24", "description": "Info.plist 权限 Key、审核说明和用户提示文案。"},
+            "en": {"name": "Info.plist Privacy Key Reference", "title": "Info.plist Privacy Key Reference | Tools24", "description": "Info.plist privacy keys, review guidance and user-facing purpose strings."},
+        },
+        "xcode": {
+            "zh": {"name": "Xcode 快捷键速查", "title": "Xcode 快捷键速查 | Tools24", "description": "Xcode 常用快捷键、场景和说明。"},
+            "en": {"name": "Xcode Keyboard Shortcuts", "title": "Xcode Keyboard Shortcuts | Tools24", "description": "Common Xcode keyboard shortcuts with scenarios and explanations."},
+        },
+    },
 }

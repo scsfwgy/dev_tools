@@ -209,7 +209,7 @@ def test_spa_routes_render_seo_and_reject_invalid_paths(client):
     assert response.headers["Content-Language"] == "en"
     assert "https://dev.tools24.uk/en/tool/json" in html
     assert '<meta property="og:locale" content="en_US">' in html
-    assert "JSON Formatter and Validator Online" in html
+    assert "JSON Format Checker Online" in html
     assert fallback.status_code == 404
     assert missing_tool.status_code == 404
     assert "这个页面走丢了" in fallback.get_data(as_text=True)
@@ -362,6 +362,59 @@ def test_converter_regex_mobile_metadata_and_topic_routes(client):
 
     assert client.get("/zh/flutter/unknown").status_code == 404
     assert 'escapeHtml([r[0], r[1], r[2], r[3], r[5]].join(" ").toLowerCase())' in client.get("/js/android-tool.js").get_data(as_text=True)
+
+
+def test_search_query_seo_pages_and_local_tools_are_upgraded(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    permissions = client.get("/en/android/permissions").get_data(as_text=True)
+    assert "Android Permissions Reference - Manifest Permission Lookup" in permissions
+    assert '<h1>Android Manifest Permissions Reference</h1>' in permissions
+    assert "Can a third-party app use android.permission.STATUS_BAR?" in permissions
+    assert '"inLanguage": "en"' in permissions
+    assert "Android 权限速查" not in permissions
+
+    for path, expected in (
+        ("/en/flutter/widgets", "Flutter Widgets Reference"),
+        ("/en/ios/info-plist", "Info.plist Privacy Key Reference"),
+        ("/en/converter/csv-to-xlsx", "CSV to XLSX Online Converter"),
+    ):
+        page = client.get(path).get_data(as_text=True)
+        assert expected in page
+
+    android_script = client.get("/js/android-tool.js").get_data(as_text=True)
+    assert '["STATUS_BAR"' in android_script
+    assert '["EXPAND_STATUS_BAR"' in android_script
+    assert 'var fullName = "android.permission." + r[0]' in android_script
+
+    diff_page = client.get("/en/tool/diff").get_data(as_text=True)
+    diff_script = client.get("/js/diff-tool.js").get_data(as_text=True)
+    assert "Code Compare Tool Online" in diff_page
+    assert "How do I compare two code snippets online?" in diff_page
+    assert 'href="/en/tool/format"' in diff_page
+    assert 'href="/en/tool/json"' in diff_page
+    assert "MAX_FILE_BYTES" in diff_script
+    assert "diff-ignore-space" in diff_script
+    assert "renderSideBySide" in diff_script
+    assert "highlightPair" in diff_script
+    assert en_locale["diff"]["sideBySide"] == "Side by side"
+
+    json_page = client.get("/en/tool/json").get_data(as_text=True)
+    assert "JSON Format Checker Online" in json_page
+    assert "How can I test whether JSON is valid online?" in json_page
+
+    file_page = client.get("/en/tool/fileinfo").get_data(as_text=True)
+    file_script = client.get("/js/file-info-tool.js").get_data(as_text=True)
+    assert "MD5 Hash Checker Online" in file_page
+    assert "How do I verify a file checksum?" in file_page
+    assert "bindHashVerifier" in file_script
+    assert "fi-expected-hash" in file_script
+    assert en_locale["fileinfo"]["hashMatch"] == "Checksum matches"
+    app_css = (frontend_dir / "css" / "app.css").read_text()
+    assert ".fi-dropzone .jt-btn { min-height: 44px" in app_css
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    assert '"subpageTitles." + toolId + "." + window.__toolSubpage' in app_script
 
 
 def test_new_platform_notes_are_localized(client):

@@ -15,6 +15,12 @@
     --panel-bg: #161b22;
     --select-bg: #0d1117;
     --hover-row: #1c2129;
+    --diff-add-bg: rgba(63, 185, 80, 0.12);
+    --diff-remove-bg: rgba(248, 81, 73, 0.12);
+    --diff-add-text: #3fb950;
+    --diff-remove-text: #f85149;
+    --diff-char-add-bg: rgba(63, 185, 80, 0.3);
+    --diff-char-remove-bg: rgba(248, 81, 73, 0.3);
     --sidebar-w: 240px;
     --sidebar-collapsed-w: 52px;
 }
@@ -35,6 +41,12 @@
     --panel-bg: #ffffff;
     --select-bg: #f6f8fa;
     --hover-row: #f3f4f6;
+    --diff-add-bg: rgba(26, 127, 55, 0.08);
+    --diff-remove-bg: rgba(207, 34, 46, 0.08);
+    --diff-add-text: #1a7f37;
+    --diff-remove-text: #cf222e;
+    --diff-char-add-bg: rgba(26, 127, 55, 0.22);
+    --diff-char-remove-bg: rgba(207, 34, 46, 0.2);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1730,10 +1742,33 @@ a:hover {
 .diff-toolbar {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 12px;
+}
+
+.diff-option,
+.diff-view-label {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.diff-option input { accent-color: var(--accent); }
+
+.diff-view-select {
+    min-height: 34px;
+    padding: 0 28px 0 9px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--select-bg);
+    color: var(--text);
 }
 
 .diff-panes {
@@ -1756,6 +1791,29 @@ a:hover {
     margin-bottom: 6px;
     font-weight: 500;
 }
+
+.diff-pane-heading {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.diff-file-button {
+    min-height: 32px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.diff-file-button:hover { border-color: var(--accent); color: var(--accent); }
+.diff-file-name { min-height: 17px; color: var(--text-muted); font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .diff-textarea {
     width: 100%;
@@ -1798,6 +1856,32 @@ a:hover {
     line-height: 1.55;
 }
 
+.diff-side-header,
+.diff-side-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.diff-side-header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+.diff-side-header span { padding: 8px 10px; }
+.diff-side-header span + span,
+.diff-side-cell + .diff-side-cell { border-left: 1px solid var(--border); }
+
+.diff-side-cell {
+    min-width: 0;
+    display: flex;
+    padding: 1px 0;
+}
+
+.diff-blank { background: var(--hover-row); }
+
 .diff-line {
     display: flex;
     padding: 1px 0;
@@ -1822,15 +1906,31 @@ a:hover {
 }
 
 .diff-eq { background: transparent; }
-.diff-add { background: rgba(63,185,80,0.12); }
-.diff-rm  { background: rgba(248,81,73,0.12); }
-.diff-add .diff-txt { color: #3fb950; }
-.diff-rm  .diff-txt { color: #f85149; }
+.diff-add { background: var(--diff-add-bg); }
+.diff-rm  { background: var(--diff-remove-bg); }
+.diff-add .diff-txt { color: var(--diff-add-text); }
+.diff-rm  .diff-txt { color: var(--diff-remove-text); }
 
-[data-theme="light"] .diff-add { background: rgba(26,127,55,0.08); }
-[data-theme="light"] .diff-rm  { background: rgba(207,34,46,0.08); }
-[data-theme="light"] .diff-add .diff-txt { color: #1a7f37; }
-[data-theme="light"] .diff-rm  .diff-txt { color: #cf222e; }
+.diff-char-add,
+.diff-char-rm {
+    padding: 0;
+    color: inherit;
+    border-radius: 2px;
+}
+.diff-char-add { background: var(--diff-char-add-bg); }
+.diff-char-rm { background: var(--diff-char-remove-bg); }
+
+@media (max-width: 760px) {
+    .diff-toolbar > .jt-btn { min-height: 44px; }
+    .diff-option, .diff-view-label { min-height: 44px; }
+    .diff-view-label { width: 100%; }
+    .diff-view-select { min-height: 44px; flex: 1; }
+    .diff-panes { flex: 0 0 auto; flex-direction: column; }
+    .diff-pane { min-height: 180px; }
+    .diff-file-button { min-height: 44px; }
+    .diff-result { min-height: 220px; overflow-x: auto; }
+    .diff-output-side { min-width: 680px; }
+}
 
 /* === 文件详情工具 === */
 .fi-tool {
@@ -1904,6 +2004,34 @@ a:hover {
     word-break: break-all;
 }
 
+.fi-verify {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-card) 88%, var(--accent) 12%);
+}
+
+.fi-verify h3 { margin-bottom: 12px; color: var(--text); font-size: 0.92rem; }
+.fi-verify-fields { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 10px; }
+.fi-verify-fields label { display: grid; gap: 6px; color: var(--text-muted); font-size: 0.76rem; }
+.fi-verify-fields select,
+.fi-verify-fields input {
+    min-height: 42px;
+    width: 100%;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--select-bg);
+    color: var(--text);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+}
+.fi-verify-fields select:focus,
+.fi-verify-fields input:focus { border-color: var(--accent); outline: none; }
+.fi-verify-status { min-height: 22px; margin-top: 10px; font-size: 0.82rem; font-weight: 600; }
+.fi-verify-match { color: var(--green); }
+.fi-verify-mismatch { color: var(--orange); }
+.fi-verify-invalid { color: var(--text-muted); font-weight: 400; }
+.fi-security-note { margin-top: 6px; color: var(--text-muted); font-size: 0.75rem; line-height: 1.5; }
+
 .fi-base64-preview {
     width: 100%;
     padding: 10px 12px;
@@ -1919,6 +2047,13 @@ a:hover {
     max-height: 100px;
     overflow-y: auto;
     margin-top: 4px;
+}
+
+@media (max-width: 760px) {
+    .fi-verify-fields { grid-template-columns: 1fr; }
+    .fi-verify-fields select,
+    .fi-verify-fields input { min-height: 44px; }
+    .fi-dropzone .jt-btn { min-height: 44px; display: inline-flex; align-items: center; }
 }
 
 /* === SEO 静态内容（仅供爬虫，JS 渲染后隐藏） === */

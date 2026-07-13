@@ -83,8 +83,7 @@ def render_spa(lang, tool_id, indexable=True, subpage=None):
     seo_tool_id = tool_id if tool_id and indexable else None
     meta = TOOLS[seo_tool_id][lang] if seo_tool_id else HOME_META[lang]
     if subpage:
-        subpage_name, subpage_description = TOOL_SUBPAGES[tool_id][subpage]
-        meta = {**meta, "name": subpage_name, "title": f"{subpage_name} | Tools24", "description": subpage_description}
+        meta = {**meta, **TOOL_SUBPAGES[tool_id][subpage][lang]}
     path = f"/{lang}/{tool_id}/{subpage}" if subpage else (f"/{lang}/tool/{tool_id}" if tool_id else f"/{lang}/")
     canonical = f"{app_settings.SITE_URL}{path}"
     paired_path = f"/{tool_id}/{subpage}" if subpage else (f"/tool/{tool_id}" if tool_id else "/")
@@ -101,7 +100,7 @@ def render_spa(lang, tool_id, indexable=True, subpage=None):
         "<!--SEO_OG_LOCALE-->": "zh_CN" if lang == "zh" else "en_US",
         "<!--SEO_OG_LOCALE_ALTERNATE-->": "en_US" if lang == "zh" else "zh_CN",
         "<!--SEO_SCHEMA-->": html.escape(json.dumps(build_schema(lang, seo_tool_id, canonical, meta), ensure_ascii=False), quote=False),
-        "<!--SEO_CONTENT-->": build_seo_content(lang, seo_tool_id, meta) if indexable else "",
+        "<!--SEO_CONTENT-->": build_seo_content(lang, seo_tool_id, meta, subpage=subpage) if indexable else "",
         "<!--SEO_ASSET_VERSION-->": asset_version(),
     }
     for marker, value in replacements.items():
@@ -127,6 +126,7 @@ def build_schema(lang, tool_id, canonical, meta):
         "featureList": meta.get("features", []),
     }
     if tool_id:
+        faq_entries = meta.get("faq", TOOLS[tool_id][lang]["faq"])
         faq = {
             "@type": "FAQPage",
             "@id": f"{canonical}#faq",
@@ -136,7 +136,7 @@ def build_schema(lang, tool_id, canonical, meta):
                     "name": question,
                     "acceptedAnswer": {"@type": "Answer", "text": answer},
                 }
-                for question, answer in TOOLS[tool_id][lang]["faq"]
+                for question, answer in faq_entries
             ],
         }
         application["mainEntity"] = {"@id": faq["@id"]}
@@ -160,7 +160,29 @@ def build_schema(lang, tool_id, canonical, meta):
     return {"@context": "https://schema.org", "@graph": [website, application]}
 
 
-def build_seo_content(lang, tool_id, meta):
+def _related_links(lang, tool_id, subpage=None):
+    related_tools = {
+        "diff": ("format", "json", "text"),
+        "json": ("format", "diff", "base64", "jwt"),
+        "fileinfo": ("base64", "crypto", "converter"),
+        "base64": ("encoder", "fileinfo", "crypto"),
+    }
+    links = []
+    for related_id in related_tools.get(tool_id, ()):
+        links.append((f"/{lang}/tool/{related_id}", TOOLS[related_id][lang]["name"]))
+
+    if tool_id == "android":
+        if subpage:
+            links.append((f"/{lang}/tool/android", TOOLS["android"][lang]["name"]))
+        for related_subpage in ("permissions", "adb", "intent", "compose"):
+            if related_subpage == subpage:
+                continue
+            related_meta = TOOL_SUBPAGES["android"][related_subpage][lang]
+            links.append((f"/{lang}/android/{related_subpage}", related_meta["name"]))
+    return links
+
+
+def build_seo_content(lang, tool_id, meta, subpage=None):
     nav = "".join(
         f'<li><a href="/{lang}/tool/{tool_id_item}">{html.escape(TOOLS[tool_id_item][lang]["name"])}</a></li>'
         for tool_id_item in public_tool_ids()
@@ -186,13 +208,19 @@ def build_seo_content(lang, tool_id, meta):
         "zh": {"local": "浏览器本地处理，数据不上传", "hybrid": "部分信息需要请求服务端", "server": "服务端处理，数据会发送到服务器"},
         "en": {"local": "Processed locally in your browser; data is not uploaded", "hybrid": "Some information requires a server request", "server": "Processed on the server; data is sent to the service"},
     }[lang][processing]
+    related_links = _related_links(lang, tool_id, subpage)
+    related_nav = "".join(
+        f'<li><a href="{html.escape(path, quote=True)}">{html.escape(label)}</a></li>'
+        for path, label in related_links
+    ) or nav
+    related_heading = "相关工具" if lang == "zh" else "Related tools"
     return (
         '<section class="seo-content">'
         f"<h1>{html.escape(meta['name'])}</h1><p>{html.escape(meta['intro'])}</p>"
         f'<p class="privacy-badge privacy-badge-{processing}">{html.escape(processing_text)}</p>'
         f"<h2>{'功能特点' if lang == 'zh' else 'Features'}</h2><ul>{features}</ul>"
         f"<h2>{'常见问题' if lang == 'zh' else 'FAQ'}</h2>{faq}"
-        f"<h2>{'更多工具' if lang == 'zh' else 'More tools'}</h2><ul>{nav}</ul>"
+        f"<h2>{related_heading}</h2><ul>{related_nav}</ul>"
         "</section>"
     )
 

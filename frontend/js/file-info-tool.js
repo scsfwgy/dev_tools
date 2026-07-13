@@ -216,6 +216,15 @@ var FileInfoTool = (function () {
       html += '<div class="fi-row"><span class="fi-label">' + r[0] + '</span><span class="fi-val">' + r[1] + '</span><button class="ts-copy" data-val="' + esc(r[1]) + '">' + t("fileinfo.copy") + '</button></div>';
     });
 
+    html += '<section class="fi-verify" aria-labelledby="fi-verify-title">' +
+      '<h3 id="fi-verify-title">' + t("fileinfo.verifyTitle") + '</h3>' +
+      '<div class="fi-verify-fields">' +
+      '<label><span>' + t("fileinfo.verifyAlgorithm") + '</span><select id="fi-verify-algorithm"><option value="md5">MD5</option><option value="sha1">SHA-1</option><option value="sha256">SHA-256</option></select></label>' +
+      '<label class="fi-expected-field"><span>' + t("fileinfo.expectedHash") + '</span><input id="fi-expected-hash" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="' + t("fileinfo.expectedHashPlaceholder") + '"></label>' +
+      '</div><p id="fi-verify-status" class="fi-verify-status" aria-live="polite"></p>' +
+      '<p class="fi-security-note">' + t("fileinfo.md5SecurityNote") + '</p>' +
+      '</section>';
+
     // base64
     if (info.base64Preview) {
       var preview = info.base64Preview;
@@ -237,6 +246,7 @@ var FileInfoTool = (function () {
     html += '</div>';
 
     document.getElementById("fi-result").innerHTML = html;
+    bindHashVerifier(info);
 
     document.getElementById("fi-result").querySelectorAll(".ts-copy").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -256,6 +266,31 @@ var FileInfoTool = (function () {
     }
 
     document.getElementById("fi-reset").addEventListener("click", reset);
+  }
+
+  function bindHashVerifier(info) {
+    var algorithm = document.getElementById("fi-verify-algorithm");
+    var expected = document.getElementById("fi-expected-hash");
+    var status = document.getElementById("fi-verify-status");
+    var lengths = { md5: 32, sha1: 40, sha256: 64 };
+
+    function verify() {
+      var key = algorithm.value;
+      var value = expected.value.replace(/[\s:-]+/g, "").toLowerCase();
+      status.className = "fi-verify-status";
+      if (!value) { status.textContent = ""; return; }
+      if (value.length !== lengths[key] || !/^[a-f0-9]+$/.test(value)) {
+        status.textContent = t("fileinfo.hashInvalid").replace("{length}", lengths[key]);
+        status.classList.add("fi-verify-invalid");
+        return;
+      }
+      var matches = value === String(info[key] || "").toLowerCase();
+      status.textContent = (matches ? "✓ " : "✕ ") + t(matches ? "fileinfo.hashMatch" : "fileinfo.hashMismatch");
+      status.classList.add(matches ? "fi-verify-match" : "fi-verify-mismatch");
+    }
+
+    algorithm.addEventListener("change", verify);
+    expected.addEventListener("input", verify);
   }
 
   function simplifyRatio(w, h) { var g = gcd(w, h); return (w/g) + ":" + (h/g); }
