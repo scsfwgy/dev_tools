@@ -2,7 +2,7 @@
 import logging
 import os
 
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 
 import app_settings
@@ -41,6 +41,28 @@ app.register_blueprint(content_bp)
 def prevent_api_indexing(response):
     if request.path.startswith("/api/"):
         response.headers["X-Robots-Tag"] = "noindex, nofollow"
+    if response.status_code == 404:
+        response.headers["Cache-Control"] = "public, max-age=0, s-maxage=300"
+    elif request.path.startswith(("/css/", "/js/")):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    elif request.path.startswith("/locales/"):
+        response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
+    elif request.path == "/api/tool-manifest":
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+    elif request.method == "GET" and (
+        request.path in ("/", "/robots.txt", "/sitemap.xml")
+        or not request.path.startswith("/api/")
+    ):
+        response.headers["Cache-Control"] = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    return response
+
+
+@app.errorhandler(404)
+def not_found(_error):
+    response = send_from_directory(str(app_settings.FRONTEND_DIR), "404.html")
+    response.status_code = 404
+    response.headers["X-Robots-Tag"] = "noindex, nofollow"
+    response.headers["Cache-Control"] = "public, max-age=0, s-maxage=300"
     return response
 
 

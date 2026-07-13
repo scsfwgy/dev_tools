@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="theme-color" content="#0d1117">
+    <title>页面未找到 | Tools24</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0d1117;
+            --panel: rgba(22, 27, 34, 0.88);
+            --panel-solid: #161b22;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --muted: #8b949e;
+            --faint: #6e7681;
+            --accent: #58a6ff;
+            --accent-soft: rgba(88, 166, 255, 0.12);
+            --green: #3fb950;
+            --shadow: rgba(0, 0, 0, 0.36);
+        }
+        [data-theme="light"] {
+            color-scheme: light;
+            --bg: #f6f8fa;
+            --panel: rgba(255, 255, 255, 0.9);
+            --panel-solid: #ffffff;
+            --border: #d0d7de;
+            --text: #24292f;
+            --muted: #656d76;
+            --faint: #6e7781;
+            --accent: #0969da;
+            --accent-soft: rgba(9, 105, 218, 0.1);
+            --green: #1a7f37;
+            --shadow: rgba(31, 35, 40, 0.14);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 50% 18%, var(--accent-soft), transparent 30rem),
+                var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .page-shell {
+            width: min(100% - 32px, 880px);
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: 0 auto;
+            padding: 28px 0 48px;
+            display: flex;
+            flex-direction: column;
+        }
+        .brand {
+            width: fit-content;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+            border-radius: 10px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+        main {
+            flex: 1;
+            display: grid;
+            place-items: center;
+            padding: 54px 0 36px;
+        }
+        .error-card {
+            position: relative;
+            width: 100%;
+            padding: clamp(28px, 6vw, 54px);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            background: var(--panel);
+            box-shadow: 0 24px 70px var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        .error-card::before {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            inset: -120px -80px auto auto;
+            border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 34px color-mix(in srgb, var(--accent) 4%, transparent),
+                        0 0 0 72px color-mix(in srgb, var(--accent) 3%, transparent);
+            content: "";
+            pointer-events: none;
+        }
+        .status-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--green);
+            font: 0.76rem "SFMono-Regular", Consolas, monospace;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 0 5px color-mix(in srgb, var(--green) 12%, transparent);
+        }
+        .error-code {
+            margin-top: 18px;
+            color: var(--accent);
+            font: clamp(4.8rem, 15vw, 8.5rem)/0.9 "SFMono-Regular", Consolas, monospace;
+            font-weight: 800;
+            letter-spacing: -0.09em;
+            text-shadow: 0 10px 40px color-mix(in srgb, var(--accent) 22%, transparent);
+        }
+        h1 {
+            margin-top: 25px;
+            font-size: clamp(1.55rem, 4vw, 2.2rem);
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+        }
+        .description {
+            max-width: 590px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.96rem;
+            line-height: 1.75;
+        }
+        .path-box {
+            max-width: 100%;
+            margin-top: 22px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: color-mix(in srgb, var(--bg) 74%, transparent);
+            color: var(--faint);
+            font: 0.77rem "SFMono-Regular", Consolas, monospace;
+        }
+        .path-prompt { color: var(--accent); font-weight: 700; }
+        #requested-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .button {
+            min-height: 44px;
+            padding: 0 17px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--panel-solid);
+            color: var(--text);
+            font: inherit;
+            font-size: 0.86rem;
+            font-weight: 650;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .button-primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+        .button:hover { transform: translateY(-1px); border-color: var(--accent); }
+        .button:focus-visible, .tool-link:focus-visible, .brand:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+        .suggestions { margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--border); }
+        .suggestions-title { color: var(--faint); font-size: 0.76rem; font-weight: 650; }
+        .tool-links { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .tool-link {
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--muted);
+            font-size: 0.76rem;
+            text-decoration: none;
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .tool-link:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+        footer { color: var(--faint); font-size: 0.72rem; text-align: center; }
+        @media (max-width: 560px) {
+            .page-shell { width: min(100% - 24px, 880px); padding-top: 16px; }
+            main { padding-top: 28px; }
+            .error-card { border-radius: 18px; }
+            .actions { display: grid; grid-template-columns: 1fr; }
+            .button { width: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <a class="brand" id="brand-link" href="/zh/" aria-label="Tools24 DevTools">
+            <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+            <span>Tools24 · DevTools</span>
+        </a>
+        <main>
+            <section class="error-card" aria-labelledby="error-title">
+                <div class="status-line"><span class="status-dot" aria-hidden="true"></span><span data-zh="路由检查完成" data-en="Route check complete">路由检查完成</span></div>
+                <div class="error-code" aria-hidden="true">404</div>
+                <h1 id="error-title" data-zh="这个页面走丢了" data-en="This page wandered off">这个页面走丢了</h1>
+                <p class="description" data-zh="你访问的地址不存在、已经移动，或者链接中藏着一个小小的拼写错误。别担心，工具们都还在。" data-en="The address does not exist, has moved, or contains a small typo. Don't worry—the tools are still here.">你访问的地址不存在、已经移动，或者链接中藏着一个小小的拼写错误。别担心，工具们都还在。</p>
+                <div class="path-box" title="Requested path"><span class="path-prompt" aria-hidden="true">$</span><span id="requested-path">/</span></div>
+                <div class="actions">
+                    <a class="button button-primary" id="home-link" href="/zh/"><span aria-hidden="true">⌂</span><span data-zh="返回工具首页" data-en="Back to tools">返回工具首页</span></a>
+                    <button class="button" id="back-button" type="button"><span aria-hidden="true">←</span><span data-zh="返回上一页" data-en="Go back">返回上一页</span></button>
+                </div>
+                <div class="suggestions">
+                    <div class="suggestions-title" data-zh="或者直接打开常用工具" data-en="Or open a popular tool">或者直接打开常用工具</div>
+                    <nav class="tool-links" aria-label="Popular tools">
+                        <a class="tool-link" data-tool="json" href="/zh/tool/json">JSON</a>
+                        <a class="tool-link" data-tool="timestamp" href="/zh/tool/timestamp" data-zh="时间戳" data-en="Timestamp">时间戳</a>
+                        <a class="tool-link" data-tool="base64" href="/zh/tool/base64">Base64</a>
+                        <a class="tool-link" data-tool="regex" href="/zh/tool/regex" data-zh="正则测试" data-en="Regex">正则测试</a>
+                        <a class="tool-link" data-tool="image" href="/zh/tool/image" data-zh="图片处理" data-en="Image tools">图片处理</a>
+                    </nav>
+                </div>
+            </section>
+        </main>
+        <footer>Tools24 · DevTools</footer>
+    </div>
+    <script>
+        (function () {
+            var storedLang = localStorage.getItem("devtools_lang");
+            var lang = location.pathname.indexOf("/en/") === 0 || storedLang === "en" ? "en" : "zh";
+            var prefix = lang === "en" ? "en" : "zh";
+            var theme = localStorage.getItem("devtools_theme") === "light" ? "light" : "dark";
+            document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+            document.documentElement.dataset.theme = theme;
+            document.title = lang === "en" ? "Page not found | Tools24" : "页面未找到 | Tools24";
+            document.querySelectorAll("[data-" + lang + "]").forEach(function (element) {
+                element.textContent = element.getAttribute("data-" + lang);
+            });
+            document.getElementById("requested-path").textContent = location.pathname + location.search;
+            document.getElementById("brand-link").href = "/" + prefix + "/";
+            document.getElementById("home-link").href = "/" + prefix + "/";
+            document.querySelectorAll("[data-tool]").forEach(function (link) {
+                link.href = "/" + prefix + "/tool/" + link.getAttribute("data-tool");
+            });
+            document.getElementById("back-button").addEventListener("click", function () {
+                if (history.length > 1) history.back();
+                else location.href = "/" + prefix + "/";
+            });
+        })();
+    </script>
+</body>
+</html>

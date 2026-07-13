@@ -53,6 +53,8 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
+    assert zh_locale["welcome"]["desc"] == "30+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"]["files"] == "文件处理"
     assert zh_locale["welcome"]["category"]["conversion"] == "换算计算"
     assert zh_locale["welcome"]["recommendations"]["groups"]["investing"] == "投资理财"
@@ -76,6 +78,12 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     assert ".home-tabs" in app_css
     assert ".home-categories" in app_css
     assert ".sidebar.mobile-open" in app_css
+    assert 'let siteUrl = "https://dev.tools24.uk"' in app_script
+    assert 'data-i18n="welcome.toolCount"' in app_script
+
+    public_ids = set(public_tool_ids())
+    assert set(zh_locale["welcome"]["toolHints"]) == public_ids
+    assert set(en_locale["welcome"]["toolHints"]) == public_ids
 
     category_block = re.search(r"var HOME_CATEGORIES = \[(.*?)\n  \];", app_script, re.DOTALL)
     assert category_block
@@ -106,7 +114,7 @@ def test_image_tool_is_local_and_wired_with_seo_and_locales(client):
 
     assert page.status_code == 200
     assert "在线图片处理工具" in page.get_data(as_text=True)
-    assert "https://www.tools24.uk/zh/tool/image" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/image" in page.get_data(as_text=True)
     assert script.status_code == 200
     assert "MAX_PIXELS = 40000000" in script_text
     assert "canvas.toBlob" in script_text
@@ -198,10 +206,30 @@ def test_spa_routes_render_seo_and_reject_invalid_paths(client):
     html = response.get_data(as_text=True)
     assert response.status_code == 200
     assert '<html lang="en">' in html
-    assert "https://www.tools24.uk/en/tool/json" in html
+    assert response.headers["Content-Language"] == "en"
+    assert "https://dev.tools24.uk/en/tool/json" in html
+    assert '<meta property="og:locale" content="en_US">' in html
     assert "JSON Formatter and Validator Online" in html
     assert fallback.status_code == 404
     assert missing_tool.status_code == 404
+    assert "这个页面走丢了" in fallback.get_data(as_text=True)
+    assert "Page not found | Tools24" in missing_tool.get_data(as_text=True)
+    assert fallback.headers["X-Robots-Tag"] == "noindex, nofollow"
+    assert "s-maxage=300" in fallback.headers["Cache-Control"]
+
+
+def test_custom_404_is_bilingual_responsive_and_navigation_ready(client):
+    page = client.get("/missing-file").get_data(as_text=True)
+
+    assert '<meta name="robots" content="noindex,nofollow">' in page
+    assert 'data-en="This page wandered off"' in page
+    assert 'id="requested-path"' in page
+    assert 'id="home-link"' in page
+    assert 'id="back-button"' in page
+    assert 'data-tool="json"' in page
+    assert 'prefers-reduced-motion: reduce' in page
+    assert 'devtools_theme' in page
+    assert 'devtools_lang' in page
 
 
 def test_canonical_routes_redirect_and_api_is_not_indexed(client):
@@ -214,6 +242,33 @@ def test_canonical_routes_redirect_and_api_is_not_indexed(client):
     assert no_slash.status_code == 308
     assert no_slash.headers["Location"].endswith("/zh/")
     assert api.headers["X-Robots-Tag"] == "noindex, nofollow"
+
+
+def test_public_cache_headers_and_deferred_analytics(client):
+    index = client.get("/zh/")
+    css = client.get("/css/app.css")
+    locale = client.get("/locales/zh-CN.json")
+    manifest = client.get("/api/tool-manifest")
+    index_template = (Path(__file__).resolve().parents[2] / "frontend" / "index.html").read_text()
+
+    assert "s-maxage=3600" in index.headers["Cache-Control"]
+    assert css.headers["Cache-Control"] == "public, max-age=31536000, immutable"
+    assert "s-maxage=86400" in locale.headers["Cache-Control"]
+    assert "stale-while-revalidate=86400" in manifest.headers["Cache-Control"]
+    assert "requestIdleCallback(loadAnalytics" in index_template
+    assert '<script async src="https://www.googletagmanager.com/' not in index_template
+
+    # 静态资源版本号按 git 提交自动注入，无需手动维护 ?v= 字面量
+    rendered = index.get_data(as_text=True)
+    assert "<!--SEO_ASSET_VERSION-->" not in rendered
+    css_version = re.search(r'/css/app\.css\?v=([^"]+)"', rendered)
+    assert css_version, "css asset version was not injected"
+    version = css_version.group(1)
+    assert version, "asset version must not be empty"
+    assert f'/js/app.js?v={version}"' in rendered  # css 与 js 共用同一版本号
+    scripted = [tool for tool in manifest.get_json()["tools"] if tool.get("script")]
+    assert scripted, "expected lazy-loaded tool scripts in manifest"
+    assert all(tool["script"].endswith(f"?v={version}") for tool in scripted)
 
 
 def test_tool_registry_routes_and_sitemap_stay_in_sync(client):
@@ -231,8 +286,10 @@ def test_tool_registry_routes_and_sitemap_stay_in_sync(client):
     assert f"<lastmod>{content_last_modified()}</lastmod>" in sitemap
     assert manifest["lastModified"] == content_last_modified()
     for tool_id in TOOLS:
-        assert f"https://www.tools24.uk/zh/tool/{tool_id}" in sitemap
-        assert f"https://www.tools24.uk/en/tool/{tool_id}" in sitemap
+        assert f"https://dev.tools24.uk/zh/tool/{tool_id}" in sitemap
+        assert f"https://dev.tools24.uk/en/tool/{tool_id}" in sitemap
+    assert "<changefreq>weekly</changefreq>" in sitemap
+    assert "<priority>1.0</priority>" in sitemap
 
 
 def test_new_tools_have_server_rendered_seo(client):
@@ -241,7 +298,7 @@ def test_new_tools_have_server_rendered_seo(client):
         page = response.get_data(as_text=True)
         assert response.status_code == 200
         assert expected in page
-        assert f"https://www.tools24.uk/zh/tool/{tool_id}" in page
+        assert f"https://dev.tools24.uk/zh/tool/{tool_id}" in page
         assert '"@type": "FAQPage"' in page
         assert '"@type": "BreadcrumbList"' in page
 
@@ -332,7 +389,7 @@ def test_regex_and_http_tools_are_wired_with_seo_and_locales(client):
 
     assert regex_page.status_code == 200
     assert "正则表达式测试工具" in regex_page.get_data(as_text=True)
-    assert "https://www.tools24.uk/zh/tool/regex" in regex_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/regex" in regex_page.get_data(as_text=True)
     assert http_page.status_code == 200
     assert "HTTP Status Codes and Headers Reference" in http_page.get_data(as_text=True)
     assert regex_script.status_code == 200
@@ -359,7 +416,7 @@ def test_text_tool_is_wired_with_seo_and_locales(client):
 
     assert response.status_code == 200
     assert "在线文本处理工具" in response.get_data(as_text=True)
-    assert "https://www.tools24.uk/zh/tool/text" in response.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/text" in response.get_data(as_text=True)
     assert script.status_code == 200
     assert "sqlIn" in script.get_data(as_text=True)
 
@@ -378,7 +435,7 @@ def test_tax_tool_is_wired_with_seo_and_locales(client):
 
     assert response_zh.status_code == 200
     assert "工资税收计算器" in response_zh.get_data(as_text=True)
-    assert "https://www.tools24.uk/zh/tool/tax" in response_zh.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/tax" in response_zh.get_data(as_text=True)
     assert response_en.status_code == 200
     assert "China Tax Calculator" in response_en.get_data(as_text=True)
     assert script.status_code == 200
@@ -417,7 +474,7 @@ def test_mortgage_tool_is_wired_with_seo_and_locales(client):
 
     assert response.status_code == 200
     assert "房贷计算器" in response.get_data(as_text=True)
-    assert "https://www.tools24.uk/zh/tool/mortgage" in response.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/mortgage" in response.get_data(as_text=True)
     assert script.status_code == 200
     script_text = script.get_data(as_text=True)
     assert "calcEqualInstallment" in script_text

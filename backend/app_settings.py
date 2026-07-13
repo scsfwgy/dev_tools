@@ -5,7 +5,7 @@ from pathlib import Path
 
 BACKEND_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BACKEND_DIR.parent / "frontend"
-SITE_URL = "https://www.tools24.uk"
+SITE_URL = os.getenv("SITE_URL", "https://dev.tools24.uk").rstrip("/")
 SUPPORTED_LANGS = {"zh", "en"}
 _AREA_CONFIG_DIR = BACKEND_DIR / "config"
 

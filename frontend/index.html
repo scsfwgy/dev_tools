@@ -7,6 +7,7 @@
     <meta name="description" content="<!--SEO_DESCRIPTION-->">
     <meta name="keywords" content="<!--SEO_KEYWORDS-->">
     <meta name="robots" content="<!--SEO_ROBOTS-->">
+    <meta name="theme-color" content="#0d1117">
     <meta name="baidu-site-verification" content="codeva-mPgFSXNmdN" />
     <link rel="canonical" href="<!--SEO_CANONICAL-->">
     <link rel="alternate" hreflang="zh-CN" href="<!--SEO_HREFLANG_ZH-->">
@@ -14,6 +15,8 @@
     <link rel="alternate" hreflang="x-default" href="<!--SEO_HREFLANG_DEFAULT-->">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Tools24">
+    <meta property="og:locale" content="<!--SEO_OG_LOCALE-->">
+    <meta property="og:locale:alternate" content="<!--SEO_OG_LOCALE_ALTERNATE-->">
     <meta property="og:title" content="<!--SEO_TITLE-->">
     <meta property="og:description" content="<!--SEO_DESCRIPTION-->">
     <meta property="og:url" content="<!--SEO_CANONICAL-->">
@@ -21,21 +24,32 @@
     <meta name="twitter:title" content="<!--SEO_TITLE-->">
     <meta name="twitter:description" content="<!--SEO_DESCRIPTION-->">
     <script type="application/ld+json"><!--SEO_SCHEMA--></script>
-    <link rel="stylesheet" href="/css/app.css?v=20260711k">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9GGHE7F51W"></script>
+    <link rel="stylesheet" href="/css/app.css?v=<!--SEO_ASSET_VERSION-->">
+    <!-- Analytics load after the page is interactive to protect first-paint performance. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-9GGHE7F51W');
-    </script>
-    <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "xhmbupqg3l");
+      window.clarity = window.clarity || function(){
+        (window.clarity.q = window.clarity.q || []).push(arguments);
+      };
+      function loadAnalytics() {
+        if (window.__analyticsLoaded) return;
+        window.__analyticsLoaded = true;
+        var gtagScript = document.createElement('script');
+        gtagScript.async = true;
+        gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-9GGHE7F51W';
+        document.head.appendChild(gtagScript);
+        var clarityScript = document.createElement('script');
+        clarityScript.async = true;
+        clarityScript.src = 'https://www.clarity.ms/tag/xhmbupqg3l';
+        document.head.appendChild(clarityScript);
+      }
+      window.addEventListener('load', function () {
+        if ('requestIdleCallback' in window) requestIdleCallback(loadAnalytics, { timeout: 2500 });
+        else setTimeout(loadAnalytics, 1200);
+      }, { once: true });
     </script>
 </head>
 <body>
@@ -128,6 +142,6 @@
         <!--SEO_CONTENT-->
     </main>
 
-    <script src="/js/app.js?v=20260711seo"></script>
+    <script src="/js/app.js?v=<!--SEO_ASSET_VERSION-->"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 """Site and SEO routes."""
+import functools
 import html
 import json
 import os
@@ -6,7 +7,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Blueprint, Response, jsonify, redirect, send_from_directory
+from flask import Blueprint, Response, abort, jsonify, redirect, send_from_directory
 
 import app_settings
 from http_utils import _client_ip
@@ -21,7 +22,11 @@ def content_last_modified():
         return override
     try:
         result = subprocess.run(
-            ["git", "log", "-1", "--format=%cs", "--", "backend/app.py", "frontend/js", "frontend/locales"],
+            [
+                "git", "log", "-1", "--format=%cs", "--",
+                "backend/app.py", "backend/tool_data.py", "backend/routes/site.py",
+                "frontend/index.html", "frontend/css", "frontend/js", "frontend/locales",
+            ],
             cwd=app_settings.FRONTEND_DIR.parent,
             check=True,
             capture_output=True,
@@ -40,6 +45,33 @@ def content_last_modified():
     ]
     latest_mtime = max(path.stat().st_mtime for path in content_paths)
     return datetime.fromtimestamp(latest_mtime, tz=timezone.utc).date().isoformat()
+
+
+@functools.lru_cache(maxsize=1)
+def asset_version():
+    """Short cache-busting version for static assets, refreshed every deploy.
+
+    Vercel injects VERCEL_GIT_COMMIT_SHA in production (no .git directory is
+    available to the serverless function); locally we fall back to
+    ``git rev-parse`` and finally a safe constant.
+    """
+    vercel_sha = os.getenv("VERCEL_GIT_COMMIT_SHA")
+    if vercel_sha:
+        return vercel_sha.strip()[:8]
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=app_settings.FRONTEND_DIR.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=2,
+        )
+        if result.stdout.strip():
+            return result.stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return "0"
 
 
 def public_tool_ids():
@@ -66,12 +98,17 @@ def render_spa(lang, tool_id, indexable=True, subpage=None):
         "<!--SEO_HREFLANG_ZH-->": f"{app_settings.SITE_URL}/zh{paired_path}",
         "<!--SEO_HREFLANG_EN-->": f"{app_settings.SITE_URL}/en{paired_path}",
         "<!--SEO_HREFLANG_DEFAULT-->": f"{app_settings.SITE_URL}/zh{paired_path}",
+        "<!--SEO_OG_LOCALE-->": "zh_CN" if lang == "zh" else "en_US",
+        "<!--SEO_OG_LOCALE_ALTERNATE-->": "en_US" if lang == "zh" else "zh_CN",
         "<!--SEO_SCHEMA-->": html.escape(json.dumps(build_schema(lang, seo_tool_id, canonical, meta), ensure_ascii=False), quote=False),
         "<!--SEO_CONTENT-->": build_seo_content(lang, seo_tool_id, meta) if indexable else "",
+        "<!--SEO_ASSET_VERSION-->": asset_version(),
     }
     for marker, value in replacements.items():
         template = template.replace(marker, value)
-    return Response(template, mimetype="text/html")
+    response = Response(template, mimetype="text/html")
+    response.headers["Content-Language"] = "zh-CN" if lang == "zh" else "en"
+    return response
 
 
 def build_schema(lang, tool_id, canonical, meta):
@@ -85,6 +122,9 @@ def build_schema(lang, tool_id, canonical, meta):
         "operatingSystem": "Any",
         "inLanguage": "zh-CN" if lang == "zh" else "en",
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        "isAccessibleForFree": True,
+        "browserRequirements": "Requires JavaScript and a modern web browser",
+        "featureList": meta.get("features", []),
     }
     if tool_id:
         faq = {
@@ -172,7 +212,10 @@ def tool_manifest():
                 "zh-CN": {"title": TOOLS[tool_id]["zh"]["title"], "description": TOOLS[tool_id]["zh"]["description"]},
                 "en": {"title": TOOLS[tool_id]["en"]["title"], "description": TOOLS[tool_id]["en"]["description"]},
             }
-        tools.append({"id": tool_id, "i18n": f"menu.{tool_id}", "seo": seo, **config})
+        tool = {"id": tool_id, "i18n": f"menu.{tool_id}", "seo": seo, **config}
+        if tool.get("script"):
+            tool["script"] = f"{tool['script']}?v={asset_version()}"
+        tools.append(tool)
     return jsonify({
         "siteUrl": app_settings.SITE_URL,
         "lastModified": content_last_modified(),
@@ -205,7 +248,8 @@ def sitemap():
                 urls.append((f"{app_settings.SITE_URL}/{lang}/{tool_id}/{subpage}", lang, tool_id))
     body = "\n".join(
         (
-            f"  <url><loc>{loc}</loc><lastmod>{last_modified}</lastmod>"
+            f"  <url><loc>{loc}</loc><lastmod>{last_modified}</lastmod><changefreq>weekly</changefreq>"
+            f"<priority>{'1.0' if _tool_id is None else '0.8'}</priority>"
             f'<xhtml:link rel="alternate" hreflang="zh-CN" href="{app_settings.SITE_URL}/zh{loc.split(f"/{_lang}", 1)[1]}"/>'
             f'<xhtml:link rel="alternate" hreflang="en" href="{app_settings.SITE_URL}/en{loc.split(f"/{_lang}", 1)[1]}"/>'
             f'<xhtml:link rel="alternate" hreflang="x-default" href="{app_settings.SITE_URL}/zh{loc.split(f"/{_lang}", 1)[1]}"/>'
@@ -225,14 +269,14 @@ def index():
 @site_bp.route("/<lang>")
 def index_lang_redirect(lang):
     if lang not in app_settings.SUPPORTED_LANGS:
-        return Response("Not found", status=404, mimetype="text/plain")
+        abort(404)
     return redirect(f"/{lang}/", code=308)
 
 
 @site_bp.route("/<lang>/")
 def index_lang(lang):
     if lang not in app_settings.SUPPORTED_LANGS:
-        return Response("Not found", status=404, mimetype="text/plain")
+        abort(404)
     return render_spa(lang, None)
 
 
@@ -240,14 +284,14 @@ def index_lang(lang):
 def tool_lang(lang, tool_id):
     config = TOOL_REGISTRY.get(tool_id)
     if lang not in app_settings.SUPPORTED_LANGS or not config:
-        return Response("Not found", status=404, mimetype="text/plain")
+        abort(404)
     return render_spa(lang, tool_id, indexable=config["indexable"])
 
 
 @site_bp.route("/<lang>/<tool_id>/<subpage>")
 def tool_subpage(lang, tool_id, subpage):
     if lang not in app_settings.SUPPORTED_LANGS or subpage not in TOOL_SUBPAGES.get(tool_id, {}):
-        return Response("Not found", status=404, mimetype="text/plain")
+        abort(404)
     return render_spa(lang, tool_id, subpage=subpage)
 
 

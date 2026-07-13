@@ -11,6 +11,20 @@
     { "source": "/(zh|en)/tool/(.*)", "destination": "/api/index" },
     { "source": "/(zh|en)/(converter|flutter|android|ios)/(.*)", "destination": "/api/index" }
   ],
+  "headers": [
+    {
+      "source": "/css/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/locales/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" }]
+    }
+  ],
   "functions": {
     "api/index.py": {
       "memory": 512,
