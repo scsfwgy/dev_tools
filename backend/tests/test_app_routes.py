@@ -269,6 +269,7 @@ def test_public_cache_headers_and_deferred_analytics(client):
     scripted = [tool for tool in manifest.get_json()["tools"] if tool.get("script")]
     assert scripted, "expected lazy-loaded tool scripts in manifest"
     assert all(tool["script"].endswith(f"?v={version}") for tool in scripted)
+    assert all(tool["script"].count("?") == 1 for tool in scripted)  # 不出现双 ?v=
 
 
 def test_tool_registry_routes_and_sitemap_stay_in_sync(client):

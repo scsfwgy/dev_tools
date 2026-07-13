@@ -214,7 +214,9 @@ def tool_manifest():
             }
         tool = {"id": tool_id, "i18n": f"menu.{tool_id}", "seo": seo, **config}
         if tool.get("script"):
-            tool["script"] = f"{tool['script']}?v={asset_version()}"
+            # 剥掉 TOOL_REGISTRY 中可能残留的旧 ?v=，统一由 asset_version 注入，避免出现双 ?v=
+            base = tool["script"].split("?", 1)[0]
+            tool["script"] = f"{base}?v={asset_version()}"
         tools.append(tool)
     return jsonify({
         "siteUrl": app_settings.SITE_URL,
