@@ -821,3 +821,42 @@ def test_area_search_intro_rejects_truncated_model_output(client, monkeypatch):
     assert result.get_json()["error"] == "generation_incomplete"
     assert post.call_args.kwargs["json"]["max_tokens"] == 2048
     cache_set.assert_not_called()
+
+
+def test_focus_training_is_local_timed_and_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    page = client.get("/zh/tool/focus")
+    script = client.get("/js/focus-tool.js")
+    script_text = script.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert "舒尔特方格专注力训练" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/focus" in page.get_data(as_text=True)
+    assert script.status_code == 200
+    assert_tool_is_lazy_loaded(frontend_dir, "focus-tool.js")
+    assert TOOL_REGISTRY["focus"]["processing"] == "local"
+    assert TOOL_REGISTRY["focus"]["indexable"] is True
+    assert zh_locale["menu"]["focus"] == "专注力训练"
+    assert en_locale["menu"]["focus"] == "Focus Training"
+    assert set(zh_locale["focus"]["levels"]) == {"3", "4", "5", "6"}
+    assert len(zh_locale["focus"]["howSteps"]) == 3
+    assert "far" not in zh_locale["focus"]["scienceNote"].lower()
+    assert 'SIZES = [3, 4, 5, 6]' in script_text
+    assert "performance.now()" in script_text
+    assert "requestAnimationFrame" in script_text
+    assert 'STORAGE_KEY = "devtools_focus_scores"' in script_text
+    assert "function shuffledNumbers(size)" in script_text
+    assert "function handleNumber(event)" in script_text
+    assert "function finishGame()" in script_text
+    assert 'id="focus-orbit-end"' in script_text
+    assert "fetch(" not in script_text
+    assert 'activeMenuId === "focus"' in app_script
+    assert '{ id: "productivity", tools: ["focus"] }' in app_script
+    assert ".focus-grid" in app_css
+    assert "--focus-grid-size" in app_css
+    assert "@media (max-width: 760px)" in app_css

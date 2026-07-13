@@ -117,6 +117,7 @@
     dollar: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
     link: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
     "map-pin": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    target: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
   };
 
   function localeToPrefix(lang) {
@@ -611,6 +612,11 @@
       MortgageTool.init(el);
       return;
     }
+    if (activeMenuId === "focus" && typeof FocusTool !== "undefined") {
+      el.innerHTML = "";
+      FocusTool.init(el);
+      return;
+    }
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
       el.innerHTML = "";
       FileInfoTool.init(el);
@@ -716,6 +722,7 @@
     { id: "all", tools: [] },
     { id: "files", tools: ["image", "converter", "fileinfo", "markdown", "diff", "text", "content"] },
     { id: "conversion", tools: ["timestamp", "unitconvert", "tax", "mortgage"] },
+    { id: "productivity", tools: ["focus"] },
     { id: "data", tools: ["json", "format", "regex", "http", "jwt"] },
     { id: "encoding", tools: ["encoder", "base64", "crypto", "qrcode"] },
     { id: "mobile", tools: ["android", "flutter", "ios"] },

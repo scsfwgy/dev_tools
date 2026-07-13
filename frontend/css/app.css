@@ -2890,3 +2890,360 @@ a:hover {
   .as-action-btn { min-width: 44px; min-height: 44px; }
   .as-dropdown { max-height: 180px; }
 }
+
+/* === 专注力训练 / Schulte Grid === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.focus-tool {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding-bottom: 36px;
+}
+
+.focus-intro {
+  position: relative;
+  min-height: 130px;
+  margin-bottom: 18px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 34%),
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 7%, var(--bg-card)), var(--bg-card));
+}
+
+.focus-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--accent);
+  font: 700 0.7rem/1.2 "SF Mono", "Cascadia Code", monospace;
+  letter-spacing: 0.18em;
+}
+
+.focus-intro h2 {
+  margin-bottom: 7px;
+  color: var(--text);
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.focus-intro p {
+  max-width: 620px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.focus-orbit {
+  width: 92px;
+  height: 92px;
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 22px 1fr;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  border-radius: 50%;
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg-card) 68%, transparent);
+  box-shadow: 0 0 42px color-mix(in srgb, var(--accent) 16%, transparent);
+  font: 750 0.9rem/1 "SF Mono", "Cascadia Code", monospace;
+}
+
+.focus-orbit i {
+  width: 100%;
+  height: 1px;
+  position: relative;
+  background: var(--accent);
+}
+
+.focus-orbit i::after {
+  position: absolute;
+  top: -3px;
+  right: -1px;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-left: 5px solid var(--accent);
+  content: "";
+}
+
+.focus-level-section { margin-bottom: 18px; }
+.focus-section-label {
+  margin-bottom: 9px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.focus-levels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.focus-level {
+  min-height: 62px;
+  padding: 10px 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.focus-level:hover { border-color: color-mix(in srgb, var(--accent) 58%, var(--border)); transform: translateY(-1px); }
+.focus-level.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-card));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.focus-level strong { font-size: 0.86rem; }
+.focus-level span { color: var(--text-muted); font-size: 0.7rem; }
+
+.focus-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 16px;
+  align-items: start;
+}
+
+.focus-game-card,
+.focus-info-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-card);
+  box-shadow: 0 12px 30px var(--shadow);
+}
+
+.focus-game-card { padding: 14px; }
+.focus-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.focus-stats > div {
+  min-width: 0;
+  padding: 9px 11px;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--bg) 56%, var(--bg-card));
+}
+.focus-stats span { display: block; margin-bottom: 4px; color: var(--text-muted); font-size: 0.67rem; }
+.focus-stats strong {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  font: 750 1rem/1.2 "SF Mono", "Cascadia Code", monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.focus-stats > div:nth-child(2) strong { color: var(--accent); }
+
+.focus-board {
+  position: relative;
+  width: min(100%, 590px);
+  margin: 0 auto;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--bg) 72%, var(--bg-card));
+}
+
+.focus-grid {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--focus-grid-size), minmax(0, 1fr));
+  gap: clamp(5px, 1vw, 9px);
+}
+
+.focus-cell {
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: clamp(7px, 1.2vw, 12px);
+  background: var(--bg-card);
+  color: var(--text);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--shadow) 65%, transparent);
+  cursor: pointer;
+  font: 720 clamp(0.92rem, 3vw, 1.45rem)/1 "SF Mono", "Cascadia Code", monospace;
+  touch-action: manipulation;
+  transition: color 0.12s, border-color 0.12s, background 0.12s, transform 0.12s, opacity 0.12s;
+}
+.focus-cell:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 56%, var(--border));
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-card));
+  transform: translateY(-1px);
+}
+.focus-cell:focus-visible,
+.focus-level:focus-visible,
+.focus-primary-btn:focus-visible,
+.focus-game-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.focus-cell.is-done {
+  border-color: color-mix(in srgb, var(--green) 32%, var(--border));
+  background: color-mix(in srgb, var(--green) 10%, var(--bg-card));
+  color: var(--green);
+  opacity: 0.42;
+  box-shadow: none;
+}
+.focus-cell.is-wrong { animation: focus-wrong 0.28s ease; }
+
+@keyframes focus-wrong {
+  0%, 100% { transform: translateX(0); border-color: var(--border); }
+  30% { transform: translateX(-4px); border-color: var(--orange); }
+  70% { transform: translateX(4px); border-color: var(--orange); }
+}
+
+.focus-overlay {
+  position: absolute;
+  inset: 12px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+  backdrop-filter: blur(9px);
+  text-align: center;
+}
+.focus-overlay[hidden] { display: none; }
+.focus-overlay strong { color: var(--text); font-size: clamp(1.1rem, 3vw, 1.5rem); }
+.focus-overlay > span { padding: 0 18px; color: var(--text-muted); font-size: 0.78rem; }
+.focus-overlay em { color: var(--green); font-size: 0.78rem; font-style: normal; font-weight: 700; }
+.focus-overlay-mark {
+  margin-bottom: 5px;
+  color: var(--accent);
+  font: 760 clamp(1.3rem, 4vw, 2rem)/1 "SF Mono", "Cascadia Code", monospace;
+  letter-spacing: -0.06em;
+}
+.focus-result-check {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--green) 14%, transparent);
+  color: var(--green);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.focus-result-values { margin: 4px 0 2px; }
+.focus-result-values b { display: block; color: var(--text); font: 800 1.5rem/1.2 "SF Mono", "Cascadia Code", monospace; }
+.focus-result-values small { color: var(--text-muted); font-size: 0.7rem; }
+
+.focus-primary-btn {
+  min-height: 42px;
+  margin-top: 7px;
+  padding: 9px 19px;
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+  font-weight: 750;
+}
+.focus-primary-btn:hover { filter: brightness(1.08); }
+
+.focus-game-actions { padding-top: 11px; text-align: center; }
+.focus-game-actions button,
+.focus-history-head button {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.76rem;
+}
+.focus-game-actions button:hover,
+.focus-history-head button:hover { background: var(--hover-row); color: var(--text); }
+
+.focus-side { display: grid; gap: 12px; }
+.focus-info-card { padding: 16px 17px; box-shadow: none; }
+.focus-info-card h3 { margin-bottom: 10px; color: var(--text); font-size: 0.86rem; }
+.focus-info-card ol { padding-left: 18px; color: var(--text-secondary); font-size: 0.77rem; line-height: 1.65; }
+.focus-info-card li + li { margin-top: 6px; }
+.focus-science {
+  border-color: color-mix(in srgb, var(--amber) 30%, var(--border));
+  background: color-mix(in srgb, var(--amber) 5%, var(--bg-card));
+}
+.focus-science h3 { color: var(--amber); }
+.focus-science p { color: var(--text-secondary); font-size: 0.76rem; line-height: 1.68; }
+
+.focus-history-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.focus-history-head h3 { margin-bottom: 0; }
+.focus-history-list { display: grid; }
+.focus-history-empty { margin-top: 10px; color: var(--text-muted); font-size: 0.74rem; line-height: 1.55; }
+.focus-history-item {
+  padding: 8px 0;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 7px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  color: var(--text-secondary);
+  font-size: 0.71rem;
+  line-height: 1.45;
+}
+.focus-history-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.focus-history-rank { color: var(--text-muted); font-family: "SF Mono", "Cascadia Code", monospace; }
+
+@media (max-width: 900px) {
+  .focus-layout { grid-template-columns: 1fr; }
+  .focus-side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .focus-history { grid-column: 1 / -1; }
+}
+
+@media (max-width: 760px) {
+  .focus-tool { padding-bottom: 24px; }
+  .focus-intro { min-height: 0; padding: 18px; border-radius: 14px; }
+  .focus-intro p { font-size: 0.82rem; }
+  .focus-orbit { width: 70px; height: 70px; grid-template-columns: 1fr 15px 1fr; font-size: 0.72rem; }
+  .focus-levels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .focus-level { min-height: 58px; }
+  .focus-game-card { padding: 9px; border-radius: 13px; }
+  .focus-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 9px; }
+  .focus-stats > div { padding: 8px 9px; }
+  .focus-board { padding: 8px; border-radius: 12px; }
+  .focus-grid { gap: 5px; }
+  .focus-overlay { inset: 8px; }
+  .focus-primary-btn { min-height: 44px; }
+  .focus-game-actions button { min-height: 44px; }
+  .focus-side { grid-template-columns: 1fr; }
+  .focus-history { grid-column: auto; }
+}
+
+@media (max-width: 390px) {
+  .focus-orbit { display: none; }
+  .focus-intro { padding: 16px; }
+  .focus-cell { font-size: clamp(0.78rem, 4.4vw, 1.05rem); border-radius: 6px; }
+}

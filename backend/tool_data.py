@@ -745,6 +745,32 @@ TOOLS = {
             ],
         },
     },
+    "focus": {
+        "zh": {
+            "name": "专注力训练",
+            "title": "舒尔特方格专注力训练 - 在线计时数字游戏 | Tools24",
+            "description": "在线舒尔特方格专注力小游戏，提供 3×3 至 6×6 四档难度、顺序点击计时、错误统计、个人最佳和本地成绩记录。",
+            "keywords": "舒尔特方格,专注力训练,注意力训练,视觉搜索,数字方格,舒尔特表,在线小游戏",
+            "intro": "从 1 开始按顺序找出随机方格中的全部数字，在不同难度下练习视觉搜索和任务专注，并记录用时、错误次数与个人最佳。",
+            "features": ["3×3 至 6×6 四档难度", "毫秒级计时与当前目标", "错误反馈和完成统计", "个人最佳与最近记录", "浏览器本地运行"],
+            "faq": [
+                ("舒尔特方格能提升专注力吗？", "它适合练习视觉搜索、顺序定位和对当前任务的持续投入，但不应理解为能全面提升智力或所有场景中的注意力。"),
+                ("成绩会上传服务器吗？", "不会。游戏和成绩记录都在浏览器本地完成，最近记录仅保存在当前设备的 localStorage 中。"),
+            ],
+        },
+        "en": {
+            "name": "Focus Training",
+            "title": "Schulte Grid Focus Training - Timed Number Game | Tools24",
+            "description": "Play a timed Schulte Grid focus game with four levels from 3×3 to 6×6, mistake tracking, personal bests and local attempt history.",
+            "keywords": "Schulte grid,focus training,attention game,visual search,number grid,timed brain game",
+            "intro": "Find every shuffled number in order, starting from 1. Practice visual search and task focus across four levels while tracking time, mistakes and personal bests.",
+            "features": ["Four levels from 3×3 to 6×6", "Millisecond timer and next target", "Mistake feedback and completion stats", "Personal bests and recent attempts", "Runs locally in your browser"],
+            "faq": [
+                ("Does a Schulte Grid improve attention?", "It can practice visual search, sequential scanning and staying engaged with the current task, but it should not be treated as proof of broader intelligence or attention gains."),
+                ("Are my scores uploaded?", "No. The game and score tracking run locally. Recent attempts are stored only in this browser's localStorage."),
+            ],
+        },
+    },
     "area-search": {
         "zh": {
             "name": "地区搜索",
@@ -779,14 +805,14 @@ HOME_META = {
         "title": "Tools24 在线开发者工具箱 - JSON JWT 图片文件转换与开发速查",
         "description": "Tools24 提供 JSON 格式化、JWT 调试、图片与文件转换、编解码、加解密、二维码，以及 Android、Flutter、iOS 开发速查等免费在线工具。",
         "keywords": "在线工具,开发者工具,JSON格式化,编码转换,Base64,加解密,二维码生成,Markdown编辑器,Android速查,时间戳转换,文本对比,MD5校验",
-        "intro": "Tools24 是面向开发者和日常办公的在线工具箱，提供近三十种编码、调试、文件处理、计算和移动开发速查工具。",
+        "intro": "Tools24 是面向开发者和日常办公的在线工具箱，提供三十多种编码、调试、文件处理、计算、效率和移动开发速查工具。",
     },
     "en": {
         "name": "Tools24 Online Developer Toolbox",
         "title": "Tools24 Developer Toolbox - JSON JWT Image File Tools and References",
         "description": "Free online tools for JSON, JWT, images, file conversion, codecs, encryption and QR codes, plus Android, Flutter and iOS developer references.",
         "keywords": "online tools,developer tools,JSON formatter,codec,Base64,encryption,QR code,Markdown editor,Android reference,timestamp converter,text diff,MD5 checker",
-        "intro": "Tools24 provides nearly thirty browser-based tools for encoding, debugging, file processing, calculations and mobile development references.",
+        "intro": "Tools24 provides over thirty browser-based tools for encoding, debugging, file processing, calculations, productivity and mobile development references.",
     },
 }
 
@@ -814,6 +840,7 @@ TOOL_REGISTRY = {
     "text": {"order": 210, "icon": "code", "script": "/js/text-tool.js?v=20260710a", "global": "TextTool", "processing": "local", "indexable": True},
     "tax": {"order": 220, "icon": "dollar", "script": "/js/tax-tool.js?v=20260710d", "global": "TaxTool", "processing": "local", "indexable": True},
     "mortgage": {"order": 230, "icon": "home", "script": "/js/mortgage-tool.js?v=20260710d", "global": "MortgageTool", "processing": "local", "indexable": True},
+    "focus": {"order": 235, "icon": "target", "script": "/js/focus-tool.js", "global": "FocusTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js?v=20260711e", "global": "ConverterTool", "processing": "local", "indexable": True},
     "fileinfo": {"order": 260, "icon": "file", "script": "/js/file-info-tool.js?v=20260706", "global": "FileInfoTool", "processing": "local", "indexable": True},
