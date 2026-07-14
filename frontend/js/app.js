@@ -99,6 +99,7 @@
     json: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/><path d="M8 12h8"/><path d="M12 4v12"/></svg>',
     clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
     ruler: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0l-2.6-2.6a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 13.5 3 3M10.5 10.5l3 3M13.5 7.5l3 3M16.5 4.5l3 3"/></svg>',
+    palette: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 0-4H12a1.5 1.5 0 0 1 0-3h3a6 6 0 0 0 0-12h-3Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="9.5" cy="6.5" r="1"/><circle cx="14" cy="6" r="1"/></svg>',
     code: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
     diff: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
@@ -573,6 +574,11 @@
       UnitConvertTool.init(el);
       return;
     }
+    if (activeMenuId === "color" && typeof ColorTool !== "undefined") {
+      el.innerHTML = "";
+      ColorTool.init(el);
+      return;
+    }
     if (activeMenuId === "regex" && typeof RegexTool !== "undefined") {
       el.innerHTML = "";
       RegexTool.init(el);
@@ -727,7 +733,7 @@
   var HOME_CATEGORIES = [
     { id: "all", tools: [] },
     { id: "files", tools: ["image", "converter", "fileinfo", "markdown", "diff", "text", "content"] },
-    { id: "conversion", tools: ["timestamp", "unitconvert", "tax", "mortgage", "exchange"] },
+    { id: "conversion", tools: ["timestamp", "unitconvert", "color", "tax", "mortgage", "exchange"] },
     { id: "productivity", tools: ["focus"] },
     { id: "data", tools: ["json", "format", "regex", "http", "jwt"] },
     { id: "encoding", tools: ["encoder", "base64", "crypto", "qrcode"] },

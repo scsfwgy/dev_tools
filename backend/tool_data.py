@@ -27,6 +27,34 @@ TOOLS = {
             ],
         },
     },
+    "color": {
+        "zh": {
+            "name": "颜色转换工具",
+            "title": "颜色转换工具 - HEX RGB HSL HSV LAB OKLCH 在线互转与取色 | Tools24",
+            "description": "在线颜色格式转换与取色工具，自动识别 HEX、RGB、HSL、HSV、HWB、CMYK、LAB、LCH、OKLab、OKLCH、XYZ 和 CSS 颜色名称。",
+            "keywords": "颜色转换,HEX转RGB,RGB转HSL,HSV,CMYK,LAB,OKLCH,在线取色器,颜色吸管,CSS颜色",
+            "intro": "输入任意一种常用颜色格式，即时得到其他格式结果并一键复制；也可使用系统颜色选择器、通道滑杆或浏览器吸管直接取色。",
+            "features": ["自动识别常用颜色格式", "HEX ARGB / RGB / HSL / HSV / HWB", "CMYK / LAB / LCH / XYZ", "OKLab / OKLCH", "透明度与不透明度双向换算", "ARGB（AARRGGBB）输出", "系统选色与屏幕吸管", "浏览器本地处理"],
+            "faq": [
+                ("支持哪些输入格式？", "支持 HEX/ARGB（8 位使用 AARRGGBB）、RGB/RGBA、HSL/HSLA、HSV/HSB、HWB、CMYK、CIELAB/LCH、OKLab/OKLCH、CIE XYZ，以及浏览器支持的 CSS 颜色名称。"),
+                ("为什么吸管按钮不可用？", "屏幕吸管依赖 EyeDropper API，目前主要在 Chromium 内核浏览器的安全页面中可用；其他浏览器仍可使用系统颜色选择器。"),
+                ("颜色数据会上传吗？", "不会，识别、转换、选色和复制全部在当前浏览器本地完成。"),
+            ],
+        },
+        "en": {
+            "name": "Color Converter and Picker",
+            "title": "Color Converter - HEX RGB HSL HSV LAB OKLCH Picker | Tools24",
+            "description": "Convert and pick colors online with automatic detection for HEX, RGB, HSL, HSV, HWB, CMYK, LAB, LCH, OKLab, OKLCH, XYZ and CSS color names.",
+            "keywords": "color converter,HEX to RGB,RGB to HSL,HSV,CMYK,LAB,OKLCH,color picker,eyedropper,CSS colors",
+            "intro": "Enter any common color format to get every other representation instantly, or pick a color with the system picker, channel sliders or browser eyedropper.",
+            "features": ["Automatic format detection", "HEX ARGB / RGB / HSL / HSV / HWB", "CMYK / LAB / LCH / XYZ", "OKLab / OKLCH", "Two-way opacity and transparency conversion", "ARGB (AARRGGBB) output", "System picker and screen eyedropper", "Local browser processing"],
+            "faq": [
+                ("Which input formats are supported?", "HEX/ARGB (8-digit values use AARRGGBB), RGB/RGBA, HSL/HSLA, HSV/HSB, HWB, CMYK, CIELAB/LCH, OKLab/OKLCH, CIE XYZ and CSS color names supported by your browser."),
+                ("Why is the eyedropper button disabled?", "Screen sampling requires the EyeDropper API, currently available mainly in Chromium-based browsers on secure pages. The system color picker remains available elsewhere."),
+                ("Are colors uploaded?", "No. Parsing, conversion, picking and copying all run locally in your browser."),
+            ],
+        },
+    },
     "regex": {
         "zh": {
             "name": "正则表达式测试工具",
@@ -583,12 +611,13 @@ TOOLS = {
     "unitconvert": {
         "zh": {
             "name": "单位换算工具",
-            "title": "单位换算工具 - 长度 温度 数据存储 压力 能量 燃油经济性 | Tools24",
-            "description": "在线单位换算工具，提供长度、面积、体积、质量、速度、温度、风力、数据存储、时间、压力、能量、功率、角度、流量、烹饪容量和燃油经济性 16 类实时换算。",
-            "keywords": "单位换算,长度换算,温度换算,数据存储换算,压力换算,能量换算,功率换算,角度换算,流量换算,燃油经济性,KB KiB,亩,盎司,蒲福风级",
-            "intro": "在任意单位输入数值，即时查看同类全部换算结果。16 类单位覆盖开发、生活、汽车与工程场景，并明确区分 KB/KiB、质量/液量盎司、公制/机械马力、美制/英制单位等易混概念。",
-            "features": ["长度、面积、体积、质量", "速度、温度、蒲福风力", "数据存储、时间、压力、能量、功率", "角度、流量、烹饪容量、燃油经济性", "亩、公分、市斤、两等民间单位", "任意输入框实时反向换算", "浏览器本地计算与历史记录"],
+            "title": "单位与进制换算工具 - 二进制 十六进制 长度 温度 数据存储 | Tools24",
+            "description": "在线单位换算工具，支持二、八、十、十六进制互转，并提供长度、面积、体积、质量、速度、温度、风力、数据存储等 16 类实时换算。",
+            "keywords": "单位换算,进制换算,二进制转十进制,十六进制转十进制,长度换算,温度换算,数据存储换算,压力换算,燃油经济性,KB KiB",
+            "intro": "在任意输入框输入数值，即时查看全部换算结果。首项支持二进制、八进制、十进制和十六进制任意互转，另有 16 类单位覆盖开发、生活、汽车与工程场景。",
+            "features": ["二、八、十、十六进制互转", "任意精度整数与常用前缀", "长度、面积、体积、质量", "速度、温度、蒲福风力", "数据存储、时间、压力、能量、功率", "角度、流量、烹饪容量、燃油经济性", "浏览器本地计算与历史记录"],
             "faq": [
+                ("二进制和十六进制支持多大的整数？", "使用浏览器 BigInt 任意精度整数计算，不受 JavaScript Number 安全整数范围限制；可输入负数及 0b、0o、0x 前缀。"),
                 ("1 亩等于多少平方米？", "标准市亩为 2000/3 平方米，约 666.6667 平方米。"),
                 ("盎司为什么出现在两个分类？", "常衡盎司 oz 是质量单位；美制和英制液量盎司 fl oz 是体积单位，二者不能直接互换。"),
                 ("KB 和 KiB 有什么区别？", "KB 按十进制计算，1 KB = 1000 B；KiB 按二进制计算，1 KiB = 1024 B。"),
@@ -601,12 +630,13 @@ TOOLS = {
         },
         "en": {
             "name": "Unit Converter",
-            "title": "Unit Converter - Length Temperature Data Pressure Energy Fuel Economy | Tools24",
-            "description": "Convert 16 categories including length, area, volume, mass, speed, temperature, wind, data storage, time, pressure, energy, power, angle, flow, cooking volume and fuel economy.",
-            "keywords": "unit converter,length,temperature,data storage,pressure,energy,power,angle,flow,fuel economy,KB KiB,Chinese mu,ounce,Beaufort scale",
-            "intro": "Enter a value in any unit to update every result in that category instantly. Sixteen categories cover development, daily life, cars and engineering while clearly distinguishing KB/KiB, mass/fluid ounces, horsepower standards and US/Imperial units.",
-            "features": ["Length, area, volume and mass", "Speed, temperature and Beaufort wind", "Data, time, pressure, energy and power", "Angle, flow, cooking volume and fuel economy", "Traditional Chinese units", "Live conversion from any input", "Local browser calculation and history"],
+            "title": "Unit and Number Base Converter - Binary Hex Length Temperature | Tools24",
+            "description": "Convert binary, octal, decimal and hexadecimal integers plus 16 categories including length, temperature, data, pressure, energy and fuel economy.",
+            "keywords": "unit converter,number base converter,binary to decimal,hex to decimal,length,temperature,data storage,pressure,energy,fuel economy,KB KiB",
+            "intro": "Enter a value in any field to update every result instantly. The first category converts binary, octal, decimal and hexadecimal integers, followed by sixteen unit categories for development, daily life, cars and engineering.",
+            "features": ["Binary, octal, decimal and hexadecimal", "Arbitrary-precision integers and common prefixes", "Length, area, volume and mass", "Speed, temperature and Beaufort wind", "Data, time, pressure, energy and power", "Angle, flow, cooking volume and fuel economy", "Local browser calculation and history"],
             "faq": [
+                ("How large can binary or hexadecimal integers be?", "Conversion uses arbitrary-precision browser BigInt rather than JavaScript Number, with negative values and 0b, 0o and 0x prefixes supported."),
                 ("How many square meters are in one mu?", "One standard Chinese mu is 2000/3 square meters, approximately 666.6667 m²."),
                 ("Why do ounces appear in two categories?", "The avoirdupois ounce (oz) measures mass. US and Imperial fluid ounces (fl oz) measure volume and are separate units."),
                 ("What is the difference between KB and KiB?", "KB is decimal: 1 KB = 1000 B. KiB is binary: 1 KiB = 1024 B."),
@@ -852,7 +882,8 @@ TOOL_REGISTRY = {
     "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260706", "global": "JsonTool", "processing": "local", "indexable": True},
     "format": {"order": 30, "icon": "code", "script": "/js/format-tool.js?v=20260708", "global": "FormatTool", "processing": "local", "indexable": True},
     "timestamp": {"order": 40, "icon": "clock", "script": "/js/timestamp-tool.js?v=20260706", "global": "TimestampTool", "processing": "local", "indexable": True},
-    "unitconvert": {"order": 50, "icon": "ruler", "script": "/js/unitconvert-tool.js?v=20260710e", "global": "UnitConvertTool", "processing": "local", "indexable": True},
+    "unitconvert": {"order": 50, "icon": "ruler", "script": "/js/unitconvert-tool.js?v=20260714a", "global": "UnitConvertTool", "processing": "local", "indexable": True},
+    "color": {"order": 55, "icon": "palette", "script": "/js/color-tool.js?v=20260714", "global": "ColorTool", "processing": "local", "indexable": True},
     "regex": {"order": 60, "icon": "code", "script": "/js/regex-tool.js?v=20260710c", "global": "RegexTool", "processing": "local", "indexable": True},
     "http": {"order": 70, "icon": "console", "script": "/js/http-tool.js?v=20260710c", "global": "HttpTool", "processing": "local", "indexable": True},
     "encoder": {"order": 80, "icon": "code", "script": "/js/encoder-tool.js?v=20260706", "global": "EncoderTool", "processing": "local", "indexable": True},

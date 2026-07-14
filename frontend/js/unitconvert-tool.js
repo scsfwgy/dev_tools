@@ -2,7 +2,7 @@
 var UnitConvertTool = (function () {
   var HISTORY_KEY = "unitconvert_history";
   var MAX_HISTORY = 20;
-  var activeCategoryId = "length";
+  var activeCategoryId = "radix";
   var drafts = {};
   var dirtyInputs = {};
 
@@ -13,6 +13,15 @@ var UnitConvertTool = (function () {
   }
 
   var CATEGORIES = [
+    {
+      id: "radix", defaultUnit: "decimal", defaultValue: "255",
+      units: [
+        { id: "binary", labelKey: "binary", symbol: "BIN", radix: 2 },
+        { id: "octal", labelKey: "octal", symbol: "OCT", radix: 8 },
+        { id: "decimal", labelKey: "decimal", symbol: "DEC", radix: 10 },
+        { id: "hexadecimal", labelKey: "hexadecimal", symbol: "HEX", radix: 16 }
+      ]
+    },
     {
       id: "length", defaultUnit: "m", defaultValue: "1",
       units: [
@@ -180,6 +189,34 @@ var UnitConvertTool = (function () {
     return Number.isFinite(number) ? number : null;
   }
 
+  function parseRadix(raw, radix) {
+    var value = String(raw).trim();
+    if (!value || value.length > 4096 || /__|^_|_$/.test(value)) return null;
+    var negative = value.charAt(0) === "-";
+    if (negative || value.charAt(0) === "+") value = value.slice(1);
+    var prefix = { 2: "0b", 8: "0o", 16: "0x" }[radix];
+    if (prefix && value.slice(0, 2).toLowerCase() === prefix) value = value.slice(2);
+    value = value.replace(/_/g, "");
+    var patterns = { 2: /^[01]+$/, 8: /^[0-7]+$/, 10: /^\d+$/, 16: /^[0-9a-f]+$/i };
+    if (!value || !patterns[radix] || !patterns[radix].test(value)) return null;
+    try {
+      var parsed = BigInt((prefix || "") + value);
+      return negative ? -parsed : parsed;
+    } catch (e) { return null; }
+  }
+
+  function parseValue(category, unit, raw) {
+    return category.id === "radix" ? parseRadix(raw, unit.radix) : parseNumber(raw);
+  }
+
+  function convertRadix(category, value) {
+    var values = {};
+    category.units.forEach(function (unit) {
+      values[unit.id] = value.toString(unit.radix).toUpperCase();
+    });
+    return { baseValue: value, values: values };
+  }
+
   function toBase(unit, value) { return unit.toBase ? unit.toBase(value) : value * unit.factor; }
   function fromBase(unit, value) { return unit.fromBase ? unit.fromBase(value) : value / unit.factor; }
 
@@ -226,6 +263,7 @@ var UnitConvertTool = (function () {
   }
 
   function convert(category, sourceUnit, value) {
+    if (category.id === "radix") return convertRadix(category, value);
     if (category.id === "wind") {
       var windBand;
       var windBase;
@@ -271,7 +309,8 @@ var UnitConvertTool = (function () {
       var list = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
       return list.filter(function (item) {
         var category = categoryById(item.categoryId);
-        return category && unitById(category, item.sourceUnitId) && parseNumber(item.rawValue) !== null;
+        var unit = category && unitById(category, item.sourceUnitId);
+        return unit && parseValue(category, unit, item.rawValue) !== null;
       }).slice(0, MAX_HISTORY);
     } catch (e) { return []; }
   }
@@ -331,7 +370,7 @@ var UnitConvertTool = (function () {
       return '<tr class="uc-unit" data-unit="' + unit.id + '">' +
         '<td><label for="uc-input-' + unit.id + '">' + unitLabel(unit) + '</label></td>' +
         '<td><code>' + unit.symbol + '</code></td>' +
-        '<td><input id="uc-input-' + unit.id + '" class="crypto-input uc-input" style="width:100%" data-unit="' + unit.id + '" inputmode="decimal" autocomplete="off" aria-label="' + unitLabel(unit) + '"></td>' +
+        '<td><input id="uc-input-' + unit.id + '" class="crypto-input uc-input" style="width:100%" data-unit="' + unit.id + '" inputmode="' + (category.id === "radix" ? "text" : "decimal") + '" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="' + unitLabel(unit) + '"></td>' +
         '<td><button class="jt-btn uc-copy" data-unit="' + unit.id + '" title="' + t("unitconvert.copy") + '" aria-label="' + t("unitconvert.copy") + ' ' + unitLabel(unit) + '">' + t("unitconvert.copy") + '</button></td>' +
       '</tr>';
     }).join("");
@@ -379,8 +418,8 @@ var UnitConvertTool = (function () {
       return;
     }
 
-    var value = parseNumber(raw);
-    if (value === null) { clearOtherInputs(input); setStatus(t("unitconvert.invalid"), "error"); return; }
+    var value = parseValue(category, sourceUnit, raw);
+    if (value === null) { clearOtherInputs(input); setStatus(t(category.id === "radix" ? "unitconvert.invalidRadix" : "unitconvert.invalid"), "error"); return; }
     var validationError = validateValue(category, sourceUnit, value);
     if (validationError === "beaufort") { clearOtherInputs(input); setStatus(t("unitconvert.invalidBeaufort"), "error"); return; }
     if (validationError === "fuel") { clearOtherInputs(input); setStatus(t("unitconvert.invalidFuel"), "error"); return; }
@@ -425,7 +464,7 @@ var UnitConvertTool = (function () {
     delete dirtyInputs[dirtyKey];
     var raw = input.value.trim();
     var unit = unitById(category, input.dataset.unit);
-    var value = parseNumber(raw);
+    var value = parseValue(category, unit, raw);
     if (value === null || validateValue(category, unit, value) || !convert(category, unit, value)) return;
     saveHistory(category.id, unit.id, raw);
     renderHistory();
@@ -474,5 +513,5 @@ var UnitConvertTool = (function () {
     return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  return { init: init };
+  return { init: init, parseRadix: parseRadix, convertRadix: convertRadix };
 })();

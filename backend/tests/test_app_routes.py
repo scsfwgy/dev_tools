@@ -712,11 +712,56 @@ def test_mortgage_tool_is_wired_with_seo_and_locales(client):
 def test_unit_converter_and_sidebar_use_shared_ui_states(client):
     unit_script = client.get("/js/unitconvert-tool.js").get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
 
     assert "at-table uc-table" in unit_script
     assert "data-uc-category" in unit_script
+    assert 'var activeCategoryId = "radix"' in unit_script
+    assert unit_script.index('id: "radix"') < unit_script.index('id: "length"')
+    assert "function parseRadix(raw, radix)" in unit_script
+    assert "BigInt((prefix || \"\") + value)" in unit_script
+    assert "value.toString(unit.radix).toUpperCase()" in unit_script
+    assert zh_locale["unitconvert"]["tabs"]["radix"] == "进制换算"
+    assert zh_locale["unitconvert"]["units"]["binary"] == "二进制"
+    assert en_locale["unitconvert"]["units"]["hexadecimal"] == "Hexadecimal"
     assert '"immersive"' in app_script
     assert "applySidebarState" in app_script
+
+
+def test_color_converter_is_registered_localized_and_lazy_loaded(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    color_script = client.get("/js/color-tool.js").get_data(as_text=True)
+    page = client.get("/zh/tool/color")
+
+    assert page.status_code == 200
+    assert "颜色转换工具" in page.get_data(as_text=True)
+    assert TOOL_REGISTRY["color"]["processing"] == "local"
+    assert TOOL_REGISTRY["color"]["icon"] == "palette"
+    assert zh_locale["menu"]["color"] == "颜色转换"
+    assert en_locale["menu"]["color"] == "Color Converter"
+    assert zh_locale["color"]["eyedropper"] == "吸取颜色"
+    assert en_locale["color"]["formats"]["oklch"] == "UI-friendly color and gradients"
+    assert 'typeof ColorTool !== "undefined"' in app_script
+    assert '"unitconvert", "color", "tax"' in app_script
+    assert "function parseColor(raw)" in color_script
+    assert '"EyeDropper" in window' in color_script
+    assert "oklabToXyz" in color_script
+    assert 'class="color-opacity-panel"' in color_script
+    assert "function opacityResults(opacity)" in color_script
+    assert 'id: "hexArgb"' in color_script
+    assert 'id: "webHexa"' not in color_script
+    assert "function toArgbHex(color)" in color_script
+    assert 'id: "cssRgba"' in color_script
+    assert "/js/android-tool.js" not in color_script
+    assert zh_locale["color"]["opacityTab"] == "透明度转换"
+    assert zh_locale["color"]["opacityFormats"]["hexArgb"] == "HEX / ARGB（AARRGGBB）"
+    assert en_locale["color"]["opacityTab"] == "Opacity Converter"
+    assert_tool_is_lazy_loaded(frontend_dir, "color-tool.js")
 
 
 def test_ai_tool_uses_verified_commands_categories_and_comparison(client):
