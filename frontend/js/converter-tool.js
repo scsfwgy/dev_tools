@@ -7,6 +7,7 @@ var ConverterTool = (function () {
   var XLSX_URL = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
   var MARKED_URL = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
   var HTML2PDF_URL = "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js";
+  var YAML_URL = "https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js";
   var scripts = {};
   var selectedFile = null;
   var sourceType = "";
@@ -19,9 +20,12 @@ var ConverterTool = (function () {
     txt: ["html", "md", "pdf"],
     html: ["txt", "md", "pdf"],
     md: ["html", "txt", "pdf"],
-    csv: ["html", "xlsx"],
+    csv: ["json", "html", "xlsx"],
     xlsx: ["csv", "html"],
-    docx: ["html", "txt"]
+    docx: ["html", "txt"],
+    json: ["csv", "yaml", "xml"],
+    yaml: ["json"],
+    xml: ["json"]
   };
 
   function t(key) { return (window.__t && window.__t(key)) || key; }
@@ -35,12 +39,12 @@ var ConverterTool = (function () {
       '  <div class="converter-head"><h2>' + t("converter.title") + '</h2><p>' + t("converter.subtitle") + '</p>' +
       '    <div class="converter-routes"><strong>' + t("converter.supportedRoutes") + '</strong><div class="converter-route-list">' + renderSupportedRoutes() + '</div></div>' +
       '    <details class="converter-compat"><summary>' + t("converter.compatibility") + '</summary>' + renderCompatibilityMatrix() + '</details>' +
-      '    <div class="converter-examples"><strong>' + t("converter.examples") + '</strong><button class="jt-btn" data-converter-example="md">Markdown → PDF</button><button class="jt-btn" data-converter-example="csv">CSV → XLSX</button><button class="jt-btn" data-converter-example="html">HTML → PDF</button></div>' +
+      '    <div class="converter-examples"><strong>' + t("converter.examples") + '</strong><button class="jt-btn" data-converter-example="json">JSON → YAML</button><button class="jt-btn" data-converter-example="csv-json">CSV → JSON</button><button class="jt-btn" data-converter-example="md">Markdown → PDF</button><button class="jt-btn" data-converter-example="csv">CSV → XLSX</button><button class="jt-btn" data-converter-example="html">HTML → PDF</button></div>' +
       '  </div>' +
       '  <div id="converter-dropzone" class="converter-dropzone">' +
       '    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 15h8M12 11v8"/></svg>' +
       '    <strong>' + t("converter.dropTitle") + '</strong><span>' + t("converter.supported") + '</span>' +
-      '    <label class="jt-btn jt-btn-primary">' + t("converter.chooseFile") + '<input id="converter-file" type="file" accept=".txt,.html,.htm,.md,.markdown,.csv,.xlsx,.docx" hidden></label>' +
+      '    <label class="jt-btn jt-btn-primary">' + t("converter.chooseFile") + '<input id="converter-file" type="file" accept=".txt,.html,.htm,.md,.markdown,.csv,.xlsx,.docx,.json,.yaml,.yml,.xml" hidden></label>' +
       '    <span id="converter-drop-message" class="image-error"></span>' +
       '  </div>' +
       '  <div id="converter-workspace" class="converter-workspace hidden">' +
@@ -79,15 +83,21 @@ var ConverterTool = (function () {
   }
 
   function renderCompatibilityMatrix() {
-    var rows = [["TXT → HTML/PDF", "文本、换行", "字体、原始排版"], ["TXT → Markdown", "纯文本", "语义结构"], ["HTML → TXT", "可见文本", "样式、链接地址、媒体"], ["HTML → Markdown", "标题、段落、链接、强调、列表", "脚本、复杂布局、自定义组件"], ["HTML → PDF", "浏览器可渲染内容", "交互、精确分页、部分远程资源"], ["Markdown → HTML", "标题、列表、代码块、表格", "自定义插件语法"], ["Markdown → TXT", "可见文本", "Markdown 格式标记"], ["Markdown → PDF", "标题、列表、代码块、表格", "复杂 CSS、精确分页、远程字体"], ["CSV → HTML", "行列和文本值", "数据类型、公式、样式"], ["CSV → XLSX", "单元格文本、数字、首行", "公式、合并单元格、样式"], ["XLSX → CSV", "首个工作表的值", "样式、公式定义、多工作表"], ["XLSX → HTML", "首个工作表和单元格值", "图表、宏、复杂格式"], ["DOCX → HTML", "标题、段落、列表、基础表格", "页眉页脚、浮动布局、复杂样式"], ["DOCX → TXT", "正文文本", "全部样式、图片、表格结构"]];
+    var rows = [
+      ["JSON ↔ YAML", "structured", "comments"], ["JSON → CSV", "tabular", "nested"], ["CSV → JSON", "csvValues", "csvTypes"],
+      ["JSON ↔ XML", "xmlStructure", "xmlConventions"], ["TXT → HTML/PDF", "plainText", "formatting"], ["TXT → Markdown", "plainText", "semantics"],
+      ["HTML → TXT/Markdown", "visibleText", "complexHtml"], ["HTML → PDF", "rendered", "pagination"], ["Markdown → HTML/TXT/PDF", "markdown", "customSyntax"],
+      ["CSV ↔ XLSX/HTML", "tableValues", "spreadsheetFeatures"], ["XLSX → CSV/HTML", "firstSheet", "multipleSheets"], ["DOCX → HTML/TXT", "documentBody", "complexDocx"]
+    ];
+    rows = rows.map(function (row) { return [row[0], t("converter.compatibilityValues." + row[1]), t("converter.compatibilityValues." + row[2])]; });
     return '<div class="at-table-wrap"><table class="at-table"><thead><tr><th>' + t("converter.route") + '</th><th>' + t("converter.preserved") + '</th><th>' + t("converter.mayLose") + '</th></tr></thead><tbody>' + rows.map(function (row) { return '<tr><td><code>' + row[0] + '</code></td><td>' + row[1] + '</td><td>' + row[2] + '</td></tr>'; }).join("") + '</tbody></table></div>';
   }
 
   function loadExample(type) {
-    var examples = { md: ["example.md", "# Tools24\n\n- Local processing\n- Markdown to PDF", "text/markdown"], csv: ["example.csv", "name,category,local\nJSON,Developer,true\nTranslate,AI,false", "text/csv"], html: ["example.html", "<h1>Tools24</h1><p>Local-first developer tools.</p>", "text/html"] };
+    var examples = { json: ["example.json", '{\n  "tools": [\n    { "name": "JSON", "local": true },\n    { "name": "Translate", "local": false }\n  ]\n}', "application/json"], "csv-json": ["example.csv", "name,category,local\nJSON,Developer,true\nTranslate,AI,false", "text/csv"], md: ["example.md", "# Tools24\n\n- Local processing\n- Markdown to PDF", "text/markdown"], csv: ["example.csv", "name,category,local\nJSON,Developer,true\nTranslate,AI,false", "text/csv"], html: ["example.html", "<h1>Tools24</h1><p>Local-first developer tools.</p>", "text/html"] };
     var example = examples[type];
     handleFile(new File([example[1]], example[0], { type: example[2] }));
-    byId("converter-target").value = type === "csv" ? "xlsx" : "pdf";
+    byId("converter-target").value = type === "json" ? "yaml" : type === "csv-json" ? "json" : type === "csv" ? "xlsx" : "pdf";
   }
 
   function renderSupportedRoutes() {
@@ -157,6 +167,10 @@ var ConverterTool = (function () {
     if (from === "xlsx") return convertXlsx(file, to);
     if (from === "csv" && to === "xlsx") return convertCsvToXlsx(file);
     var text = await file.text();
+    if (from === "json") return convertJson(text, to);
+    if (from === "yaml" && to === "json") return convertYamlToJson(text);
+    if (from === "xml" && to === "json") return convertXmlToJson(text);
+    if (from === "csv" && to === "json") return convertCsvToJson(text);
     if (from === "txt" && to === "md") return textResult(text, "text/markdown", textPreview(text));
     if (from === "txt" && (to === "html" || to === "pdf")) {
       var txtHtml = '<pre style="white-space:pre-wrap;word-break:break-word">' + escapeHtml(text) + '</pre>';
@@ -210,6 +224,132 @@ var ConverterTool = (function () {
     }).join("") + '</tbody></table>';
     return htmlResult(html);
   }
+
+  function convertJson(text, target) {
+    var value;
+    try { value = JSON.parse(text); } catch (error) { throw new Error(t("converter.invalidJson") + formatParseError(error)); }
+    if (target === "csv") return textResult(jsonToCsv(value), "text/csv");
+    if (target === "xml") return textResult(jsonToXml(value), "application/xml");
+    if (target === "yaml") {
+      return ensureScript("jsyaml", YAML_URL).then(function () {
+        return textResult(window.jsyaml.dump(value, { noRefs: true, lineWidth: 120 }), "application/yaml");
+      });
+    }
+    throw new Error(t("converter.unsupportedRoute"));
+  }
+
+  async function convertYamlToJson(text) {
+    await ensureScript("jsyaml", YAML_URL);
+    var value;
+    try { value = window.jsyaml.load(text); } catch (error) { throw new Error(t("converter.invalidYaml") + formatParseError(error)); }
+    return jsonResult(value);
+  }
+
+  function convertCsvToJson(text) {
+    var rows = parseCsv(text.replace(/^\uFEFF/, ""));
+    if (!rows.length || !rows[0].length || rows[0].every(function (header) { return !header.trim(); })) throw new Error(t("converter.invalidCsv"));
+    var headers = rows.shift().map(function (header, index) { return header.trim() || (t("converter.column") + (index + 1)); });
+    var values = rows.filter(function (row) { return row.some(function (cell) { return cell !== ""; }); }).map(function (row) {
+      var item = {};
+      headers.forEach(function (header, index) { item[header] = row[index] === undefined ? "" : row[index]; });
+      return item;
+    });
+    return jsonResult(values);
+  }
+
+  function jsonToCsv(value) {
+    var rows = Array.isArray(value) ? value : [value];
+    if (!rows.length) return "";
+    if (rows.some(function (row) { return !row || typeof row !== "object" || Array.isArray(row); })) throw new Error(t("converter.jsonTabularOnly"));
+    var flattened = rows.map(flattenObject);
+    var headers = [];
+    flattened.forEach(function (row) { Object.keys(row).forEach(function (key) { if (headers.indexOf(key) === -1) headers.push(key); }); });
+    if (!headers.length) throw new Error(t("converter.jsonTabularOnly"));
+    return [headers.map(csvCell).join(",")].concat(flattened.map(function (row) {
+      return headers.map(function (header) { return csvCell(row[header] === undefined ? "" : row[header]); }).join(",");
+    })).join("\r\n");
+  }
+
+  function flattenObject(value, prefix, result) {
+    result = result || {};
+    Object.keys(value).forEach(function (key) {
+      var path = prefix ? prefix + "." + key : key;
+      var child = value[key];
+      if (child && typeof child === "object" && !Array.isArray(child)) flattenObject(child, path, result);
+      else result[path] = child === null ? "" : Array.isArray(child) ? JSON.stringify(child) : child;
+    });
+    return result;
+  }
+
+  function csvCell(value) {
+    var text = String(value);
+    return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+  }
+
+  function convertXmlToJson(text) {
+    var xml = new DOMParser().parseFromString(text, "application/xml");
+    if (xml.querySelector("parsererror") || !xml.documentElement) throw new Error(t("converter.invalidXml"));
+    var result = {};
+    result[xml.documentElement.nodeName] = xmlNodeToValue(xml.documentElement);
+    return jsonResult(result);
+  }
+
+  function xmlNodeToValue(node) {
+    var result = {};
+    Array.from(node.attributes || []).forEach(function (attribute) { result["@" + attribute.name] = attribute.value; });
+    var children = Array.from(node.children || []);
+    var text = Array.from(node.childNodes).filter(function (child) { return child.nodeType === Node.TEXT_NODE || child.nodeType === Node.CDATA_SECTION_NODE; }).map(function (child) { return child.nodeValue; }).join("").trim();
+    children.forEach(function (child) {
+      var value = xmlNodeToValue(child);
+      if (Object.prototype.hasOwnProperty.call(result, child.nodeName)) {
+        if (!Array.isArray(result[child.nodeName])) result[child.nodeName] = [result[child.nodeName]];
+        result[child.nodeName].push(value);
+      } else result[child.nodeName] = value;
+    });
+    if (text && (children.length || node.attributes.length)) result["#text"] = text;
+    else if (text) return text;
+    return Object.keys(result).length ? result : "";
+  }
+
+  function jsonToXml(value) {
+    var rootName = "root";
+    var rootValue = value;
+    if (value && !Array.isArray(value) && typeof value === "object") {
+      var keys = Object.keys(value);
+      if (keys.length === 1 && isXmlName(keys[0]) && keys[0][0] !== "@" && keys[0] !== "#text") { rootName = keys[0]; rootValue = value[rootName]; }
+    }
+    if (Array.isArray(rootValue)) rootValue = { item: rootValue };
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + buildXmlElement(rootName, rootValue, 0);
+  }
+
+  function buildXmlElement(name, value, depth) {
+    if (!isXmlName(name)) throw new Error(t("converter.invalidXmlKey") + ": " + name);
+    var indent = "  ".repeat(depth);
+    if (Array.isArray(value)) return value.map(function (item) { return buildXmlElement(name, item, depth); }).join("\n");
+    if (value === null || value === undefined) return indent + "<" + name + "/>";
+    if (typeof value !== "object") return indent + "<" + name + ">" + escapeXml(value) + "</" + name + ">";
+    var attributes = "";
+    Object.keys(value).filter(function (key) { return key[0] === "@"; }).forEach(function (key) {
+      var attributeName = key.slice(1);
+      if (!isXmlName(attributeName)) throw new Error(t("converter.invalidXmlKey") + ": " + attributeName);
+      attributes += " " + attributeName + '=\"' + escapeXml(value[key]) + '\"';
+    });
+    var content = value["#text"] === undefined ? "" : escapeXml(value["#text"]);
+    var childXml = [];
+    Object.keys(value).filter(function (key) { return key[0] !== "@" && key !== "#text"; }).forEach(function (key) {
+      var childValue = value[key];
+      if (Array.isArray(childValue)) childValue.forEach(function (item) { childXml.push(buildXmlElement(key, item, depth + 1)); });
+      else childXml.push(buildXmlElement(key, childValue, depth + 1));
+    });
+    if (!content && !childXml.length) return indent + "<" + name + attributes + "/>";
+    if (!childXml.length) return indent + "<" + name + attributes + ">" + content + "</" + name + ">";
+    return indent + "<" + name + attributes + ">" + content + "\n" + childXml.join("\n") + "\n" + indent + "</" + name + ">";
+  }
+
+  function isXmlName(value) { return /^[A-Za-z_][A-Za-z0-9_.-]*$/.test(value); }
+  function escapeXml(value) { return String(value).replace(/[&<>"']/g, function (character) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[character]; }); }
+  function formatParseError(error) { return error && error.message ? ": " + error.message : ""; }
+  function jsonResult(value) { var content = JSON.stringify(value === undefined ? null : value, null, 2); return textResult(content, "application/json"); }
 
   function parseCsv(text) {
     var rows = [], row = [], value = "", quoted = false;
@@ -347,6 +487,7 @@ var ConverterTool = (function () {
     var extension = (name.split(".").pop() || "").toLowerCase();
     if (extension === "htm") return "html";
     if (extension === "markdown") return "md";
+    if (extension === "yml") return "yaml";
     return extension;
   }
 

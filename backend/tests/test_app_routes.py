@@ -297,10 +297,19 @@ def test_file_converter_routes_are_local_and_lazy_loaded(client):
     assert 'md: ["html", "txt", "pdf"]' in script_text
     assert 'docx: ["html", "txt"]' in script_text
     assert 'xlsx: ["csv", "html"]' in script_text
+    assert 'json: ["csv", "yaml", "xml"]' in script_text
+    assert 'yaml: ["json"]' in script_text
+    assert 'xml: ["json"]' in script_text
+    assert 'csv: ["json", "html", "xlsx"]' in script_text
     assert "function renderSupportedRoutes()" in script_text
-    assert sum(len(targets) for targets in ({"txt": ["html", "md", "pdf"], "html": ["txt", "md", "pdf"], "md": ["html", "txt", "pdf"], "csv": ["html", "xlsx"], "xlsx": ["csv", "html"], "docx": ["html", "txt"]}).values()) == 15
+    assert sum(len(targets) for targets in ({"txt": ["html", "md", "pdf"], "html": ["txt", "md", "pdf"], "md": ["html", "txt", "pdf"], "csv": ["json", "html", "xlsx"], "xlsx": ["csv", "html"], "docx": ["html", "txt"], "json": ["csv", "yaml", "xml"], "yaml": ["json"], "xml": ["json"]}).values()) == 21
     assert "mammoth.browser.min.js" in script_text
     assert "xlsx.full.min.js" in script_text
+    assert "js-yaml@4.1.0" in script_text
+    assert "function jsonToCsv(value)" in script_text
+    assert "function convertXmlToJson(text)" in script_text
+    assert "function jsonToXml(value)" in script_text
+    assert 'accept=".txt,.html,.htm,.md,.markdown,.csv,.xlsx,.docx,.json,.yaml,.yml,.xml"' in script_text
     assert "function ensureScript" in script_text
     assert "function preparePdf(html)" in script_text
     assert "function downloadPdf()" in script_text
@@ -309,7 +318,10 @@ def test_file_converter_routes_are_local_and_lazy_loaded(client):
     assert "fetch(" not in script_text
     assert zh_locale["menu"]["converter"] == "文件转换"
     assert en_locale["menu"]["converter"] == "File Converter"
-    assert zh_locale["converter"]["supportedRoutes"] == "当前支持的全部转换格式（15 项）"
+    assert zh_locale["converter"]["supportedRoutes"] == "当前支持的全部转换格式（21 项）"
+    assert en_locale["converter"]["supportedRoutes"] == "All Supported Conversions (21)"
+    assert zh_locale["converter"]["invalidJson"] == "JSON 内容无效"
+    assert en_locale["converter"]["invalidXml"] == "Invalid XML"
     assert_tool_is_lazy_loaded(frontend_dir, "converter-tool.js")
     app_css = (frontend_dir / "css" / "app.css").read_text()
     assert ".converter-pdf-preview { min-height: 480px" in app_css
