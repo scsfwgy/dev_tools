@@ -17,7 +17,8 @@ from routes.area_search import (
     area_search_bp,
 )
 from routes.content import content_bp
-from routes.site import content_last_modified, public_tool_ids, site_bp
+from routes.exchange_rates import exchange_rates_bp
+from routes.site import content_last_modified, immutable_asset_cache_enabled, public_tool_ids, site_bp
 from routes.stats import stats_bp
 from routes.translate import _build_prompt, _is_chinese, _is_short, translate_bp
 from routes.wishes import wishes_bp
@@ -35,6 +36,7 @@ app.register_blueprint(stats_bp)
 app.register_blueprint(translate_bp)
 app.register_blueprint(area_search_bp)
 app.register_blueprint(content_bp)
+app.register_blueprint(exchange_rates_bp)
 
 
 @app.after_request
@@ -43,6 +45,10 @@ def prevent_api_indexing(response):
         response.headers["X-Robots-Tag"] = "noindex, nofollow"
     if response.status_code == 404:
         response.headers["Cache-Control"] = "public, max-age=0, s-maxage=300"
+    elif request.path.startswith(("/css/", "/js/")) and not immutable_asset_cache_enabled():
+        response.headers["Cache-Control"] = "no-store"
+    elif request.path.startswith(("/locales/", "/api/tool-manifest")) and not immutable_asset_cache_enabled():
+        response.headers["Cache-Control"] = "no-store"
     elif request.path.startswith(("/css/", "/js/")):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     elif request.path.startswith("/locales/"):

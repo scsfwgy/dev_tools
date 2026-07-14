@@ -1,5 +1,5 @@
 """Site and SEO routes."""
-import functools
+import hashlib
 import html
 import json
 import os
@@ -47,31 +47,38 @@ def content_last_modified():
     return datetime.fromtimestamp(latest_mtime, tz=timezone.utc).date().isoformat()
 
 
-@functools.lru_cache(maxsize=1)
 def asset_version():
-    """Short cache-busting version for static assets, refreshed every deploy.
+    """Return a cache-busting version suited to deployment or local editing.
 
-    Vercel injects VERCEL_GIT_COMMIT_SHA in production (no .git directory is
-    available to the serverless function); locally we fall back to
-    ``git rev-parse`` and finally a safe constant.
+    Deployed assets use an explicit build version or Vercel's commit SHA and
+    can therefore be cached immutably. Local files use a stat fingerprint so
+    an uncommitted edit changes the URL without requiring a Git commit.
     """
+    explicit_version = os.getenv("ASSET_VERSION")
+    if explicit_version:
+        return explicit_version.strip()[:16]
     vercel_sha = os.getenv("VERCEL_GIT_COMMIT_SHA")
     if vercel_sha:
         return vercel_sha.strip()[:8]
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--short", "HEAD"],
-            cwd=app_settings.FRONTEND_DIR.parent,
-            check=True,
-            capture_output=True,
-            text=True,
-            timeout=2,
-        )
-        if result.stdout.strip():
-            return result.stdout.strip()
-    except (OSError, subprocess.SubprocessError):
-        pass
-    return "0"
+    digest = hashlib.sha256()
+    asset_paths = [app_settings.FRONTEND_DIR / "index.html"]
+    for directory in ("css", "js", "locales"):
+        root = app_settings.FRONTEND_DIR / directory
+        if root.exists():
+            asset_paths.extend(path for path in root.rglob("*") if path.is_file())
+    for path in sorted(asset_paths):
+        try:
+            stat = path.stat()
+        except OSError:
+            continue
+        digest.update(str(path.relative_to(app_settings.FRONTEND_DIR)).encode("utf-8"))
+        digest.update(f":{stat.st_mtime_ns}:{stat.st_size}".encode("ascii"))
+    return "dev-" + digest.hexdigest()[:12]
+
+
+def immutable_asset_cache_enabled():
+    """Whether asset URLs are tied to an explicit immutable build version."""
+    return bool(os.getenv("ASSET_VERSION") or os.getenv("VERCEL_GIT_COMMIT_SHA"))
 
 
 def public_tool_ids():

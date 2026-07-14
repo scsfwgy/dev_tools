@@ -4,6 +4,7 @@
   const STORAGE_THEME = "devtools_theme";
   const STORAGE_MENU = "devtools_menu_collapsed";
   const STORAGE_FAVORITES = "devtools_favorites";
+  const APP_ASSET_VERSION = new URL(document.currentScript.src, window.location.href).searchParams.get("v") || "0";
   let siteUrl = "https://dev.tools24.uk";
 
   let locale = {};
@@ -68,7 +69,7 @@
   let seoMeta = {};
 
   function loadToolManifest() {
-    return fetch("/api/tool-manifest")
+    return fetch("/api/tool-manifest?v=" + encodeURIComponent(APP_ASSET_VERSION))
       .then(function (response) {
         if (!response.ok) throw new Error("HTTP " + response.status);
         return response.json();
@@ -204,7 +205,7 @@
   // ── locale ──
   async function loadLocale(lang) {
     try {
-      const res = await fetch(`/locales/${lang}.json`);
+      const res = await fetch(`/locales/${lang}.json?v=${encodeURIComponent(APP_ASSET_VERSION)}`);
       locale = await res.json();
       window.__locale = locale;
       window.__t = t;
@@ -612,6 +613,11 @@
       MortgageTool.init(el);
       return;
     }
+    if (activeMenuId === "exchange" && typeof ExchangeTool !== "undefined") {
+      el.innerHTML = "";
+      ExchangeTool.init(el);
+      return;
+    }
     if (activeMenuId === "focus" && typeof FocusTool !== "undefined") {
       el.innerHTML = "";
       FocusTool.init(el);
@@ -721,7 +727,7 @@
   var HOME_CATEGORIES = [
     { id: "all", tools: [] },
     { id: "files", tools: ["image", "converter", "fileinfo", "markdown", "diff", "text", "content"] },
-    { id: "conversion", tools: ["timestamp", "unitconvert", "tax", "mortgage"] },
+    { id: "conversion", tools: ["timestamp", "unitconvert", "tax", "mortgage", "exchange"] },
     { id: "productivity", tools: ["focus"] },
     { id: "data", tools: ["json", "format", "regex", "http", "jwt"] },
     { id: "encoding", tools: ["encoder", "base64", "crypto", "qrcode"] },

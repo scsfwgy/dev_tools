@@ -26,6 +26,14 @@ _COUNTER_PATH = Path("/tmp/visit_count.json") if Path("/tmp").exists() else BACK
 _counter_lock = threading.Lock()
 _TOOL_CLICK_KEY = "tool_clicks"
 
+_EXCHANGE_RATE_URL = "https://api.frankfurter.dev/v2/rates"
+_EXCHANGE_CURRENCY_URL = "https://api.frankfurter.dev/v2/currencies"
+_EXCHANGE_RATE_CACHE_KEY = "exchange_rates:v1"
+_EXCHANGE_RATE_CACHE_TTL = 24 * 3600
+_EXCHANGE_RATE_STALE_TTL = 7 * 24 * 3600
+_EXCHANGE_RATE_CACHE = {"payload": None, "expires_at": 0.0}
+_EXCHANGE_RATE_LOCK = threading.Lock()
+
 _DEEPSEEK_KEY = os.getenv("DEV_TOOLS_DEEPSEEK_API_KEY", "")
 _DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
 

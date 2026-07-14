@@ -6,6 +6,8 @@ from unittest.mock import Mock
 import requests
 
 from app import TOOLS, TOOL_REGISTRY, content_last_modified, public_tool_ids
+from routes import exchange_rates as exchange_rates_route
+from routes import site as site_route
 
 
 def assert_tool_is_lazy_loaded(frontend_dir, filename):
@@ -21,6 +23,122 @@ def test_health_and_ip_routes(client):
     assert health.status_code == 200
     assert health.get_json() == {"status": "ok"}
     assert ip.get_json() == {"ip": "203.0.113.10"}
+
+
+def test_exchange_rate_tool_is_registered_and_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    exchange_script = client.get("/js/exchange-tool.js").get_data(as_text=True)
+
+    assert TOOL_REGISTRY["exchange"]["processing"] == "hybrid"
+    assert TOOL_REGISTRY["exchange"]["indexable"] is True
+    assert zh_locale["menu"]["exchange"] == "汇率计算"
+    assert en_locale["menu"]["exchange"] == "Exchange Rates"
+    assert zh_locale["exchange"]["currencies"]["KRW"] == "韩元"
+    assert zh_locale["exchange"]["recommendedCurrencies"] == "常用币种"
+    assert en_locale["exchange"]["searchCurrency"] == "Search by code, name or symbol…"
+    assert "new Intl.DisplayNames" in exchange_script
+    assert "exchange-picker-search" in exchange_script
+    assert "exchange.recommendedCurrencies" in exchange_script
+    assert 'typeof ExchangeTool !== "undefined"' in app_script
+    assert '"mortgage", "exchange"' in app_script
+    assert_tool_is_lazy_loaded(frontend_dir, "exchange-tool.js")
+    assert 'var reverseRate = oneRate === null ? null : 1 / oneRate;' in exchange_script
+    assert 'exchange-rate-reverse' in exchange_script
+
+
+def test_exchange_rate_endpoint_normalizes_and_caches_remote_data(client, monkeypatch):
+    currency_codes = [
+        "EUR", "CNY", "USD", "JPY", "KRW", "HKD", "GBP", "AUD", "CAD", "SGD",
+        "CHF", "THB", "AED", "AFN", "ALL", "AMD", "ANG", "ARS", "BAM", "BDT",
+        "BGN", "BHD", "BIF", "BND", "BOB",
+    ]
+    rows = [
+        {"date": "2026-07-13", "base": "EUR", "quote": code, "rate": index + 1.0}
+        for index, code in enumerate(currency_codes)
+    ]
+    rate_response = Mock()
+    rate_response.raise_for_status.return_value = None
+    rate_response.json.return_value = rows
+    currency_response = Mock()
+    currency_response.raise_for_status.return_value = None
+    currency_response.json.return_value = [
+        {"iso_code": code, "name": f"Currency {code}", "symbol": code}
+        for code in currency_codes
+    ]
+    remote_get = Mock(side_effect=[rate_response, currency_response])
+    monkeypatch.setattr(exchange_rates_route.requests, "get", remote_get)
+    monkeypatch.setattr(exchange_rates_route.cache_store, "cache_get", lambda _key: None)
+    cache_set = Mock(return_value=True)
+    monkeypatch.setattr(exchange_rates_route.cache_store, "cache_set", cache_set)
+    monkeypatch.setitem(exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE, "payload", None)
+    monkeypatch.setitem(exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE, "expires_at", 0.0)
+
+    first = client.get("/api/exchange-rates")
+    second = client.get("/api/exchange-rates")
+
+    assert first.status_code == 200
+    assert first.get_json()["rates"]["EUR"] == 1.0
+    assert first.get_json()["rates"]["CNY"] > 0
+    assert len(first.get_json()["currencies"]) == len(currency_codes)
+    assert first.get_json()["currencies"][0]["code"] == "AED"
+    assert first.get_json()["date"] == "2026-07-13"
+    assert first.get_json()["cached"] is False
+    assert second.get_json()["cached"] is True
+    assert remote_get.call_count == 2
+    cache_set.assert_called_once()
+
+
+def test_exchange_rate_endpoint_uses_stale_local_cache_on_timeout(client, monkeypatch):
+    currency_codes = [
+        "EUR", "CNY", "USD", "JPY", "KRW", "HKD", "GBP", "AUD", "CAD", "SGD",
+        "CHF", "THB", "AED", "AFN", "ALL", "AMD", "ANG", "ARS", "BAM", "BDT",
+    ]
+    payload = {
+        "date": "2026-07-12",
+        "base": "EUR",
+        "rates": {code: 1.0 for code in currency_codes},
+        "currencies": [{"code": code, "name": code, "symbol": code} for code in currency_codes],
+        "fetched_at": exchange_rates_route.time.time(),
+    }
+    monkeypatch.setitem(exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE, "payload", payload)
+    monkeypatch.setitem(exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE, "expires_at", 0.0)
+    monkeypatch.setattr(exchange_rates_route.cache_store, "cache_get", lambda _key: None)
+    monkeypatch.setattr(exchange_rates_route.requests, "get", Mock(side_effect=requests.exceptions.Timeout()))
+
+    response = client.get("/api/exchange-rates")
+
+    assert response.status_code == 200
+    assert response.get_json()["stale"] is True
+
+
+def test_exchange_rate_shared_cache_refreshes_daily_and_keeps_stale_fallback(client, monkeypatch):
+    currency_codes = [
+        "EUR", "CNY", "USD", "JPY", "KRW", "HKD", "GBP", "AUD", "CAD", "SGD",
+        "CHF", "THB", "AED", "AFN", "ALL", "AMD", "ANG", "ARS", "BAM", "BDT",
+    ]
+    payload = {
+        "date": "2026-07-12",
+        "base": "EUR",
+        "rates": {code: 1.0 for code in currency_codes},
+        "currencies": [{"code": code, "name": code, "symbol": code} for code in currency_codes],
+        "fetched_at": exchange_rates_route.time.time() - exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE_TTL - 1,
+    }
+    monkeypatch.setitem(exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE, "payload", None)
+    monkeypatch.setitem(exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE, "expires_at", 0.0)
+    monkeypatch.setattr(exchange_rates_route.cache_store, "cache_get", lambda _key: json.dumps(payload))
+    remote_get = Mock(side_effect=requests.exceptions.Timeout())
+    monkeypatch.setattr(exchange_rates_route.requests, "get", remote_get)
+
+    response = client.get("/api/exchange-rates")
+
+    assert exchange_rates_route.app_settings._EXCHANGE_RATE_CACHE_TTL == 24 * 3600
+    assert response.status_code == 200
+    assert response.get_json()["cached"] is True
+    assert response.get_json()["stale"] is True
+    remote_get.assert_called_once()
 
 
 def test_favorites_are_localized_and_wired(client):
@@ -244,7 +362,7 @@ def test_canonical_routes_redirect_and_api_is_not_indexed(client):
     assert api.headers["X-Robots-Tag"] == "noindex, nofollow"
 
 
-def test_public_cache_headers_and_deferred_analytics(client):
+def test_public_cache_headers_and_deferred_analytics(client, monkeypatch):
     index = client.get("/zh/")
     css = client.get("/css/app.css")
     locale = client.get("/locales/zh-CN.json")
@@ -252,9 +370,9 @@ def test_public_cache_headers_and_deferred_analytics(client):
     index_template = (Path(__file__).resolve().parents[2] / "frontend" / "index.html").read_text()
 
     assert "s-maxage=3600" in index.headers["Cache-Control"]
-    assert css.headers["Cache-Control"] == "public, max-age=31536000, immutable"
-    assert "s-maxage=86400" in locale.headers["Cache-Control"]
-    assert "stale-while-revalidate=86400" in manifest.headers["Cache-Control"]
+    assert css.headers["Cache-Control"] == "no-store"
+    assert locale.headers["Cache-Control"] == "no-store"
+    assert manifest.headers["Cache-Control"] == "no-store"
     assert "requestIdleCallback(loadAnalytics" in index_template
     assert '<script async src="https://www.googletagmanager.com/' not in index_template
 
@@ -270,6 +388,33 @@ def test_public_cache_headers_and_deferred_analytics(client):
     assert scripted, "expected lazy-loaded tool scripts in manifest"
     assert all(tool["script"].endswith(f"?v={version}") for tool in scripted)
     assert all(tool["script"].count("?") == 1 for tool in scripted)  # 不出现双 ?v=
+
+    monkeypatch.setenv("VERCEL_GIT_COMMIT_SHA", "1234567890abcdef")
+    deployed = client.get("/zh/").get_data(as_text=True)
+    deployed_css = client.get("/css/app.css")
+    assert '/css/app.css?v=12345678"' in deployed
+    assert deployed_css.headers["Cache-Control"] == "public, max-age=31536000, immutable"
+
+
+def test_local_asset_version_changes_for_uncommitted_edits(tmp_path, monkeypatch):
+    frontend = tmp_path / "frontend"
+    (frontend / "js").mkdir(parents=True)
+    (frontend / "css").mkdir()
+    (frontend / "locales").mkdir()
+    (frontend / "index.html").write_text("index", encoding="utf-8")
+    script = frontend / "js" / "app.js"
+    script.write_text("one", encoding="utf-8")
+
+    monkeypatch.delenv("ASSET_VERSION", raising=False)
+    monkeypatch.delenv("VERCEL_GIT_COMMIT_SHA", raising=False)
+    monkeypatch.setattr(site_route.app_settings, "FRONTEND_DIR", frontend)
+    first = site_route.asset_version()
+    script.write_text("a different local edit", encoding="utf-8")
+    second = site_route.asset_version()
+
+    assert first.startswith("dev-")
+    assert second.startswith("dev-")
+    assert first != second
 
 
 def test_tool_registry_routes_and_sitemap_stay_in_sync(client):
@@ -320,7 +465,8 @@ def test_processing_badges_distinguish_local_hybrid_and_server_tools(client):
     assert zh_locale["toolHeader"]["processing"]["local"] == "浏览器本地处理 · 数据不上传"
     assert zh_locale["toolHeader"]["processing"]["hybrid"] == "混合处理 · 部分数据请求服务端"
     assert zh_locale["toolHeader"]["processing"]["server"] == "服务端处理 · 数据会发送到服务器"
-    assert 'fetch("/api/tool-manifest")' in app_script
+    assert 'fetch("/api/tool-manifest?v=" + encodeURIComponent(APP_ASSET_VERSION))' in app_script
+    assert 'fetch(`/locales/${lang}.json?v=${encodeURIComponent(APP_ASSET_VERSION)}`)' in app_script
     assert "json-tool.js" not in app_script
 
 

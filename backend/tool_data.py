@@ -776,6 +776,32 @@ TOOLS = {
             ],
         },
     },
+    "exchange": {
+        "zh": {
+            "name": "汇率计算器",
+            "title": "汇率计算器 - 人民币美元日元韩元港币多币种换算 | Tools24",
+            "description": "在线汇率计算器，支持百余种当前可用货币搜索选择，人民币、美元、欧元、日元、韩元、港币等常见币种推荐，并可同时换算和多结果对比。",
+            "keywords": "汇率计算,货币换算,人民币兑美元,美元汇率,日元换算,韩元换算,港币换算,多币种对比",
+            "intro": "输入金额，搜索选择任意支持的基准货币，并同时对比多个目标货币；人民币、美元、欧元、日元、韩元和港币等常用币种置顶推荐。",
+            "features": ["百余种货币动态目录", "代码、名称和符号搜索", "常用币种置顶推荐", "多个换算结果同时对比", "参考汇率日期与本地历史"],
+            "faq": [
+                ("汇率是实时交易价格吗？", "不是。本工具使用央行和机构发布的每日参考汇率，适合估算，不代表银行、支付平台或外汇市场的实时成交价。"),
+                ("为什么实际兑换金额不同？", "银行和支付平台通常会加入点差、手续费或自己的牌价，因此实际到账金额可能与参考换算结果不同。"),
+            ],
+        },
+        "en": {
+            "name": "Exchange Rate Calculator",
+            "title": "Exchange Rate Calculator - Compare CNY USD JPY KRW HKD | Tools24",
+            "description": "Search and select from over a hundred currently available currencies, with popular CNY, USD, EUR, JPY, KRW and HKD recommendations and side-by-side comparisons.",
+            "keywords": "exchange rate calculator,currency converter,CNY to USD,USD exchange rate,JPY converter,KRW converter,HKD converter,multi currency comparison",
+            "intro": "Enter an amount, search for any supported base currency, and compare multiple targets side by side, with popular currencies pinned first.",
+            "features": ["Dynamic directory of 100+ currencies", "Search by code, name or symbol", "Popular currency recommendations", "Side-by-side comparisons", "Reference date and local history"],
+            "faq": [
+                ("Are these live trading rates?", "No. The tool uses daily reference rates published by central banks and institutions. They are useful for estimates, not live market execution."),
+                ("Why is the amount from my bank different?", "Banks and payment providers may apply spreads, fees or their own quoted rates, so the final amount can differ from this reference conversion."),
+            ],
+        },
+    },
     "area-search": {
         "zh": {
             "name": "地区搜索",
@@ -845,6 +871,7 @@ TOOL_REGISTRY = {
     "text": {"order": 210, "icon": "code", "script": "/js/text-tool.js?v=20260710a", "global": "TextTool", "processing": "local", "indexable": True},
     "tax": {"order": 220, "icon": "dollar", "script": "/js/tax-tool.js?v=20260710d", "global": "TaxTool", "processing": "local", "indexable": True},
     "mortgage": {"order": 230, "icon": "home", "script": "/js/mortgage-tool.js?v=20260710d", "global": "MortgageTool", "processing": "local", "indexable": True},
+    "exchange": {"order": 232, "icon": "dollar", "script": "/js/exchange-tool.js", "global": "ExchangeTool", "processing": "hybrid", "indexable": True},
     "focus": {"order": 235, "icon": "target", "script": "/js/focus-tool.js", "global": "FocusTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js?v=20260711e", "global": "ConverterTool", "processing": "local", "indexable": True},
