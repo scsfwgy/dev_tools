@@ -921,6 +921,7 @@
     "clickToCopy": "点击复制",
     "copied": "已复制",
     "categories": {
+      "all": "全部",
       "quick": "快速开始",
       "session": "会话管理",
       "automation": "自动化",

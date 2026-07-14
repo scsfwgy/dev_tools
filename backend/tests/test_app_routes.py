@@ -730,6 +730,9 @@ def test_ai_tool_uses_verified_commands_categories_and_comparison(client):
     assert "COMPARISON" in script_text
     assert "data-ai-product" in script_text
     assert "data-ai-category" in script_text
+    assert 'activeCategories = { claude: "all", codex: "all" }' in script_text
+    assert 'categories: ["all", "quick"' in script_text
+    assert 'category === "all" || item.category === category' in script_text
     assert "claude mcp list" in script_text
     assert "claude --dangerously-skip-permissions -r" in script_text
     assert "codex review --uncommitted" in script_text
@@ -744,6 +747,8 @@ def test_ai_tool_uses_verified_commands_categories_and_comparison(client):
     index_html = (frontend_dir / "index.html").read_text()
 
     assert zh_locale["ai"]["comparison"] == "功能对照"
+    assert zh_locale["ai"]["categories"]["all"] == "全部"
+    assert en_locale["ai"]["categories"]["all"] == "All"
     assert en_locale["ai"]["categories"]["review"] == "Code Review"
     assert_tool_is_lazy_loaded(frontend_dir, "ai-tool.js")
 

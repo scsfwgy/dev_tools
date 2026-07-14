@@ -1,7 +1,7 @@
 // AI Tool — verified Claude Code and Codex CLI reference.
 var AiTool = (function () {
   var activeProduct = "claude";
-  var activeCategories = { claude: "quick", codex: "quick" };
+  var activeCategories = { claude: "all", codex: "all" };
 
   function t(key) { return (window.__t && window.__t(key)) || key; }
   function currentLang() { return document.documentElement.lang.toLowerCase().indexOf("en") === 0 ? "en" : "zh"; }
@@ -21,7 +21,7 @@ var AiTool = (function () {
         ["CLI Reference", "https://code.claude.com/docs/en/cli-reference"],
         ["Commands", "https://code.claude.com/docs/en/commands"],
       ],
-      categories: ["quick", "session", "automation", "safety", "extensions", "interactive"],
+      categories: ["all", "quick", "session", "automation", "safety", "extensions", "interactive"],
       commands: [
         { category:"quick", command:"claude", example:"claude", descZh:"启动交互会话", descEn:"Start an interactive session", noteZh:"在项目目录运行，读取项目上下文和 CLAUDE.md。", noteEn:"Run inside a project to load project context and CLAUDE.md." },
         { category:"quick", command:"claude \"<prompt>\"", example:"claude \"解释这个项目的认证流程\"", exampleEn:"claude \"Explain this project's authentication flow\"", descZh:"带初始任务启动交互会话", descEn:"Start interactively with an initial task", noteZh:"适合直接进入明确任务。", noteEn:"Useful when the first task is already known." },
@@ -73,7 +73,7 @@ var AiTool = (function () {
         ["CLI Repository", "https://github.com/openai/codex"],
         ["Codex Docs", "https://developers.openai.com/codex/cli"],
       ],
-      categories: ["quick", "session", "automation", "safety", "extensions", "review"],
+      categories: ["all", "quick", "session", "automation", "safety", "extensions", "review"],
       commands: [
         { category:"quick", command:"codex [prompt]", example:"codex \"解释这个项目的认证流程\"", exampleEn:"codex \"Explain this project's authentication flow\"", descZh:"启动交互会话", descEn:"Start an interactive session", noteZh:"无提示词时直接进入交互界面。", noteEn:"Omit the prompt to open the interactive interface directly." },
         { category:"quick", command:"codex exec [prompt]", example:"codex exec \"修复失败的测试\"", exampleEn:"codex exec \"Fix the failing tests\"", descZh:"非交互执行任务", descEn:"Run a task non-interactively", noteZh:"适合脚本、CI 和明确的一次性任务。", noteEn:"Useful for scripts, CI, and bounded one-shot tasks." },
@@ -146,7 +146,7 @@ var AiTool = (function () {
   function buildCommandTable(productId) {
     var product = PRODUCTS[productId];
     var category = activeCategories[productId];
-    var rows = product.commands.filter(function (item) { return item.category === category; }).map(function (item) {
+    var rows = product.commands.filter(function (item) { return category === "all" || item.category === category; }).map(function (item) {
       var rowClass = item.dangerous ? ' class="ai-danger-row"' : '';
       var example = currentLang() === "en" && item.exampleEn ? item.exampleEn : item.example;
       return '<tr' + rowClass + ' data-search="' + escapeHtml([item.command, item.example, item.exampleEn || "", item.descZh, item.descEn, item.noteZh, item.noteEn].join(' ').toLowerCase()) + '">' +

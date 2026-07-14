@@ -921,6 +921,7 @@
     "clickToCopy": "Click to copy",
     "copied": "Copied",
     "categories": {
+      "all": "All",
       "quick": "Quick Start",
       "session": "Sessions",
       "automation": "Automation",
