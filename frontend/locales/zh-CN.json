@@ -1339,9 +1339,6 @@
     }
   },
   "color": {
-    "tabsLabel": "颜色工具视图",
-    "converterTab": "颜色转换",
-    "opacityTab": "透明度转换",
     "opacityTitle": "透明度与不透明度",
     "opacityHint": "输入任意一项即可同步换算，并结合当前颜色生成 Web、CSS 与 Android 常用格式。",
     "opacityLabel": "不透明度（Opacity）",

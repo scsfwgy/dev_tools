@@ -1339,9 +1339,6 @@
     }
   },
   "color": {
-    "tabsLabel": "Color tool views",
-    "converterTab": "Color Converter",
-    "opacityTab": "Opacity Converter",
     "opacityTitle": "Opacity and transparency",
     "opacityHint": "Enter either value to keep both in sync and generate common Web, CSS and Android formats for the current color.",
     "opacityLabel": "Opacity",

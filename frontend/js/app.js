@@ -4,6 +4,7 @@
   const STORAGE_THEME = "devtools_theme";
   const STORAGE_MENU = "devtools_menu_collapsed";
   const STORAGE_FAVORITES = "devtools_favorites";
+  const STORAGE_ANONYMOUS_ID = "devtools_anonymous_id";
   const APP_ASSET_VERSION = new URL(document.currentScript.src, window.location.href).searchParams.get("v") || "0";
   let siteUrl = "https://dev.tools24.uk";
 
@@ -44,6 +45,18 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tool_id: toolId }),
     }).catch(function () {}); // fire-and-forget
+  }
+
+  function getAnonymousId() {
+    var id = localStorage.getItem(STORAGE_ANONYMOUS_ID);
+    if (id) return id;
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      id = window.crypto.randomUUID();
+    } else {
+      id = "anon-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
+    }
+    localStorage.setItem(STORAGE_ANONYMOUS_ID, id);
+    return id;
   }
 
   // ── 菜单定义 ──
@@ -177,7 +190,11 @@
 
   async function incrementVisitCount() {
     try {
-      const res = await fetch("/api/visits/increment", { method: "POST" });
+      const res = await fetch("/api/visits/increment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ anonymous_id: getAnonymousId() }),
+      });
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
       if (!data || typeof data.count !== "number") throw new Error("Invalid visit increment payload");

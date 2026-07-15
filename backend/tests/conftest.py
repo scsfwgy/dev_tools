@@ -9,6 +9,7 @@ def isolate_external_state(monkeypatch, tmp_path):
 
     monkeypatch.setattr(cache_store, "is_enabled", lambda: False)
     monkeypatch.setattr(app_settings, "_COUNTER_PATH", tmp_path / "visit_count.json")
+    monkeypatch.setattr(app_settings, "_UNIQUE_VISIT_PATH", tmp_path / "unique_visits.json")
     monkeypatch.setattr(wishes_service, "_WISHES_PATH", tmp_path / "wishes.json")
     monkeypatch.setenv("WISH_ADMIN_TOKEN", "test-admin-token")
 

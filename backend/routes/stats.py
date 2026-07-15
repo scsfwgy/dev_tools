@@ -1,7 +1,10 @@
 """Visit and tool stats routes."""
+import hashlib
 import html
 import json
+import re
 import time
+from datetime import date, timedelta
 
 from flask import Blueprint, Response, jsonify, request
 
@@ -12,6 +15,8 @@ from tool_data import TOOLS
 from routes.content import _list_contents, _load_content
 
 stats_bp = Blueprint("stats", __name__, url_prefix="/api")
+
+_ANONYMOUS_ID_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
 
 
 def _read_counter():
@@ -26,6 +31,83 @@ def _read_counter():
 def _write_counter(count):
     app_settings._COUNTER_PATH.parent.mkdir(parents=True, exist_ok=True)
     app_settings._COUNTER_PATH.write_text(json.dumps({"count": count}))
+
+
+def _last_days(days=30):
+    today = date.today()
+    return [(today - timedelta(days=offset)).isoformat() for offset in range(days - 1, -1, -1)]
+
+
+def _unique_visit_key(day):
+    return app_settings._UNIQUE_VISIT_KEY_PREFIX + day
+
+
+def _hash_anonymous_id(anonymous_id):
+    anonymous_id = str(anonymous_id or "").strip()
+    if not _ANONYMOUS_ID_RE.match(anonymous_id):
+        return ""
+    return hashlib.sha256(anonymous_id.encode("utf-8")).hexdigest()
+
+
+def _read_unique_visits():
+    try:
+        if app_settings._UNIQUE_VISIT_PATH.exists():
+            data = json.loads(app_settings._UNIQUE_VISIT_PATH.read_text())
+            if isinstance(data, dict):
+                return {str(day): list(values) for day, values in data.items() if isinstance(values, list)}
+    except Exception:
+        pass
+    return {}
+
+
+def _write_unique_visits(data):
+    app_settings._UNIQUE_VISIT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    app_settings._UNIQUE_VISIT_PATH.write_text(json.dumps(data, ensure_ascii=False, sort_keys=True))
+
+
+def _cleanup_unique_visits(data):
+    keep_days = set(_last_days(30))
+    return {
+        day: sorted({str(value) for value in values if isinstance(value, str)})
+        for day, values in data.items()
+        if day in keep_days
+    }
+
+
+def _record_unique_visit(anonymous_id):
+    digest = _hash_anonymous_id(anonymous_id)
+    if not digest:
+        return None
+    day = date.today().isoformat()
+    if cache_store.is_enabled():
+        key = _unique_visit_key(day)
+        added = cache_store.cache_sadd(key, digest)
+        if added == 1:
+            cache_store.cache_expire(key, app_settings._UNIQUE_VISIT_TTL)
+            cache_store.cache_hincrby(app_settings._UNIQUE_VISIT_DAILY_COUNTS_KEY, day)
+        return {"day": day, "count": None, "new": added == 1}
+    with app_settings._unique_visit_lock:
+        data = _cleanup_unique_visits(_read_unique_visits())
+        users = set(data.get(day, []))
+        before = len(users)
+        users.add(digest)
+        data[day] = sorted(users)
+        _write_unique_visits(data)
+    return {"day": day, "count": len(users), "new": len(users) > before}
+
+
+def _unique_visit_series():
+    days = _last_days(30)
+    if cache_store.is_enabled():
+        counts = cache_store.cache_hgetall(app_settings._UNIQUE_VISIT_DAILY_COUNTS_KEY)
+        return [
+            {"date": day, "users": int(counts.get(day, 0) or 0)}
+            for day in days
+        ]
+    with app_settings._unique_visit_lock:
+        data = _cleanup_unique_visits(_read_unique_visits())
+        _write_unique_visits(data)
+    return [{"date": day, "users": len(data.get(day, []))} for day in days]
 
 
 @stats_bp.route("/visits")
@@ -47,11 +129,21 @@ def visits_increment():
     if cache_store.is_enabled():
         count = cache_store.cache_incr(app_settings._VISIT_KEY)
         if count is not None:
-            return jsonify({"count": count})
+            payload = {"count": count}
+            unique_visit = _record_unique_visit((request.get_json(silent=True) or {}).get("anonymous_id"))
+            if unique_visit:
+                payload["unique_users_today"] = unique_visit["count"]
+                payload["is_new_daily_user"] = unique_visit["new"]
+            return jsonify(payload)
     with app_settings._counter_lock:
         count = _read_counter() + 1
         _write_counter(count)
-    return jsonify({"count": count})
+    payload = {"count": count}
+    unique_visit = _record_unique_visit((request.get_json(silent=True) or {}).get("anonymous_id"))
+    if unique_visit:
+        payload["unique_users_today"] = unique_visit["count"]
+        payload["is_new_daily_user"] = unique_visit["new"]
+    return jsonify(payload)
 
 
 @stats_bp.route("/tool-click", methods=["POST"])
@@ -75,8 +167,26 @@ def tool_stats():
         for rank, (tid, count) in enumerate(sorted_stats, 1):
             name = TOOLS.get(tid, {}).get("zh", {}).get("name", tid)
             tool_rows += f'<tr><td>{rank}</td><td>{html.escape(name)}</td><td><code>{html.escape(tid)}</code></td><td>{count}</td></tr>'
-        visit_count = cache_store.cache_get("visit_count") or "0"
+        visit_count = cache_store.cache_get(app_settings._VISIT_KEY)
+        if visit_count is None:
+            visit_count = str(_read_counter())
         total_clicks = sum(stats.values())
+        user_series = _unique_visit_series()
+        today_users = user_series[-1]["users"] if user_series else 0
+        month_user_days = sum(item["users"] for item in user_series)
+        max_users = max([item["users"] for item in user_series] + [1])
+        user_bars = ""
+        for item in user_series:
+            users = item["users"]
+            height = max(3, round(users / max_users * 100)) if users else 3
+            value = users if users else ""
+            user_bars += (
+                f'<div class="uv-bar-item" title="{html.escape(item["date"])}：{users} 个唯一用户">'
+                f'<div class="uv-bar-value">{value}</div>'
+                f'<div class="uv-bar" style="height:{height}%"></div>'
+                f'<div class="uv-bar-label">{html.escape(item["date"][5:])}</div>'
+                f'</div>'
+            )
         tr_count = cache_store.cache_get("translate_count") or "0"
         tr_history = cache_store.cache_lrange("translate_history", 0, 49)
         ai_count = cache_store.cache_get("area_intro_count") or "0"
@@ -134,17 +244,27 @@ code{{color:#4fc3f7;font-size:.8rem}}
 .summary-card .num{{font-size:2rem;font-weight:700;color:var(--accent,#4fc3f7)}}
 .summary-card .label{{font-size:.75rem;color:#999;margin-top:2px}}
 .sub{{font-size:.7rem;color:#666}}
+.uv-chart{{height:180px;display:grid;grid-template-columns:repeat(30,minmax(12px,1fr));gap:6px;align-items:end;padding:16px 12px 10px;margin:10px 0 22px;background:#1a1a1a;border-radius:10px;border:1px solid #282828}}
+.uv-bar-item{{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0}}
+.uv-bar-value{{height:18px;font-size:.68rem;color:#aaa;font-variant-numeric:tabular-nums}}
+.uv-bar{{width:100%;max-width:20px;min-height:3px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#4fc3f7,#2c7be5)}}
+.uv-bar-label{{margin-top:6px;font-size:.62rem;color:#777;writing-mode:vertical-rl;line-height:1}}
 a{{text-decoration:none}}a:hover{{text-decoration:underline}}
 </style>
 <h1>📊 站点统计</h1>
 <div class="summary">
 <div class="summary-card"><div class="num">{visit_count}</div><div class="label">页面访问</div></div>
+<div class="summary-card"><div class="num">{today_users}</div><div class="label">今日用户</div></div>
+<div class="summary-card"><div class="num">{month_user_days}</div><div class="label">近30日用户天次</div></div>
 <div class="summary-card"><div class="num">{total_clicks}</div><div class="label">工具点击</div></div>
 <div class="summary-card"><div class="num">{len(sorted_stats)}</div><div class="label">工具总数</div></div>
 <div class="summary-card"><div class="num">{tr_count}</div><div class="label">翻译次数</div></div>
 <div class="summary-card"><div class="num">{len(content_ids)}</div><div class="label">内容生成</div></div>
 <div class="summary-card"><div class="num">{ai_count}</div><div class="label">地区介绍</div></div>
 </div>
+
+<h2>👤 每日唯一用户 <span class="sub">（匿名 UUID 去重，仅保留最近 30 天）</span></h2>
+<div class="uv-chart" aria-label="最近 30 天每日唯一用户柱状图">{user_bars}</div>
 
 <h2>🔥 工具点击排行 <span class="sub">（所有用户累计，Redis HINCRBY）</span></h2>
 <table><thead><tr><th>#</th><th>工具</th><th>ID</th><th>次数</th></tr></thead><tbody>{tool_rows}</tbody></table>

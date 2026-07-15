@@ -24,6 +24,11 @@ _AREA_INTRO_PROMPT = None
 _VISIT_KEY = "visit_count"
 _COUNTER_PATH = Path("/tmp/visit_count.json") if Path("/tmp").exists() else BACKEND_DIR / "config" / "visit_count.json"
 _counter_lock = threading.Lock()
+_UNIQUE_VISIT_KEY_PREFIX = "unique_visits:"
+_UNIQUE_VISIT_DAILY_COUNTS_KEY = "unique_visit_daily_counts"
+_UNIQUE_VISIT_TTL = 31 * 24 * 3600
+_UNIQUE_VISIT_PATH = Path("/tmp/unique_visits.json") if Path("/tmp").exists() else BACKEND_DIR / "config" / "unique_visits.json"
+_unique_visit_lock = threading.Lock()
 _TOOL_CLICK_KEY = "tool_clicks"
 
 _EXCHANGE_RATE_URL = "https://api.frankfurter.dev/v2/rates"

@@ -1,6 +1,7 @@
 """DevTools — Flask app."""
 import logging
 import os
+from time import perf_counter
 
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
@@ -39,6 +40,20 @@ app.register_blueprint(content_bp)
 app.register_blueprint(exchange_rates_bp)
 
 
+def _should_log_local_request() -> bool:
+    if app.config.get("TESTING"):
+        return False
+    if os.getenv("VERCEL"):
+        return False
+    return os.getenv("LOCAL_REQUEST_LOG", "1").lower() not in ("0", "false", "no", "off")
+
+
+@app.before_request
+def mark_request_start():
+    if _should_log_local_request():
+        request.environ["devtools_request_start"] = perf_counter()
+
+
 @app.after_request
 def prevent_api_indexing(response):
     if request.path.startswith("/api/"):
@@ -60,6 +75,11 @@ def prevent_api_indexing(response):
         or not request.path.startswith("/api/")
     ):
         response.headers["Cache-Control"] = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    if _should_log_local_request() and request.path.startswith("/api/"):
+        start = request.environ.get("devtools_request_start")
+        if start is not None:
+            duration_ms = (perf_counter() - start) * 1000
+            logger.info("%s %s -> %s %.1fms", request.method, request.path, response.status_code, duration_ms)
     return response
 
 

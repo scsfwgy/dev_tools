@@ -239,7 +239,7 @@ var ColorTool = (function () {
     element.textContent = message || "";
     element.classList.toggle("is-error", Boolean(error));
   }
-  function updateUi(updateInput) {
+  function updateUi(updateInput, skipOpacitySync) {
     var preview = document.getElementById("color-preview");
     var picker = document.getElementById("color-native-picker");
     var alpha = document.getElementById("color-alpha");
@@ -262,6 +262,9 @@ var ColorTool = (function () {
     }).join("");
     bindCopyButtons();
     setStatus(t("color.ready").replace("{format}", results[0].value), false);
+    if (!skipOpacitySync && document.getElementById("color-opacity-results")) {
+      renderOpacityResults(current.a * 100, false);
+    }
   }
   function applyInput() {
     var input = document.getElementById("color-input");
@@ -314,7 +317,7 @@ var ColorTool = (function () {
     if (transparencyInput) transparencyInput.classList.remove("is-invalid");
     if (slider) slider.value = String(opacityValue);
     if (status) { status.textContent = t("color.opacityReady").replace("{opacity}", opacityText(opacityValue)).replace("{transparency}", opacityText(transparency)); status.classList.remove("is-error"); }
-    if (syncColor) { current.a = opacityValue / 100; updateUi(true); }
+    if (syncColor) { current.a = opacityValue / 100; updateUi(true, true); }
     var results = opacityResults(opacityValue);
     var container = document.getElementById("color-opacity-results");
     if (container) {

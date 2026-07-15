@@ -3492,7 +3492,6 @@ a:hover {
 
 /* === 颜色转换 === */
 .color-tool { width: min(1040px, 100%); margin: 0 auto; padding-bottom: 42px; }
-.color-mode-tabs { margin-bottom: 14px; }
 .color-opacity-panel { margin-top: 42px; min-height: 320px; }
 .color-opacity-workbench {
   display: grid;

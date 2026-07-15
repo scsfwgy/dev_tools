@@ -752,15 +752,17 @@ def test_color_converter_is_registered_localized_and_lazy_loaded(client):
     assert '"EyeDropper" in window' in color_script
     assert "oklabToXyz" in color_script
     assert 'class="color-opacity-panel"' in color_script
+    assert "data-color-tab" not in color_script
+    assert "switchColorTab" not in color_script
     assert "function opacityResults(opacity)" in color_script
     assert 'id: "hexArgb"' in color_script
     assert 'id: "webHexa"' not in color_script
     assert "function toArgbHex(color)" in color_script
     assert 'id: "cssRgba"' in color_script
     assert "/js/android-tool.js" not in color_script
-    assert zh_locale["color"]["opacityTab"] == "透明度转换"
+    assert zh_locale["color"]["opacityTitle"] == "透明度与不透明度"
     assert zh_locale["color"]["opacityFormats"]["hexArgb"] == "HEX / ARGB（AARRGGBB）"
-    assert en_locale["color"]["opacityTab"] == "Opacity Converter"
+    assert en_locale["color"]["opacityTitle"] == "Opacity and transparency"
     assert_tool_is_lazy_loaded(frontend_dir, "color-tool.js")
 
 
@@ -803,6 +805,34 @@ def test_visit_counter_is_read_only_then_increments(client):
     assert client.get("/api/visits").get_json() == {"count": 0}
     assert client.post("/api/visits/increment").get_json() == {"count": 1}
     assert client.get("/api/visits").get_json() == {"count": 1}
+
+
+def test_anonymous_unique_users_are_deduped_and_rendered_in_admin_chart(client):
+    import app_settings
+
+    first_uid = "11111111-1111-4111-8111-111111111111"
+    second_uid = "22222222-2222-4222-8222-222222222222"
+
+    first = client.post("/api/visits/increment", json={"anonymous_id": first_uid}).get_json()
+    duplicate = client.post("/api/visits/increment", json={"anonymous_id": first_uid}).get_json()
+    second = client.post("/api/visits/increment", json={"anonymous_id": second_uid}).get_json()
+
+    assert first["unique_users_today"] == 1
+    assert first["is_new_daily_user"] is True
+    assert duplicate["unique_users_today"] == 1
+    assert duplicate["is_new_daily_user"] is False
+    assert second["unique_users_today"] == 2
+    assert second["is_new_daily_user"] is True
+    assert first_uid not in app_settings._UNIQUE_VISIT_PATH.read_text()
+
+    admin = client.get("/api/tool-stats?view=1&token=test-admin-token")
+    page = admin.get_data(as_text=True)
+
+    assert admin.status_code == 200
+    assert "每日唯一用户" in page
+    assert "匿名 UUID 去重，仅保留最近 30 天" in page
+    assert '<div class="num">2</div><div class="label">今日用户</div>' in page
+    assert 'class="uv-chart"' in page
 
 
 def test_translate_requires_api_key(client, monkeypatch):
