@@ -185,8 +185,7 @@ var TranslateTool = (function () {
     parent.innerHTML =
       '<div class="tr-tool">' +
       '  <div class="tr-header">' +
-      '    <h2 class="tr-title">' + t("translate.title") + '</h2>' +
-      '    <p class="tr-subtitle">' + t("translate.subtitle") + '</p>' +
+      '    <p class="tool-intro tr-subtitle">' + t("translate.subtitle") + '</p>' +
       '  </div>' +
       '  <div class="tr-input-wrap">' +
       '    <textarea id="tr-input" class="tr-textarea" placeholder="' + t("translate.placeholder") + '" rows="5"></textarea>' +

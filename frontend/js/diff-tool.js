@@ -6,6 +6,8 @@ var DiffTool = (function () {
   var MAX_LINES = 5000;
   var MAX_MATRIX_CELLS = 4000000;
   var lastComparison = null;
+  var immersive = false;
+  var controlsExpanded = false;
 
   function t(key) { return (window.__t && window.__t(key)) || key; }
 
@@ -24,46 +26,99 @@ var DiffTool = (function () {
   }
 
   function init(parent) {
+    deactivate();
     parent.innerHTML =
       '<div class="diff-tool">' +
       '  <div class="diff-toolbar">' +
+      '    <div class="diff-toolbar-controls">' +
       '    <button id="diff-run" class="jt-btn jt-btn-primary">' + t("diff.compare") + '</button>' +
       '    <button id="diff-swap" class="jt-btn">' + t("diff.swap") + '</button>' +
       '    <button id="diff-clear" class="jt-btn">' + t("diff.clear") + '</button>' +
       '    <label class="diff-option"><input id="diff-ignore-space" type="checkbox"> ' + t("diff.ignoreWhitespace") + '</label>' +
       '    <label class="diff-option"><input id="diff-ignore-case" type="checkbox"> ' + t("diff.ignoreCase") + '</label>' +
-      '    <label class="diff-view-label">' + t("diff.view") +
-      '      <select id="diff-view" class="diff-view-select"><option value="side">' + t("diff.sideBySide") + '</option><option value="inline">' + t("diff.inline") + '</option></select>' +
-      '    </label>' +
-      '    <span id="diff-msg" class="jt-msg" aria-live="polite"></span>' +
+      '    </div>' +
+      '    <span id="diff-msg" class="jt-msg diff-toolbar-message" aria-live="polite"></span>' +
+      '    <button id="diff-controls-toggle" class="jt-btn diff-controls-toggle" type="button" aria-expanded="false">' + t("diff.showControls") + '</button>' +
+      '    <button id="diff-immersive" class="jt-btn diff-immersive-toggle" type="button" aria-pressed="false">' + immersiveIcon(false) + '<span>' + t("diff.enterImmersive") + '</span></button>' +
       '  </div>' +
       '  <div class="diff-panes">' +
       renderInputPane("left", "original", "pasteOriginal") +
       renderInputPane("right", "modified", "pasteModified") +
       '  </div>' +
-      '  <div id="diff-result" class="diff-result"></div>' +
       '  <div id="diff-history" class="history-bar"></div>' +
       '</div>';
 
     document.getElementById("diff-run").addEventListener("click", runDiff);
     document.getElementById("diff-swap").addEventListener("click", swap);
     document.getElementById("diff-clear").addEventListener("click", clearAll);
-    document.getElementById("diff-view").addEventListener("change", rerenderLastComparison);
     document.getElementById("diff-ignore-space").addEventListener("change", runDiff);
     document.getElementById("diff-ignore-case").addEventListener("change", runDiff);
+    document.getElementById("diff-controls-toggle").addEventListener("click", toggleControls);
+    document.getElementById("diff-immersive").addEventListener("click", function () { setImmersive(!immersive); });
     document.getElementById("diff-left").addEventListener("blur", maybeSave);
     document.getElementById("diff-right").addEventListener("blur", maybeSave);
+    document.getElementById("diff-left-edit").addEventListener("click", enterEditMode);
+    document.getElementById("diff-right-edit").addEventListener("click", enterEditMode);
     bindFileInput("left");
     bindFileInput("right");
     renderHistory();
+    document.addEventListener("keydown", handleKeydown);
+  }
+
+  function immersiveIcon(active) {
+    return active
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>';
+  }
+
+  function setImmersive(enabled) {
+    immersive = Boolean(enabled);
+    if (!immersive) controlsExpanded = false;
+    document.body.classList.toggle("diff-immersive", immersive);
+    updateImmersiveUi();
+  }
+
+  function toggleControls() {
+    controlsExpanded = !controlsExpanded;
+    updateImmersiveUi();
+  }
+
+  function updateImmersiveUi() {
+    var tool = document.querySelector(".diff-tool");
+    var immersiveButton = document.getElementById("diff-immersive");
+    var controlsButton = document.getElementById("diff-controls-toggle");
+    if (!tool || !immersiveButton || !controlsButton) return;
+    tool.classList.toggle("controls-open", immersive && controlsExpanded);
+    immersiveButton.setAttribute("aria-pressed", String(immersive));
+    immersiveButton.innerHTML = immersiveIcon(immersive) + '<span>' + t(immersive ? "diff.exitImmersive" : "diff.enterImmersive") + '</span>';
+    controlsButton.setAttribute("aria-expanded", String(controlsExpanded));
+    controlsButton.textContent = t(controlsExpanded ? "diff.hideControls" : "diff.showControls");
+  }
+
+  function handleKeydown(event) {
+    if (event.key === "Escape" && immersive) {
+      event.preventDefault();
+      setImmersive(false);
+      var button = document.getElementById("diff-immersive");
+      if (button) button.focus();
+    }
+  }
+
+  function deactivate() {
+    immersive = false;
+    controlsExpanded = false;
+    document.body.classList.remove("diff-immersive");
+    document.removeEventListener("keydown", handleKeydown);
   }
 
   function renderInputPane(side, labelKey, placeholderKey) {
     return '    <div class="diff-pane">' +
       '      <div class="diff-pane-heading"><span class="diff-pane-label">' + t("diff." + labelKey) + '</span>' +
-      '        <label class="diff-file-button">' + t("diff.importFile") + '<input id="diff-' + side + '-file" type="file" hidden></label></div>' +
+      '        <span class="diff-pane-actions"><label class="diff-file-button">' + t("diff.importFile") + '<input id="diff-' + side + '-file" type="file" hidden></label>' +
+      '        <button id="diff-' + side + '-edit" class="jt-btn diff-edit-button hidden" type="button">' + t("diff.edit") + '</button></span></div>' +
       '      <span id="diff-' + side + '-name" class="diff-file-name"></span>' +
       '      <textarea id="diff-' + side + '" class="diff-textarea" spellcheck="false" placeholder="' + t("diff." + placeholderKey) + '"></textarea>' +
+      '      <div id="diff-' + side + '-preview" class="diff-pane-preview hidden" tabindex="0" role="region" aria-label="' + t("diff." + labelKey) + '"></div>' +
       '    </div>';
   }
 
@@ -111,7 +166,7 @@ var DiffTool = (function () {
   function runDiff() {
     var left = getLeft(), right = getRight();
     if (!left && !right) {
-      document.getElementById("diff-result").innerHTML = "";
+      enterEditMode();
       lastComparison = null;
       setMsg("", false);
       return;
@@ -122,7 +177,7 @@ var DiffTool = (function () {
     var options = getOptions();
     var leftLines = left.split("\n"), rightLines = right.split("\n");
     if (leftLines.length > MAX_LINES || rightLines.length > MAX_LINES || leftLines.length * rightLines.length > MAX_MATRIX_CELLS) {
-      document.getElementById("diff-result").innerHTML = "";
+      enterEditMode();
       lastComparison = null;
       setMsg(t("diff.comparisonTooLarge"), true);
       return;
@@ -131,13 +186,12 @@ var DiffTool = (function () {
     var rows = alignRows(result);
     var changed = rows.some(function (row) { return !row.equal; });
     lastComparison = { rows: rows, options: options };
+    rerenderLastComparison();
 
     if (!changed) {
-      document.getElementById("diff-result").innerHTML = '<div class="diff-empty">' + t("diff.identical") + '</div>';
       setMsg(t("diff.noChanges"), false);
       return;
     }
-    rerenderLastComparison();
   }
 
   function diffLines(left, right, options) {
@@ -203,12 +257,64 @@ var DiffTool = (function () {
 
   function rerenderLastComparison() {
     if (!lastComparison) return;
-    var view = document.getElementById("diff-view").value;
     var rows = lastComparison.rows;
-    document.getElementById("diff-result").innerHTML = view === "inline" ? renderInline(rows) : renderSideBySide(rows);
+    var panes = renderPanes(rows);
+    document.getElementById("diff-left-preview").innerHTML = panes.left;
+    document.getElementById("diff-right-preview").innerHTML = panes.right;
+    setPreviewMode(true);
+    bindPreviewScroll();
     var added = rows.filter(function (row) { return row.right !== null && !row.equal; }).length;
     var removed = rows.filter(function (row) { return row.left !== null && !row.equal; }).length;
     setMsg(t("diff.summary").replace("{a}", added).replace("{r}", removed), false);
+  }
+
+  function renderPanes(rows) {
+    var output = { left: [], right: [] };
+    rows.forEach(function (row) {
+      var highlighted = highlightPair(row.left, row.right);
+      ["left", "right"].forEach(function (side) {
+        var value = row[side];
+        var lineNumber = side === "left" ? row.lineL : row.lineR;
+        var className = row.equal ? "diff-eq" : (value === null ? "diff-blank" : (side === "left" ? "diff-rm" : "diff-add"));
+        var prefix = value === null || row.equal ? "" : (side === "left" ? "- " : "+ ");
+        output[side].push('<div class="diff-pane-line ' + className + '"><span class="diff-ln">' + lineNumber + '</span><span class="diff-txt">' + prefix + highlighted[side] + '</span></div>');
+      });
+    });
+    return {
+      left: '<div class="diff-pane-output">' + output.left.join("") + '</div>',
+      right: '<div class="diff-pane-output">' + output.right.join("") + '</div>',
+    };
+  }
+
+  function setPreviewMode(previewing) {
+    ["left", "right"].forEach(function (side) {
+      document.getElementById("diff-" + side).classList.toggle("hidden", previewing);
+      document.getElementById("diff-" + side + "-preview").classList.toggle("hidden", !previewing);
+      document.getElementById("diff-" + side + "-edit").classList.toggle("hidden", !previewing);
+      document.getElementById("diff-" + side + "-file").closest(".diff-file-button").classList.toggle("hidden", previewing);
+    });
+  }
+
+  function enterEditMode() {
+    var left = document.getElementById("diff-left");
+    if (!left) return;
+    setPreviewMode(false);
+    left.focus();
+  }
+
+  function bindPreviewScroll() {
+    var left = document.getElementById("diff-left-preview");
+    var right = document.getElementById("diff-right-preview");
+    var syncing = false;
+    function sync(source, target) {
+      if (syncing) return;
+      syncing = true;
+      target.scrollTop = source.scrollTop;
+      target.scrollLeft = source.scrollLeft;
+      syncing = false;
+    }
+    left.onscroll = function () { sync(left, right); };
+    right.onscroll = function () { sync(right, left); };
   }
 
   function renderSideBySide(rows) {
@@ -281,12 +387,14 @@ var DiffTool = (function () {
   }
 
   function clearAll() {
+    enterEditMode();
     ["left", "right"].forEach(function (side) {
       document.getElementById("diff-" + side).value = "";
       document.getElementById("diff-" + side + "-name").textContent = "";
       document.getElementById("diff-" + side + "-file").value = "";
     });
-    document.getElementById("diff-result").innerHTML = "";
+    document.getElementById("diff-left-preview").innerHTML = "";
+    document.getElementById("diff-right-preview").innerHTML = "";
     lastComparison = null;
     setMsg("", false);
   }
@@ -330,6 +438,7 @@ var DiffTool = (function () {
 
   return {
     init: init,
+    deactivate: deactivate,
     _test: { normalizeLine: normalizeLine, diffLines: diffLines, alignRows: alignRows, highlightPair: highlightPair },
   };
 })();

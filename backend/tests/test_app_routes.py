@@ -272,9 +272,24 @@ def test_json_error_location_examples_and_jwt_security_analysis(client):
     assert "function locateJsonError(" in json_script
     assert "function bindLineNumbers(" in json_script
     assert "jt-line-numbers" in json_script
-    assert "jt-error-context" in json_script
     assert "var EXAMPLES" in json_script
+    assert 'id="jt-fold"' in json_script
+    assert 'id="jt-analyze"' in json_script
+    assert 'option value="api"' in json_script
+    assert 'option value="config"' in json_script
+    assert 'option value="nested"' in json_script
+    assert "function toggleFoldedView()" in json_script
+    assert "function toggleAnalysisView()" in json_script
+    assert "function buildNode(value, showCounts)" in json_script
+    assert 'showCounts ? \'<span class="jt-count">\'' in json_script
+    assert 'class="jt-fold-placeholder">…' in json_script
+    assert 'isArray && !showCounts ? ""' in json_script
+    assert 'id="jt-output"' not in json_script
+    assert 'id="jt-pane-convert"' not in json_script
+    assert 'id="json-history"' not in json_script
     assert zh_locale["json"]["errorLocation"] == "第 {line} 行，第 {column} 列"
+    assert zh_locale["json"]["fold"] == "折叠"
+    assert zh_locale["json"]["analyze"] == "分析"
     assert "function renderTokenAnalysis(" in jwt_script
     assert "warningLongLifetime" in jwt_script
     assert "decodedNotVerified" in jwt_script
@@ -556,7 +571,21 @@ def test_search_query_seo_pages_and_local_tools_are_upgraded(client):
     assert "diff-ignore-space" in diff_script
     assert "renderSideBySide" in diff_script
     assert "highlightPair" in diff_script
+    assert 'id="diff-left-preview"' not in diff_script
+    assert '"-preview"' in diff_script
+    assert "function renderPanes(rows)" in diff_script
+    assert "function bindPreviewScroll()" in diff_script
+    assert 'id="diff-result"' not in diff_script
+    assert 'id="diff-immersive"' in diff_script
+    assert 'document.body.classList.toggle("diff-immersive", immersive)' in diff_script
+    assert 'event.key === "Escape" && immersive' in diff_script
     assert en_locale["diff"]["sideBySide"] == "Side by side"
+    assert en_locale["diff"]["enterImmersive"] == "Immersive compare"
+
+    app_css = (frontend_dir / "css" / "app.css").read_text()
+    assert "body.diff-immersive .content" in app_css
+    assert "body.diff-immersive .diff-toolbar-controls { display: none; }" in app_css
+    assert "body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls" in app_css
 
     json_page = client.get("/en/tool/json").get_data(as_text=True)
     assert "JSON Format Checker Online" in json_page
@@ -1145,10 +1174,28 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert "function shuffledNumbers(size)" in script_text
     assert "function handleNumber(event)" in script_text
     assert "function finishGame()" in script_text
-    assert 'id="focus-orbit-end"' in script_text
+    assert 'id="focus-orbit-end"' not in script_text
+    assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
     assert '{ id: "productivity", tools: ["focus"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
+
+
+def test_shared_tool_visual_contract_and_compact_headers(client):
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    converter_script = client.get("/js/converter-tool.js").get_data(as_text=True)
+    translate_script = client.get("/js/translate-tool.js").get_data(as_text=True)
+
+    assert ".hidden { display: none !important; }" in app_css
+    assert ".image-size-row .crypto-input { width: 100%; min-width: 0; }" in app_css
+    assert "#content button," in app_css
+    assert "min-height: 44px;" in app_css
+    assert 'button:focus-visible,' in app_css
+    assert '<div class="welcome-icon">💻</div>' not in app_script
+    assert '<h2 data-i18n="welcome.deviceInfo">' not in app_script
+    assert 't("converter.title")' not in converter_script
+    assert 't("translate.title")' not in translate_script

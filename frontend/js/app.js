@@ -474,6 +474,7 @@
   // ── 右侧内容 ──
   function renderContent() {
     stopClock();
+    if (activeMenuId !== "diff" && typeof DiffTool !== "undefined" && DiffTool.deactivate) DiffTool.deactivate();
     const el = document.getElementById("content");
     if (activeMenuId !== "home") {
       var headerToolId = activeMenuId;
@@ -551,11 +552,7 @@
     }
     if (activeMenuId === "device") {
       el.innerHTML = `
-        <div class="welcome">
-          <div class="welcome-icon">💻</div>
-          <h2 data-i18n="welcome.deviceInfo">设备信息</h2>
-          <p data-i18n="welcome.deviceSubtitle">查看当前浏览器与设备环境详情</p>
-        </div>`;
+        <p class="tool-intro" data-i18n="welcome.deviceSubtitle">查看当前浏览器与设备环境详情</p>`;
       mountDeviceInfo(el);
       applyLocale();
       return;

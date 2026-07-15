@@ -225,8 +225,6 @@ var FocusTool = (function () {
     container.querySelectorAll("[data-focus-size]").forEach(function (button) {
       button.addEventListener("click", function () {
         selectedSize = Number(this.dataset.focusSize);
-        var orbitEnd = byId("focus-orbit-end");
-        if (orbitEnd) orbitEnd.textContent = selectedSize * selectedSize;
         container.querySelectorAll("[data-focus-size]").forEach(function (item) {
           var active = Number(item.dataset.focusSize) === selectedSize;
           item.classList.toggle("is-active", active);
@@ -250,9 +248,7 @@ var FocusTool = (function () {
     mountVersion += 1;
     container = element;
     container.innerHTML = '<div class="focus-tool">' +
-      '<section class="focus-intro"><div><span class="focus-eyebrow">' + t("focus.eyebrow") + '</span>' +
-        '<h2>' + t("focus.headline") + '</h2><p>' + t("focus.subtitle") + '</p></div>' +
-        '<div class="focus-orbit" aria-hidden="true"><span>1</span><i></i><span id="focus-orbit-end">' + (selectedSize * selectedSize) + '</span></div></section>' +
+      '<section class="focus-intro"><h2>' + t("focus.headline") + '</h2><p>' + t("focus.subtitle") + '</p></section>' +
       '<section class="focus-level-section"><div class="focus-section-label">' + t("focus.levelLabel") + '</div>' +
         '<div class="focus-levels">' + levelButtons() + '</div></section>' +
       '<div class="focus-layout"><main class="focus-game-card">' +

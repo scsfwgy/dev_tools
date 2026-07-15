@@ -36,7 +36,7 @@ var ConverterTool = (function () {
     outputBlob = null;
     parent.innerHTML =
       '<div class="converter-tool">' +
-      '  <div class="converter-head"><h2>' + t("converter.title") + '</h2><p>' + t("converter.subtitle") + '</p>' +
+      '  <div class="converter-head"><p class="tool-intro">' + t("converter.subtitle") + '</p>' +
       '    <div class="converter-routes"><strong>' + t("converter.supportedRoutes") + '</strong><div class="converter-route-list">' + renderSupportedRoutes() + '</div></div>' +
       '    <details class="converter-compat"><summary>' + t("converter.compatibility") + '</summary>' + renderCompatibilityMatrix() + '</details>' +
       '    <div class="converter-examples"><strong>' + t("converter.examples") + '</strong><button class="jt-btn" data-converter-example="json">JSON → YAML</button><button class="jt-btn" data-converter-example="csv-json">CSV → JSON</button><button class="jt-btn" data-converter-example="md">Markdown → PDF</button><button class="jt-btn" data-converter-example="csv">CSV → XLSX</button><button class="jt-btn" data-converter-example="html">HTML → PDF</button></div>' +
