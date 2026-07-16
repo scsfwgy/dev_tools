@@ -13,7 +13,6 @@
   let currentTheme = localStorage.getItem(STORAGE_THEME) || "dark";
   let visitCountValue = null;
   let visitCountUnavailable = false;
-  var _clockTimer = null;
 
   function isLocalDevelopmentHost() {
     return ["localhost", "127.0.0.1", "::1", "[::1]"].includes(window.location.hostname);
@@ -399,7 +398,6 @@
     return { lang: null, menuId: "home", homeTab: "categories" };
   }
 
-  // ── device info helpers ──
   // ── global copy toast (top-center pill, auto-fade) ──
   function showCopyToast(msg) {
     var toast = document.createElement("div");
@@ -415,114 +413,9 @@
   }
   window.showCopyToast = showCopyToast;
 
-  function stopClock() {
-    if (_clockTimer) { clearInterval(_clockTimer); _clockTimer = null; }
-  }
-
-  function formatNow() {
-    var d = new Date();
-    var y = d.getFullYear();
-    var mon = String(d.getMonth() + 1).padStart(2, "0");
-    var day = String(d.getDate()).padStart(2, "0");
-    var hh = String(d.getHours()).padStart(2, "0");
-    var mm = String(d.getMinutes()).padStart(2, "0");
-    var ss = String(d.getSeconds()).padStart(2, "0");
-    var ms = String(d.getMilliseconds()).padStart(3, "0");
-    return y + "-" + mon + "-" + day + " " + hh + ":" + mm + ":" + ss + " " + ms;
-  }
-
-  function detectBrowser(ua) {
-    ua = ua || navigator.userAgent;
-    var m;
-    if ((m = ua.match(/Edg\/(\S+)/))) return "Edge " + m[1];
-    if ((m = ua.match(/Chrome\/(\S+)/))) return "Chrome " + m[1];
-    if ((m = ua.match(/Firefox\/(\S+)/))) return "Firefox " + m[1];
-    if ((m = ua.match(/Version\/(\S+).*Safari/))) return "Safari " + m[1];
-    return "Unknown";
-  }
-
-  function detectOS(ua) {
-    ua = ua || navigator.userAgent;
-    if (/Windows NT/.test(ua)) return "Windows";
-    if (/Mac OS X/.test(ua) && !/iPhone|iPad/.test(ua)) return "macOS";
-    if (/iPhone|iPad/.test(ua)) return "iOS";
-    if (/Android/.test(ua)) return "Android";
-    if (/Linux/.test(ua)) return "Linux";
-    return "Unknown";
-  }
-
-  function tzOffset() {
-    var mins = -new Date().getTimezoneOffset();
-    var sign = mins >= 0 ? "+" : "-";
-    mins = Math.abs(mins);
-    return "UTC" + sign + String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
-  }
-
-  function fetchClientIp(cb) {
-    fetch("/api/ip").then(function (r) { return r.json(); }).then(function (d) { cb(d.ip || "unknown"); }).catch(function () { cb("unknown"); });
-  }
-
-  function mountDeviceInfo(el) {
-    var ua = navigator.userAgent || "";
-    var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "unknown";
-    var mem = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "n/a";
-    var cpu = navigator.hardwareConcurrency || "n/a";
-    var screenInfo = screen.width + "×" + screen.height + " @" + (window.devicePixelRatio || 1) + "x";
-    var viewportInfo = window.innerWidth + "×" + window.innerHeight;
-    var colorScheme = currentTheme;
-    var touchInfo = navigator.maxTouchPoints ? (navigator.maxTouchPoints + " points") : "no";
-    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    var networkInfo = conn ? [conn.effectiveType, conn.downlink ? conn.downlink + "Mb/s" : null, conn.rtt ? conn.rtt + "ms" : null].filter(Boolean).join(" · ") : "n/a";
-    var html =
-      '<div class="device-info">' +
-      '  <h3 data-i18n="welcome.deviceInfo">设备信息</h3>' +
-      '  <div class="device-grid">' +
-      '    <div><span>' + t("welcome.now") + '</span><strong id="dev-now">' + formatNow() + '</strong></div>' +
-      '    <div><span>' + t("welcome.timestamp") + '</span><strong id="dev-ts">' + Date.now() + '</strong></div>' +
-      '    <div><span>' + t("welcome.ip") + '</span><strong id="dev-ip">…</strong></div>' +
-      '    <div><span>' + t("welcome.platform") + '</span><strong>' + platform + '</strong></div>' +
-      '    <div><span>' + t("welcome.language") + '</span><strong>' + (navigator.language || "n/a") + '</strong></div>' +
-      '    <div><span>' + t("welcome.timezone") + '</span><strong>' + Intl.DateTimeFormat().resolvedOptions().timeZone + ' (' + tzOffset() + ')</strong></div>' +
-      '    <div><span>' + t("welcome.browser") + '</span><strong>' + detectBrowser(ua) + '</strong></div>' +
-      '    <div><span>' + t("welcome.os") + '</span><strong>' + detectOS(ua) + '</strong></div>' +
-      '    <div><span>' + t("welcome.screen") + '</span><strong>' + screenInfo + '</strong></div>' +
-      '    <div><span>' + t("welcome.viewport") + '</span><strong>' + viewportInfo + '</strong></div>' +
-      '    <div><span>' + t("welcome.cpu") + '</span><strong>' + cpu + '</strong></div>' +
-      '    <div><span>' + t("welcome.memory") + '</span><strong>' + mem + '</strong></div>' +
-      '    <div><span>' + t("welcome.colorScheme") + '</span><strong>' + colorScheme + '</strong></div>' +
-      '    <div><span>' + t("welcome.touch") + '</span><strong>' + touchInfo + '</strong></div>' +
-      '    <div><span>' + t("welcome.network") + '</span><strong>' + networkInfo + '</strong></div>' +
-      '  </div>' +
-      '  <details class="device-ua"><summary>User-Agent</summary><pre>' + ua.replace(/</g, "&lt;") + '</pre></details>' +
-      '</div>';
-    el.insertAdjacentHTML("beforeend", html);
-    // click-to-copy on each grid item
-    el.querySelectorAll(".device-grid div").forEach(function (div) {
-      div.addEventListener("click", function () {
-        var strong = this.querySelector("strong");
-        if (!strong || !strong.textContent || strong.textContent === "…") return;
-        var val = strong.textContent;
-        navigator.clipboard.writeText(val).then(function () {
-          showCopyToast(t("welcome.copied"));
-        }).catch(function () {});
-      });
-    });
-    stopClock();
-    _clockTimer = setInterval(function () {
-      var nowEl = document.getElementById("dev-now");
-      if (nowEl) nowEl.textContent = formatNow();
-      var tsEl = document.getElementById("dev-ts");
-      if (tsEl) tsEl.textContent = Date.now();
-    }, 100);
-    fetchClientIp(function (ip) {
-      var ipEl = document.getElementById("dev-ip");
-      if (ipEl) ipEl.textContent = ip;
-    });
-  }
-
   // ── 右侧内容 ──
   function renderContent() {
-    stopClock();
+    if (activeMenuId !== "device" && typeof DeviceTool !== "undefined" && DeviceTool.deactivate) DeviceTool.deactivate();
     if (activeMenuId !== "diff" && typeof DiffTool !== "undefined" && DiffTool.deactivate) DiffTool.deactivate();
     if (activeMenuId !== "visualization" && typeof VisualizationTool !== "undefined" && VisualizationTool.deactivate) VisualizationTool.deactivate();
     const el = document.getElementById("content");
@@ -608,13 +501,6 @@
       applyLocale();
       return;
     }
-    if (activeMenuId === "device") {
-      el.innerHTML = `
-        <p class="tool-intro" data-i18n="welcome.deviceSubtitle">查看当前浏览器与设备环境详情</p>`;
-      mountDeviceInfo(el);
-      applyLocale();
-      return;
-    }
     var scriptConfig = toolScripts[activeMenuId];
     if (scriptConfig && !window[scriptConfig[0]]) {
       var loadingToolId = activeMenuId;
@@ -624,6 +510,11 @@
       }).catch(function () {
         if (activeMenuId === loadingToolId) el.innerHTML = '<div class="tool-placeholder"><h3>' + (currentLang === "en" ? "Failed to load tool" : "工具加载失败") + '</h3></div>';
       });
+      return;
+    }
+    if (activeMenuId === "device" && typeof DeviceTool !== "undefined") {
+      el.innerHTML = "";
+      DeviceTool.init(el);
       return;
     }
     if (activeMenuId === "format" && typeof FormatTool !== "undefined") {

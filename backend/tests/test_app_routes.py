@@ -60,6 +60,70 @@ def test_exchange_rate_tool_is_registered_and_localized(client):
     assert 'exchange-rate-reverse' in exchange_script
 
 
+def test_device_environment_tool_is_local_lazy_loaded_and_comprehensive(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+    script_response = client.get("/js/device-tool.js")
+    script = script_response.get_data(as_text=True)
+
+    assert script_response.status_code == 200
+    assert TOOL_REGISTRY["device"]["processing"] == "local"
+    assert TOOL_REGISTRY["device"]["global"] == "DeviceTool"
+    assert zh_locale["device"]["environmentTitle"] == "浏览器环境诊断报告"
+    assert en_locale["device"]["localBadge"] == "Fully local detection · Nothing is uploaded"
+    assert 'typeof DeviceTool !== "undefined"' in app_script
+    assert "DeviceTool.deactivate" in app_script
+    assert_tool_is_lazy_loaded(frontend_dir, "device-tool.js")
+    assert "navigator.storage.estimate()" in script
+    assert "getHighEntropyValues" in script
+    assert "WEBGL_debug_renderer_info" in script
+    assert "enumerateDevices()" in script
+    assert "navigator.permissions.query" in script
+    assert "reportMarkdown" in script
+    assert "reportData" in script
+    assert "fetch(" not in script
+    assert "/api/ip" not in script
+    assert ".device-hero" in app_css
+    assert ".device-capabilities" in app_css
+    assert ".device-advanced" in app_css
+    assert "@media (max-width: 640px)" in app_css
+
+    page = client.get("/zh/tool/device").get_data(as_text=True)
+    assert "浏览器本地处理，数据不上传" in page
+    assert "部分信息需要请求服务端" not in page
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = { window: { __t: key => key }, navigator: {}, console, Date, String, Number, Object, Array, JSON, RegExp, isFinite };
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/device-tool.js", "utf8"), context);
+const core = context.DeviceTool.__test;
+const values = {
+  chrome: core.detectBrowser("Mozilla/5.0 Chrome/150.0.0.0 Safari/537.36").name === "Google Chrome",
+  edge: core.detectBrowser("Mozilla/5.0 Chrome/150.0.0.0 Safari/537.36 Edg/150.0").name === "Microsoft Edge",
+  mac: core.detectOS("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)") === "macOS 10.15.7",
+  android: core.detectOS("Mozilla/5.0 (Linux; Android 16)") === "Android 16",
+  bytes: core.formatBytes(1073741824) === "1.00 GB",
+  offset: /^UTC[+-]\d{2}:\d{2}$/.test(core.timezoneOffset())
+};
+process.stdout.write(JSON.stringify(values));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        assert all(json.loads(completed.stdout).values())
+
+
 def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
     zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
@@ -643,7 +707,7 @@ def test_tool_registry_routes_and_sitemap_stay_in_sync(client):
     assert set(manifest_tools) == set(TOOL_REGISTRY)
     assert manifest_tools["json"]["script"].startswith("/js/json-tool.js")
     assert manifest_tools["translate"]["processing"] == "server"
-    assert manifest_tools["device"]["processing"] == "hybrid"
+    assert manifest_tools["device"]["processing"] == "local"
     assert manifest_tools["jwt"]["processing"] == "local"
 
     sitemap = client.get("/sitemap.xml").get_data(as_text=True)
@@ -670,13 +734,15 @@ def test_new_tools_have_server_rendered_seo(client):
 
 def test_processing_badges_distinguish_local_hybrid_and_server_tools(client):
     local_page = client.get("/zh/tool/jwt").get_data(as_text=True)
-    hybrid_page = client.get("/zh/tool/device").get_data(as_text=True)
+    device_page = client.get("/zh/tool/device").get_data(as_text=True)
+    hybrid_page = client.get("/zh/tool/exchange").get_data(as_text=True)
     server_page = client.get("/zh/tool/translate").get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
     frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
     zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
 
     assert "浏览器本地处理，数据不上传" in local_page
+    assert "浏览器本地处理，数据不上传" in device_page
     assert "部分信息需要请求服务端" in hybrid_page
     assert "服务端处理，数据会发送到服务器" in server_page
     assert "function renderToolPageHeader(" in app_script

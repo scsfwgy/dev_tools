@@ -4,26 +4,26 @@ TOOLS = {
     "device": {
         "zh": {
             "name": "设备信息工具",
-            "title": "设备信息工具 - 浏览器 平台 时区 IP User-Agent | Tools24",
-            "description": "查看当前设备和浏览器环境信息：毫秒级时间、IP、平台、语言、时区、浏览器、系统、屏幕、视口、CPU、内存、主题、触控和网络。",
-            "keywords": "设备信息,浏览器信息,时区,IP,User-Agent,平台,屏幕分辨率,视口,CPU,内存",
-            "intro": "查看当前浏览器与设备环境详情，包括毫秒级当前时间、IP、平台、语言、时区、浏览器、系统、屏幕、视口、CPU、内存、主题、触控能力与网络信息。",
-            "features": ["毫秒级当前时间", "真实访客 IP（线上）", "平台 / 浏览器 / 系统", "屏幕 / 视口 / DPR", "CPU / 内存 / 主题 / 触控 / 网络"],
+            "title": "设备信息工具 - 浏览器 系统 屏幕与环境检测 | Tools24",
+            "description": "在浏览器本地查看设备环境：浏览器与系统、语言时区、屏幕视口、CPU 内存、网络、存储、隐私偏好、权限状态和 Web 能力。",
+            "keywords": "设备信息,浏览器信息,系统环境,User-Agent,平台,屏幕分辨率,视口,CPU,内存,浏览器能力",
+            "intro": "在浏览器本地生成完整环境诊断报告，覆盖浏览器、系统、语言、屏幕、输入方式、硬件、网络、存储、隐私偏好、权限状态和 Web API 能力。",
+            "features": ["浏览器 / 系统 / 语言环境", "屏幕 / 视口 / DPR / 输入能力", "CPU / 内存 / GPU 与存储估算", "网络、隐私偏好与权限状态", "Web API 能力矩阵", "JSON / Markdown 安全报告导出", "完全浏览器本地处理"],
             "faq": [
-                ("为什么本地显示 127.0.0.1？", "因为本地开发是浏览器直接访问本机服务，127.0.0.1 属正常现象。线上部署会优先读取 X-Forwarded-For。"),
-                ("颜色主题显示的是什么？", "显示的是当前站内主题（dark / light），不是操作系统偏好主题。"),
+                ("设备环境信息会上传吗？", "不会。所有检测、权限状态查询和报告生成均在当前浏览器本地完成。"),
+                ("为什么部分信息显示为近似或不可用？", "浏览器会出于兼容性和隐私保护限制硬件精度；工具会明确标记近似、推断、受限和不支持的信息。"),
             ],
         },
         "en": {
             "name": "Device Info",
-            "title": "Device Info - Browser Platform Timezone IP User-Agent | Tools24",
-            "description": "Inspect current device and browser info including millisecond clock, IP, platform, language, timezone, browser, OS, screen, viewport, CPU, memory, theme, touch and network.",
-            "keywords": "device info,browser info,timezone,IP,user agent,platform,screen resolution,viewport,CPU,memory",
-            "intro": "Inspect your current browser and device environment, including a millisecond clock, IP, platform, language, timezone, browser, OS, screen, viewport, CPU, memory, theme, touch capability and network information.",
-            "features": ["Millisecond clock", "Real visitor IP in production", "Platform / browser / OS", "Screen / viewport / DPR", "CPU / memory / theme / touch / network"],
+            "title": "Device Info - Browser System Screen and Environment Report | Tools24",
+            "description": "Inspect browser-local environment details including browser, OS, locale, screen, viewport, CPU, memory, network, storage, privacy preferences, permissions and Web capabilities.",
+            "keywords": "device info,browser info,system environment,user agent,platform,screen resolution,viewport,CPU,memory,browser capabilities",
+            "intro": "Generate a comprehensive browser-local environment report covering browser, OS, locale, display, input, hardware, network, storage, privacy preferences, permissions and Web API support.",
+            "features": ["Browser, OS and locale environment", "Screen, viewport, DPR and input capabilities", "CPU, memory, GPU and storage estimates", "Network, privacy preferences and permission states", "Web API capability matrix", "Safe JSON and Markdown reports", "Fully local browser processing"],
             "faq": [
-                ("Why does local dev show 127.0.0.1?", "Because your browser is calling your local server directly. In production the app prefers X-Forwarded-For to show the real visitor IP."),
-                ("What does the theme field show?", "It shows the current site theme (dark / light), not the OS preferred color scheme."),
+                ("Is environment information uploaded?", "No. Detection, permission-state checks and report generation all run locally in your current browser."),
+                ("Why are some values approximate or unavailable?", "Browsers intentionally limit hardware precision for compatibility and privacy. The tool marks approximate, inferred, blocked and unsupported values."),
             ],
         },
     },
@@ -988,7 +988,7 @@ HOME_META = {
 }
 
 TOOL_REGISTRY = {
-    "device": {"order": 10, "icon": "console", "script": None, "global": None, "processing": "hybrid", "indexable": True},
+    "device": {"order": 10, "icon": "console", "script": "/js/device-tool.js", "global": "DeviceTool", "processing": "local", "indexable": True},
     "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260715", "global": "JsonTool", "processing": "local", "indexable": True},
     "visualization": {"order": 25, "icon": "chart", "script": "/js/visualization-tool.js", "global": "VisualizationTool", "processing": "local", "indexable": True},
     "format": {"order": 30, "icon": "code", "script": "/js/format-tool.js?v=20260708", "global": "FormatTool", "processing": "local", "indexable": True},
