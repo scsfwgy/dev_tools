@@ -1,6 +1,8 @@
 import json
 import logging
 import re
+import shutil
+import subprocess
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -56,6 +58,134 @@ def test_exchange_rate_tool_is_registered_and_localized(client):
     assert_tool_is_lazy_loaded(frontend_dir, "exchange-tool.js")
     assert 'var reverseRate = oneRate === null ? null : 1 / oneRate;' in exchange_script
     assert 'exchange-rate-reverse' in exchange_script
+
+
+def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+    script_response = client.get("/js/visualization-tool.js")
+    script = script_response.get_data(as_text=True)
+
+    assert script_response.status_code == 200
+    assert TOOL_REGISTRY["visualization"]["processing"] == "local"
+    assert TOOL_REGISTRY["visualization"]["indexable"] is True
+    assert TOOL_REGISTRY["visualization"]["icon"] == "chart"
+    assert zh_locale["menu"]["visualization"] == "数据可视化"
+    assert en_locale["menu"]["visualization"] == "Data Visualization"
+    assert zh_locale["visualization"]["line"] == "折线图"
+    assert en_locale["visualization"]["exportPng"] == "Export PNG"
+    assert zh_locale["visualization"]["advanced"] == "高级自定义"
+    assert zh_locale["visualization"]["colorPalette"] == "图表配色"
+    assert en_locale["visualization"]["formatCurrency"] == "Currency"
+    assert en_locale["visualization"]["fullscreen"] == "Expand preview"
+    assert 'typeof VisualizationTool !== "undefined"' in app_script
+    assert "VisualizationTool.deactivate" in app_script
+    assert '{ id: "development", tools: ["json", "visualization", "format", "regex", "url", "http", "curl", "jwt"] }' in app_script
+    assert_tool_is_lazy_loaded(frontend_dir, "visualization-tool.js")
+    assert "echarts@6.1.0/dist/echarts.min.js" in script
+    assert "MAX_ROWS = 5000" in script
+    assert 'renderer: "canvas"' in script
+    assert 'renderMode: "richText"' in script
+    assert "getDataURL" in script
+    assert "pixelRatio: 2" in script
+    assert "chart.dispose()" in script
+    assert "requestFullscreen" not in script
+    assert "document.fullscreenElement" not in script
+    assert "is-viewport-fullscreen" in script
+    assert 'showSymbol: showPoints' in script
+    assert "discoverJsonCandidates" in script
+    assert 'id="viz-json-path"' in script
+    assert "formatDateValue" in script
+    assert 'id="viz-date-pattern"' in script
+    assert 'role="separator"' in script
+    assert "bindPanelResizer" in script
+    assert "renderDataPreview" in script
+    assert "effectiveRows" in script
+    assert "formatSeriesValue" in script
+    assert "renderPaletteControls" in script
+    assert "normalizeCustomPalette" in script
+    assert "colors: customPalette.slice()" in script
+    assert "Intl.NumberFormat" in script
+    assert "exportConfig" in script
+    assert "applyImportedConfig" in script
+    assert '"data:application/json;charset=utf-8,"' in script
+    assert 'id="viz-advanced"' in script
+    assert 'id="viz-data-preview"' in script
+    assert ".viz-resizer" in app_css
+    assert ".viz-preview-panel.is-fullscreen" in app_css
+    assert ".viz-preview-panel.is-viewport-fullscreen" in app_css
+    assert ".viz-preview-panel.is-fullscreen .viz-exit-fullscreen::before" in app_css
+    assert ".viz-palette-colors" in app_css
+    assert ".viz-series-format-row" in app_css
+    assert ".viz-data-table" in app_css
+    assert 'activeMode = "table";\n    chartType = "line";' in script
+    assert "localStorage" not in script
+    assert "fetch(" not in script
+
+    page = client.get("/zh/tool/visualization").get_data(as_text=True)
+    assert "数据可视化工具" in page
+    assert "浏览器本地处理，数据不上传" in page
+    assert "https://dev.tools24.uk/zh/tool/visualization" in page
+
+
+def test_visualization_parser_handles_supported_shapes_and_limits():
+    node = shutil.which("node")
+    if node is None:
+        return
+    project_root = Path(__file__).resolve().parents[2]
+    program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = {
+  window: { __t: key => key },
+  console, Array, Object, String, Number, JSON, RegExp, isFinite,
+  setTimeout, clearTimeout
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/visualization-tool.js", "utf8"), context);
+const core = context.VisualizationTool.__test;
+const throws = fn => { try { fn(); return false; } catch (_) { return true; } };
+const csv = core.parseTable('name,value,note\n"A, one",12,"hello ""world"""\nB,18,ok');
+const tsv = core.parseTable("month\tsales\nJan\t12\nFeb\t18");
+const duplicate = core.parseTable("name,name,value\nA,B,1");
+const nested = core.parseJsonDataset('[{"month":"Jan","metrics":{"sales":12}},{"month":"Feb","metrics":{"sales":18}}]');
+const columns = core.parseJsonDataset('{"month":["Jan","Feb"],"sales":[12,18]}');
+const nestedSource = core.parseJsonSource('{"status":"ok","data":{"items":[{"timestamp":1767225600,"value":12},{"timestamp":1767312000,"value":18}]},"backup":[1,2]}');
+const nestedCandidate = nestedSource.candidates.find(candidate => candidate.label === "data.items");
+const nestedSelected = core.rowsFromJsonCandidate(nestedCandidate);
+const nullable = core.parseTable("month,value\nJan,12\nFeb,\nMar,bad\nApr,16\nMay,20\nJun,24");
+const palette = ["#112233", "#223344", "#334455", "#445566", "#556677", "#667788", "#778899"];
+const tooMany = "name,value\n" + Array.from({ length: 5001 }, (_, index) => "R" + index + "," + index).join("\n");
+const result = {
+  quotedCsv: csv.rows[0].name === "A, one" && csv.rows[0].note === 'hello "world"',
+  tsv: tsv.rows.length === 2 && tsv.numericFields[0] === "sales",
+  duplicateHeaders: duplicate.fields.map(field => field.name).join("|") === "name|name (2)|value",
+  nestedJson: nested.fields.some(field => field.name === "metrics.sales"),
+  objectArrays: columns.rows.length === 2 && columns.rows[1].sales === 18,
+  nestedArrayDiscovery: nestedSource.candidates.some(candidate => candidate.label === "data.items") && nestedSource.candidates.some(candidate => candidate.label === "backup"),
+  nestedArraySelection: nestedSelected.rows[1].value === 18,
+  invalidNumericBecomesNull: nullable.rows[2].value === null,
+  qualityMetadata: nullable.fields.find(field => field.name === "value").emptyCount === 1 && nullable.fields.find(field => field.name === "value").invalidCount === 1,
+  noNumericRejected: throws(() => core.parseTable("name,city\nA,Paris\nB,London")),
+  noArrayRejected: throws(() => core.parseJsonDataset('{"status":"ok","data":{"value":3}}')),
+  customUtcDate: core.formatDateValue(new Date("2026-01-02T03:04:05.006Z"), "YYYY/MM/DD HH:mm:ss.SSS", true) === "2026/01/02 03:04:05.006",
+  validPalette: core.normalizeCustomPalette(palette).join("|") === palette.join("|"),
+  invalidPaletteRejected: core.normalizeCustomPalette(palette.slice(0, 6)).length === 0 && core.normalizeCustomPalette(palette.slice(0, 6).concat("red")).length === 0,
+  rowLimitRejected: throws(() => core.parseTable(tooMany))
+};
+process.stdout.write(JSON.stringify(result));
+'''
+    completed = subprocess.run(
+        [node, "-e", program],
+        cwd=project_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert all(json.loads(completed.stdout).values())
 
 
 def test_exchange_rate_endpoint_normalizes_and_caches_remote_data(client, monkeypatch):
@@ -180,7 +310,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "35+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "37+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -221,6 +351,8 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     assert ".home-tabs" in app_css
     assert ".home-categories" in app_css
     assert ".sidebar.mobile-open" in app_css
+    assert ".home-search:focus-within" in app_css
+    assert ".home-search input:focus-visible {\n  outline: none;\n}" in app_css
     assert 'let siteUrl = "https://dev.tools24.uk"' in app_script
     assert 'data-i18n="welcome.toolCount"' in app_script
     assert 'homeState.category = "all";' in app_script
@@ -240,7 +372,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     }
     assert category_map == {
         "all": [],
-        "development": ["json", "format", "regex", "url", "http", "curl", "jwt"],
+        "development": ["json", "visualization", "format", "regex", "url", "http", "curl", "jwt"],
         "encoding": ["encoder", "base64", "uuid", "crypto", "qrcode", "fileinfo"],
         "files": ["text", "diff", "markdown", "image", "converter", "content"],
         "productivity": ["timestamp", "unitconvert", "color", "cron", "focus"],

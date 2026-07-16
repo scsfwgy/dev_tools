@@ -160,6 +160,38 @@ TOOLS = {
             ],
         },
     },
+    "visualization": {
+        "zh": {
+            "name": "数据可视化工具",
+            "title": "数据可视化工具 - JSON CSV 在线生成折线图柱状图饼图 | Tools24",
+            "description": "在线将表格、CSV、TSV 或嵌套 JSON 数据快速生成折线图、柱状图、堆叠柱状图和饼图，支持自定义配色、时间格式化、浏览器内全屏预览与 PNG 导出。",
+            "keywords": "数据可视化,在线图表,JSON生成图表,CSV生成图表,折线图,柱状图,饼图,ECharts",
+            "intro": "粘贴表格、CSV、TSV 或任意 JSON 文档，选择自动发现的数据数组，映射字段后快速生成可交互图表。",
+            "features": ["表格 / CSV / TSV 输入", "嵌套 JSON 数组路径自动发现", "数据预览与质量提示", "排序、Top N、数值格式与自定义配色", "折线图 / 柱状图 / 堆叠柱状图 / 饼图", "浏览器内全屏、PNG 与配置导出", "浏览器本地处理"],
+            "faq": [
+                ("数据会上传服务器吗？", "不会。数据解析、字段识别、图表生成和 PNG 导出全部在当前浏览器本地完成。"),
+                ("JSON 应该使用什么结构？", "可以粘贴任意 JSON 文档。工具会扫描根数组、嵌套数组和等长列数组，并让你选择实际用于绘图的数据路径。"),
+                ("时间戳可以转换为日期吗？", "可以。X 轴支持秒或毫秒时间戳、ISO 日期字符串、本地或 UTC 时区，以及自定义日期格式模板。"),
+                ("可以保存图表设置吗？", "可以导出不包含原始数据的配置 JSON，并在载入其他相同字段的数据后重新导入。"),
+                ("最多支持多少行？", "首版最多处理 5000 行，以保证浏览器中的编辑和图表交互保持流畅。"),
+            ],
+        },
+        "en": {
+            "name": "Data Visualization Tool",
+            "title": "Data Visualization Tool - JSON CSV Line Bar Pie Charts | Tools24",
+            "description": "Turn tables, CSV, TSV or nested JSON into line, bar, stacked bar and pie charts with custom colors, date formatting, in-browser expanded preview and PNG export.",
+            "keywords": "data visualization,online chart maker,JSON chart,CSV chart,line chart,bar chart,pie chart,ECharts",
+            "intro": "Paste a table, CSV, TSV or any JSON document, choose a detected data array, map fields and create an interactive chart.",
+            "features": ["Table / CSV / TSV input", "Automatic nested JSON array-path discovery", "Data preview and quality hints", "Sorting, Top N, value formats and custom colors", "Line / bar / stacked bar / pie charts", "In-browser expanded preview, PNG and configuration export", "Local browser processing"],
+            "faq": [
+                ("Is my data uploaded?", "No. Parsing, field detection, chart rendering and PNG export all run locally in your browser."),
+                ("Which JSON structure should I use?", "Paste any JSON document. The tool scans root arrays, nested arrays and equal-length column arrays, then lets you select the data path to chart."),
+                ("Can timestamps be shown as dates?", "Yes. The X axis supports second or millisecond timestamps, ISO date strings, local or UTC timezones and custom date format patterns."),
+                ("Can I save chart settings?", "Yes. Export a configuration JSON without raw data, then import it for another dataset with matching fields."),
+                ("How many rows are supported?", "The first version supports up to 5,000 rows to keep editing and chart interactions responsive."),
+            ],
+        },
+    },
     "timestamp": {
         "zh": {
             "name": "时间戳转换工具",
@@ -958,6 +990,7 @@ HOME_META = {
 TOOL_REGISTRY = {
     "device": {"order": 10, "icon": "console", "script": None, "global": None, "processing": "hybrid", "indexable": True},
     "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260715", "global": "JsonTool", "processing": "local", "indexable": True},
+    "visualization": {"order": 25, "icon": "chart", "script": "/js/visualization-tool.js", "global": "VisualizationTool", "processing": "local", "indexable": True},
     "format": {"order": 30, "icon": "code", "script": "/js/format-tool.js?v=20260708", "global": "FormatTool", "processing": "local", "indexable": True},
     "timestamp": {"order": 40, "icon": "clock", "script": "/js/timestamp-tool.js?v=20260706", "global": "TimestampTool", "processing": "local", "indexable": True},
     "unitconvert": {"order": 50, "icon": "ruler", "script": "/js/unitconvert-tool.js?v=20260714a", "global": "UnitConvertTool", "processing": "local", "indexable": True},
