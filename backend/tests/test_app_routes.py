@@ -54,7 +54,7 @@ def test_exchange_rate_tool_is_registered_and_localized(client):
     assert "exchange-picker-search" in exchange_script
     assert "exchange.recommendedCurrencies" in exchange_script
     assert 'typeof ExchangeTool !== "undefined"' in app_script
-    assert '{ id: "everyday", tools: ["translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "exchange-tool.js")
     assert 'var reverseRate = oneRate === null ? null : 1 / oneRate;' in exchange_script
     assert 'exchange-rate-reverse' in exchange_script
@@ -83,7 +83,7 @@ def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     assert en_locale["visualization"]["fullscreen"] == "Expand preview"
     assert 'typeof VisualizationTool !== "undefined"' in app_script
     assert "VisualizationTool.deactivate" in app_script
-    assert '{ id: "development", tools: ["json", "visualization", "format", "regex", "url", "http", "curl", "jwt"] }' in app_script
+    assert '{ id: "development", tools: ["json", "format", "regex", "url", "http", "curl", "jwt"] }' in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "visualization-tool.js")
     assert "echarts@6.1.0/dist/echarts.min.js" in script
     assert "MAX_ROWS = 5000" in script
@@ -341,7 +341,13 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     assert "var HOME_CATEGORIES" in app_script
     assert "var HOME_RECOMMENDATIONS" in app_script
     assert 'data-home-tab="recommended"' in app_script
-    assert 'favoriteIds.length ? "favorites" : "categories"' in app_script
+    assert 'var HOME_TAB_IDS = ["favorites", "categories", "recommended"]' in app_script
+    assert "function buildPathForHomeTab(" in app_script
+    assert 'var homeState = { tab: currentHomeTab, category: "all", query: "" };' in app_script
+    assert 'history.pushState({ menuId: "home", homeTab: currentHomeTab }' in app_script
+    assert 'href="${buildPathForHomeTab("favorites", currentLang)}"' in app_script
+    assert 'activeMenuId === "home"' in app_script
+    assert 'buildPathForHomeTab(currentHomeTab, newLang)' in app_script
     assert 'Array.from(el.querySelectorAll(".home-tab"))' in app_script
     assert 'window.matchMedia("(max-width: 760px)")' in app_script
     assert ".home-tool-grid" in app_css
@@ -349,6 +355,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     assert ".home-link-card" in app_css
     assert ".home-link-copy-btn" in app_css
     assert ".home-tabs" in app_css
+    assert "text-decoration: none;" in app_css
     assert ".home-categories" in app_css
     assert ".sidebar.mobile-open" in app_css
     assert ".home-search:focus-within" in app_css
@@ -372,12 +379,12 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     }
     assert category_map == {
         "all": [],
-        "development": ["json", "visualization", "format", "regex", "url", "http", "curl", "jwt"],
-        "encoding": ["encoder", "base64", "uuid", "crypto", "qrcode", "fileinfo"],
-        "files": ["text", "diff", "markdown", "image", "converter", "content"],
-        "productivity": ["timestamp", "unitconvert", "color", "cron", "focus"],
+        "development": ["json", "format", "regex", "url", "http", "curl", "jwt"],
+        "encoding": ["encoder", "base64", "uuid", "crypto", "fileinfo"],
+        "files": ["text", "diff", "markdown", "image", "converter"],
+        "productivity": ["timestamp", "unitconvert", "color", "cron"],
         "platform": ["device", "terminal", "git", "ai", "android", "flutter", "ios"],
-        "everyday": ["translate", "area-search", "exchange", "tax", "mortgage"],
+        "everyday": ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -520,6 +527,14 @@ def test_spa_routes_render_seo_and_reject_invalid_paths(client):
     response = client.get("/en/tool/json")
     fallback = client.get("/fr/tool/unknown")
     missing_tool = client.get("/zh/tool/unknown")
+    home_tabs = {
+        "/zh/favorites": "https://dev.tools24.uk/zh/",
+        "/zh/categories": "https://dev.tools24.uk/zh/",
+        "/zh/recommended": "https://dev.tools24.uk/zh/",
+        "/en/favorites": "https://dev.tools24.uk/en/",
+        "/en/categories": "https://dev.tools24.uk/en/",
+        "/en/recommended": "https://dev.tools24.uk/en/",
+    }
 
     html = response.get_data(as_text=True)
     assert response.status_code == 200
@@ -534,6 +549,10 @@ def test_spa_routes_render_seo_and_reject_invalid_paths(client):
     assert "Page not found | Tools24" in missing_tool.get_data(as_text=True)
     assert fallback.headers["X-Robots-Tag"] == "noindex, nofollow"
     assert "s-maxage=300" in fallback.headers["Cache-Control"]
+    for path, canonical in home_tabs.items():
+        tab_response = client.get(path)
+        assert tab_response.status_code == 200
+        assert f'<link rel="canonical" href="{canonical}">' in tab_response.get_data(as_text=True)
 
 
 def test_custom_404_is_bilingual_responsive_and_navigation_ready(client):
@@ -949,7 +968,7 @@ def test_color_converter_is_registered_localized_and_lazy_loaded(client):
     assert zh_locale["color"]["eyedropper"] == "吸取颜色"
     assert en_locale["color"]["formats"]["oklch"] == "UI-friendly color and gradients"
     assert 'typeof ColorTool !== "undefined"' in app_script
-    assert '{ id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron", "focus"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert "function parseColor(raw)" in color_script
     assert '"EyeDropper" in window' in color_script
     assert "oklabToXyz" in color_script
@@ -1363,7 +1382,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron", "focus"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css

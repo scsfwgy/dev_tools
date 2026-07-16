@@ -14,6 +14,7 @@ from http_utils import _client_ip
 from tool_data import HOME_META, TOOLS, TOOL_REGISTRY, TOOL_SUBPAGES
 
 site_bp = Blueprint("site", __name__)
+HOME_TABS = frozenset({"favorites", "categories", "recommended"})
 
 
 def content_last_modified():
@@ -323,6 +324,15 @@ def index_lang_redirect(lang):
 @site_bp.route("/<lang>/")
 def index_lang(lang):
     if lang not in app_settings.SUPPORTED_LANGS:
+        abort(404)
+    return render_spa(lang, None)
+
+
+@site_bp.route("/<lang>/favorites", defaults={"home_tab": "favorites"})
+@site_bp.route("/<lang>/categories", defaults={"home_tab": "categories"})
+@site_bp.route("/<lang>/recommended", defaults={"home_tab": "recommended"})
+def home_tab(lang, home_tab):
+    if lang not in app_settings.SUPPORTED_LANGS or home_tab not in HOME_TABS:
         abort(404)
     return render_spa(lang, None)
 

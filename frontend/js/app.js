@@ -147,9 +147,18 @@
     return prefix === "en" ? "en" : "zh-CN";
   }
 
+  var HOME_TAB_IDS = ["favorites", "categories", "recommended"];
+  var currentHomeTab = "categories";
+
+  function buildPathForHomeTab(tab, lang) {
+    var prefix = localeToPrefix(lang || currentLang);
+    var normalizedTab = HOME_TAB_IDS.indexOf(tab) !== -1 ? tab : "categories";
+    return "/" + prefix + "/" + normalizedTab;
+  }
+
   function buildPathForMenu(menuId, lang) {
     var prefix = localeToPrefix(lang || currentLang);
-    return menuId === "home" ? "/" + prefix + "/" : "/" + prefix + "/tool/" + menuId;
+    return menuId === "home" ? buildPathForHomeTab("categories", lang) : "/" + prefix + "/tool/" + menuId;
   }
 
   function syncLanguageUi(lang) {
@@ -349,8 +358,13 @@
   function selectMenu(id, pushState) {
     closeMobileMenu(false);
     window.__toolSubpage = null;
+    if (id === "home") currentHomeTab = "categories";
     if (pushState !== false) {
-      history.pushState({ menuId: id }, "", buildPathForMenu(id, currentLang));
+      history.pushState(
+        id === "home" ? { menuId: id, homeTab: currentHomeTab } : { menuId: id },
+        "",
+        buildPathForMenu(id, currentLang)
+      );
     }
     activeMenuId = id;
     postGlobalClick(id);
@@ -362,6 +376,7 @@
   window.addEventListener("popstate", function () {
     var routed = routeFromPath();
     activeMenuId = routed.menuId;
+    currentHomeTab = routed.homeTab || "categories";
     window.__toolSubpage = routed.subpage || null;
     if (routed.lang) {
       applyLanguageAndRender(routed.lang);
@@ -377,9 +392,11 @@
     if (subpageMatch) return { lang: prefixToLocale(subpageMatch[1]), menuId: subpageMatch[2], subpage: subpageMatch[3] };
     var m = location.pathname.match(/^\/(zh|en)\/tool\/([\w-]+)$/);
     if (m) return { lang: prefixToLocale(m[1]), menuId: m[2] };
+    var homeTabMatch = location.pathname.match(/^\/(zh|en)\/(favorites|categories|recommended)\/?$/);
+    if (homeTabMatch) return { lang: prefixToLocale(homeTabMatch[1]), menuId: "home", homeTab: homeTabMatch[2] };
     var m2 = location.pathname.match(/^\/(zh|en)\/?$/);
-    if (m2) return { lang: prefixToLocale(m2[1]), menuId: "home" };
-    return { lang: null, menuId: "home" };
+    if (m2) return { lang: prefixToLocale(m2[1]), menuId: "home", homeTab: "categories" };
+    return { lang: null, menuId: "home", homeTab: "categories" };
   }
 
   // ── device info helpers ──
@@ -515,7 +532,7 @@
     }
     if (activeMenuId === "home") {
       var favoriteIds = loadFavorites();
-      var homeState = { tab: favoriteIds.length ? "favorites" : "categories", category: "all", query: "" };
+      var homeState = { tab: currentHomeTab, category: "all", query: "" };
       el.innerHTML = `
         <div class="home-page">
           <header class="home-hero">
@@ -538,11 +555,11 @@
             <a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span data-i18n="welcome.openSource">代码开源</span></a>
           </div>
           <div class="home-tabs" role="tablist" aria-label="${t("welcome.homeSections")}">
-            <button class="home-tab" type="button" role="tab" data-home-tab="favorites" aria-controls="home-tab-panel">
+            <a class="home-tab" href="${buildPathForHomeTab("favorites", currentLang)}" role="tab" data-home-tab="favorites" aria-controls="home-tab-panel">
               <span data-i18n="welcome.favorites">${t("welcome.favorites")}</span><span class="home-tab-count">${favoriteIds.length}</span>
-            </button>
-            <button class="home-tab" type="button" role="tab" data-home-tab="categories" aria-controls="home-tab-panel" data-i18n="welcome.categories">${t("welcome.categories")}</button>
-            <button class="home-tab" type="button" role="tab" data-home-tab="recommended" aria-controls="home-tab-panel" data-i18n="welcome.recommended">${t("welcome.recommended")}</button>
+            </a>
+            <a class="home-tab" href="${buildPathForHomeTab("categories", currentLang)}" role="tab" data-home-tab="categories" aria-controls="home-tab-panel" data-i18n="welcome.categories">${t("welcome.categories")}</a>
+            <a class="home-tab" href="${buildPathForHomeTab("recommended", currentLang)}" role="tab" data-home-tab="recommended" aria-controls="home-tab-panel" data-i18n="welcome.recommended">${t("welcome.recommended")}</a>
           </div>
           <section id="home-tab-panel" class="home-tab-panel" role="tabpanel"></section>
         </div>`;
@@ -552,6 +569,10 @@
         homeState.query = this.value;
         if (homeState.query.trim()) {
           homeState.tab = "categories";
+          if (currentHomeTab !== "categories") {
+            currentHomeTab = "categories";
+            history.replaceState({ menuId: "home", homeTab: currentHomeTab }, "", buildPathForHomeTab(currentHomeTab, currentLang));
+          }
           homeState.category = "all";
         }
         renderHomePanel(el, homeState);
@@ -563,10 +584,14 @@
         }
       });
       el.querySelectorAll(".home-tab").forEach(function (tabButton) {
-        tabButton.addEventListener("click", function () {
+        tabButton.addEventListener("click", function (event) {
+          event.preventDefault();
           homeState.tab = this.dataset.homeTab;
+          currentHomeTab = homeState.tab;
+          history.pushState({ menuId: "home", homeTab: currentHomeTab }, "", buildPathForHomeTab(currentHomeTab, currentLang));
           homeState.query = "";
           homeSearch.value = "";
+          updateSeo();
           renderHomePanel(el, homeState);
         });
         tabButton.addEventListener("keydown", function (event) {
@@ -799,12 +824,12 @@
 
   var HOME_CATEGORIES = [
     { id: "all", tools: [] },
-    { id: "development", tools: ["json", "visualization", "format", "regex", "url", "http", "curl", "jwt"] },
-    { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "qrcode", "fileinfo"] },
-    { id: "files", tools: ["text", "diff", "markdown", "image", "converter", "content"] },
-    { id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron", "focus"] },
+    { id: "development", tools: ["json", "format", "regex", "url", "http", "curl", "jwt"] },
+    { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "fileinfo"] },
+    { id: "files", tools: ["text", "diff", "markdown", "image", "converter"] },
+    { id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron"] },
     { id: "platform", tools: ["device", "terminal", "git", "ai", "android", "flutter", "ios"] },
-    { id: "everyday", tools: ["translate", "area-search", "exchange", "tax", "mortgage"] }
+    { id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }
   ];
 
   var HOME_RECOMMENDATIONS = [
@@ -1143,10 +1168,14 @@
 
   document.getElementById("lang-select").addEventListener("change", async function () {
     var newLang = this.value;
-    var newPath = buildPathForMenu(activeMenuId, newLang);
+    var newPath = activeMenuId === "home"
+      ? buildPathForHomeTab(currentHomeTab, newLang)
+      : buildPathForMenu(activeMenuId, newLang);
     await applyLanguageAndRender(newLang, {
       path: newPath,
-      state: { menuId: activeMenuId }
+      state: activeMenuId === "home"
+        ? { menuId: activeMenuId, homeTab: currentHomeTab }
+        : { menuId: activeMenuId }
     });
   });
 
@@ -1162,6 +1191,7 @@
     syncLanguageUi(routed.lang);
   }
   activeMenuId = routed.menuId;
+  currentHomeTab = routed.homeTab || "categories";
   window.__toolSubpage = routed.subpage || null;
 
   // 首页无语言前缀 → 补上

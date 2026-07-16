@@ -639,6 +639,7 @@ a:hover {
     font-size: 0.92rem;
     font-weight: 650;
     cursor: pointer;
+    text-decoration: none;
 }
 .home-tab::after {
     position: absolute;
