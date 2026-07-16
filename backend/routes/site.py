@@ -303,6 +303,16 @@ def index():
     return redirect("/zh/", code=308)
 
 
+@site_bp.route("/favicon.ico")
+def favicon_ico():
+    return redirect("/favicon.svg", code=308)
+
+
+@site_bp.route("/favicon.svg")
+def favicon_svg():
+    return send_from_directory(str(app_settings.FRONTEND_DIR), "favicon.svg")
+
+
 @site_bp.route("/<lang>")
 def index_lang_redirect(lang):
     if lang not in app_settings.SUPPORTED_LANGS:

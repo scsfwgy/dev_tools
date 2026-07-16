@@ -832,6 +832,84 @@ TOOLS = {
             ],
         },
     },
+    "uuid": {
+        "zh": {
+            "name": "UUID / ULID 生成与解析工具",
+            "title": "UUID v4 v7 与 ULID 在线生成解析工具 | Tools24",
+            "description": "浏览器本地批量生成 UUID v4、UUID v7 和 ULID，支持格式校验、版本识别与时间戳解析，一键复制且数据不上传。",
+            "keywords": "UUID生成器,UUID v4,UUID v7,ULID,UUID解析,唯一标识符,在线UUID",
+            "intro": "在浏览器本地批量生成 UUID v4、带时间排序能力的 UUID v7 或 ULID，并快速识别已有标识符的类型、版本和内嵌时间。",
+            "features": ["UUID v4 / v7 与 ULID", "一次生成 1–100 个", "版本、变体与时间戳解析", "最近结果本地保存", "浏览器本地生成，不上传数据"],
+            "faq": [
+                ("UUID v4、UUID v7 和 ULID 有什么区别？", "UUID v4 完全基于随机数；UUID v7 和 ULID 都在标识符中包含毫秒时间，通常更适合按创建顺序排序。"),
+                ("生成的标识符会发送到服务器吗？", "不会。随机数生成、解析与历史记录都在当前浏览器中完成。"),
+            ],
+        },
+        "en": {
+            "name": "UUID / ULID Generator and Parser",
+            "title": "UUID v4 v7 and ULID Generator & Parser Online | Tools24",
+            "description": "Generate UUID v4, UUID v7 and ULID identifiers in batches locally in your browser, then validate formats and inspect versions or embedded timestamps.",
+            "keywords": "UUID generator,UUID v4,UUID v7,ULID generator,UUID parser,unique identifier,online UUID",
+            "intro": "Generate UUID v4, time-sortable UUID v7 or ULID values in local batches, and inspect existing identifiers for their type, version, variant and embedded time.",
+            "features": ["UUID v4, UUID v7 and ULID", "Generate batches of 1–100", "Version, variant and timestamp inspection", "Recent results stored locally", "Runs locally without uploads"],
+            "faq": [
+                ("How do UUID v4, UUID v7 and ULID differ?", "UUID v4 is random, while UUID v7 and ULID embed millisecond time and are usually easier to sort by creation time."),
+                ("Are generated identifiers sent to a server?", "No. Generation, inspection and history all run in your current browser."),
+            ],
+        },
+    },
+    "url": {
+        "zh": {
+            "name": "URL 解析与参数编辑工具",
+            "title": "URL 在线解析、格式化与 Query 参数编辑工具 | Tools24",
+            "description": "在线解析 URL 的协议、域名、端口、路径、查询参数和锚点，支持增删排序 Query 参数并实时重建规范化链接。",
+            "keywords": "URL解析,Query参数,URL格式化,链接解析,查询字符串,URL编码,URL编辑器",
+            "intro": "粘贴任意网址即可拆解协议、认证信息、主机、端口、路径、查询参数和锚点，并通过可编辑参数表重建规范化 URL。",
+            "features": ["完整 URL 结构解析", "Query 参数增删与重复键支持", "可选参数排序", "规范化 URL 一键复制", "浏览器本地处理"],
+            "faq": [
+                ("没有输入协议时可以解析吗？", "可以。工具会将没有协议的网址按 HTTPS 补全后解析，并在结果中明确显示规范化地址。"),
+                ("URL 会上传服务器吗？", "不会。解析、编辑与历史记录都只在浏览器中进行。"),
+            ],
+        },
+        "en": {
+            "name": "URL Parser and Query Editor",
+            "title": "URL Parser, Formatter and Query Parameter Editor | Tools24",
+            "description": "Parse URL protocols, hosts, ports, paths, query parameters and fragments, then add, remove or sort query values and rebuild a normalized URL.",
+            "keywords": "URL parser,query parameter editor,URL formatter,query string,URL analyzer,URL builder",
+            "intro": "Paste a URL to inspect its protocol, credentials, host, port, path, query and fragment, then rebuild a normalized URL from an editable parameter table.",
+            "features": ["Complete URL component inspection", "Add, remove and preserve duplicate query keys", "Optional query sorting", "Copy normalized URLs", "Local browser processing"],
+            "faq": [
+                ("Can I parse a URL without a protocol?", "Yes. The tool assumes HTTPS when a protocol is missing and clearly shows the normalized result."),
+                ("Is the URL uploaded?", "No. Parsing, editing and history stay in your browser."),
+            ],
+        },
+    },
+    "cron": {
+        "zh": {
+            "name": "Cron 表达式计算器",
+            "title": "Cron 表达式在线解析与下次运行时间计算器 | Tools24",
+            "description": "在线解析标准五段 Cron 表达式，支持列表、范围、步长、月份和星期英文缩写，并按指定时区计算未来运行时间。",
+            "keywords": "Cron表达式,Cron计算器,定时任务,Crontab,下次运行时间,Cron解析,时区",
+            "intro": "输入标准五段 Cron 表达式，立即校验分钟、小时、日期、月份和星期字段，并按所选时区列出未来运行时间。",
+            "features": ["标准五段 POSIX Cron", "列表、范围与步长语法", "月份和星期英文缩写", "多时区未来运行时间", "常用示例与本地历史"],
+            "faq": [
+                ("支持秒字段或 Quartz Cron 吗？", "当前支持标准五段 POSIX Cron，不包含秒、年份以及 Quartz 的问号、L、W、# 等扩展语法。"),
+                ("日期和星期同时指定时如何匹配？", "遵循常见 POSIX 语义：当日期和星期都不是通配符时，满足其中任一字段即可运行。"),
+            ],
+        },
+        "en": {
+            "name": "Cron Expression Calculator",
+            "title": "Cron Expression Parser and Next Run Calculator | Tools24",
+            "description": "Validate five-field Cron expressions with lists, ranges, steps, month or weekday names and calculate upcoming run times in a selected timezone.",
+            "keywords": "Cron expression,Cron calculator,Crontab,next run time,Cron parser,timezone scheduler",
+            "intro": "Enter a standard five-field Cron expression to validate minute, hour, day, month and weekday fields, then list upcoming runs in a selected timezone.",
+            "features": ["Standard five-field POSIX Cron", "List, range and step syntax", "Month and weekday names", "Upcoming runs across timezones", "Examples and local history"],
+            "faq": [
+                ("Does this support seconds or Quartz Cron?", "This tool supports standard five-field POSIX Cron, without seconds, years or Quartz extensions such as ?, L, W and #."),
+                ("What happens when both day-of-month and weekday are set?", "It follows common POSIX semantics: when neither field is a wildcard, a match in either field triggers the schedule."),
+            ],
+        },
+    },
     "area-search": {
         "zh": {
             "name": "地区搜索",
@@ -885,8 +963,10 @@ TOOL_REGISTRY = {
     "unitconvert": {"order": 50, "icon": "ruler", "script": "/js/unitconvert-tool.js?v=20260714a", "global": "UnitConvertTool", "processing": "local", "indexable": True},
     "color": {"order": 55, "icon": "palette", "script": "/js/color-tool.js?v=20260714", "global": "ColorTool", "processing": "local", "indexable": True},
     "regex": {"order": 60, "icon": "code", "script": "/js/regex-tool.js?v=20260710c", "global": "RegexTool", "processing": "local", "indexable": True},
+    "url": {"order": 65, "icon": "link", "script": "/js/url-tool.js", "global": "UrlTool", "processing": "local", "indexable": True},
     "http": {"order": 70, "icon": "console", "script": "/js/http-tool.js?v=20260710c", "global": "HttpTool", "processing": "local", "indexable": True},
     "encoder": {"order": 80, "icon": "code", "script": "/js/encoder-tool.js?v=20260706", "global": "EncoderTool", "processing": "local", "indexable": True},
+    "uuid": {"order": 85, "icon": "shield", "script": "/js/uuid-tool.js", "global": "UuidTool", "processing": "local", "indexable": True},
     "crypto": {"order": 90, "icon": "shield", "script": "/js/crypto-tool.js?v=20260706", "global": "CryptoTool", "processing": "local", "indexable": True},
     "android": {"order": 100, "icon": "android", "script": "/js/android-tool.js?v=20260707", "global": "AndroidTool", "processing": "local", "indexable": True},
     "flutter": {"order": 110, "icon": "flutter", "script": "/js/flutter-tool.js?v=20260711", "global": "FlutterTool", "processing": "local", "indexable": True},
@@ -904,6 +984,7 @@ TOOL_REGISTRY = {
     "mortgage": {"order": 230, "icon": "home", "script": "/js/mortgage-tool.js?v=20260710d", "global": "MortgageTool", "processing": "local", "indexable": True},
     "exchange": {"order": 232, "icon": "dollar", "script": "/js/exchange-tool.js", "global": "ExchangeTool", "processing": "hybrid", "indexable": True},
     "focus": {"order": 235, "icon": "target", "script": "/js/focus-tool.js", "global": "FocusTool", "processing": "local", "indexable": True},
+    "cron": {"order": 237, "icon": "clock", "script": "/js/cron-tool.js", "global": "CronTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js", "global": "ConverterTool", "processing": "local", "indexable": True},
     "fileinfo": {"order": 260, "icon": "file", "script": "/js/file-info-tool.js?v=20260706", "global": "FileInfoTool", "processing": "local", "indexable": True},

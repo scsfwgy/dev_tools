@@ -43,7 +43,7 @@ def test_exchange_rate_tool_is_registered_and_localized(client):
     assert "exchange-picker-search" in exchange_script
     assert "exchange.recommendedCurrencies" in exchange_script
     assert 'typeof ExchangeTool !== "undefined"' in app_script
-    assert '"mortgage", "exchange"' in app_script
+    assert '{ id: "everyday", tools: ["translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "exchange-tool.js")
     assert 'var reverseRate = oneRate === null ? null : 1 / oneRate;' in exchange_script
     assert 'exchange-rate-reverse' in exchange_script
@@ -171,10 +171,26 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "30+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "35+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
-    assert zh_locale["welcome"]["category"]["files"] == "文件处理"
-    assert zh_locale["welcome"]["category"]["conversion"] == "换算计算"
+    assert zh_locale["welcome"]["category"] == {
+        "all": "全部",
+        "development": "开发调试",
+        "encoding": "编码安全",
+        "files": "文本文件",
+        "productivity": "计算效率",
+        "platform": "平台速查",
+        "everyday": "日常工具",
+    }
+    assert en_locale["welcome"]["category"] == {
+        "all": "All",
+        "development": "Dev & Debug",
+        "encoding": "Encoding & Security",
+        "files": "Text & Files",
+        "productivity": "Calculation & Productivity",
+        "platform": "Platforms & Reference",
+        "everyday": "Everyday Tools",
+    }
     assert zh_locale["welcome"]["recommendations"]["groups"]["investing"] == "投资理财"
     assert en_locale["welcome"]["recommendations"]["groups"]["crypto"] == "Crypto trading"
     assert zh_locale["welcome"]["recommendations"]["items"]["svscholarX"]["title"] == "硅谷居士 · 推特/X"
@@ -198,6 +214,9 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     assert ".sidebar.mobile-open" in app_css
     assert 'let siteUrl = "https://dev.tools24.uk"' in app_script
     assert 'data-i18n="welcome.toolCount"' in app_script
+    assert 'homeState.category = "all";' in app_script
+    assert "var categoryOrder = new Map(" in app_script
+    assert "tools.sort(function (a, b)" in app_script
 
     public_ids = set(public_tool_ids())
     assert set(zh_locale["welcome"]["toolHints"]) == public_ids
@@ -205,8 +224,21 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     category_block = re.search(r"var HOME_CATEGORIES = \[(.*?)\n  \];", app_script, re.DOTALL)
     assert category_block
-    categorized_ids = re.findall(r'tools: \[([^]]*)\]', category_block.group(1))
-    categorized_ids = [tool_id for group in categorized_ids for tool_id in re.findall(r'"([^"]+)"', group)]
+    category_entries = re.findall(r'\{ id: "([^"]+)", tools: \[([^]]*)\] \}', category_block.group(1))
+    category_map = {
+        category_id: re.findall(r'"([^"]+)"', tools)
+        for category_id, tools in category_entries
+    }
+    assert category_map == {
+        "all": [],
+        "development": ["json", "format", "regex", "url", "http", "curl", "jwt"],
+        "encoding": ["encoder", "base64", "uuid", "crypto", "qrcode", "fileinfo"],
+        "files": ["text", "diff", "markdown", "image", "converter", "content"],
+        "productivity": ["timestamp", "unitconvert", "color", "cron", "focus"],
+        "platform": ["device", "terminal", "git", "ai", "android", "flutter", "ios"],
+        "everyday": ["translate", "area-search", "exchange", "tax", "mortgage"],
+    }
+    categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
     assert set(categorized_ids) == set(public_tool_ids())
 
@@ -776,7 +808,7 @@ def test_color_converter_is_registered_localized_and_lazy_loaded(client):
     assert zh_locale["color"]["eyedropper"] == "吸取颜色"
     assert en_locale["color"]["formats"]["oklch"] == "UI-friendly color and gradients"
     assert 'typeof ColorTool !== "undefined"' in app_script
-    assert '"unitconvert", "color", "tax"' in app_script
+    assert '{ id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron", "focus"] }' in app_script
     assert "function parseColor(raw)" in color_script
     assert '"EyeDropper" in window' in color_script
     assert "oklabToXyz" in color_script
@@ -1178,7 +1210,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "productivity", tools: ["focus"] }' in app_script
+    assert '{ id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron", "focus"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
@@ -1199,3 +1231,71 @@ def test_shared_tool_visual_contract_and_compact_headers(client):
     assert '<h2 data-i18n="welcome.deviceInfo">' not in app_script
     assert 't("converter.title")' not in converter_script
     assert 't("translate.title")' not in translate_script
+
+
+def test_uuid_url_and_cron_tools_are_local_lazy_and_indexable(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+
+    for tool_id, filename, global_name in (
+        ("uuid", "uuid-tool.js", "UuidTool"),
+        ("url", "url-tool.js", "UrlTool"),
+        ("cron", "cron-tool.js", "CronTool"),
+    ):
+        response = client.get(f"/zh/tool/{tool_id}")
+        script = client.get(f"/js/{filename}")
+        assert response.status_code == 200
+        assert f"https://dev.tools24.uk/zh/tool/{tool_id}" in response.get_data(as_text=True)
+        assert '"@type": "FAQPage"' in response.get_data(as_text=True)
+        assert script.status_code == 200
+        assert "fetch(" not in script.get_data(as_text=True)
+        assert_tool_is_lazy_loaded(frontend_dir, filename)
+        assert TOOL_REGISTRY[tool_id]["processing"] == "local"
+        assert TOOL_REGISTRY[tool_id]["indexable"] is True
+        assert TOOL_REGISTRY[tool_id]["global"] == global_name
+        assert tool_id in zh and tool_id in en
+        assert f'activeMenuId === "{tool_id}"' in app_script
+
+    uuid_script = client.get("/js/uuid-tool.js").get_data(as_text=True)
+    url_script = client.get("/js/url-tool.js").get_data(as_text=True)
+    cron_script = client.get("/js/cron-tool.js").get_data(as_text=True)
+    assert "function generateUuidV4()" in uuid_script
+    assert "function generateUuidV7(now)" in uuid_script
+    assert "function generateUlid(now)" in uuid_script
+    assert "function parseUrl(raw)" in url_script
+    assert "Array.from(currentUrl.searchParams.entries())" in url_script
+    assert "function hasSensitiveValues(url)" in url_script
+    assert "function parseCron(expression)" in cron_script
+    assert "function nextRuns(expression, timeZone, count, fromDate)" in cron_script
+    assert "formatToParts" in cron_script
+
+
+def test_first_render_navigation_and_accessibility_regressions(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    index_html = (frontend_dir / "index.html").read_text()
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert 'fetch("/api/tool-stats")' not in app_script
+    assert "globalStats" not in app_script
+    assert 'Promise.all([manifestReady, localeReady])' in app_script
+    assert '<div class="menu-row' in app_script
+    assert '<a class="menu-item' in app_script
+    assert "ensureAccessibleControlNames" in app_script
+    assert 'toast.setAttribute("role", "status")' in app_script
+    assert 'document.getElementById("content").inert' in app_script
+    assert "sidebar.inert" in app_script
+    assert 'aria-controls="settings-panel"' in index_html
+    assert 'for="lang-select"' in index_html
+    assert 'for="theme-select"' in index_html
+    assert 'rel="icon" href="/favicon.svg"' in index_html
+    assert "@media (prefers-reduced-motion: reduce)" in app_css
+    assert ".tool-actions .local-primary:hover:not(:disabled)" in app_css
+    assert "background: var(--primary-button-hover); color: var(--on-color);" in app_css
+    assert ".tool-panel > button { margin-top: 12px; }" in app_css
+    assert client.get("/favicon.svg").status_code == 200
+    favicon = client.get("/favicon.ico")
+    assert favicon.status_code == 308
+    assert favicon.headers["Location"].endswith("/favicon.svg")

@@ -11,7 +11,6 @@
   let locale = {};
   let currentLang = localStorage.getItem(STORAGE_LANG) || "zh-CN";
   let currentTheme = localStorage.getItem(STORAGE_THEME) || "dark";
-  let globalStats = {};  // {tool_id: count} from Redis, refreshed on load
   let visitCountValue = null;
   let visitCountUnavailable = false;
   var _clockTimer = null;
@@ -258,6 +257,36 @@
     }
   }
 
+  function ensureAccessibleControlNames(root) {
+    var scope = root || document;
+    var controls = Array.from(scope.querySelectorAll("input:not([type=hidden]), select, textarea"));
+    if (scope.matches && scope.matches("input:not([type=hidden]), select, textarea")) controls.unshift(scope);
+    controls.forEach(function (control) {
+      if (control.getAttribute("aria-label") || control.getAttribute("aria-labelledby") || (control.labels && control.labels.length)) return;
+      var fallback = control.getAttribute("placeholder") || control.getAttribute("title");
+      if (!fallback && control.tagName === "SELECT") {
+        var option = control.options && control.options[control.selectedIndex];
+        fallback = option && option.textContent.trim();
+      }
+      if (!fallback) {
+        var region = control.closest(".settings-section, .tool-panel, .b64-panel, .jt-panel, section, form");
+        var heading = region && region.querySelector("label, h2, h3, legend");
+        fallback = heading && heading.textContent.trim();
+      }
+      if (fallback) control.setAttribute("aria-label", fallback);
+    });
+  }
+
+  var accessibleNamesObserver = new MutationObserver(function (records) {
+    records.forEach(function (record) {
+      record.addedNodes.forEach(function (node) {
+        if (node.nodeType === 1) ensureAccessibleControlNames(node);
+      });
+    });
+  });
+  accessibleNamesObserver.observe(document.getElementById("content"), { childList: true, subtree: true });
+  ensureAccessibleControlNames(document);
+
   // ── theme ──
   function applyTheme(theme) {
     currentTheme = theme;
@@ -272,14 +301,6 @@
     const list = document.getElementById("menu-list");
     const query = document.getElementById("menu-search").value.toLowerCase();
     var items = menuItems.filter(function (item) { return !item.hidden; });
-    // sort by global click count descending; home always first
-    if (Object.keys(globalStats).length) {
-      items = items.slice().sort(function (a, b) {
-        if (a.id === "home") return -1;
-        if (b.id === "home") return 1;
-        return (globalStats[b.id] || 0) - (globalStats[a.id] || 0);
-      });
-    }
     var favorites = loadFavorites();
     list.innerHTML = items
       .map(item => {
@@ -293,9 +314,11 @@
           : item.processing === "hybrid"
             ? '<span class="menu-processing menu-processing-hybrid" title="' + (currentLang === "en" ? "Uses hybrid processing" : "使用混合处理") + '">' + (currentLang === "en" ? "Hybrid" : "混合") + '</span>'
             : "";
-        return `<a class="menu-item${active}${hidden}" href="${href}" data-id="${item.id}" title="${label}">
-          ${icons[item.icon]}<span class="menu-label">${label}</span>${processingIndicator}${favoriteButton}
-        </a>`;
+        return `<div class="menu-row${hidden}" data-menu-id="${item.id}">
+          <a class="menu-item${active}" href="${href}" data-id="${item.id}" title="${label}">
+            ${icons[item.icon]}<span class="menu-label">${label}</span>${processingIndicator}
+          </a>${favoriteButton}
+        </div>`;
       }).join("");
 
     // bind clicks
@@ -318,7 +341,7 @@
   }
 
   function selectMenu(id, pushState) {
-    closeMobileMenu();
+    closeMobileMenu(false);
     window.__toolSubpage = null;
     if (pushState !== false) {
       history.pushState({ menuId: id }, "", buildPathForMenu(id, currentLang));
@@ -358,6 +381,9 @@
   function showCopyToast(msg) {
     var toast = document.createElement("div");
     toast.className = "copy-toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    toast.setAttribute("aria-atomic", "true");
     toast.textContent = msg || "✓ 已复制";
     document.body.appendChild(toast);
     setTimeout(function () { toast.classList.add("copy-toast-visible"); }, 10);
@@ -489,7 +515,7 @@
             <div class="home-mark" aria-hidden="true">${icons.code}</div>
             <div>
               <h1>DevTools</h1>
-              <p data-i18n="welcome.desc">30+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
+              <p data-i18n="welcome.desc">35+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
             </div>
           </header>
           <label class="home-search" for="home-search">
@@ -501,7 +527,7 @@
             <span class="home-trust-local" data-i18n="welcome.localFirst">✓ 默认本地处理</span>
             <span data-i18n="welcome.free">免费使用</span>
             <span data-i18n="welcome.noLogin">无需登录</span>
-            <span data-i18n="welcome.toolCount">30+ 个工具</span>
+            <span data-i18n="welcome.toolCount">35+ 个工具</span>
             <a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span data-i18n="welcome.openSource">代码开源</span></a>
           </div>
           <div class="home-tabs" role="tablist" aria-label="${t("welcome.homeSections")}">
@@ -581,6 +607,21 @@
     if (activeMenuId === "timestamp" && typeof TimestampTool !== "undefined") {
       el.innerHTML = "";
       TimestampTool.init(el);
+      return;
+    }
+    if (activeMenuId === "uuid" && typeof UuidTool !== "undefined") {
+      el.innerHTML = "";
+      UuidTool.init(el);
+      return;
+    }
+    if (activeMenuId === "url" && typeof UrlTool !== "undefined") {
+      el.innerHTML = "";
+      UrlTool.init(el);
+      return;
+    }
+    if (activeMenuId === "cron" && typeof CronTool !== "undefined") {
+      el.innerHTML = "";
+      CronTool.init(el);
       return;
     }
     if (activeMenuId === "unitconvert" && typeof UnitConvertTool !== "undefined") {
@@ -746,14 +787,12 @@
 
   var HOME_CATEGORIES = [
     { id: "all", tools: [] },
-    { id: "files", tools: ["image", "converter", "fileinfo", "markdown", "diff", "text", "content"] },
-    { id: "conversion", tools: ["timestamp", "unitconvert", "color", "tax", "mortgage", "exchange"] },
-    { id: "productivity", tools: ["focus"] },
-    { id: "data", tools: ["json", "format", "regex", "http", "jwt"] },
-    { id: "encoding", tools: ["encoder", "base64", "crypto", "qrcode"] },
-    { id: "mobile", tools: ["android", "flutter", "ios"] },
-    { id: "reference", tools: ["git", "terminal", "ai", "curl"] },
-    { id: "services", tools: ["device", "translate", "area-search"] }
+    { id: "development", tools: ["json", "format", "regex", "url", "http", "curl", "jwt"] },
+    { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "qrcode", "fileinfo"] },
+    { id: "files", tools: ["text", "diff", "markdown", "image", "converter", "content"] },
+    { id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron", "focus"] },
+    { id: "platform", tools: ["device", "terminal", "git", "ai", "android", "flutter", "ios"] },
+    { id: "everyday", tools: ["translate", "area-search", "exchange", "tax", "mortgage"] }
   ];
 
   var HOME_RECOMMENDATIONS = [
@@ -919,6 +958,10 @@
       var queryMatch = !normalized || t(item.i18n).toLowerCase().includes(normalized) || item.id.toLowerCase().includes(normalized);
       return categoryMatch && queryMatch;
     });
+    if (category.id !== "all") {
+      var categoryOrder = new Map(category.tools.map(function (toolId, index) { return [toolId, index]; }));
+      tools.sort(function (a, b) { return categoryOrder.get(a.id) - categoryOrder.get(b.id); });
+    }
     var categoryButtons = HOME_CATEGORIES.map(function (item) {
       var active = item.id === category.id ? " active" : "";
       return '<button class="home-category' + active + '" type="button" data-home-category="' + item.id + '" aria-pressed="' + String(item.id === category.id) + '">' + t("welcome.category." + item.id) + '</button>';
@@ -956,6 +999,7 @@
   const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
   const sidebarScrim = document.getElementById("sidebar-scrim");
   const mobileMenuQuery = window.matchMedia("(max-width: 760px)");
+  var mobileFocusBeforeOpen = null;
   function normalizeMenuState(value) {
     if (value === "1" || value === "compact") return "compact";
     if (value === "immersive") return "immersive";
@@ -970,7 +1014,7 @@
     var label = state === "expanded" ? t("menu.collapseMenu") : (state === "compact" ? t("menu.immersiveMenu") : t("menu.expandMenu"));
     menuToggle.title = label;
     menuToggle.setAttribute("aria-label", label);
-    if (state === "immersive") document.getElementById("settings-panel").classList.add("hidden");
+    if (state === "immersive") closeSettingsPanel(false);
   }
   applySidebarState(normalizeMenuState(localStorage.getItem(STORAGE_MENU)));
 
@@ -983,15 +1027,24 @@
     applySidebarState(current === "expanded" ? "compact" : (current === "compact" ? "immersive" : "expanded"));
   });
 
-  function setMobileMenu(open) {
+  function setMobileMenu(open, restoreFocus) {
+    if (open) mobileFocusBeforeOpen = document.activeElement;
     sidebar.classList.toggle("mobile-open", open);
     sidebarScrim.classList.toggle("visible", open);
     mobileMenuToggle.setAttribute("aria-expanded", String(open));
     document.body.classList.toggle("mobile-menu-open", open);
+    sidebar.setAttribute("aria-hidden", String(mobileMenuQuery.matches && !open));
+    sidebar.inert = Boolean(mobileMenuQuery.matches && !open);
+    document.getElementById("content").inert = Boolean(mobileMenuQuery.matches && open);
+    if (open) {
+      setTimeout(function () { document.getElementById("menu-search").focus(); }, 0);
+    } else if (restoreFocus !== false && mobileFocusBeforeOpen && typeof mobileFocusBeforeOpen.focus === "function") {
+      mobileFocusBeforeOpen.focus();
+    }
   }
 
-  function closeMobileMenu() {
-    setMobileMenu(false);
+  function closeMobileMenu(restoreFocus) {
+    setMobileMenu(false, restoreFocus);
   }
 
   mobileMenuToggle.addEventListener("click", function () {
@@ -999,11 +1052,27 @@
   });
   sidebarScrim.addEventListener("click", closeMobileMenu);
   mobileMenuQuery.addEventListener("change", function () {
-    closeMobileMenu();
+    closeMobileMenu(false);
     applySidebarState(sidebar.dataset.state || "expanded");
   });
+  setMobileMenu(false, false);
   document.addEventListener("keydown", function (event) {
+    var settingsPanel = document.getElementById("settings-panel");
+    if (event.key === "Escape" && !settingsPanel.classList.contains("hidden")) {
+      closeSettingsPanel(true);
+      return;
+    }
     if (event.key === "Escape") closeMobileMenu();
+    if (event.key === "Tab" && mobileMenuQuery.matches && sidebar.classList.contains("mobile-open")) {
+      var focusables = Array.from(sidebar.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+        .concat(settingsPanel.classList.contains("hidden") ? [] : Array.from(settingsPanel.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')));
+      if (focusables.length) {
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    }
     if (event.key === "/" && activeMenuId === "home" && !/input|textarea|select/i.test(document.activeElement.tagName)) {
       var homeSearch = document.getElementById("home-search");
       if (homeSearch) {
@@ -1017,16 +1086,33 @@
   document.getElementById("menu-search").addEventListener("input", () => renderMenu());
 
   // ── 设置面板 ──
+  function closeSettingsPanel(restoreFocus) {
+    const panel = document.getElementById("settings-panel");
+    const btn = document.getElementById("settings-toggle");
+    panel.classList.add("hidden");
+    panel.setAttribute("aria-hidden", "true");
+    panel.removeAttribute("aria-modal");
+    btn.setAttribute("aria-expanded", "false");
+    if (restoreFocus) btn.focus();
+  }
+
   function togglePanel() {
     const panel = document.getElementById("settings-panel");
-    panel.classList.toggle("hidden");
+    const btn = document.getElementById("settings-toggle");
+    const open = panel.classList.contains("hidden");
+    if (!open) { closeSettingsPanel(true); return; }
+    panel.classList.remove("hidden");
+    panel.setAttribute("aria-hidden", "false");
+    if (mobileMenuQuery.matches) panel.setAttribute("aria-modal", "true");
+    btn.setAttribute("aria-expanded", "true");
+    setTimeout(function () { document.getElementById("lang-select").focus(); }, 0);
   }
 
   function closePanel(e) {
     const panel = document.getElementById("settings-panel");
     const btn = document.getElementById("settings-toggle");
     if (!panel.classList.contains("hidden") && !panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-      panel.classList.add("hidden");
+      closeSettingsPanel(false);
     }
   }
 
@@ -1039,7 +1125,7 @@
     wishesLink.addEventListener("click", function (e) {
       e.preventDefault();
       selectMenu("wishes");
-      document.getElementById("settings-panel").classList.add("hidden");
+      closeSettingsPanel(false);
     });
   }
 
@@ -1076,15 +1162,11 @@
 
   applyTheme(currentTheme);
 
-  // fetch manifest, locale and global stats in parallel → render once (no flash)
+  // Only manifest and locale are required for first render. Usage counters stay off the critical path.
   var manifestReady = loadToolManifest();
   var localeReady = loadLocale(currentLang);
-  var statsReady = fetch("/api/tool-stats")
-    .then(function (r) { return r.json(); })
-    .then(function (d) { globalStats = d; })
-    .catch(function () {});
 
-  Promise.all([manifestReady, localeReady, statsReady]).then(function () {
+  Promise.all([manifestReady, localeReady]).then(function () {
     renderMenu();
     updateSeo();
     renderVisitCount();
