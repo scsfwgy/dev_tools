@@ -15,6 +15,10 @@
   let visitCountUnavailable = false;
   var _clockTimer = null;
 
+  function isLocalDevelopmentHost() {
+    return ["localhost", "127.0.0.1", "::1", "[::1]"].includes(window.location.hostname);
+  }
+
   function loadFavorites() {
     try {
       var stored = JSON.parse(localStorage.getItem(STORAGE_FAVORITES));
@@ -38,7 +42,7 @@
     showCopyToast(t(index === -1 ? "welcome.favoriteAdded" : "welcome.favoriteRemoved"));
   }
   function postGlobalClick(toolId) {
-    if (toolId === "home") return;
+    if (toolId === "home" || isLocalDevelopmentHost()) return;
     fetch("/api/tool-click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -188,6 +192,7 @@
   }
 
   async function incrementVisitCount() {
+    if (isLocalDevelopmentHost()) return visitCountValue;
     try {
       const res = await fetch("/api/visits/increment", {
         method: "POST",

@@ -76,6 +76,7 @@ def post_wish():
 
     try:
         wish = add_wish(body.get("text", ""), body.get("nick"), _client_ip())
+        logger.info("event=wish_created wish_id=%s chars=%s", wish["id"], len(wish.get("text", "")))
         return jsonify(wish), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
@@ -100,6 +101,7 @@ def reply_to_wish(wish_id):
         return jsonify({"error": str(e)}), 500
     if not wish:
         return jsonify({"error": "未找到该心愿"}), 404
+    logger.info("event=wish_replied wish_id=%s chars=%s", wish_id, len(wish.get("reply", "")))
     return jsonify(wish)
 
 
@@ -116,4 +118,5 @@ def remove_wish(wish_id):
         return jsonify({"error": str(e)}), 500
     if not removed:
         return jsonify({"error": "未找到该心愿"}), 404
+    logger.info("event=wish_deleted wish_id=%s", wish_id)
     return jsonify({"ok": True})

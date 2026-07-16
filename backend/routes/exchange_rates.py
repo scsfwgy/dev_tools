@@ -122,17 +122,20 @@ def exchange_rates():
     now = time.time()
     local_payload = app_settings._EXCHANGE_RATE_CACHE.get("payload")
     if local_payload and app_settings._EXCHANGE_RATE_CACHE.get("expires_at", 0) > now:
+        logger.info("event=exchange_rates_success source=memory stale=false currencies=%s", len(local_payload["currencies"]))
         return _response(local_payload, cached=True)
 
     with app_settings._EXCHANGE_RATE_LOCK:
         now = time.time()
         local_payload = app_settings._EXCHANGE_RATE_CACHE.get("payload")
         if local_payload and app_settings._EXCHANGE_RATE_CACHE.get("expires_at", 0) > now:
+            logger.info("event=exchange_rates_success source=memory stale=false currencies=%s", len(local_payload["currencies"]))
             return _response(local_payload, cached=True)
 
         shared_payload = _read_shared_cache()
         if shared_payload and now - shared_payload.get("fetched_at", 0) <= app_settings._EXCHANGE_RATE_CACHE_TTL:
             _remember(shared_payload)
+            logger.info("event=exchange_rates_success source=shared_cache stale=false currencies=%s", len(shared_payload["currencies"]))
             return _response(shared_payload, cached=True)
         if shared_payload and not local_payload:
             local_payload = shared_payload
@@ -140,8 +143,9 @@ def exchange_rates():
         try:
             payload = _load_remote_rates()
         except (ValueError, requests.exceptions.RequestException) as exc:
-            logger.warning("Exchange-rate fetch failed: %s", exc)
+            logger.warning("event=exchange_rates_remote_failed error_type=%s", type(exc).__name__)
             if local_payload and now - local_payload.get("fetched_at", 0) <= app_settings._EXCHANGE_RATE_STALE_TTL:
+                logger.warning("event=exchange_rates_success source=stale_cache stale=true currencies=%s", len(local_payload["currencies"]))
                 return _response(local_payload, cached=True, stale=True)
             return jsonify({"ok": False, "error": "exchange rates unavailable"}), 502
 
@@ -151,4 +155,5 @@ def exchange_rates():
             json.dumps(payload, separators=(",", ":")),
             app_settings._EXCHANGE_RATE_STALE_TTL,
         )
+        logger.info("event=exchange_rates_success source=remote stale=false currencies=%s", len(payload["currencies"]))
         return _response(payload, cached=False)

@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from pathlib import Path
 from unittest.mock import Mock
@@ -16,13 +17,21 @@ def assert_tool_is_lazy_loaded(frontend_dir, filename):
     assert any((config["script"] or "").split("?", 1)[0].endswith(filename) for config in TOOL_REGISTRY.values())
 
 
-def test_health_and_ip_routes(client):
+def test_health_and_ip_routes(client, caplog):
+    caplog.set_level(logging.INFO, logger="app")
     health = client.get("/api/health")
     ip = client.get("/api/ip", headers={"X-Forwarded-For": "203.0.113.10, 10.0.0.1"})
 
     assert health.status_code == 200
     assert health.get_json() == {"status": "ok"}
+    assert re.fullmatch(r"[0-9a-f]{12}", health.headers["X-Request-ID"])
     assert ip.get_json() == {"ip": "203.0.113.10"}
+    assert any(
+        "event=http_request" in record.message
+        and "path=/api/health" in record.message
+        and "status=200" in record.message
+        for record in caplog.records
+    )
 
 
 def test_exchange_rate_tool_is_registered_and_localized(client):
@@ -868,6 +877,18 @@ def test_visit_counter_is_read_only_then_increments(client):
     assert client.get("/api/visits").get_json() == {"count": 1}
 
 
+def test_local_telemetry_writes_are_disabled_by_default(client, monkeypatch):
+    monkeypatch.delenv("TELEMETRY_WRITES", raising=False)
+    monkeypatch.delenv("VERCEL", raising=False)
+
+    visit = client.post("/api/visits/increment").get_json()
+    click = client.post("/api/tool-click", json={"tool_id": "json"}).get_json()
+
+    assert visit == {"count": 0, "skipped": True}
+    assert click == {"ok": True, "tool_id": "json", "count": None, "skipped": True}
+    assert client.get("/api/visits").get_json() == {"count": 0}
+
+
 def test_anonymous_unique_users_are_deduped_and_rendered_in_admin_chart(client):
     import app_settings
 
@@ -1299,3 +1320,51 @@ def test_first_render_navigation_and_accessibility_regressions(client):
     favicon = client.get("/favicon.ico")
     assert favicon.status_code == 308
     assert favicon.headers["Location"].endswith("/favicon.svg")
+
+
+def test_operational_logging_and_delivery_gate_are_wired():
+    root = Path(__file__).resolve().parents[2]
+    app_script = (root / "backend" / "app.py").read_text()
+    translate_route = (root / "backend" / "routes" / "translate.py").read_text()
+    area_route = (root / "backend" / "routes" / "area_search.py").read_text()
+    exchange_route = (root / "backend" / "routes" / "exchange_rates.py").read_text()
+    content_route = (root / "backend" / "routes" / "content.py").read_text()
+    wishes_route = (root / "backend" / "routes" / "wishes.py").read_text()
+    stats_route = (root / "backend" / "routes" / "stats.py").read_text()
+    start_script = (root / "start.sh").read_text()
+    project_instructions = (root / "CLAUDE.md").read_text()
+
+    assert "event=app_start" in app_script
+    assert "flask_debug=%s" in app_script
+    assert "event=http_request" in app_script
+    assert "def _log_path(path: str)" in app_script
+    assert 'r"/api/\\1/:id"' in app_script
+    assert 'response.headers["X-Request-ID"]' in app_script
+    assert "REQUEST_LOG" in app_script
+    assert 'logging.getLogger("werkzeug").setLevel(logging.WARNING)' in app_script
+    assert "event=translate_success" in translate_route
+    assert "event=translate_failed" in translate_route
+    assert "event=area_intro_success" in area_route
+    assert "event=area_intro_rate_limited" in area_route
+    assert "event=exchange_rates_success" in exchange_route
+    assert "event=content_created" in content_route
+    assert "event=content_deleted" in content_route
+    assert "event=wish_created" in wishes_route
+    assert "event=wish_replied" in wishes_route
+    assert "event=wish_deleted" in wishes_route
+    assert "event=tool_click" in stats_route
+    assert "TELEMETRY_WRITES" in stats_route
+    assert "isLocalDevelopmentHost()" in (root / "frontend" / "js" / "app.js").read_text()
+    assert 'echo "[log] 本次启动日志"' in start_script
+    assert "set -o pipefail" in start_script
+    assert "validate_args" in start_script
+    assert 'HOST=127.0.0.1 FLASK_DEBUG=1 PYTHONUNBUFFERED=1 PYTHONPATH=backend "$VENV_PYTHON" backend/app.py 2>&1 | tee -a "$LOGFILE"' in start_script
+    assert 'FLASK_DEBUG=0 PYTHONPATH=backend nohup "$VENV_PYTHON" backend/app.py' in start_script
+    assert "Flask Debug: on（自动重载，仅监听本机）" in start_script
+    assert "非法参数:" in start_script
+    assert "无需额外参数" in start_script
+    assert "debug --test" not in start_script
+    assert "logs)" in start_script
+    assert "产品交付门禁（强制）" in project_instructions
+    assert "./start.sh logs" in project_instructions
+    assert "不得声称产品已交付完成" in project_instructions

@@ -381,6 +381,7 @@ def area_search_world_search():
 
 @area_search_bp.route("/intro", methods=["POST"])
 def area_search_intro():
+    started = time.perf_counter()
     if not app_settings._DEEPSEEK_KEY:
         return jsonify({"ok": False, "error": "not_configured"}), 503
 
@@ -395,9 +396,15 @@ def area_search_intro():
     cache_key = _area_intro_cache_key(mode, region_path)
     cached_intro = _area_intro_cache_get(cache_key)
     if cached_intro:
+        logger.info(
+            "event=area_intro_success mode=%s cached=true duration_ms=%.1f",
+            mode,
+            (time.perf_counter() - started) * 1000,
+        )
         return jsonify({"ok": True, "intro": cached_intro, "cached": True})
     allowed, retry_after = _check_area_intro_rate_limit(_client_ip())
     if not allowed:
+        logger.warning("event=area_intro_rate_limited mode=%s retry_after=%s", mode, retry_after)
         response = jsonify({"ok": False, "error": "rate_limited", "retry_after": retry_after})
         response.headers["Retry-After"] = str(retry_after)
         return response, 429
@@ -431,7 +438,12 @@ def area_search_intro():
             return jsonify({"ok": False, "error": "generation_incomplete"}), 502
         intro = choice["message"]["content"].strip()
     except (KeyError, requests.exceptions.RequestException) as e:
-        logger.warning("Area intro failed: %s", e)
+        logger.warning(
+            "event=area_intro_failed mode=%s error_type=%s duration_ms=%.1f",
+            mode,
+            type(e).__name__,
+            (time.perf_counter() - started) * 1000,
+        )
         return jsonify({"ok": False, "error": "generation_failed"}), 500
 
     _area_intro_cache_set(cache_key, intro)
@@ -439,4 +451,10 @@ def area_search_intro():
     entry = json.dumps({"path": region_path[:200], "intro": intro[:200], "mode": mode}, ensure_ascii=False)
     cache_store.cache_lpush("area_intro_history", entry)
     cache_store.cache_ltrim("area_intro_history", 0, 199)
+    logger.info(
+        "event=area_intro_success mode=%s cached=false chars=%s duration_ms=%.1f",
+        mode,
+        len(intro),
+        (time.perf_counter() - started) * 1000,
+    )
     return jsonify({"ok": True, "intro": intro})

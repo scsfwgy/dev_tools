@@ -70,7 +70,7 @@ DevTools/
 
 ```bash
 ./start.sh test       # 创建虚拟环境、安装依赖并运行测试
-./start.sh debug      # 测试通过后以前台调试模式启动
+./start.sh debug      # 测试通过后开启 Flask Debug/自动重载，仅监听 127.0.0.1
 ./start.sh start      # 测试通过后在后台启动
 ./start.sh restart    # 测试通过后重启
 ./start.sh status     # 查看运行状态
@@ -92,7 +92,7 @@ DevTools/
 | `DEV_TOOLS_DEEPSEEK_API_KEY` | 翻译与地区 AI 介绍必需 | DeepSeek 接口密钥 |
 | `SITE_URL` | 否 | 覆盖 SEO 主域名，默认 `https://dev.tools24.uk` |
 | `SEO_LAST_MODIFIED` | 否 | 覆盖 sitemap 的最后修改日期 |
-| `HOST` / `PORT` / `FLASK_DEBUG` | 否 | Flask 监听地址、端口和调试开关 |
+| `HOST` / `PORT` / `FLASK_DEBUG` | 否 | Flask 参数；启动脚本会为 `debug` 强制设置本机监听和 Debug on，为 `start/restart` 强制 Debug off |
 
 未配置 Redis/KV 时，访问计数和心愿墙可使用本地降级存储；serverless 环境应配置远程存储。
 

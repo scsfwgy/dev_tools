@@ -1,7 +1,9 @@
 """DevTools — Flask app."""
 import logging
 import os
+import re
 from time import perf_counter
+from uuid import uuid4
 
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
@@ -30,6 +32,10 @@ app = Flask(__name__, static_folder=None)
 CORS(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+# Werkzeug's access logger includes the raw query string. Keep its startup
+# warnings, but rely on the structured request log below so admin tokens or
+# other query values are never copied into service logs.
+logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
 app.register_blueprint(site_bp)
 app.register_blueprint(wishes_bp)
@@ -40,22 +46,25 @@ app.register_blueprint(content_bp)
 app.register_blueprint(exchange_rates_bp)
 
 
-def _should_log_local_request() -> bool:
-    if app.config.get("TESTING"):
-        return False
-    if os.getenv("VERCEL"):
-        return False
-    return os.getenv("LOCAL_REQUEST_LOG", "1").lower() not in ("0", "false", "no", "off")
+def _request_logging_enabled() -> bool:
+    return os.getenv("REQUEST_LOG", "1").lower() not in ("0", "false", "no", "off")
+
+
+def _log_path(path: str) -> str:
+    return re.sub(r"^/api/(content|wishes)/[^/]+", r"/api/\1/:id", path)
 
 
 @app.before_request
 def mark_request_start():
-    if _should_log_local_request():
+    request.environ["devtools_request_id"] = uuid4().hex[:12]
+    if _request_logging_enabled():
         request.environ["devtools_request_start"] = perf_counter()
 
 
 @app.after_request
 def prevent_api_indexing(response):
+    request_id = request.environ.get("devtools_request_id", "-")
+    response.headers["X-Request-ID"] = request_id
     if request.path.startswith("/api/"):
         response.headers["X-Robots-Tag"] = "noindex, nofollow"
     if response.status_code == 404:
@@ -75,11 +84,18 @@ def prevent_api_indexing(response):
         or not request.path.startswith("/api/")
     ):
         response.headers["Cache-Control"] = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
-    if _should_log_local_request() and request.path.startswith("/api/"):
+    if _request_logging_enabled() and request.path.startswith("/api/"):
         start = request.environ.get("devtools_request_start")
         if start is not None:
             duration_ms = (perf_counter() - start) * 1000
-            logger.info("%s %s -> %s %.1fms", request.method, request.path, response.status_code, duration_ms)
+            logger.info(
+                "event=http_request request_id=%s method=%s path=%s status=%s duration_ms=%.1f",
+                request_id,
+                request.method,
+                _log_path(request.path),
+                response.status_code,
+                duration_ms,
+            )
     return response
 
 
@@ -94,6 +110,19 @@ def not_found(_error):
 
 if set(public_tool_ids()) != set(TOOLS):
     raise RuntimeError("TOOL_REGISTRY indexable entries must match TOOLS SEO entries")
+
+logger.info(
+    "event=app_start environment=%s host=%s flask_debug=%s site_url=%s tools=%s indexable_tools=%s redis=%s deepseek=%s immutable_assets=%s",
+    os.getenv("VERCEL_ENV", "local"),
+    os.getenv("HOST", "0.0.0.0"),
+    os.getenv("FLASK_DEBUG", "").lower() in ("1", "true", "yes", "on"),
+    app_settings.SITE_URL,
+    len(TOOL_REGISTRY),
+    len(public_tool_ids()),
+    cache_store.is_enabled(),
+    bool(app_settings._DEEPSEEK_KEY),
+    immutable_asset_cache_enabled(),
+)
 
 
 _AREA_INTRO_LOCAL_CACHE = app_settings._AREA_INTRO_LOCAL_CACHE

@@ -12,6 +12,7 @@ def isolate_external_state(monkeypatch, tmp_path):
     monkeypatch.setattr(app_settings, "_UNIQUE_VISIT_PATH", tmp_path / "unique_visits.json")
     monkeypatch.setattr(wishes_service, "_WISHES_PATH", tmp_path / "wishes.json")
     monkeypatch.setenv("WISH_ADMIN_TOKEN", "test-admin-token")
+    monkeypatch.setenv("TELEMETRY_WRITES", "1")
 
     captcha._local_store.clear()
     wishes_service._rate_store.clear()

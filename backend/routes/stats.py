@@ -2,6 +2,8 @@
 import hashlib
 import html
 import json
+import logging
+import os
 import re
 import time
 from datetime import date, timedelta
@@ -15,8 +17,16 @@ from tool_data import TOOLS
 from routes.content import _list_contents, _load_content
 
 stats_bp = Blueprint("stats", __name__, url_prefix="/api")
+logger = logging.getLogger(__name__)
 
 _ANONYMOUS_ID_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
+
+
+def _telemetry_writes_enabled():
+    configured = os.getenv("TELEMETRY_WRITES")
+    if configured is None:
+        return bool(os.getenv("VERCEL"))
+    return configured.lower() not in ("0", "false", "no", "off")
 
 
 def _read_counter():
@@ -112,20 +122,25 @@ def _unique_visit_series():
 
 @stats_bp.route("/visits")
 def visits():
+    return jsonify({"count": _current_visit_count()})
+
+
+def _current_visit_count():
     if cache_store.is_enabled():
         result = cache_store.cache_get(app_settings._VISIT_KEY)
         if result is not None:
             try:
-                return jsonify({"count": int(result)})
+                return int(result)
             except (TypeError, ValueError):
                 pass
     with app_settings._counter_lock:
-        count = _read_counter()
-    return jsonify({"count": count})
+        return _read_counter()
 
 
 @stats_bp.route("/visits/increment", methods=["POST"])
 def visits_increment():
+    if not _telemetry_writes_enabled():
+        return jsonify({"count": _current_visit_count(), "skipped": True})
     if cache_store.is_enabled():
         count = cache_store.cache_incr(app_settings._VISIT_KEY)
         if count is not None:
@@ -152,7 +167,10 @@ def tool_click():
     tool_id = data.get("tool_id", "")
     if not tool_id or tool_id == "home":
         return jsonify({"ok": False, "error": "invalid tool_id"}), 400
+    if not _telemetry_writes_enabled():
+        return jsonify({"ok": True, "tool_id": tool_id, "count": None, "skipped": True})
     count = cache_store.cache_hincrby(app_settings._TOOL_CLICK_KEY, tool_id)
+    logger.info("event=tool_click tool_id=%s count=%s", tool_id, count)
     return jsonify({"ok": True, "tool_id": tool_id, "count": count})
 
 

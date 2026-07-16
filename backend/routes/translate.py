@@ -1,6 +1,7 @@
 """Translate API routes."""
 import json
 import logging
+from time import perf_counter
 
 import requests
 from flask import Blueprint, jsonify, request
@@ -72,6 +73,7 @@ def _build_prompt(text: str) -> str:
 
 @translate_bp.route("/translate", methods=["POST"])
 def translate():
+    started = perf_counter()
     if not app_settings._DEEPSEEK_KEY:
         return jsonify({"ok": False, "error": "DeepSeek API key not configured"}), 503
 
@@ -114,7 +116,12 @@ def translate():
 
         result = json.loads(raw)
     except (json.JSONDecodeError, KeyError, requests.exceptions.RequestException) as e:
-        logger.warning("Translate failed: %s", e)
+        logger.warning(
+            "event=translate_failed chars=%s error_type=%s duration_ms=%.1f",
+            len(text),
+            type(e).__name__,
+            (perf_counter() - started) * 1000,
+        )
         return jsonify({"ok": False, "error": "Translation failed, please retry"}), 500
 
     cache_store.cache_incr("translate_count")
@@ -125,6 +132,14 @@ def translate():
     cache_store.cache_ltrim("translate_history", 0, 199)
 
     short = _is_short(text)
+    logger.info(
+        "event=translate_success source=%s target=%s chars=%s short=%s duration_ms=%.1f",
+        source_lang,
+        target_lang,
+        len(text),
+        short,
+        (perf_counter() - started) * 1000,
+    )
     return jsonify({
         "ok": True,
         "translation": result.get("translation", ""),

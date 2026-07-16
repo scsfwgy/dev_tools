@@ -1,6 +1,7 @@
 """Content generator routes."""
 import html
 import json
+import logging
 import secrets
 import time
 from pathlib import Path
@@ -12,6 +13,7 @@ from http_utils import _check_admin_token, _client_ip
 from service import cache_store
 
 content_bp = Blueprint("content", __name__, url_prefix="/api/content")
+logger = logging.getLogger(__name__)
 
 
 def _content_store_path(content_id: str) -> Path:
@@ -106,6 +108,11 @@ def content_create():
 
     content_id = secrets.token_hex(4)
     _save_content(content_id, text)
+    logger.info(
+        "event=content_created chars=%s storage=%s",
+        len(text),
+        "redis" if cache_store.is_enabled() else "file",
+    )
     return jsonify({
         "ok": True,
         "id": content_id,
@@ -172,7 +179,9 @@ def content_get(content_id: str):
         return Response("Content not found or expired.", status=404, mimetype="text/plain")
     text = entry["text"].strip()
     if text.startswith(("http://", "https://")):
+        logger.info("event=content_served kind=redirect chars=%s", len(text))
         return Response("", status=302, headers={"Location": text})
+    logger.info("event=content_served kind=text chars=%s", len(text))
     return Response(text, content_type="text/plain; charset=utf-8")
 
 
@@ -182,4 +191,5 @@ def content_delete(content_id: str):
     if not _check_admin_token():
         return jsonify({"ok": False, "error": "unauthorized"}), 401
     deleted = _delete_content(content_id)
+    logger.info("event=content_deleted deleted=%s", deleted)
     return jsonify({"ok": deleted})

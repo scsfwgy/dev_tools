@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DIR"
@@ -15,6 +16,14 @@ VENV_PYTHON="backend/.venv/bin/python3"
 VENV_PIP="backend/.venv/bin/pip"
 PIDFILE="logs/server.pid"
 LOGFILE="logs/server.log"
+
+validate_args() {
+    if [ "$#" -gt 1 ]; then
+        echo "非法参数: ${*:2}" >&2
+        echo "提示: debug、start 和 restart 都会强制运行完整测试，无需额外参数。" >&2
+        exit 1
+    fi
+}
 
 setup() {
     echo "[1/3] 安装依赖..."
@@ -64,13 +73,20 @@ start_production() {
 
 launch_production() {
     kill_port_if_needed
+    local log_start=0
+    if [ -f "$LOGFILE" ]; then
+        log_start=$(wc -l < "$LOGFILE")
+    fi
     echo "[3/3] 启动服务 (后台模式)..."
-    PYTHONPATH=backend nohup "$VENV_PYTHON" backend/app.py >> "$LOGFILE" 2>&1 &
+    FLASK_DEBUG=0 PYTHONPATH=backend nohup "$VENV_PYTHON" backend/app.py >> "$LOGFILE" 2>&1 &
     echo $! > "$PIDFILE"
     wait_for_url "http://127.0.0.1:8731/api/health"
     echo "  服务已启动 PID: $(cat $PIDFILE)"
     echo "  访问: http://127.0.0.1:8731"
     echo "  日志: $LOGFILE"
+    echo ""
+    echo "[log] 本次启动日志"
+    tail -n "+$((log_start + 1))" "$LOGFILE"
 }
 
 start_debug() {
@@ -78,9 +94,12 @@ start_debug() {
     kill_port_if_needed
     echo "[3/3] 启动服务 (调试模式)..."
     echo "  访问: http://127.0.0.1:8731"
+    echo "  Flask Debug: on（自动重载，仅监听本机）"
     echo "  按 Ctrl+C 停止"
+    echo "  日志: 当前终端 + $LOGFILE"
     echo ""
-    PYTHONPATH=backend "$VENV_PYTHON" backend/app.py
+    echo "[log] debug 会话开始 $(date '+%Y-%m-%d %H:%M:%S %z')" | tee -a "$LOGFILE"
+    HOST=127.0.0.1 FLASK_DEBUG=1 PYTHONUNBUFFERED=1 PYTHONPATH=backend "$VENV_PYTHON" backend/app.py 2>&1 | tee -a "$LOGFILE"
 }
 
 stop() {
@@ -121,6 +140,15 @@ status() {
     fi
 }
 
+logs() {
+    if [ ! -f "$LOGFILE" ]; then
+        echo "暂无日志: $LOGFILE"
+        return 0
+    fi
+    echo "最近 ${LOG_LINES:-80} 行日志: $LOGFILE"
+    tail -n "${LOG_LINES:-80}" "$LOGFILE"
+}
+
 kill_port_if_needed() {
     local port="${PORT:-8731}"
     local pids
@@ -133,6 +161,8 @@ kill_port_if_needed() {
 }
 
 # ─── 入口 ───
+
+validate_args "$@"
 
 case "${1:-}" in
     start|production)
@@ -157,15 +187,19 @@ case "${1:-}" in
     status)
         status
         ;;
+    logs)
+        logs
+        ;;
     "")
         echo "用法: ./start.sh [命令]"
         echo ""
         echo "  start       先测试，再以生产模式启动 (后台)"
-        echo "  debug       先测试，再以调试模式启动 (前台)"
+        echo "  debug       强制测试通过后以前台模式启动；日志同步输出到终端和文件"
         echo "  test        仅运行测试套件"
         echo "  stop        停止服务"
         echo "  restart     先测试，通过后重启"
         echo "  status      查看状态"
+        echo "  logs        查看最近 80 行服务日志（可用 LOG_LINES 调整）"
         exit 1
         ;;
     *)
