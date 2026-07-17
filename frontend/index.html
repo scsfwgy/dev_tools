@@ -46,6 +46,11 @@
         clarityScript.async = true;
         clarityScript.src = 'https://www.clarity.ms/tag/xhmbupqg3l';
         document.head.appendChild(clarityScript);
+        var cfBeacon = document.createElement('script');
+        cfBeacon.type = 'module';
+        cfBeacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        cfBeacon.setAttribute('data-cf-beacon', '{"token": "339ae998356b4b198d8c6b2166855589"}');
+        document.head.appendChild(cfBeacon);
       }
       window.addEventListener('load', function () {
         if ('requestIdleCallback' in window) requestIdleCallback(loadAnalytics, { timeout: 2500 });

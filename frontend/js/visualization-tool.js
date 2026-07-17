@@ -4,6 +4,7 @@ var VisualizationTool = (function () {
   var MAX_ROWS = 5000;
   var MAX_DEPTH = 5;
   var DEBOUNCE_MS = 300;
+  var ANIMATION_STYLES = ["draw", "grow", "stagger", "zoom", "bounce"];
   var SAMPLE_TABLE_ZH = [
     "月份,收入,成本,订单",
     "1月,128,82,320",
@@ -53,6 +54,7 @@ var VisualizationTool = (function () {
   var resizeHandler = null;
   var keydownHandler = null;
   var echartsPromise = null;
+  var replayFrame = null;
 
   function t(key) {
     return (window.__t && window.__t(key)) || key;
@@ -728,7 +730,7 @@ var VisualizationTool = (function () {
       setStatus(error.message || t("visualization.errors.unknown"), true);
       if (chart) chart.clear();
       setChartState(window.echarts ? "empty" : "loading");
-      updateExportState();
+      updateToolbarState();
     }
   }
 
@@ -859,6 +861,167 @@ var VisualizationTool = (function () {
     });
   }
 
+  function animationConfig(rowCount, duration, reducedMotion) {
+    var normalizedDuration = Math.max(0, Math.floor(Number(duration) || 0));
+    var enabled = rowCount <= 1000 && normalizedDuration > 0 && !reducedMotion;
+    return {
+      enabled: enabled,
+      duration: enabled ? normalizedDuration : 0
+    };
+  }
+
+  function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+
+  function normalizeAnimationStyle(value) {
+    return ANIMATION_STYLES.indexOf(value) !== -1 ? value : "draw";
+  }
+
+  function animationStyleProgress(progress, style) {
+    var normalized = Math.max(0, Math.min(1, Number(progress) || 0));
+    var selectedStyle = normalizeAnimationStyle(style);
+    if (normalized >= 1) return 1;
+    if (selectedStyle === "draw") return normalized;
+    if (selectedStyle === "bounce") {
+      var back = 1.70158;
+      return 1 + (back + 1) * Math.pow(normalized - 1, 3) + back * Math.pow(normalized - 1, 2);
+    }
+    if (selectedStyle === "stagger") {
+      return normalized * normalized * (3 - 2 * normalized);
+    }
+    return 1 - Math.pow(1 - normalized, 3);
+  }
+
+  function staggerItemProgress(progress, index, total) {
+    var count = Math.max(1, Number(total) || 1);
+    var delay = count <= 1 ? 0 : 0.58 * index / (count - 1);
+    var local = Math.max(0, Math.min(1, (progress - delay) / (1 - 0.58)));
+    return 1 - Math.pow(1 - local, 3);
+  }
+
+  function progressivePolylineSegments(points, progress) {
+    var normalizedProgress = Math.max(0, Math.min(1, Number(progress) || 0));
+    var sourceSegments = [];
+    var currentSegment = [];
+    (points || []).forEach(function (point) {
+      if (Array.isArray(point) && isFinite(point[0]) && isFinite(point[1])) {
+        currentSegment.push([Number(point[0]), Number(point[1])]);
+        return;
+      }
+      if (currentSegment.length) sourceSegments.push(currentSegment);
+      currentSegment = [];
+    });
+    if (currentSegment.length) sourceSegments.push(currentSegment);
+
+    var lengths = sourceSegments.map(function (segment) {
+      var length = 0;
+      for (var index = 1; index < segment.length; index++) {
+        var dx = segment[index][0] - segment[index - 1][0];
+        var dy = segment[index][1] - segment[index - 1][1];
+        length += Math.sqrt(dx * dx + dy * dy);
+      }
+      return length;
+    });
+    var totalLength = lengths.reduce(function (sum, length) { return sum + length; }, 0);
+    var remaining = totalLength * normalizedProgress;
+    var revealed = [];
+
+    sourceSegments.forEach(function (segment, segmentIndex) {
+      if (remaining <= 0 || !segment.length) return;
+      if (segment.length === 1 || lengths[segmentIndex] === 0) {
+        revealed.push(segment.slice());
+        return;
+      }
+      var output = [segment[0].slice()];
+      for (var pointIndex = 1; pointIndex < segment.length; pointIndex++) {
+        var previous = segment[pointIndex - 1];
+        var next = segment[pointIndex];
+        var dx = next[0] - previous[0];
+        var dy = next[1] - previous[1];
+        var edgeLength = Math.sqrt(dx * dx + dy * dy);
+        if (remaining >= edgeLength) {
+          output.push(next.slice());
+          remaining -= edgeLength;
+          continue;
+        }
+        if (edgeLength > 0) {
+          var ratio = remaining / edgeLength;
+          output.push([previous[0] + dx * ratio, previous[1] + dy * ratio]);
+        }
+        remaining = 0;
+        break;
+      }
+      revealed.push(output);
+    });
+    return revealed;
+  }
+
+  function lineDrawGraphics(targetChart, option, progress) {
+    var graphics = [];
+    var palette = option.color || [];
+    var selectedSeriesMap = option.legend && option.legend.selected;
+    option.series.forEach(function (series, seriesIndex) {
+      if (series.type !== "line" || (selectedSeriesMap && selectedSeriesMap[series.name] === false)) return;
+      var points = series.data.map(function (item, index) {
+        if (item === null || item === undefined) return null;
+        var value = Number(item && typeof item === "object" ? item.value : item);
+        if (!isFinite(value)) return null;
+        var point = targetChart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [index, value]);
+        return Array.isArray(point) && isFinite(point[0]) && isFinite(point[1]) ? point : null;
+      });
+      progressivePolylineSegments(points, progress).forEach(function (segment, segmentIndex) {
+        if (segment.length < 2) return;
+        graphics.push({
+          id: "viz-line-draw-" + seriesIndex + "-" + segmentIndex,
+          type: "polyline",
+          silent: true,
+          z: 100,
+          shape: {
+            points: segment,
+            smooth: series.smooth ? 0.5 : 0
+          },
+          style: {
+            fill: null,
+            stroke: series.lineStyle && series.lineStyle.color
+              ? series.lineStyle.color
+              : palette[seriesIndex % Math.max(1, palette.length)],
+            lineWidth: Number(series.lineStyle && series.lineStyle.width) || 2,
+            lineCap: "round",
+            lineJoin: "round"
+          }
+        });
+      });
+    });
+    return graphics;
+  }
+
+  function pieSweepData(data, progress) {
+    var normalizedProgress = Math.max(0, Math.min(1, Number(progress) || 0));
+    var values = (data || []).map(function (item) {
+      return Math.max(0, Number(item && typeof item === "object" ? item.value : item) || 0);
+    });
+    var total = values.reduce(function (sum, value) { return sum + value; }, 0);
+    var remainingReveal = total * normalizedProgress;
+    var revealedTotal = 0;
+    var result = (data || []).map(function (item, index) {
+      var revealed = Math.min(values[index], Math.max(0, remainingReveal));
+      remainingReveal -= revealed;
+      revealedTotal += revealed;
+      return Object.assign({}, item, { value: revealed });
+    });
+    result.push({
+      name: "__viz-angle-mask__",
+      value: Math.max(0, total - revealedTotal),
+      silent: true,
+      tooltip: { show: false },
+      label: { show: false },
+      labelLine: { show: false },
+      itemStyle: { opacity: 0 }
+    });
+    return result;
+  }
+
   function chartOption() {
     var rows = effectiveRows();
     var categories = categoryValues(rows);
@@ -872,9 +1035,16 @@ var VisualizationTool = (function () {
     var smooth = byId("viz-smooth").checked;
     var showPoints = byId("viz-show-points").checked;
     var title = byId("viz-title").value.trim();
+    var animationDuration = Math.max(0, Math.floor(Number(byId("viz-animation-duration").value) || 0));
+    var animation = animationConfig(rows.length, animationDuration, prefersReducedMotion());
+    var animationEnabled = animation.enabled;
     var base = {
       backgroundColor: background,
-      animation: rows.length <= 1000,
+      animation: animationEnabled,
+      animationDuration: animation.duration,
+      animationDurationUpdate: animation.duration,
+      animationEasing: "cubicOut",
+      animationEasingUpdate: "cubicInOut",
       color: palette,
       aria: {
         enabled: true,
@@ -903,12 +1073,19 @@ var VisualizationTool = (function () {
     if (chartType === "pie") {
       var pieField = selectedSeries[0];
       var pieValues = seriesValues(pieField, rows);
+      var pieData = categories.map(function (category, index) {
+        return { name: category, value: pieValues[index] };
+      }).filter(function (item) { return item.value !== null; });
+      base.legend.data = pieData.map(function (item) { return item.name; });
       base.series = [{
+        id: "viz-pie-" + pieField,
         name: pieField,
         type: "pie",
         radius: ["28%", "68%"],
         center: ["50%", "56%"],
         minAngle: 2,
+        animationType: "expansion",
+        animationTypeUpdate: "transition",
         label: {
           show: showLabels,
           color: text,
@@ -918,9 +1095,7 @@ var VisualizationTool = (function () {
         },
         labelLine: { show: showLabels },
         tooltip: { valueFormatter: function (value) { return formatSeriesValue(pieField, value); } },
-        data: categories.map(function (category, index) {
-          return { name: category, value: pieValues[index] };
-        }).filter(function (item) { return item.value !== null; })
+        data: pieData
       }];
       return base;
     }
@@ -953,6 +1128,7 @@ var VisualizationTool = (function () {
     base.series = selectedSeries.map(function (field) {
       if (chartType === "line") {
         return {
+          id: "viz-line-" + field,
           name: field,
           type: "line",
           data: seriesValues(field, rows),
@@ -970,6 +1146,7 @@ var VisualizationTool = (function () {
         };
       }
       return {
+        id: "viz-" + chartType + "-" + field,
         name: field,
         type: "bar",
         data: seriesValues(field, rows),
@@ -1000,20 +1177,197 @@ var VisualizationTool = (function () {
     if (patternControl && xFormat) patternControl.classList.toggle("hidden", xFormat.value !== "custom");
   }
 
-  function updateExportState() {
+  function updateToolbarState() {
     var button = byId("viz-export");
     var fullscreenButton = byId("viz-fullscreen");
     var exportConfigButton = byId("viz-export-config");
     var importConfigButton = byId("viz-import-config");
+    var rows = dataset ? effectiveRows() : [];
+    var durationInput = byId("viz-animation-duration");
+    var duration = Math.max(0, Math.floor(Number(durationInput && durationInput.value) || 0));
+    var animation = animationConfig(rows.length, duration, prefersReducedMotion());
+    var animationDisabled = !chart || !dataset || !selectedSeries.length || !animation.enabled;
+    var animationTitle = t("visualization.replayAnimation");
+    if (rows.length > 1000) animationTitle = t("visualization.animationDisabledLarge");
+    else if (duration === 0) animationTitle = t("visualization.animationDisabledOff");
+    else if (prefersReducedMotion()) animationTitle = t("visualization.animationDisabledReduced");
+    else if (animationDisabled) animationTitle = t("visualization.animationDisabled");
+    ["viz-animate", "viz-animate-fs"].forEach(function (id) {
+      var animateButton = byId(id);
+      if (animateButton) {
+        animateButton.disabled = animationDisabled;
+        animateButton.title = animationTitle;
+      }
+    });
     if (button) button.disabled = !chart || !dataset || !selectedSeries.length;
     if (fullscreenButton) fullscreenButton.disabled = !chart || !dataset || !selectedSeries.length;
     if (exportConfigButton) exportConfigButton.disabled = !dataset;
     if (importConfigButton) importConfigButton.disabled = !dataset;
   }
 
+  function replayChartOption(targetChart, option) {
+    var current = targetChart.getOption ? targetChart.getOption() : null;
+    var selected = current && current.legend && current.legend[0] && current.legend[0].selected;
+    if (selected && option.legend) option.legend.selected = Object.assign({}, selected);
+    return option;
+  }
+
+  function replayAxisBounds(seriesList) {
+    var min = 0;
+    var max = 0;
+    var stacks = Object.create(null);
+    seriesList.forEach(function (series) {
+      if (series.type === "pie") return;
+      if (series.stack) {
+        if (!stacks[series.stack]) stacks[series.stack] = { positive: [], negative: [] };
+        series.data.forEach(function (item, index) {
+          var value = Number(item && typeof item === "object" ? item.value : item);
+          if (!isFinite(value)) return;
+          if (value >= 0) stacks[series.stack].positive[index] = (stacks[series.stack].positive[index] || 0) + value;
+          else stacks[series.stack].negative[index] = (stacks[series.stack].negative[index] || 0) + value;
+        });
+        return;
+      }
+      series.data.forEach(function (item) {
+        var value = Number(item && typeof item === "object" ? item.value : item);
+        if (!isFinite(value)) return;
+        min = Math.min(min, value);
+        max = Math.max(max, value);
+      });
+    });
+    Object.keys(stacks).forEach(function (stack) {
+      stacks[stack].positive.forEach(function (value) { max = Math.max(max, value || 0); });
+      stacks[stack].negative.forEach(function (value) { min = Math.min(min, value || 0); });
+    });
+    if (min === max) return { min: min, max: max === 0 ? 1 : max };
+    var padding = (max - min) * 0.08;
+    return {
+      min: min < 0 ? min - padding : 0,
+      max: max > 0 ? max + padding : 0
+    };
+  }
+
+  function replayFrameOption(option, progress, style, complete, drawGraphics) {
+    var selectedStyle = style === undefined ? "grow" : normalizeAnimationStyle(style);
+    var normalizedProgress = Math.max(0, Math.min(selectedStyle === "bounce" ? 1.12 : 1, Number(progress) || 0));
+    var isComplete = complete === true || (complete === undefined && normalizedProgress === 1);
+    var frameOption = Object.assign({}, option, {
+      animation: false,
+      animationDuration: 0,
+      animationDurationUpdate: 0,
+      graphic: selectedStyle === "draw" && !isComplete ? (drawGraphics || []) : [],
+      series: option.series.map(function (series) {
+        var opacity = selectedStyle === "zoom"
+          ? Math.max(0, Math.min(1, normalizedProgress))
+          : (selectedStyle === "draw" && series.type === "line" && !isComplete ? 0 : 1);
+        if (series.type === "pie") {
+          var innerRadius = parseFloat(series.radius[0]) || 0;
+          var outerRadius = parseFloat(series.radius[1]) || 0;
+          var radiusProgress = selectedStyle === "draw"
+            ? 1
+            : (selectedStyle === "zoom"
+            ? 0.45 + 0.55 * normalizedProgress
+            : (selectedStyle === "stagger" ? 0.72 + 0.28 * Math.min(1, normalizedProgress) : normalizedProgress));
+          var pieData = selectedStyle === "draw" && !isComplete
+            ? pieSweepData(series.data, normalizedProgress)
+            : (selectedStyle === "stagger" ? series.data.map(function (item, index) {
+              var itemProgress = staggerItemProgress(normalizedProgress, index, series.data.length);
+              return Object.assign({}, item, { value: Number(item.value) * itemProgress });
+            }) : series.data);
+          return Object.assign({}, series, {
+            radius: [
+              (innerRadius * radiusProgress) + "%",
+              (outerRadius * radiusProgress) + "%"
+            ],
+            minAngle: selectedStyle === "draw" && !isComplete ? 0 : series.minAngle,
+            itemStyle: Object.assign({}, series.itemStyle, { opacity: opacity }),
+            label: Object.assign({}, series.label, { show: isComplete && series.label.show }),
+            labelLine: Object.assign({}, series.labelLine, { show: isComplete && series.labelLine.show }),
+            data: pieData
+          });
+        }
+        var valueProgress = selectedStyle === "zoom"
+          ? 0.82 + 0.18 * normalizedProgress
+          : (selectedStyle === "draw" && series.type === "line" ? 1 : normalizedProgress);
+        return Object.assign({}, series, {
+          itemStyle: Object.assign({}, series.itemStyle, { opacity: opacity }),
+          lineStyle: Object.assign({}, series.lineStyle, { opacity: opacity }),
+          label: Object.assign({}, series.label, { show: isComplete && series.label.show }),
+          symbolSize: series.type === "line" && selectedStyle === "zoom"
+            ? (Number(series.symbolSize) || 7) * (0.6 + 0.4 * normalizedProgress)
+            : series.symbolSize,
+          data: series.data.map(function (value, index) {
+            if (value === null || value === undefined) return value;
+            var itemProgress = selectedStyle === "stagger"
+              ? staggerItemProgress(normalizedProgress, index, series.data.length)
+              : valueProgress;
+            if (typeof value === "object") {
+              return Object.assign({}, value, { value: Number(value.value) * itemProgress });
+            }
+            return Number(value) * itemProgress;
+          })
+        });
+      })
+    });
+    if (option.yAxis) {
+      var axisBounds = replayAxisBounds(option.series);
+      if (selectedStyle === "bounce") {
+        if (axisBounds.max > 0) axisBounds.max *= 1.04;
+        if (axisBounds.min < 0) axisBounds.min *= 1.04;
+      }
+      frameOption.yAxis = Object.assign({}, option.yAxis, axisBounds);
+    }
+    return frameOption;
+  }
+
+  function cancelReplayAnimation() {
+    if (replayFrame !== null && typeof window.cancelAnimationFrame === "function") {
+      window.cancelAnimationFrame(replayFrame);
+    }
+    replayFrame = null;
+  }
+
+  function replayAnimation() {
+    if (!chart || !dataset || !selectedSeries.length) return;
+    var rows = effectiveRows();
+    var duration = Math.max(0, Math.floor(Number(byId("viz-animation-duration").value) || 0));
+    var style = normalizeAnimationStyle(byId("viz-animation-style").value);
+    if (!animationConfig(rows.length, duration, prefersReducedMotion()).enabled) return;
+    cancelReplayAnimation();
+    var option = replayChartOption(chart, chartOption());
+    var targetChart = chart;
+    var startedAt = performance.now();
+    var maxFrames = Math.max(2, Math.min(60, Math.round(duration / 16.67)));
+    var renderedFrame = -1;
+    function renderReplayFrame(now) {
+      if (!root || !chart || chart !== targetChart) {
+        replayFrame = null;
+        return;
+      }
+      var rawProgress = Math.max(0, Math.min(1, (now - startedAt) / duration));
+      var frameIndex = rawProgress >= 1 ? maxFrames : Math.floor(rawProgress * maxFrames);
+      if (frameIndex !== renderedFrame) {
+        renderedFrame = frameIndex;
+        var styledProgress = animationStyleProgress(rawProgress, style);
+        var drawGraphics = style === "draw" && rawProgress < 1
+          ? lineDrawGraphics(targetChart, option, styledProgress)
+          : [];
+        targetChart.setOption(replayFrameOption(option, styledProgress, style, rawProgress >= 1, drawGraphics), { notMerge: true, lazyUpdate: false });
+      }
+      if (rawProgress < 1) {
+        replayFrame = window.requestAnimationFrame(renderReplayFrame);
+        return;
+      }
+      replayFrame = null;
+      targetChart.resize();
+    }
+    renderReplayFrame(startedAt);
+  }
+
   function renderChart() {
+    cancelReplayAnimation();
     updateControlVisibility();
-    updateExportState();
+    updateToolbarState();
     if (!root || !dataset || !selectedSeries.length) {
       if (window.echarts) setChartState("empty");
       return;
@@ -1033,9 +1387,9 @@ var VisualizationTool = (function () {
     if (!chartElement) return;
     setChartState("ready");
     if (!chart) chart = window.echarts.init(chartElement, null, { renderer: "canvas" });
-    chart.setOption(chartOption(), true);
+    chart.setOption(chartOption(), { notMerge: true, lazyUpdate: false });
     chart.resize();
-    updateExportState();
+    updateToolbarState();
   }
 
   function switchMode(mode) {
@@ -1085,7 +1439,7 @@ var VisualizationTool = (function () {
     if (chart) chart.clear();
     setStatus("", false);
     setChartState(window.echarts ? "empty" : "loading");
-    updateExportState();
+    updateToolbarState();
     textarea.focus();
   }
 
@@ -1135,6 +1489,8 @@ var VisualizationTool = (function () {
       sortField: byId("viz-sort-field").value,
       sortDirection: byId("viz-sort-direction").value,
       topN: Math.max(0, Math.floor(Number(byId("viz-top-n").value) || 0)),
+      animationDuration: Math.max(0, Math.floor(Number(byId("viz-animation-duration").value) || 0)),
+      animationStyle: normalizeAnimationStyle(byId("viz-animation-style").value),
       seriesFormats: formats,
       colors: customPalette.slice()
     };
@@ -1206,6 +1562,10 @@ var VisualizationTool = (function () {
     if (config.sortField === "none" || availableFields.indexOf(config.sortField) !== -1) byId("viz-sort-field").value = config.sortField;
     byId("viz-sort-direction").value = config.sortDirection === "desc" ? "desc" : "asc";
     byId("viz-top-n").value = Math.min(dataset.rows.length, Math.max(0, Math.floor(Number(config.topN) || 0)));
+    if (typeof config.animationDuration === "number" && config.animationDuration >= 0 && config.animationDuration <= 60000) {
+      byId("viz-animation-duration").value = config.animationDuration;
+    }
+    byId("viz-animation-style").value = normalizeAnimationStyle(config.animationStyle);
     syncChartTypeButtons();
     renderSeriesFormatControls();
     refreshDataView();
@@ -1398,6 +1758,10 @@ var VisualizationTool = (function () {
     ["viz-sort-field", "viz-sort-direction", "viz-top-n"].forEach(function (id) {
       byId(id).addEventListener(id === "viz-top-n" ? "input" : "change", refreshDataView);
     });
+    byId("viz-animation-duration").addEventListener("input", renderChart);
+    byId("viz-animation-style").addEventListener("change", renderChart);
+    byId("viz-animate").addEventListener("click", replayAnimation);
+    byId("viz-animate-fs").addEventListener("click", replayAnimation);
     byId("viz-export").addEventListener("click", exportPng);
     byId("viz-export-config").addEventListener("click", exportConfig);
     byId("viz-import-config").addEventListener("click", function () { byId("viz-config-file").click(); });
@@ -1484,6 +1848,10 @@ var VisualizationTool = (function () {
       '            <label class="viz-control"><span>' + escapeHtml(t("visualization.sortDirection")) + '</span><select id="viz-sort-direction" class="settings-select"><option value="asc">' + escapeHtml(t("visualization.ascending")) + '</option><option value="desc">' + escapeHtml(t("visualization.descending")) + '</option></select></label>' +
       '            <label class="viz-control"><span>' + escapeHtml(t("visualization.topN")) + '</span><input id="viz-top-n" type="number" min="0" max="5000" step="1" value="0" inputmode="numeric"><small>' + escapeHtml(t("visualization.topNHint")) + '</small></label>' +
       '          </div></section>' +
+      '          <section class="viz-advanced-section"><h3>' + escapeHtml(t("visualization.animationSection")) + '</h3><div class="viz-animation-controls">' +
+      '            <label class="viz-control"><span>' + escapeHtml(t("visualization.animationStyle")) + '</span><select id="viz-animation-style" class="settings-select"><option value="draw">' + escapeHtml(t("visualization.animationDraw")) + '</option><option value="grow">' + escapeHtml(t("visualization.animationGrow")) + '</option><option value="stagger">' + escapeHtml(t("visualization.animationStagger")) + '</option><option value="zoom">' + escapeHtml(t("visualization.animationZoom")) + '</option><option value="bounce">' + escapeHtml(t("visualization.animationBounce")) + '</option></select><small>' + escapeHtml(t("visualization.animationStyleHint")) + '</small></label>' +
+      '            <label class="viz-control"><span>' + escapeHtml(t("visualization.animationDuration")) + '</span><input id="viz-animation-duration" type="number" min="0" max="60000" step="100" value="1000" inputmode="numeric"><small>' + escapeHtml(t("visualization.animationDurationHint")) + '</small></label>' +
+      '          </div></section>' +
       '          <section class="viz-advanced-section"><h3>' + escapeHtml(t("visualization.configTitle")) + '</h3><p>' + escapeHtml(t("visualization.configHint")) + '</p><div class="viz-config-actions"><button id="viz-export-config" type="button">' + escapeHtml(t("visualization.exportConfig")) + '</button><button id="viz-import-config" type="button">' + escapeHtml(t("visualization.importConfig")) + '</button><input id="viz-config-file" class="hidden" type="file" accept="application/json,.json"></div></section>' +
       '        </div>' +
       '      </details>' +
@@ -1491,7 +1859,7 @@ var VisualizationTool = (function () {
       '    <div id="viz-resizer" class="viz-resizer" role="separator" aria-orientation="vertical" aria-valuemin="25" aria-valuemax="70" aria-valuenow="40" aria-label="' + escapeHtml(t("visualization.resizePanels")) + '" title="' + escapeHtml(t("visualization.resizePanelsHint")) + '" tabindex="0"></div>' +
       '    <section id="viz-preview-panel" class="tool-panel viz-preview-panel" aria-labelledby="viz-preview-title">' +
       '      <div class="viz-preview-toolbar"><div><h2 id="viz-preview-title">' + escapeHtml(t("visualization.previewTitle")) + '</h2><p>' + escapeHtml(t("visualization.previewHint")) + '</p></div>' +
-      '        <div class="viz-preview-actions"><button id="viz-fullscreen" class="viz-fullscreen" type="button" aria-pressed="false" disabled>' + escapeHtml(t("visualization.fullscreen")) + '</button><button id="viz-export" class="viz-export" type="button" disabled>' + escapeHtml(t("visualization.exportPng")) + '</button></div></div>' +
+      '        <div class="viz-preview-actions"><button id="viz-animate" class="viz-animate" type="button" disabled aria-label="' + escapeHtml(t("visualization.replayAnimation")) + '" title="' + escapeHtml(t("visualization.replayAnimation")) + '">' + escapeHtml(t("visualization.animation")) + '</button><button id="viz-fullscreen" class="viz-fullscreen" type="button" aria-pressed="false" disabled>' + escapeHtml(t("visualization.fullscreen")) + '</button><button id="viz-export" class="viz-export" type="button" disabled>' + escapeHtml(t("visualization.exportPng")) + '</button></div></div>' +
       '      <div class="viz-chart-types" role="group" aria-label="' + escapeHtml(t("visualization.chartType")) + '">' +
       '        <button class="active" type="button" data-chart-type="line" aria-pressed="true">' + escapeHtml(t("visualization.line")) + '</button>' +
       '        <button type="button" data-chart-type="bar" aria-pressed="false">' + escapeHtml(t("visualization.bar")) + '</button>' +
@@ -1499,12 +1867,12 @@ var VisualizationTool = (function () {
       '        <button type="button" data-chart-type="pie" aria-pressed="false">' + escapeHtml(t("visualization.pie")) + '</button>' +
       '      </div>' +
       '      <div class="viz-chart-shell">' +
+      '        <div class="viz-fs-actions"><button id="viz-animate-fs" class="viz-animate-fs" type="button" disabled aria-label="' + escapeHtml(t("visualization.replayAnimation")) + '" title="' + escapeHtml(t("visualization.replayAnimation")) + '">' + escapeHtml(t("visualization.animation")) + '</button><button id="viz-exit-fullscreen" class="viz-exit-fullscreen" type="button">' + escapeHtml(t("visualization.exitFullscreen")) + '</button></div>' +
       '        <div id="viz-loading" class="viz-chart-message"><span class="viz-spinner" aria-hidden="true"></span><strong>' + escapeHtml(t("visualization.loadingChart")) + '</strong></div>' +
       '        <div id="viz-failure" class="viz-chart-message hidden"><strong id="viz-failure-text">' + escapeHtml(t("visualization.chartLoadFailed")) + '</strong><button id="viz-retry" type="button">' + escapeHtml(t("visualization.retry")) + '</button></div>' +
       '        <div id="viz-empty" class="viz-chart-message hidden"><strong>' + escapeHtml(t("visualization.emptyPreview")) + '</strong><span>' + escapeHtml(t("visualization.emptyPreviewHint")) + '</span></div>' +
       '        <div id="viz-chart" class="viz-chart hidden" role="img" aria-label="' + escapeHtml(t("visualization.previewTitle")) + '"></div>' +
       '      </div>' +
-      '      <button id="viz-exit-fullscreen" class="viz-exit-fullscreen hidden" type="button">' + escapeHtml(t("visualization.exitFullscreen")) + '</button>' +
       '    </section>' +
       '  </div>' +
       '</div>';
@@ -1526,6 +1894,7 @@ var VisualizationTool = (function () {
     }
     clearTimeout(debounceTimer);
     debounceTimer = null;
+    cancelReplayAnimation();
     if (resizeObserver) resizeObserver.disconnect();
     resizeObserver = null;
     if (themeObserver) themeObserver.disconnect();
@@ -1556,7 +1925,17 @@ var VisualizationTool = (function () {
       rowsFromJsonCandidate: rowsFromJsonCandidate,
       formatDateValue: formatDateValue,
       normalizeDataset: normalizeDataset,
-      normalizeCustomPalette: normalizeCustomPalette
+      normalizeCustomPalette: normalizeCustomPalette,
+      animationConfig: animationConfig,
+      normalizeAnimationStyle: normalizeAnimationStyle,
+      animationStyleProgress: animationStyleProgress,
+      staggerItemProgress: staggerItemProgress,
+      progressivePolylineSegments: progressivePolylineSegments,
+      lineDrawGraphics: lineDrawGraphics,
+      pieSweepData: pieSweepData,
+      replayChartOption: replayChartOption,
+      replayAxisBounds: replayAxisBounds,
+      replayFrameOption: replayFrameOption
     }
   };
 })();

@@ -143,8 +143,24 @@ def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     assert en_locale["visualization"]["exportPng"] == "Export PNG"
     assert zh_locale["visualization"]["advanced"] == "高级自定义"
     assert zh_locale["visualization"]["colorPalette"] == "图表配色"
+    assert zh_locale["visualization"]["animation"] == "动画"
+    assert zh_locale["visualization"]["replayAnimation"] == "重播动画"
+    assert zh_locale["visualization"]["animationDuration"] == "动画时长（毫秒）"
+    assert zh_locale["visualization"]["animationDurationHint"] == "0 表示无动画"
+    assert zh_locale["visualization"]["animationStyle"] == "动画样式"
+    assert zh_locale["visualization"]["animationDraw"] == "常规动画"
+    assert zh_locale["visualization"]["animationStagger"] == "依次呈现"
+    assert zh_locale["visualization"]["animationBounce"] == "弹性回弹"
+    assert zh_locale["visualization"]["animationDisabledReduced"] == "已根据系统“减少动态效果”设置关闭动画"
     assert en_locale["visualization"]["formatCurrency"] == "Currency"
     assert en_locale["visualization"]["fullscreen"] == "Expand preview"
+    assert en_locale["visualization"]["animation"] == "Animation"
+    assert en_locale["visualization"]["replayAnimation"] == "Replay animation"
+    assert en_locale["visualization"]["animationDuration"] == "Animation duration (ms)"
+    assert en_locale["visualization"]["animationDurationHint"] == "0 disables animation"
+    assert en_locale["visualization"]["animationStyle"] == "Animation style"
+    assert en_locale["visualization"]["animationDraw"] == "Standard animation"
+    assert en_locale["visualization"]["animationZoom"] == "Zoom and reveal"
     assert 'typeof VisualizationTool !== "undefined"' in app_script
     assert "VisualizationTool.deactivate" in app_script
     assert '{ id: "development", tools: ["json", "format", "regex", "url", "http", "curl", "jwt"] }' in app_script
@@ -178,12 +194,43 @@ def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     assert '"data:application/json;charset=utf-8,"' in script
     assert 'id="viz-advanced"' in script
     assert 'id="viz-data-preview"' in script
+    assert 'id="viz-animate"' in script
+    assert 'id="viz-animate-fs"' in script
+    assert 'id="viz-animation-duration"' in script
+    assert 'id="viz-animation-style"' in script
+    assert "animationStyleProgress" in script
+    assert "staggerItemProgress" in script
+    assert "progressivePolylineSegments" in script
+    assert "lineDrawGraphics" in script
+    assert "pieSweepData" in script
+    assert "replayAnimation" in script
+    assert "updateToolbarState" in script
+    assert "animationDuration" in script
+    assert "animationDurationUpdate" in script
+    assert 'animationType: "expansion"' in script
+    assert 'animationTypeUpdate: "transition"' in script
+    assert 'id: "viz-pie-" + pieField' in script
+    assert 'id: "viz-line-" + field' in script
+    assert "replayChartOption" in script
+    assert "replayFrameOption" in script
+    assert "window.requestAnimationFrame(renderReplayFrame)" in script
+    assert "cancelReplayAnimation" in script
+    assert "legend: { selected: selectedMap }" not in script
+    assert "animationEnabled" in script
+    assert "config.animationDuration" in script
+    assert "config.animationStyle" in script
     assert ".viz-resizer" in app_css
     assert ".viz-preview-panel.is-fullscreen" in app_css
     assert ".viz-preview-panel.is-viewport-fullscreen" in app_css
     assert ".viz-preview-panel.is-fullscreen .viz-exit-fullscreen::before" in app_css
+    assert ".viz-animate" in app_css
+    assert ".viz-animate-fs" in app_css
+    assert ".viz-fs-actions" in app_css
+    assert ".viz-preview-panel.is-fullscreen .viz-fs-actions" in app_css
     assert ".viz-palette-colors" in app_css
     assert ".viz-series-format-row" in app_css
+    assert ".viz-animation-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));" in app_css
+    assert ".viz-series-format-row, .viz-transform-controls, .viz-animation-controls { grid-template-columns: 1fr; }" in app_css
     assert ".viz-data-table" in app_css
     assert 'activeMode = "table";\n    chartType = "line";' in script
     assert "localStorage" not in script
@@ -222,6 +269,56 @@ const nestedCandidate = nestedSource.candidates.find(candidate => candidate.labe
 const nestedSelected = core.rowsFromJsonCandidate(nestedCandidate);
 const nullable = core.parseTable("month,value\nJan,12\nFeb,\nMar,bad\nApr,16\nMay,20\nJun,24");
 const palette = ["#112233", "#223344", "#334455", "#445566", "#556677", "#667788", "#778899"];
+const animation = core.animationConfig(12, 900, false);
+const reducedAnimation = core.animationConfig(12, 900, true);
+const largeAnimation = core.animationConfig(1001, 900, false);
+const zeroAnimation = core.animationConfig(12, 0, false);
+const growProgress = core.animationStyleProgress(0.5, "grow");
+const bounceProgress = core.animationStyleProgress(0.7, "bounce");
+const invalidStyle = core.normalizeAnimationStyle("spin");
+const drawProgress = core.animationStyleProgress(0.5, "draw");
+const partialLine = core.progressivePolylineSegments([[0, 0], [10, 0], [20, 10]], 0.25);
+const replayOption = {
+  legend: {},
+  series: [{
+    type: "pie",
+    radius: ["28%", "68%"],
+    label: { show: true },
+    labelLine: { show: true },
+    data: [{ name: "Jan", value: 12 }]
+  }]
+};
+const replayResult = core.replayChartOption({
+  getOption: () => ({ legend: [{ selected: { Jan: false, Feb: true } }] }),
+}, replayOption);
+const pieReplayStart = core.replayFrameOption(replayResult, 0);
+const pieReplayHalf = core.replayFrameOption(replayResult, 0.5);
+const pieReplayEnd = core.replayFrameOption(replayResult, 1);
+const lineReplayOption = { yAxis: { type: "value" }, series: [{ type: "line", data: [12, null, 18] }] };
+const lineReplayStart = core.replayFrameOption(lineReplayOption, 0);
+const lineReplayHalf = core.replayFrameOption(lineReplayOption, 0.5);
+const staggerReplayHalf = core.replayFrameOption(lineReplayOption, 0.5, "stagger", false);
+const zoomReplayStart = core.replayFrameOption(lineReplayOption, 0, "zoom", false);
+const bounceReplay = core.replayFrameOption(lineReplayOption, bounceProgress, "bounce", false);
+const drawGraphics = core.lineDrawGraphics({
+  convertToPixel: (_finder, point) => [point[0] * 10, point[1]]
+}, {
+  color: ["#123456"],
+  series: [{ type: "line", smooth: false, data: [12, 18, 15] }]
+}, 0.5);
+const drawReplay = core.replayFrameOption(lineReplayOption, 0.5, "draw", false, drawGraphics);
+const standardBar = core.replayFrameOption({
+  yAxis: { type: "value" },
+  series: [{ type: "bar", data: [10, 20] }]
+}, 0.5, "draw", false);
+const pieSweepStart = core.pieSweepData([{ name: "A", value: 10 }, { name: "B", value: 20 }, { name: "C", value: 30 }], 0);
+const pieSweepHalf = core.pieSweepData([{ name: "A", value: 10 }, { name: "B", value: 20 }, { name: "C", value: 30 }], 0.5);
+const pieSweepFrame = core.replayFrameOption(replayResult, 0.5, "draw", false);
+const pieStaggerHalf = core.replayFrameOption(replayResult, 0.5, "stagger", false);
+const stackedBounds = core.replayAxisBounds([
+  { type: "bar", stack: "total", data: [10, -3] },
+  { type: "bar", stack: "total", data: [15, -7] }
+]);
 const tooMany = "name,value\n" + Array.from({ length: 5001 }, (_, index) => "R" + index + "," + index).join("\n");
 const result = {
   quotedCsv: csv.rows[0].name === "A, one" && csv.rows[0].note === 'hello "world"',
@@ -238,6 +335,19 @@ const result = {
   customUtcDate: core.formatDateValue(new Date("2026-01-02T03:04:05.006Z"), "YYYY/MM/DD HH:mm:ss.SSS", true) === "2026/01/02 03:04:05.006",
   validPalette: core.normalizeCustomPalette(palette).join("|") === palette.join("|"),
   invalidPaletteRejected: core.normalizeCustomPalette(palette.slice(0, 6)).length === 0 && core.normalizeCustomPalette(palette.slice(0, 6).concat("red")).length === 0,
+  animationConfig: animation.enabled && animation.duration === 900 && !reducedAnimation.enabled && !largeAnimation.enabled && !zeroAnimation.enabled,
+  animationStyles: growProgress > 0.5 && growProgress < 1 && bounceProgress > 1 && drawProgress === 0.5 && invalidStyle === "draw",
+  linePathDrawing: partialLine.length === 1 && partialLine[0].length === 2 && partialLine[0][1][0] > 6 && partialLine[0][1][0] < 7 && drawGraphics.length === 1 && drawGraphics[0].shape.points.length >= 2 && drawReplay.series[0].data[0] === 12 && drawReplay.series[0].lineStyle.opacity === 0 && drawReplay.graphic.length === 1,
+  standardBarFromZero: standardBar.series[0].data.join("|") === "5|10",
+  standardPieByAngle: pieSweepStart.slice(0, 3).every(item => item.value === 0) && pieSweepStart[3].value === 60 && pieSweepHalf.slice(0, 3).map(item => item.value).join("|") === "10|20|0" && pieSweepHalf[3].value === 30 && pieSweepFrame.series[0].radius.join("|") === "28%|68%" && pieSweepFrame.series[0].data.length === 2 && pieSweepFrame.series[0].data[1].name === "__viz-angle-mask__",
+  replayUsesFreshOption: replayResult.series[0].data[0].value === 12,
+  replayPreservesLegend: replayResult.legend.selected.Jan === false && replayResult.legend.selected.Feb === true,
+  pieReplayFrames: pieReplayStart.series[0].radius.join("|") === "0%|0%" && pieReplayHalf.series[0].radius.join("|") === "14%|34%" && pieReplayEnd.series[0].radius.join("|") === "28%|68%",
+  lineReplayFrames: lineReplayStart.series[0].data.join("|") === "0||0" && lineReplayHalf.series[0].data.join("|") === "6||9" && lineReplayStart.yAxis.min === 0 && lineReplayStart.yAxis.max > 18 && lineReplayOption.series[0].data[0] === 12,
+  staggerReplayFrames: staggerReplayHalf.series[0].data[0] > staggerReplayHalf.series[0].data[2] && staggerReplayHalf.series[0].data[2] === 0 && pieStaggerHalf.series[0].data[0].value > 0,
+  zoomReplayFrames: zoomReplayStart.series[0].data[0] > 9 && zoomReplayStart.series[0].data[0] < 12 && zoomReplayStart.series[0].lineStyle.opacity === 0,
+  bounceReplayFrames: bounceReplay.series[0].data[0] > 12 && bounceReplay.yAxis.max > lineReplayStart.yAxis.max,
+  stackedReplayBounds: stackedBounds.max > 25 && stackedBounds.min < -10,
   rowLimitRejected: throws(() => core.parseTable(tooMany))
 };
 process.stdout.write(JSON.stringify(result));
