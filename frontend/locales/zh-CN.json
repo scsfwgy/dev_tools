@@ -76,13 +76,13 @@
     }
   },
   "welcome": {
-    "desc": "37+ 个免费开发工具，无需登录，优先在浏览器本地处理",
+    "desc": "38+ 个免费开发工具，无需登录，优先在浏览器本地处理",
     "openSource": "代码开源",
     "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
     "localFirst": "✓ 默认本地处理",
     "free": "免费使用",
     "noLogin": "无需登录",
-    "toolCount": "37+ 个工具",
+    "toolCount": "38+ 个工具",
     "homeSections": "首页工具视图",
     "categories": "分类",
     "recommended": "推荐",
@@ -92,9 +92,9 @@
       "development": "开发调试",
       "encoding": "编码安全",
       "files": "文本文件",
-      "productivity": "计算效率",
-      "platform": "平台速查",
-      "everyday": "日常工具"
+      "data": "数据计算",
+      "reference": "开发速查",
+      "everyday": "日常效率"
     },
     "searchResults": "搜索结果",
     "noSearchResults": "没有找到匹配的工具，试试其他关键词",

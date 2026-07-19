@@ -434,7 +434,7 @@
             <div class="home-mark" aria-hidden="true">${icons.code}</div>
             <div>
               <h1>DevTools</h1>
-              <p data-i18n="welcome.desc">37+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
+              <p data-i18n="welcome.desc">38+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
             </div>
           </header>
           <label class="home-search" for="home-search">
@@ -446,7 +446,7 @@
             <span class="home-trust-local" data-i18n="welcome.localFirst">✓ 默认本地处理</span>
             <span data-i18n="welcome.free">免费使用</span>
             <span data-i18n="welcome.noLogin">无需登录</span>
-            <span data-i18n="welcome.toolCount">37+ 个工具</span>
+            <span data-i18n="welcome.toolCount">38+ 个工具</span>
             <a href="https://github.com/scsfwgy/dev_tools" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span data-i18n="welcome.openSource">代码开源</span></a>
           </div>
           <div class="home-tabs" role="tablist" aria-label="${t("welcome.homeSections")}">
@@ -722,12 +722,12 @@
 
   var HOME_CATEGORIES = [
     { id: "all", tools: [] },
-    { id: "development", tools: ["json", "format", "regex", "url", "http", "curl", "jwt"] },
-    { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "fileinfo"] },
-    { id: "files", tools: ["text", "diff", "markdown", "image", "converter"] },
-    { id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron"] },
-    { id: "platform", tools: ["device", "terminal", "git", "ai", "android", "flutter", "ios"] },
-    { id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }
+    { id: "development", tools: ["device", "json", "format", "regex", "url", "http", "curl", "cron"] },
+    { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "jwt", "qrcode"] },
+    { id: "files", tools: ["text", "diff", "markdown", "image", "converter", "fileinfo"] },
+    { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
+    { id: "reference", tools: ["terminal", "git", "ai", "android", "flutter", "ios"] },
+    { id: "everyday", tools: ["focus", "content", "translate", "area-search"] }
   ];
 
   var HOME_RECOMMENDATIONS = [

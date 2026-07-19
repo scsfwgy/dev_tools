@@ -54,7 +54,7 @@ def test_exchange_rate_tool_is_registered_and_localized(client):
     assert "exchange-picker-search" in exchange_script
     assert "exchange.recommendedCurrencies" in exchange_script
     assert 'typeof ExchangeTool !== "undefined"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] }' in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "exchange-tool.js")
     assert 'var reverseRate = oneRate === null ? null : 1 / oneRate;' in exchange_script
     assert 'exchange-rate-reverse' in exchange_script
@@ -163,7 +163,7 @@ def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     assert en_locale["visualization"]["animationZoom"] == "Zoom and reveal"
     assert 'typeof VisualizationTool !== "undefined"' in app_script
     assert "VisualizationTool.deactivate" in app_script
-    assert '{ id: "development", tools: ["json", "format", "regex", "url", "http", "curl", "jwt"] }' in app_script
+    assert '{ id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] }' in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "visualization-tool.js")
     assert "echarts@6.1.0/dist/echarts.min.js" in script
     assert "MAX_ROWS = 5000" in script
@@ -646,25 +646,25 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "37+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "38+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
         "development": "开发调试",
         "encoding": "编码安全",
         "files": "文本文件",
-        "productivity": "计算效率",
-        "platform": "平台速查",
-        "everyday": "日常工具",
+        "data": "数据计算",
+        "reference": "开发速查",
+        "everyday": "日常效率",
     }
     assert en_locale["welcome"]["category"] == {
         "all": "All",
         "development": "Dev & Debug",
         "encoding": "Encoding & Security",
         "files": "Text & Files",
-        "productivity": "Calculation & Productivity",
-        "platform": "Platforms & Reference",
-        "everyday": "Everyday Tools",
+        "data": "Data & Calculations",
+        "reference": "Developer Reference",
+        "everyday": "Everyday Productivity",
     }
     assert zh_locale["welcome"]["recommendations"]["groups"]["investing"] == "投资理财"
     assert en_locale["welcome"]["recommendations"]["groups"]["crypto"] == "Crypto trading"
@@ -715,12 +715,12 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
     }
     assert category_map == {
         "all": [],
-        "development": ["json", "format", "regex", "url", "http", "curl", "jwt"],
-        "encoding": ["encoder", "base64", "uuid", "crypto", "fileinfo"],
-        "files": ["text", "diff", "markdown", "image", "converter"],
-        "productivity": ["timestamp", "unitconvert", "color", "cron"],
-        "platform": ["device", "terminal", "git", "ai", "android", "flutter", "ios"],
-        "everyday": ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"],
+        "development": ["device", "json", "format", "regex", "url", "http", "curl", "cron"],
+        "encoding": ["encoder", "base64", "uuid", "crypto", "jwt", "qrcode"],
+        "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
+        "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
+        "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
+        "everyday": ["focus", "content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -1309,7 +1309,7 @@ def test_color_converter_is_registered_localized_and_lazy_loaded(client):
     assert zh_locale["color"]["eyedropper"] == "吸取颜色"
     assert en_locale["color"]["formats"]["oklch"] == "UI-friendly color and gradients"
     assert 'typeof ColorTool !== "undefined"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] }' in app_script
     assert "function parseColor(raw)" in color_script
     assert '"EyeDropper" in window' in color_script
     assert "oklabToXyz" in color_script
@@ -1723,7 +1723,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css

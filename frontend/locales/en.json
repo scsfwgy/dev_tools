@@ -76,13 +76,13 @@
     }
   },
   "welcome": {
-    "desc": "37+ free developer tools, no sign-in, with local browser processing by default",
+    "desc": "38+ free developer tools, no sign-in, with local browser processing by default",
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
     "free": "Free to use",
     "noLogin": "No sign-in",
-    "toolCount": "37+ tools",
+    "toolCount": "38+ tools",
     "homeSections": "Home tool views",
     "categories": "Categories",
     "recommended": "Recommended",
@@ -92,9 +92,9 @@
       "development": "Dev & Debug",
       "encoding": "Encoding & Security",
       "files": "Text & Files",
-      "productivity": "Calculation & Productivity",
-      "platform": "Platforms & Reference",
-      "everyday": "Everyday Tools"
+      "data": "Data & Calculations",
+      "reference": "Developer Reference",
+      "everyday": "Everyday Productivity"
     },
     "searchResults": "Search results",
     "noSearchResults": "No matching tools. Try another keyword.",
