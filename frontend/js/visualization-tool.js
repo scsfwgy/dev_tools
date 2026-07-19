@@ -1866,8 +1866,10 @@ var VisualizationTool = (function () {
       '        <button type="button" data-chart-type="stacked" aria-pressed="false">' + escapeHtml(t("visualization.stackedBar")) + '</button>' +
       '        <button type="button" data-chart-type="pie" aria-pressed="false">' + escapeHtml(t("visualization.pie")) + '</button>' +
       '      </div>' +
-      '      <div class="viz-chart-shell">' +
+      '      <div class="viz-fs-toolbar">' +
       '        <div class="viz-fs-actions"><button id="viz-animate-fs" class="viz-animate-fs" type="button" disabled aria-label="' + escapeHtml(t("visualization.replayAnimation")) + '" title="' + escapeHtml(t("visualization.replayAnimation")) + '">' + escapeHtml(t("visualization.animation")) + '</button><button id="viz-exit-fullscreen" class="viz-exit-fullscreen" type="button">' + escapeHtml(t("visualization.exitFullscreen")) + '</button></div>' +
+      '      </div>' +
+      '      <div class="viz-chart-shell">' +
       '        <div id="viz-loading" class="viz-chart-message"><span class="viz-spinner" aria-hidden="true"></span><strong>' + escapeHtml(t("visualization.loadingChart")) + '</strong></div>' +
       '        <div id="viz-failure" class="viz-chart-message hidden"><strong id="viz-failure-text">' + escapeHtml(t("visualization.chartLoadFailed")) + '</strong><button id="viz-retry" type="button">' + escapeHtml(t("visualization.retry")) + '</button></div>' +
       '        <div id="viz-empty" class="viz-chart-message hidden"><strong>' + escapeHtml(t("visualization.emptyPreview")) + '</strong><span>' + escapeHtml(t("visualization.emptyPreviewHint")) + '</span></div>' +

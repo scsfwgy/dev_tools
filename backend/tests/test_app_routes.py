@@ -54,7 +54,7 @@ def test_exchange_rate_tool_is_registered_and_localized(client):
     assert "exchange-picker-search" in exchange_script
     assert "exchange.recommendedCurrencies" in exchange_script
     assert 'typeof ExchangeTool !== "undefined"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "exchange-tool.js")
     assert 'var reverseRate = oneRate === null ? null : 1 / oneRate;' in exchange_script
     assert 'exchange-rate-reverse' in exchange_script
@@ -226,7 +226,9 @@ def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     assert ".viz-animate" in app_css
     assert ".viz-animate-fs" in app_css
     assert ".viz-fs-actions" in app_css
+    assert ".viz-fs-toolbar" in app_css
     assert ".viz-preview-panel.is-fullscreen .viz-fs-actions" in app_css
+    assert ".viz-preview-panel.is-fullscreen .viz-chart-shell { position: absolute; inset: 50px 0 0;" in app_css
     assert ".viz-palette-colors" in app_css
     assert ".viz-series-format-row" in app_css
     assert ".viz-animation-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));" in app_css
@@ -240,6 +242,160 @@ def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
     assert "数据可视化工具" in page
     assert "浏览器本地处理，数据不上传" in page
     assert "https://dev.tools24.uk/zh/tool/visualization" in page
+
+
+def test_function_plotter_is_local_lazy_loaded_and_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+    script_response = client.get("/js/function-tool.js")
+    script = script_response.get_data(as_text=True)
+
+    assert script_response.status_code == 200
+    assert TOOL_REGISTRY["function"]["processing"] == "local"
+    assert TOOL_REGISTRY["function"]["global"] == "FunctionTool"
+    assert TOOL_REGISTRY["function"]["indexable"] is True
+    assert TOOL_REGISTRY["function"]["icon"] == "function"
+    assert zh_locale["menu"]["function"] == "函数绘图"
+    assert en_locale["menu"]["function"] == "Function Plotter"
+    assert zh_locale["functionTool"]["replay"] == "重播动画"
+    assert zh_locale["functionTool"]["fullscreen"] == "浏览器内全屏"
+    assert zh_locale["functionTool"]["reset"] == "重置"
+    assert en_locale["functionTool"]["commonFunctions"] == "Common functions"
+    assert zh_locale["functionTool"]["examples"]["damped"]["name"] == "阻尼振荡"
+    assert zh_locale["functionTool"]["examples"]["piecewise"]["name"] == "分段函数"
+    assert zh_locale["functionTool"]["examples"]["heart"]["name"] == "心形参数曲线"
+    assert zh_locale["functionTool"]["examples"]["threePiece"]["name"] == "三段函数"
+    assert en_locale["functionTool"]["syntaxNestedLabel"] == "More cases"
+    assert en_locale["functionTool"]["examples"]["quadratic"]["description"] == "A parabola symmetric about the Y axis"
+    assert 'typeof FunctionTool !== "undefined"' in app_script
+    assert "FunctionTool.deactivate" in app_script
+    assert_tool_is_lazy_loaded(frontend_dir, "function-tool.js")
+    assert "requestAnimationFrame" in script
+    assert "compileExpression" in script
+    assert "sampleFunction" in script
+    assert "eval(" not in script
+    assert "new Function" not in script
+    assert "fetch(" not in script
+    assert "localStorage" not in script
+    assert '{ key: "sine", label: "y = sin(x)", expression: "y = sin(x)" }' in script
+    assert '{ key: "damped", label: "y = e⁻|x|/4 cos(4x)", expression: "y = exp(-abs(x)/4) * cos(4x)" }' in script
+    assert '{ key: "piecewise", label: "y = if(x<0,-x,x)", expression: "y = if(x < 0, -x, x)" }' in script
+    assert '{ key: "threePiece", label: "if(x<-2,…,if(…))", expression: "y = if(x < -2, -1, if(x <= 2, x^2/4, 1))" }' in script
+    assert '{ key: "sign", label: "if(x<0,-1,if(…))", expression: "y = if(x < 0, -1, if(x == 0, 0, 1))" }' in script
+    assert '{ key: "pulse", label: "if(x<0,0,if(…))", expression: "y = if(x < 0, 0, if(x <= 4, 1, 0))" }' in script
+    assert 'label: "x(t); y(t)"' in script
+    assert 'expression: "x = 16sin(t)^3; y = 13cos(t)-5cos(2t)-2cos(3t)-cos(4t)"' in script
+    assert "compilePlotExpression" in script
+    assert "sampleParametric" in script
+    assert "fitBoundsToCanvas" in script
+    assert '<textarea id="fn-expression" rows="2" maxlength="200"' in script
+    assert 'class="fn-syntax-guide"' in script
+    assert "event.ctrlKey || event.metaKey" in script
+    assert '<table class="fn-examples-table">' in script
+    assert 't("functionTool.functionDescription")' in script
+    assert 't("functionTool.functionFormula")' in script
+    assert "drawAxisArrowheads" in script
+    assert "context.lineTo(plotRight - arrowSize, axisY - 4);" in script
+    assert "context.lineTo(axisX - 4, metrics.top + arrowSize);" in script
+    assert 'id="fn-replay"' in script
+    assert 'id="fn-fullscreen"' in script
+    assert 'id="fn-toolbar-reset"' in script
+    assert 'id="fn-fullscreen-reset"' in script
+    assert 'id="fn-chart" class="fn-chart"' in script
+    assert 'id="fn-advanced"' not in script
+    assert '<details class="fn-advanced">' in script
+    assert ".fn-tool" in app_css
+    assert ".fn-chart" in app_css
+    assert "position: absolute;" in app_css
+    assert ".fn-preview.is-fullscreen" in app_css
+    assert ".fn-fullscreen-toolbar" in app_css
+    assert ".fn-preview-help" in app_css
+    assert ".fn-chart-help" not in app_css
+    assert 'class="fn-preview-help"' in script
+    assert 'class="fn-fullscreen-toolbar"' in script
+    assert ".fn-preview.is-fullscreen .fn-chart-shell {\n  position: absolute;\n  inset: 50px 0 0;" in app_css
+    assert ".fn-preview.is-fullscreen .fn-chart-shell { inset: 61px 0 0; }" in app_css
+    assert "body.fn-fullscreen-active" in app_css
+    assert "requestFullscreen" not in script
+    assert "document.fullscreenElement" not in script
+    assert "@media (max-width: 760px)" in app_css
+
+    page = client.get("/zh/tool/function")
+    page_text = page.get_data(as_text=True)
+    assert page.status_code == 200
+    assert "函数绘图工具" in page_text
+    assert "浏览器本地处理，数据不上传" in page_text
+    assert "https://dev.tools24.uk/zh/tool/function" in page_text
+
+
+def test_function_plotter_parser_supports_math_and_rejects_code():
+    node = shutil.which("node")
+    if node is None:
+        return
+    project_root = Path(__file__).resolve().parents[2]
+    program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = {
+  window: { __t: key => key },
+  console, Math, Array, Object, String, Number, JSON, RegExp, isFinite
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/function-tool.js", "utf8"), context);
+const core = context.FunctionTool.__test;
+const value = expression => core.compileExpression(expression).evaluate(2);
+const throws = expression => { try { core.compileExpression(expression); return false; } catch (_) { return true; } };
+const throwsPlot = expression => { try { core.compilePlotExpression(expression); return false; } catch (_) { return true; } };
+const heart = core.compilePlotExpression("x=16sin(t)^3; y=13cos(t)-5cos(2t)-2cos(3t)-cos(4t)");
+const circleMultiline = core.compilePlotExpression("x=cos(t)\ny=sin(t)");
+const heartPoints = core.sampleParametric(heart, 0, 2 * Math.PI);
+const heartBounds = core.calculateParametricBounds(heartPoints);
+const results = {
+  square: value("y=x^2") === 4,
+  superscript: value("f(x)=x²") === 4,
+  implicit: value("2x + 2(x+1)") === 10,
+  negativePrecedence: value("-x^2") === -4,
+  constants: Math.abs(value("sin(pi/2) + e^0") - 2) < 1e-12,
+  log: Math.abs(value("log(100)") - 2) < 1e-12,
+  damped: Math.abs(value("exp(-abs(x)/4) * cos(4x)") - (Math.exp(-0.5) * Math.cos(8))) < 1e-12,
+  piecewisePositive: value("x < 0 ? -x : x") === 2,
+  piecewiseNegative: core.compileExpression("x < 0 ? -x : x").evaluate(-3) === 3,
+  friendlyIfPositive: value("if(x < 0, -x, x)") === 2,
+  friendlyIfNegative: core.compileExpression("if(x < 0, -x, x)").evaluate(-3) === 3,
+  nestedIf: value("if(x < 0, -1, if(x == 2, 2, 1))") === 2,
+  inclusiveComparison: value("x >= 2 ? 10 : 0") === 10,
+  nestedConditional: value("x < 0 ? -1 : x == 2 ? 2 : 1") === 2,
+  parametricMode: heart.mode === "parametric",
+  multilineParametric: circleMultiline.mode === "parametric" &&
+    Math.abs(circleMultiline.x.evaluate(0) - 1) < 1e-12 &&
+    Math.abs(circleMultiline.y.evaluate(Math.PI / 2) - 1) < 1e-12,
+  parametricVariable: Math.abs(core.compileExpression("sin(t)").evaluate(Math.PI / 2) - 1) < 1e-12,
+  heartClosed: Math.abs(heartPoints[0].x - heartPoints[heartPoints.length - 1].x) < 1e-9 &&
+    Math.abs(heartPoints[0].y - heartPoints[heartPoints.length - 1].y) < 1e-9,
+  heartBounds: heartBounds.xMin < -16 && heartBounds.xMax > 16 && heartBounds.yMin < -17 && heartBounds.yMax > 11,
+  rejectIncompleteParametric: throwsPlot("x=sin(t); z=cos(t)"),
+  rejectMissingConditionalColon: throws("x < 0 ? -x"),
+  rejectBadIf: throws("if(x < 0, -x)"),
+  rejectMemberAccess: throws("window.alert(1)"),
+  rejectUnknownFunction: throws("random(x)"),
+  rejectAssignment: throws("x=2"),
+  rejectUnclosed: throws("sin(x"),
+  integerTick: core.formatTick(10, 5) === "10",
+  decimalTick: core.formatTick(0.5, 0.2) === "0.5"
+};
+console.log(JSON.stringify(results));
+'''
+    completed = subprocess.run(
+        [node, "-e", program],
+        cwd=project_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert all(json.loads(completed.stdout).values())
 
 
 def test_visualization_parser_handles_supported_shapes_and_limits():
@@ -558,7 +714,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "markdown", "image", "converter"],
         "productivity": ["timestamp", "unitconvert", "color", "cron"],
         "platform": ["device", "terminal", "git", "ai", "android", "flutter", "ios"],
-        "everyday": ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"],
+        "everyday": ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -1144,7 +1300,7 @@ def test_color_converter_is_registered_localized_and_lazy_loaded(client):
     assert zh_locale["color"]["eyedropper"] == "吸取颜色"
     assert en_locale["color"]["formats"]["oklch"] == "UI-friendly color and gradients"
     assert 'typeof ColorTool !== "undefined"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert "function parseColor(raw)" in color_script
     assert '"EyeDropper" in window' in color_script
     assert "oklabToXyz" in color_script
@@ -1558,7 +1714,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css

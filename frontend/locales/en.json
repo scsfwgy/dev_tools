@@ -7,6 +7,7 @@
     "device": "Device Info",
     "json": "JSON Tool",
     "visualization": "Data Visualization",
+    "function": "Function Plotter",
     "format": "Formatter",
     "timestamp": "Timestamp",
     "unitconvert": "Unit Converter",
@@ -107,6 +108,7 @@
       "device": "Inspect browser, system, screen and network info",
       "json": "Format, validate and convert JSON",
       "visualization": "Paste table or JSON data to create charts",
+      "function": "Graph expressions with animated function curves",
       "format": "Format common code and markup",
       "timestamp": "Convert timestamps and date-time values",
       "unitconvert": "Convert across 17 categories, including number bases",
@@ -693,6 +695,145 @@
       "configFieldsMissing": "The numeric fields in this configuration do not match the current data",
       "configReadFailed": "Could not read the configuration file",
       "unknown": "Could not parse the current data"
+    }
+  },
+  "functionTool": {
+    "inputTitle": "Enter a function",
+    "inputHint": "Expressions are parsed safely in your browser",
+    "expression": "Function or parametric equations",
+    "expressionPlaceholder": "Function: y = x^2\nParametric: x = cos(t), then y = sin(t) on a new line",
+    "plot": "Plot",
+    "syntaxHint": "Supports common operations and functions; use if(condition, true value, false value) for pieces, or x=…; y=… for parametric curves.",
+    "syntaxIntro": "Copy one of these formats; changes are plotted automatically:",
+    "syntaxBasicLabel": "Function",
+    "syntaxBasicHint": "Write y as an expression of x.",
+    "syntaxPiecewiseLabel": "Piecewise",
+    "syntaxPiecewiseHint": "The three arguments are the condition, value when true, and value otherwise.",
+    "syntaxNestedLabel": "More cases",
+    "syntaxNestedHint": "Put another if in the otherwise value to add more intervals.",
+    "syntaxParametricLabel": "Parametric",
+    "syntaxParametricHint": "Put x(t) and y(t) on separate lines or divide them with a semicolon; set the t range under Advanced.",
+    "syntaxShortcut": "Enter adds a line; press Ctrl/⌘ + Enter to plot immediately.",
+    "commonFunctions": "Common functions",
+    "clickToFill": "Click a formula to insert it",
+    "functionDescription": "Description",
+    "functionFormula": "Function",
+    "examples": {
+      "constant": {
+        "name": "Constant",
+        "description": "Keeps the same value for every x"
+      },
+      "linear": {
+        "name": "Linear",
+        "description": "A straight line through the origin"
+      },
+      "quadratic": {
+        "name": "Quadratic",
+        "description": "A parabola symmetric about the Y axis"
+      },
+      "cubic": {
+        "name": "Cubic",
+        "description": "An S-shaped curve through the origin"
+      },
+      "absolute": {
+        "name": "Absolute value",
+        "description": "A V shape symmetric about the Y axis"
+      },
+      "squareRoot": {
+        "name": "Square root",
+        "description": "Defined for x ≥ 0 with slowing growth"
+      },
+      "reciprocal": {
+        "name": "Reciprocal",
+        "description": "Two branches, discontinuous at x = 0"
+      },
+      "sine": {
+        "name": "Sine",
+        "description": "A smooth wave with period 2π"
+      },
+      "cosine": {
+        "name": "Cosine",
+        "description": "A periodic wave beginning at its peak"
+      },
+      "tangent": {
+        "name": "Tangent",
+        "description": "Period π with repeated discontinuities"
+      },
+      "exponential": {
+        "name": "Exponential",
+        "description": "Always positive and grows rapidly"
+      },
+      "naturalLog": {
+        "name": "Natural logarithm",
+        "description": "Defined for x > 0 with slowing growth"
+      },
+      "sinc": {
+        "name": "Sinc",
+        "description": "A central peak with decaying oscillations"
+      },
+      "damped": {
+        "name": "Damped oscillation",
+        "description": "Oscillations fade away from the center"
+      },
+      "piecewise": {
+        "name": "Piecewise function",
+        "description": "Uses if(condition, true value, false value)"
+      },
+      "threePiece": {
+        "name": "Three-piece function",
+        "description": "Handles x < -2, -2 ≤ x ≤ 2, and x > 2 separately"
+      },
+      "sign": {
+        "name": "Sign function",
+        "description": "Returns the sign of negative, zero, and positive values"
+      },
+      "pulse": {
+        "name": "Interval pulse",
+        "description": "Equals 1 for 0 ≤ x ≤ 4 and 0 elsewhere"
+      },
+      "heart": {
+        "name": "Heart parametric curve",
+        "description": "A classic outline animated along its path"
+      }
+    },
+    "advanced": "Advanced customization",
+    "advancedHint": "Range, animation speed and curve styling",
+    "xMin": "Minimum X",
+    "xMax": "Maximum X",
+    "parameterMin": "Minimum parameter t",
+    "parameterMax": "Maximum parameter t",
+    "resetView": "Reset the coordinate range",
+    "animationDuration": "Animation duration",
+    "lineWidth": "Line width",
+    "curveColor": "Curve color",
+    "showGrid": "Show grid",
+    "previewTitle": "Function graph",
+    "reset": "Reset",
+    "replay": "Replay animation",
+    "fullscreen": "Expand preview",
+    "exitFullscreen": "Exit preview",
+    "canvasFallback": "Your browser does not support Canvas function plotting.",
+    "chartHelp": "Wheel to zoom · Drag to pan · Hover for coordinates",
+    "emptyChart": "Enter a valid function to draw it here",
+    "ready": "Calculated {count} valid samples",
+    "reducedMotion": "Animation is off because reduced motion is enabled",
+    "chartAria": "Graph of {expression} with an X range from {min} to {max}",
+    "parametricChartAria": "Parametric curve for {expression}",
+    "errors": {
+      "empty": "Enter a function expression",
+      "tooLong": "Keep the expression within 200 characters",
+      "equation": "Use a single y= or f(x)= expression",
+      "invalidCharacter": "The character “{char}” is not supported",
+      "unknownName": "The function or constant “{name}” is not supported",
+      "functionParentheses": "Use parentheses with {name}, for example {name}(x)",
+      "missingParen": "A closing parenthesis is missing",
+      "conditionalComma": "The if function needs three arguments: if(condition, true value, false value)",
+      "conditionalColon": "The condition needs a colon; use condition ? value1 : value2",
+      "parametric": "A parametric curve needs both x=… and y=…, separated by a new line or semicolon",
+      "unexpected": "The expression is incomplete; check its operators and parentheses",
+      "range": "Minimum X must be less than maximum X",
+      "noValues": "There are no plottable values in this range",
+      "invalid": "Could not parse this function"
     }
   },
   "format": {

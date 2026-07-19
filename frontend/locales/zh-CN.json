@@ -7,6 +7,7 @@
     "device": "设备信息",
     "json": "JSON 工具",
     "visualization": "数据可视化",
+    "function": "函数绘图",
     "format": "代码格式化",
     "timestamp": "时间戳转换",
     "unitconvert": "单位换算",
@@ -107,6 +108,7 @@
       "device": "查看浏览器、系统、屏幕与网络信息",
       "json": "格式化、校验与转换 JSON",
       "visualization": "粘贴表格或 JSON 快速生成图表",
+      "function": "输入表达式绘制带动画的函数曲线",
       "format": "格式化常见代码与标记语言",
       "timestamp": "时间戳与日期时间互转",
       "unitconvert": "17 类实时换算，包含常用进制转换",
@@ -693,6 +695,145 @@
       "configFieldsMissing": "配置中的数值字段与当前数据不匹配",
       "configReadFailed": "无法读取配置文件",
       "unknown": "无法解析当前数据"
+    }
+  },
+  "functionTool": {
+    "inputTitle": "输入函数",
+    "inputHint": "表达式在浏览器本地安全解析",
+    "expression": "函数或参数方程",
+    "expressionPlaceholder": "普通函数：y = x^2\n参数方程：x = cos(t)；另起一行 y = sin(t)",
+    "plot": "绘制",
+    "syntaxHint": "支持常见运算与函数；分段可写 if(条件, 成立值, 否则值)，参数方程使用 x=…; y=…。",
+    "syntaxIntro": "可以直接照着以下格式输入，内容变化后会自动绘制：",
+    "syntaxBasicLabel": "普通函数",
+    "syntaxBasicHint": "写出 y 关于 x 的表达式。",
+    "syntaxPiecewiseLabel": "分段函数",
+    "syntaxPiecewiseHint": "三个参数依次是：条件、条件成立时的值、否则的值。",
+    "syntaxNestedLabel": "多个条件",
+    "syntaxNestedHint": "在“否则的值”中继续放入 if，即可增加更多区间。",
+    "syntaxParametricLabel": "参数方程",
+    "syntaxParametricHint": "x(t) 和 y(t) 各写一行，也可用分号分隔；在高级自定义中设置 t 范围。",
+    "syntaxShortcut": "回车可以换行；按 Ctrl/⌘ + Enter 可立即绘制。",
+    "commonFunctions": "常见函数",
+    "clickToFill": "点击公式自动填入",
+    "functionDescription": "函数说明",
+    "functionFormula": "函数",
+    "examples": {
+      "constant": {
+        "name": "常数函数",
+        "description": "函数值始终保持不变"
+      },
+      "linear": {
+        "name": "一次函数",
+        "description": "穿过原点的直线"
+      },
+      "quadratic": {
+        "name": "二次函数",
+        "description": "关于 Y 轴对称的抛物线"
+      },
+      "cubic": {
+        "name": "三次函数",
+        "description": "穿过原点的 S 形曲线"
+      },
+      "absolute": {
+        "name": "绝对值函数",
+        "description": "关于 Y 轴对称的 V 形曲线"
+      },
+      "squareRoot": {
+        "name": "平方根函数",
+        "description": "定义域 x ≥ 0，增长逐渐放缓"
+      },
+      "reciprocal": {
+        "name": "反比例函数",
+        "description": "两支曲线，在 x = 0 处不连续"
+      },
+      "sine": {
+        "name": "正弦函数",
+        "description": "周期为 2π 的平滑波形"
+      },
+      "cosine": {
+        "name": "余弦函数",
+        "description": "从峰值开始的周期波形"
+      },
+      "tangent": {
+        "name": "正切函数",
+        "description": "周期为 π，包含多处间断"
+      },
+      "exponential": {
+        "name": "指数函数",
+        "description": "始终大于 0，并快速增长"
+      },
+      "naturalLog": {
+        "name": "自然对数函数",
+        "description": "定义域 x > 0，增长逐渐放缓"
+      },
+      "sinc": {
+        "name": "辛克函数",
+        "description": "中心峰值向两侧衰减振荡"
+      },
+      "damped": {
+        "name": "阻尼振荡",
+        "description": "振幅从中心向两侧逐渐衰减"
+      },
+      "piecewise": {
+        "name": "分段函数",
+        "description": "使用 if(条件, 成立值, 否则值)"
+      },
+      "threePiece": {
+        "name": "三段函数",
+        "description": "分别处理 x < -2、-2 ≤ x ≤ 2 和 x > 2"
+      },
+      "sign": {
+        "name": "符号函数",
+        "description": "分别返回负数、零和正数的符号"
+      },
+      "pulse": {
+        "name": "区间脉冲",
+        "description": "在 0 ≤ x ≤ 4 时为 1，其余位置为 0"
+      },
+      "heart": {
+        "name": "心形参数曲线",
+        "description": "经典参数方程，动画沿轮廓绘制"
+      }
+    },
+    "advanced": "高级自定义",
+    "advancedHint": "坐标范围、动画速度与曲线样式",
+    "xMin": "X 最小值",
+    "xMax": "X 最大值",
+    "parameterMin": "参数 t 最小值",
+    "parameterMax": "参数 t 最大值",
+    "resetView": "恢复默认坐标范围",
+    "animationDuration": "动画时长",
+    "lineWidth": "曲线粗细",
+    "curveColor": "曲线颜色",
+    "showGrid": "显示网格",
+    "previewTitle": "函数图像",
+    "reset": "重置",
+    "replay": "重播动画",
+    "fullscreen": "浏览器内全屏",
+    "exitFullscreen": "退出全屏",
+    "canvasFallback": "当前浏览器不支持 Canvas 函数绘图。",
+    "chartHelp": "滚轮缩放 · 拖动平移 · 悬停查看坐标",
+    "emptyChart": "输入有效函数后将在这里绘图",
+    "ready": "已计算 {count} 个有效采样点",
+    "reducedMotion": "已根据系统“减少动态效果”设置关闭动画",
+    "chartAria": "函数 {expression} 的图像，X 轴范围 {min} 到 {max}",
+    "parametricChartAria": "参数方程 {expression} 的曲线图",
+    "errors": {
+      "empty": "请输入函数表达式",
+      "tooLong": "表达式过长，请控制在 200 个字符内",
+      "equation": "仅支持一个 y= 或 f(x)= 表达式",
+      "invalidCharacter": "无法识别字符“{char}”",
+      "unknownName": "不支持函数或常量“{name}”",
+      "functionParentheses": "函数 {name} 需要使用括号，例如 {name}(x)",
+      "missingParen": "缺少右括号",
+      "conditionalComma": "if 条件函数需要三个参数，请使用 if(条件, 成立值, 否则值)",
+      "conditionalColon": "条件表达式缺少冒号，请使用“条件 ? 值1 : 值2”",
+      "parametric": "参数方程需要同时提供 x=… 和 y=…，使用换行或分号分隔",
+      "unexpected": "表达式结构不完整，请检查运算符和括号",
+      "range": "X 最小值必须小于最大值",
+      "noValues": "当前范围内没有可绘制的函数值",
+      "invalid": "无法解析当前函数"
     }
   },
   "format": {

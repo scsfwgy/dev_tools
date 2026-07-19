@@ -192,6 +192,36 @@ TOOLS = {
             ],
         },
     },
+    "function": {
+        "zh": {
+            "name": "函数绘图工具",
+            "title": "函数绘图工具 - 在线绘制函数图像与曲线动画 | Tools24",
+            "description": "输入 y=x^2、三角函数、指数函数或对数函数，在线绘制函数图像，支持常见函数一键填入、全屏预览、缩放拖动、视图重置和曲线动画，全部在浏览器本地计算。",
+            "keywords": "函数绘图,在线函数图像,函数曲线,y=x^2,函数计算器,三角函数,指数函数,对数函数",
+            "intro": "输入 y=x² 等数学表达式即可绘制函数曲线，支持常见函数一键填入、坐标范围调整、画布缩放拖动和从左到右的描线动画。",
+            "features": ["安全解析函数表达式", "常见函数一键填入", "三角、指数与对数函数", "曲线从左到右动画绘制", "坐标范围、缩放、拖动与重置", "浏览器内全屏预览", "深浅主题与移动端适配", "浏览器本地处理"],
+            "faq": [
+                ("支持哪些函数和运算？", "支持 +、-、*、/、乘方与括号，以及 sin、cos、tan、sqrt、abs、exp、ln、log 等常用函数和 pi、e 常量。"),
+                ("可以直接输入 y=x^2 吗？", "可以。y= 和 f(x)= 前缀都可以省略，也支持 2x、2(x+1) 这类隐式乘法。"),
+                ("函数动画如何播放？", "每次绘图会从最左侧开始逐步描出曲线，点击“重播动画”可以随时从头播放。"),
+                ("表达式会上传服务器吗？", "不会。解析、计算、采样和绘图都在当前浏览器本地完成。"),
+            ],
+        },
+        "en": {
+            "name": "Function Plotter",
+            "title": "Function Plotter - Graph Equations with Curve Animation | Tools24",
+            "description": "Enter y=x^2, trigonometric, exponential or logarithmic expressions to graph functions online with presets, expanded preview, zoom, pan, reset and animated curve drawing, all computed locally.",
+            "keywords": "function plotter,online function graph,equation grapher,y=x^2,graphing calculator,trigonometric function,exponential function,logarithm",
+            "intro": "Enter an expression such as y=x² to graph it instantly, choose common functions, adjust the range, zoom or pan the canvas, and replay a left-to-right drawing animation.",
+            "features": ["Safe expression parsing", "One-click common function presets", "Trigonometric, exponential and logarithmic functions", "Left-to-right curve animation", "Range, zoom, pan and reset controls", "In-browser expanded preview", "Light, dark and mobile layouts", "Local browser processing"],
+            "faq": [
+                ("Which functions and operators are supported?", "Use +, -, *, /, powers and parentheses, plus sin, cos, tan, sqrt, abs, exp, ln, log and the pi and e constants."),
+                ("Can I enter y=x^2 directly?", "Yes. The y= and f(x)= prefixes are optional, and implicit multiplication such as 2x or 2(x+1) is supported."),
+                ("How does the animation work?", "Each plot traces the curve from its leftmost sample. Choose Replay animation at any time to start again."),
+                ("Is my expression uploaded?", "No. Parsing, calculation, sampling and drawing all run locally in your browser."),
+            ],
+        },
+    },
     "timestamp": {
         "zh": {
             "name": "时间戳转换工具",
@@ -991,6 +1021,7 @@ TOOL_REGISTRY = {
     "device": {"order": 10, "icon": "console", "script": "/js/device-tool.js", "global": "DeviceTool", "processing": "local", "indexable": True},
     "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260715", "global": "JsonTool", "processing": "local", "indexable": True},
     "visualization": {"order": 25, "icon": "chart", "script": "/js/visualization-tool.js", "global": "VisualizationTool", "processing": "local", "indexable": True},
+    "function": {"order": 27, "icon": "function", "script": "/js/function-tool.js", "global": "FunctionTool", "processing": "local", "indexable": True},
     "format": {"order": 30, "icon": "code", "script": "/js/format-tool.js?v=20260708", "global": "FormatTool", "processing": "local", "indexable": True},
     "timestamp": {"order": 40, "icon": "clock", "script": "/js/timestamp-tool.js?v=20260706", "global": "TimestampTool", "processing": "local", "indexable": True},
     "unitconvert": {"order": 50, "icon": "ruler", "script": "/js/unitconvert-tool.js?v=20260714a", "global": "UnitConvertTool", "processing": "local", "indexable": True},

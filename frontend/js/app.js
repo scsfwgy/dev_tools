@@ -113,6 +113,7 @@
     home: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
     json: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/><path d="M8 12h8"/><path d="M12 4v12"/></svg>',
     chart: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19V3"/><path d="M2 19h22"/></svg>',
+    "function": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 16c2.5 0 3.7-2.5 5-7s2.5-6 5-6"/><path d="M13 10c1.1 3.7 2.7 6 6 6"/></svg>',
     clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
     ruler: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0l-2.6-2.6a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 13.5 3 3M10.5 10.5l3 3M13.5 7.5l3 3M16.5 4.5l3 3"/></svg>',
     palette: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 0-4H12a1.5 1.5 0 0 1 0-3h3a6 6 0 0 0 0-12h-3Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="9.5" cy="6.5" r="1"/><circle cx="14" cy="6" r="1"/></svg>',
@@ -418,6 +419,7 @@
     if (activeMenuId !== "device" && typeof DeviceTool !== "undefined" && DeviceTool.deactivate) DeviceTool.deactivate();
     if (activeMenuId !== "diff" && typeof DiffTool !== "undefined" && DiffTool.deactivate) DiffTool.deactivate();
     if (activeMenuId !== "visualization" && typeof VisualizationTool !== "undefined" && VisualizationTool.deactivate) VisualizationTool.deactivate();
+    if (activeMenuId !== "function" && typeof FunctionTool !== "undefined" && FunctionTool.deactivate) FunctionTool.deactivate();
     const el = document.getElementById("content");
     if (activeMenuId !== "home") {
       var headerToolId = activeMenuId;
@@ -530,6 +532,11 @@
     if (activeMenuId === "visualization" && typeof VisualizationTool !== "undefined") {
       el.innerHTML = "";
       VisualizationTool.init(el);
+      return;
+    }
+    if (activeMenuId === "function" && typeof FunctionTool !== "undefined") {
+      el.innerHTML = "";
+      FunctionTool.init(el);
       return;
     }
     if (activeMenuId === "timestamp" && typeof TimestampTool !== "undefined") {
@@ -720,7 +727,7 @@
     { id: "files", tools: ["text", "diff", "markdown", "image", "converter"] },
     { id: "productivity", tools: ["timestamp", "unitconvert", "color", "cron"] },
     { id: "platform", tools: ["device", "terminal", "git", "ai", "android", "flutter", "ios"] },
-    { id: "everyday", tools: ["focus", "visualization", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }
+    { id: "everyday", tools: ["focus", "visualization", "function", "qrcode", "content", "translate", "area-search", "exchange", "tax", "mortgage"] }
   ];
 
   var HOME_RECOMMENDATIONS = [
