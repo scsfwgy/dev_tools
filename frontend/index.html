@@ -35,6 +35,9 @@
       window.clarity = window.clarity || function(){
         (window.clarity.q = window.clarity.q || []).push(arguments);
       };
+      window.va = window.va || function(){
+        (window.vaq = window.vaq || []).push(arguments);
+      };
       function loadAnalytics() {
         if (window.__analyticsLoaded) return;
         window.__analyticsLoaded = true;
@@ -51,6 +54,11 @@
         cfBeacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
         cfBeacon.setAttribute('data-cf-beacon', '{"token": "339ae998356b4b198d8c6b2166855589"}');
         document.head.appendChild(cfBeacon);
+        // Build-free equivalent of @vercel/analytics inject().
+        var vercelAnalyticsScript = document.createElement('script');
+        vercelAnalyticsScript.defer = true;
+        vercelAnalyticsScript.src = '/_vercel/insights/script.js';
+        document.head.appendChild(vercelAnalyticsScript);
       }
       window.addEventListener('load', function () {
         if ('requestIdleCallback' in window) requestIdleCallback(loadAnalytics, { timeout: 2500 });

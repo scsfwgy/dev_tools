@@ -150,4 +150,4 @@ git diff --check
 - 翻译功能只有配置 `DEV_TOOLS_DEEPSEEK_API_KEY` 后才能正常调用。
 - `app_settings.SITE_URL` 与 `frontend/js/app.js` 的默认 `siteUrl` 必须保持为 `https://dev.tools24.uk`，不得指向聚合门户。
 - 带版本号的 CSS/JavaScript 使用长期不可变缓存；修改静态文件时必须同步更新对应 URL 的版本参数。
-- Google Analytics 与 Microsoft Clarity 只在页面加载完成后的空闲阶段加载，不得恢复为阻塞首屏的同步加载。
+- Google Analytics、Microsoft Clarity、Cloudflare Web Analytics 与 Vercel Web Analytics 只在页面加载完成后的空闲阶段加载，不得恢复为阻塞首屏的同步加载。

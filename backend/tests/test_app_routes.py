@@ -930,6 +930,9 @@ def test_public_cache_headers_and_deferred_analytics(client, monkeypatch):
     assert manifest.headers["Cache-Control"] == "no-store"
     assert "requestIdleCallback(loadAnalytics" in index_template
     assert '<script async src="https://www.googletagmanager.com/' not in index_template
+    assert "window.va = window.va || function" in index_template
+    assert "vercelAnalyticsScript.defer = true" in index_template
+    assert "vercelAnalyticsScript.src = '/_vercel/insights/script.js'" in index_template
 
     # 静态资源版本号按 git 提交自动注入，无需手动维护 ?v= 字面量
     rendered = index.get_data(as_text=True)

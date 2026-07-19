@@ -116,7 +116,7 @@ DevTools/
 
 页面 canonical、Open Graph URL、hreflang、sitemap 及前端 manifest 的站点地址都应保持为 `https://dev.tools24.uk`。
 
-生产部署对带版本号的 CSS/JavaScript 使用长期不可变缓存；语言包、工具 manifest 和公开 HTML 使用 CDN 缓存与 `stale-while-revalidate`。Google Analytics 与 Microsoft Clarity 会在页面加载完成后的空闲阶段再加载，避免阻塞首屏。
+生产部署对带版本号的 CSS/JavaScript 使用长期不可变缓存；语言包、工具 manifest 和公开 HTML 使用 CDN 缓存与 `stale-while-revalidate`。Google Analytics、Microsoft Clarity、Cloudflare Web Analytics 与 Vercel Web Analytics 会在页面加载完成后的空闲阶段再加载，避免阻塞首屏。
 
 ## 测试
 
