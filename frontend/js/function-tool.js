@@ -117,6 +117,12 @@ var FunctionTool = (function () {
       return function (x) { return Math.pow(left(x), right(x)); };
     }
 
+    function conditionalNode(condition, whenTrue, whenFalse) {
+      return function (x) {
+        return condition(x) !== 0 ? whenTrue(x) : whenFalse(x);
+      };
+    }
+
     function peek() {
       return tokens[position];
     }
@@ -143,14 +149,18 @@ var FunctionTool = (function () {
         if (token.value === "if") {
           if (!take("(")) throw new Error(t("functionTool.errors.functionParentheses", { name: token.value }));
           var condition = parseConditional();
-          if (!take(",")) throw new Error(t("functionTool.errors.conditionalComma"));
-          var whenTrue = parseConditional();
-          if (!take(",")) throw new Error(t("functionTool.errors.conditionalComma"));
-          var whenFalse = parseConditional();
+          if (take(",")) {
+            var functionWhenTrue = parseConditional();
+            if (!take(",")) throw new Error(t("functionTool.errors.conditionalComma"));
+            var functionWhenFalse = parseConditional();
+            if (!take(")")) throw new Error(t("functionTool.errors.missingParen"));
+            return conditionalNode(condition, functionWhenTrue, functionWhenFalse);
+          }
           if (!take(")")) throw new Error(t("functionTool.errors.missingParen"));
-          return function (x) {
-            return condition(x) !== 0 ? whenTrue(x) : whenFalse(x);
-          };
+          var readableWhenTrue = parseConditional();
+          if (!take("else")) throw new Error(t("functionTool.errors.conditionalElse"));
+          var readableWhenFalse = parseConditional();
+          return conditionalNode(condition, readableWhenTrue, readableWhenFalse);
         }
         var fn = FUNCTIONS[token.value];
         if (!fn) throw new Error(t("functionTool.errors.unknownName", { name: token.value }));
@@ -186,7 +196,7 @@ var FunctionTool = (function () {
     }
 
     function startsImplicitFactor(token) {
-      return token.type === "number" || token.type === "name" || token.value === "(";
+      return token.type === "number" || (token.type === "name" && token.value !== "else") || token.value === "(";
     }
 
     function parseMultiply() {
@@ -238,9 +248,7 @@ var FunctionTool = (function () {
       var whenTrue = parseConditional();
       if (!take(":")) throw new Error(t("functionTool.errors.conditionalColon"));
       var whenFalse = parseConditional();
-      return function (x) {
-        return condition(x) !== 0 ? whenTrue(x) : whenFalse(x);
-      };
+      return conditionalNode(condition, whenTrue, whenFalse);
     }
 
     var evaluate = parseConditional();
@@ -1046,10 +1054,10 @@ var FunctionTool = (function () {
       { key: "naturalLog", label: "y = ln(x)", expression: "y = ln(x)" },
       { key: "sinc", label: "y = sin(x)/x", expression: "y = sin(x)/x" },
       { key: "damped", label: "y = e⁻|x|/4 cos(4x)", expression: "y = exp(-abs(x)/4) * cos(4x)" },
-      { key: "piecewise", label: "y = if(x<0,-x,x)", expression: "y = if(x < 0, -x, x)" },
-      { key: "threePiece", label: "if(x<-2,…,if(…))", expression: "y = if(x < -2, -1, if(x <= 2, x^2/4, 1))" },
-      { key: "sign", label: "if(x<0,-1,if(…))", expression: "y = if(x < 0, -1, if(x == 0, 0, 1))" },
-      { key: "pulse", label: "if(x<0,0,if(…))", expression: "y = if(x < 0, 0, if(x <= 4, 1, 0))" },
+      { key: "piecewise", label: "if(x<0) -x else x", expression: "y = if(x < 0) -x else x" },
+      { key: "threePiece", label: "if(x<-2) … else if …", expression: "y = if(x < -2) -1\n    else if(x <= 2) x^2/4\n    else 1" },
+      { key: "sign", label: "if(x<0) -1 else if …", expression: "y = if(x < 0) -1\n    else if(x == 0) 0\n    else 1" },
+      { key: "pulse", label: "if(x<0) 0 else if …", expression: "y = if(x < 0) 0\n    else if(x <= 4) 1\n    else 0" },
       {
         key: "heart",
         label: "x(t); y(t)",
@@ -1073,8 +1081,8 @@ var FunctionTool = (function () {
       '      <p>' + t("functionTool.syntaxIntro") + '</p>',
       '      <dl>',
       '        <div><dt>' + t("functionTool.syntaxBasicLabel") + '</dt><dd><code>y = sin(x) + x^2</code><span>' + t("functionTool.syntaxBasicHint") + '</span></dd></div>',
-      '        <div><dt>' + t("functionTool.syntaxPiecewiseLabel") + '</dt><dd><code>y = if(x &lt; 0, -x, x)</code><span>' + t("functionTool.syntaxPiecewiseHint") + '</span></dd></div>',
-      '        <div><dt>' + t("functionTool.syntaxNestedLabel") + '</dt><dd><code>y = if(x &lt; -1, -1, if(x &lt;= 1, x, 1))</code><span>' + t("functionTool.syntaxNestedHint") + '</span></dd></div>',
+      '        <div><dt>' + t("functionTool.syntaxPiecewiseLabel") + '</dt><dd><code>y = if(x &lt; 0) -x else x</code><span>' + t("functionTool.syntaxPiecewiseHint") + '</span></dd></div>',
+      '        <div><dt>' + t("functionTool.syntaxNestedLabel") + '</dt><dd><code>y = if(x &lt; -1) -1<br>&nbsp;&nbsp;&nbsp;&nbsp;else if(x &lt;= 1) x<br>&nbsp;&nbsp;&nbsp;&nbsp;else 1</code><span>' + t("functionTool.syntaxNestedHint") + '</span></dd></div>',
       '        <div><dt>' + t("functionTool.syntaxParametricLabel") + '</dt><dd><code>x = cos(t)<br>y = sin(t)</code><span>' + t("functionTool.syntaxParametricHint") + '</span></dd></div>',
       '      </dl>',
       '      <small>' + t("functionTool.syntaxShortcut") + '</small>',

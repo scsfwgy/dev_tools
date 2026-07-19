@@ -703,14 +703,14 @@
     "expression": "函数或参数方程",
     "expressionPlaceholder": "普通函数：y = x^2\n参数方程：x = cos(t)；另起一行 y = sin(t)",
     "plot": "绘制",
-    "syntaxHint": "支持常见运算与函数；分段可写 if(条件, 成立值, 否则值)，参数方程使用 x=…; y=…。",
+    "syntaxHint": "支持常见运算与函数；分段可写 if(条件) 成立值 else 否则值，参数方程使用 x=…; y=…。",
     "syntaxIntro": "可以直接照着以下格式输入，内容变化后会自动绘制：",
     "syntaxBasicLabel": "普通函数",
     "syntaxBasicHint": "写出 y 关于 x 的表达式。",
     "syntaxPiecewiseLabel": "分段函数",
-    "syntaxPiecewiseHint": "三个参数依次是：条件、条件成立时的值、否则的值。",
+    "syntaxPiecewiseHint": "条件写在 if(...) 中，后面写成立时的值，else 后写否则的值；旧的三参数写法仍然兼容。",
     "syntaxNestedLabel": "多个条件",
-    "syntaxNestedHint": "在“否则的值”中继续放入 if，即可增加更多区间。",
+    "syntaxNestedHint": "每增加一个分段，就在 else 后继续写 if；换行和缩进只用于排版，不影响计算。",
     "syntaxParametricLabel": "参数方程",
     "syntaxParametricHint": "x(t) 和 y(t) 各写一行，也可用分号分隔；在高级自定义中设置 t 范围。",
     "syntaxShortcut": "回车可以换行；按 Ctrl/⌘ + Enter 可立即绘制。",
@@ -777,7 +777,7 @@
       },
       "piecewise": {
         "name": "分段函数",
-        "description": "使用 if(条件, 成立值, 否则值)"
+        "description": "使用 if(条件) 成立值 else 否则值"
       },
       "threePiece": {
         "name": "三段函数",
@@ -828,6 +828,7 @@
       "functionParentheses": "函数 {name} 需要使用括号，例如 {name}(x)",
       "missingParen": "缺少右括号",
       "conditionalComma": "if 条件函数需要三个参数，请使用 if(条件, 成立值, 否则值)",
+      "conditionalElse": "分段函数缺少 else，请使用 if(条件) 成立值 else 否则值",
       "conditionalColon": "条件表达式缺少冒号，请使用“条件 ? 值1 : 值2”",
       "parametric": "参数方程需要同时提供 x=… 和 y=…，使用换行或分号分隔",
       "unexpected": "表达式结构不完整，请检查运算符和括号",

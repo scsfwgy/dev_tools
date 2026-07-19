@@ -282,10 +282,10 @@ def test_function_plotter_is_local_lazy_loaded_and_localized(client):
     assert "localStorage" not in script
     assert '{ key: "sine", label: "y = sin(x)", expression: "y = sin(x)" }' in script
     assert '{ key: "damped", label: "y = e⁻|x|/4 cos(4x)", expression: "y = exp(-abs(x)/4) * cos(4x)" }' in script
-    assert '{ key: "piecewise", label: "y = if(x<0,-x,x)", expression: "y = if(x < 0, -x, x)" }' in script
-    assert '{ key: "threePiece", label: "if(x<-2,…,if(…))", expression: "y = if(x < -2, -1, if(x <= 2, x^2/4, 1))" }' in script
-    assert '{ key: "sign", label: "if(x<0,-1,if(…))", expression: "y = if(x < 0, -1, if(x == 0, 0, 1))" }' in script
-    assert '{ key: "pulse", label: "if(x<0,0,if(…))", expression: "y = if(x < 0, 0, if(x <= 4, 1, 0))" }' in script
+    assert '{ key: "piecewise", label: "if(x<0) -x else x", expression: "y = if(x < 0) -x else x" }' in script
+    assert 'expression: "y = if(x < -2) -1\\n    else if(x <= 2) x^2/4\\n    else 1"' in script
+    assert 'expression: "y = if(x < 0) -1\\n    else if(x == 0) 0\\n    else 1"' in script
+    assert 'expression: "y = if(x < 0) 0\\n    else if(x <= 4) 1\\n    else 0"' in script
     assert 'label: "x(t); y(t)"' in script
     assert 'expression: "x = 16sin(t)^3; y = 13cos(t)-5cos(2t)-2cos(3t)-cos(4t)"' in script
     assert "compilePlotExpression" in script
@@ -366,6 +366,11 @@ const results = {
   friendlyIfPositive: value("if(x < 0, -x, x)") === 2,
   friendlyIfNegative: core.compileExpression("if(x < 0, -x, x)").evaluate(-3) === 3,
   nestedIf: value("if(x < 0, -1, if(x == 2, 2, 1))") === 2,
+  readableIfPositive: value("if(x < 0) -x else x") === 2,
+  readableIfNegative: core.compileExpression("if(x < 0) -x else x").evaluate(-3) === 3,
+  readableThreePieceLeft: core.compileExpression("y = if(x < -2) -1\n    else if(x <= 2) x^2/4\n    else 1").evaluate(-3) === -1,
+  readableThreePieceMiddle: Math.abs(core.compileExpression("y = if(x < -2) -1\n    else if(x <= 2) x^2/4\n    else 1").evaluate(2) - 1) < 1e-12,
+  readableThreePieceRight: core.compileExpression("y = if(x < -2) -1\n    else if(x <= 2) x^2/4\n    else 1").evaluate(3) === 1,
   inclusiveComparison: value("x >= 2 ? 10 : 0") === 10,
   nestedConditional: value("x < 0 ? -1 : x == 2 ? 2 : 1") === 2,
   parametricMode: heart.mode === "parametric",
@@ -379,6 +384,7 @@ const results = {
   rejectIncompleteParametric: throwsPlot("x=sin(t); z=cos(t)"),
   rejectMissingConditionalColon: throws("x < 0 ? -x"),
   rejectBadIf: throws("if(x < 0, -x)"),
+  rejectReadableIfWithoutElse: throws("if(x < 0) -x"),
   rejectMemberAccess: throws("window.alert(1)"),
   rejectUnknownFunction: throws("random(x)"),
   rejectAssignment: throws("x=2"),

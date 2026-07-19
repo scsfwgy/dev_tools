@@ -703,14 +703,14 @@
     "expression": "Function or parametric equations",
     "expressionPlaceholder": "Function: y = x^2\nParametric: x = cos(t), then y = sin(t) on a new line",
     "plot": "Plot",
-    "syntaxHint": "Supports common operations and functions; use if(condition, true value, false value) for pieces, or x=…; y=… for parametric curves.",
+    "syntaxHint": "Supports common operations and functions; use if(condition) true value else false value for pieces, or x=…; y=… for parametric curves.",
     "syntaxIntro": "Copy one of these formats; changes are plotted automatically:",
     "syntaxBasicLabel": "Function",
     "syntaxBasicHint": "Write y as an expression of x.",
     "syntaxPiecewiseLabel": "Piecewise",
-    "syntaxPiecewiseHint": "The three arguments are the condition, value when true, and value otherwise.",
+    "syntaxPiecewiseHint": "Put the condition inside if(...), then write the true value, followed by else and the fallback value; the older three-argument form still works.",
     "syntaxNestedLabel": "More cases",
-    "syntaxNestedHint": "Put another if in the otherwise value to add more intervals.",
+    "syntaxNestedHint": "Add another if after else for each extra interval; line breaks and indentation are only for readability.",
     "syntaxParametricLabel": "Parametric",
     "syntaxParametricHint": "Put x(t) and y(t) on separate lines or divide them with a semicolon; set the t range under Advanced.",
     "syntaxShortcut": "Enter adds a line; press Ctrl/⌘ + Enter to plot immediately.",
@@ -777,7 +777,7 @@
       },
       "piecewise": {
         "name": "Piecewise function",
-        "description": "Uses if(condition, true value, false value)"
+        "description": "Uses if(condition) true value else false value"
       },
       "threePiece": {
         "name": "Three-piece function",
@@ -828,6 +828,7 @@
       "functionParentheses": "Use parentheses with {name}, for example {name}(x)",
       "missingParen": "A closing parenthesis is missing",
       "conditionalComma": "The if function needs three arguments: if(condition, true value, false value)",
+      "conditionalElse": "The piecewise expression needs else: if(condition) true value else false value",
       "conditionalColon": "The condition needs a colon; use condition ? value1 : value2",
       "parametric": "A parametric curve needs both x=… and y=…, separated by a new line or semicolon",
       "unexpected": "The expression is incomplete; check its operators and parentheses",
