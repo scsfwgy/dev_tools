@@ -73,7 +73,9 @@ def test_device_environment_tool_is_local_lazy_loaded_and_comprehensive(client):
     assert TOOL_REGISTRY["device"]["processing"] == "local"
     assert TOOL_REGISTRY["device"]["global"] == "DeviceTool"
     assert zh_locale["device"]["environmentTitle"] == "浏览器环境诊断报告"
-    assert en_locale["device"]["localBadge"] == "Fully local detection · Nothing is uploaded"
+    assert en_locale["device"]["localBadge"] == "Strict local mode · No analytics or session replay"
+    assert zh_locale["device"]["authorized"]["checks"]["location"]["title"] == "定位"
+    assert en_locale["device"]["authorized"]["checks"]["camera"]["title"] == "Camera"
     assert 'typeof DeviceTool !== "undefined"' in app_script
     assert "DeviceTool.deactivate" in app_script
     assert_tool_is_lazy_loaded(frontend_dir, "device-tool.js")
@@ -82,6 +84,18 @@ def test_device_environment_tool_is_local_lazy_loaded_and_comprehensive(client):
     assert "WEBGL_debug_renderer_info" in script
     assert "enumerateDevices()" in script
     assert "navigator.permissions.query" in script
+    assert "navigator.geolocation.getCurrentPosition" in script
+    assert "navigator.mediaDevices.getUserMedia" in script
+    assert "window.getScreenDetails()" in script
+    assert "navigator.bluetooth.requestDevice" in script
+    assert "navigator.usb.requestDevice" in script
+    assert "navigator.usb.requestDevice({ filters: [{}] })" in script
+    assert "navigator.hid.requestDevice" in script
+    assert "navigator.hid.requestDevice({ filters: [] })" in script
+    assert "navigator.serial.requestPort" in script
+    assert "activeMediaStreams.slice().forEach(stopMediaStream)" in script
+    assert 'data-clarity-mask="true"' in script
+    assert 'output.authorized = {}' in script
     assert "reportMarkdown" in script
     assert "reportData" in script
     assert "fetch(" not in script
@@ -89,11 +103,21 @@ def test_device_environment_tool_is_local_lazy_loaded_and_comprehensive(client):
     assert ".device-hero" in app_css
     assert ".device-capabilities" in app_css
     assert ".device-advanced" in app_css
+    assert ".device-authorized-grid" in app_css
     assert "@media (max-width: 640px)" in app_css
+    assert 'id === "device" && !isDeviceRoutePath()' in app_script
+    assert 'strictLocalDeviceSession && id !== "device"' in app_script
+    assert "window.location.assign(buildPathForMenu(id, currentLang))" in app_script
+    assert '(routed.menuId === "device") !== strictLocalDeviceSession' in app_script
+    assert 'toolId === "device" || strictLocalDeviceSession' in app_script
 
     page = client.get("/zh/tool/device").get_data(as_text=True)
     assert "浏览器本地处理，数据不上传" in page
     assert "部分信息需要请求服务端" not in page
+    device_response = client.get("/zh/tool/device")
+    assert "connect-src 'self'" in device_response.headers["Content-Security-Policy"]
+    assert "googletagmanager.com" not in device_response.headers["Content-Security-Policy"]
+    assert "Content-Security-Policy" not in client.get("/zh/tool/json").headers
 
     node = shutil.which("node")
     if node:
@@ -110,7 +134,10 @@ const values = {
   mac: core.detectOS("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)") === "macOS 10.15.7",
   android: core.detectOS("Mozilla/5.0 (Linux; Android 16)") === "Android 16",
   bytes: core.formatBytes(1073741824) === "1.00 GB",
-  offset: /^UTC[+-]\d{2}:\d{2}$/.test(core.timezoneOffset())
+  offset: /^UTC[+-]\d{2}:\d{2}$/.test(core.timezoneOffset()),
+  usbId: core.formatHexIdentifier(0x46d) === "0x046D",
+  cancelled: core.authorizationErrorState({ name: "NotFoundError" }) === "cancelled",
+  denied: core.authorizationErrorState({ name: "NotAllowedError" }) === "denied"
 };
 process.stdout.write(JSON.stringify(values));
 '''
@@ -646,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "38+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "39+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -720,7 +747,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
-        "everyday": ["focus", "content", "translate", "area-search"],
+        "everyday": ["focus", "ball-game", "content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -929,10 +956,52 @@ def test_public_cache_headers_and_deferred_analytics(client, monkeypatch):
     assert locale.headers["Cache-Control"] == "no-store"
     assert manifest.headers["Cache-Control"] == "no-store"
     assert "requestIdleCallback(loadAnalytics" in index_template
+    assert "isStrictLocalDeviceRoute()" in index_template
+    assert 'if (isStrictLocalDeviceRoute()) return;' in index_template
     assert '<script async src="https://www.googletagmanager.com/' not in index_template
     assert "window.va = window.va || function" in index_template
     assert "vercelAnalyticsScript.defer = true" in index_template
     assert "vercelAnalyticsScript.src = '/_vercel/insights/script.js'" in index_template
+
+    node = shutil.which("node")
+    if node:
+        inline_script = re.search(
+            r"<script>\s*(window\.dataLayer.*?window\.addEventListener\('load'.*?)</script>",
+            index_template,
+            re.DOTALL,
+        )
+        assert inline_script, "analytics loader script was not found"
+        program = r'''
+const vm = require("vm");
+const source = process.argv[1];
+const appended = [];
+const context = {
+  Date,
+  RegExp,
+  setTimeout: () => {},
+  document: {
+    createElement: tag => ({ tag, setAttribute(name, value) { this[name] = value; } }),
+    head: { appendChild: node => appended.push(node) }
+  },
+  location: { pathname: "/zh/tool/device" },
+  addEventListener: () => {}
+};
+context.window = context;
+vm.createContext(context);
+vm.runInContext(source, context);
+context.loadAnalytics();
+const strictCount = appended.length;
+context.location.pathname = "/zh/categories";
+context.loadAnalytics();
+process.stdout.write(JSON.stringify({ strictCount, normalCount: appended.length }));
+'''
+        completed = subprocess.run(
+            [node, "-e", program, inline_script.group(1)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        assert json.loads(completed.stdout) == {"strictCount": 0, "normalCount": 4}
 
     # 静态资源版本号按 git 提交自动注入，无需手动维护 ?v= 字面量
     rendered = index.get_data(as_text=True)
@@ -1723,7 +1792,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "content", "translate", "area-search"] }' in app_script
+    assert '{ id: "everyday", tools: ["focus", "ball-game", "content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
@@ -1744,6 +1813,232 @@ def test_shared_tool_visual_contract_and_compact_headers(client):
     assert '<h2 data-i18n="welcome.deviceInfo">' not in app_script
     assert 't("converter.title")' not in converter_script
     assert 't("translate.title")' not in translate_script
+
+
+def test_ball_genesis_is_local_randomized_and_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    page = client.get("/zh/tool/ball-game")
+    english_page = client.get("/en/tool/ball-game")
+    script = client.get("/js/ball-game-tool.js")
+    script_text = script.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert english_page.status_code == 200
+    assert "万象小球" in page.get_data(as_text=True)
+    assert "Ball Genesis" in english_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/ball-game" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/en/tool/ball-game" in english_page.get_data(as_text=True)
+    assert script.status_code == 200
+    assert_tool_is_lazy_loaded(frontend_dir, "ball-game-tool.js")
+    assert TOOL_REGISTRY["ball-game"]["processing"] == "local"
+    assert TOOL_REGISTRY["ball-game"]["global"] == "BallGameTool"
+    assert TOOL_REGISTRY["ball-game"]["icon"] == "balls"
+    assert TOOL_REGISTRY["ball-game"]["indexable"] is True
+    assert zh_locale["menu"]["ball-game"] == "万象小球"
+    assert en_locale["menu"]["ball-game"] == "Ball Genesis"
+    assert zh_locale["ballGame"]["status"]["limit"] == "已达生态上限，撞墙只反弹"
+    assert en_locale["ballGame"]["currentSpeed"] == "Constant speed"
+    assert zh_locale["ballGame"]["recommended"] == "推荐"
+    assert en_locale["ballGame"]["fullscreen"] == "Expand preview"
+    assert zh_locale["ballGame"]["errors"]["range"] == "数量上限必须是 1–10,000 的整数。"
+    assert zh_locale["ballGame"]["limitTime"] == "达上限用时"
+    assert en_locale["ballGame"]["totalTime"] == "Total time"
+    assert zh_locale["ballGame"]["collisionMode"] == "相撞消失"
+    assert zh_locale["ballGame"]["populationChart"] == "数量变化曲线"
+    assert en_locale["ballGame"]["chartAxes"] == "X: time · Y: ball count"
+    assert "headline" not in zh_locale["ballGame"]
+    assert "subtitle" not in zh_locale["ballGame"]
+    assert "localBadge" not in zh_locale["ballGame"]
+    assert "headline" not in en_locale["ballGame"]
+    assert "subtitle" not in en_locale["ballGame"]
+    assert "localBadge" not in en_locale["ballGame"]
+    assert "requestAnimationFrame" in script_text
+    assert "ResizeObserver" in script_text
+    assert "MutationObserver" in script_text
+    assert "function splitAtWall(" in script_text
+    assert "function wallCollision(" in script_text
+    assert "function nextGenerationColor(" in script_text
+    assert "function colorForGeneration(" in script_text
+    assert "function symmetricAngles(" in script_text
+    assert "function velocityFor(" in script_text
+    assert "function canSplitAtWall(" in script_text
+    assert "function enterFullscreen(" in script_text
+    assert "function exitFullscreen(" in script_text
+    assert "function updateLimitRecommendation(" in script_text
+    assert "function validatePopulationLimit(" in script_text
+    assert "function collidingBallIndexes(" in script_text
+    assert "function removeTouchingBalls(" in script_text
+    assert "function resetPopulationHistory(" in script_text
+    assert "function recordPopulationSample(" in script_text
+    assert "function drawPopulationChart(" in script_text
+    assert "populationHistory.length > 1200" in script_text
+    assert "var COLLISION_CELL_SIZE = BALL_RADIUS * 2;" in script_text
+    assert "var x = width / 2;" in script_text
+    assert "var y = height / 2;" in script_text
+    assert "var angle = randomSource() * Math.PI * 2;" in script_text
+    assert "var reachedLimitAtMs = null;" in script_text
+    assert "if (started && atLimit && reachedLimitAtMs === null) reachedLimitAtMs = elapsedMs;" in script_text
+    assert "nextBalls.push.apply(nextBalls, splitAtWall(ball, normalAngle))" in script_text
+    assert "function populationCap(" in script_text
+    assert "var BALL_RADIUS = 8;" in script_text
+    assert "var MIN_SPEED = 0.1;" in script_text
+    assert "var MAX_SPEED = 10;" in script_text
+    assert "var speed = BASE_SPEED * config.speed;" in script_text
+    assert "ball.x += ball.vx * deltaSeconds;" in script_text
+    assert "ball.y += ball.vy * deltaSeconds;" in script_text
+    assert "context.arc(ball.x, ball.y, BALL_RADIUS" in script_text
+    assert "function speedMultiplier(" not in script_text
+    assert "function processCollisions()" not in script_text
+    assert "function resolveElasticCollision(" not in script_text
+    assert "function createEffect(" not in script_text
+    assert "function drawEffects(" not in script_text
+    assert "context.lineTo" not in script_text
+    assert "context.stroke" not in script_text
+    assert "shadowBlur" not in script_text
+    assert "requestFullscreen" not in script_text
+    assert "document.fullscreenElement" not in script_text
+    assert 'id="ball-game-count-value">1</output>' in script_text
+    assert 'id="ball-game-count" type="range" min="1" max="20" step="1" value="1"' in script_text
+    assert 'id="ball-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"' in script_text
+    assert 'id="ball-game-limit" type="number" step="1" value="40"' in script_text
+    assert 'id="ball-game-limit" type="number" min=' not in script_text
+    assert 'id="ball-game-limit-error"' in script_text
+    assert 'id="ball-game-collision" type="checkbox" checked' in script_text
+    assert 'id="ball-game-total-time">00:00.000</strong>' in script_text
+    assert 'id="ball-game-limit-time">00:00.000</strong>' in script_text
+    assert 'id="ball-game-fullscreen"' in script_text
+    assert 'id="ball-game-exit-fullscreen"' in script_text
+    assert 'id="ball-game-population-chart"' in script_text
+    assert "ball-game-chart-card" in script_text
+    assert "ball-game-intro" not in script_text
+    assert "ball-game-rules" not in script_text
+    assert "fetch(" not in script_text
+    assert "localStorage" not in script_text
+    assert 'activeMenuId === "ball-game"' in app_script
+    assert "BallGameTool.deactivate" in app_script
+    assert ".ball-game-canvas-shell" in app_css
+    assert "--ball-game-canvas-bg" in app_css
+    assert "--ball-game-grid" not in app_css
+    assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-stats {" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-canvas-shell" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
+    assert ".ball-game-population-chart" in app_css
+    assert ".ball-game-intro" not in app_css
+    assert "inset: 112px 0 0;" in app_css
+    assert "body.ball-game-fullscreen-active" in app_css
+    assert ".ball-game-config-error" in app_css
+    assert ".ball-game-toggle-control" in app_css
+    assert ".ball-game-rules" not in app_css
+    assert "grid-template-columns: repeat(5, minmax(0, 1fr));" in app_css
+    assert "rules" not in zh_locale["ballGame"]
+    assert "rules" not in en_locale["ballGame"]
+    assert "@media (prefers-reduced-motion: reduce)" in app_css
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = { Math, Number, String, RegExp, Map };
+context.window = context;
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/ball-game-tool.js", "utf8"), context);
+const core = context.BallGameTool._test;
+const nextColor = core.nextGenerationColor({ h: 350, s: 60, l: 50 }, () => 0.75);
+const generationPalette = [{ h: 210, s: 70, l: 50 }];
+const generationOneA = core.generationColor(generationPalette, 1, () => 0.75);
+const generationOneB = core.generationColor(generationPalette, 1, () => 0.1);
+const generationTwo = core.generationColor(generationPalette, 2, () => 0.75);
+const angles = core.symmetricAngles(Math.PI, 0.5);
+const firstVelocity = core.velocityFor(70, 0.3);
+const secondVelocity = core.velocityFor(70, 2.1);
+const reflected = { vx: -10, vy: 2 };
+const touchingBalls = [
+  { x: 0, y: 0, radius: 8, collisionImmuneUntil: 0 },
+  { x: 15, y: 0, radius: 8, collisionImmuneUntil: 0 },
+  { x: 80, y: 80, radius: 8, collisionImmuneUntil: 0 }
+];
+const protectedBalls = [
+  { x: 0, y: 0, radius: 8, collisionImmuneUntil: 600 },
+  { x: 15, y: 0, radius: 8, collisionImmuneUntil: 600 }
+];
+core.reflectFromWall(reflected, 0);
+process.stdout.write(JSON.stringify({
+  defaults: core.normalizeConfig(null, null, null, null, 64),
+  normalized: core.normalizeConfig(99, 99, "invalid", 99999, 64),
+  oneLimit: core.normalizeConfig(1, 1, "#3b82f6", 1, 64).limit,
+  raisedLimit: core.normalizeConfig(20, 1, "#3b82f6", 2, 64).limit,
+  limitValidation: [
+    core.validatePopulationLimit("", 1),
+    core.validatePopulationLimit("1.5", 1),
+    core.validatePopulationLimit("0", 1),
+    core.validatePopulationLimit("10001", 1),
+    core.validatePopulationLimit("3", 4),
+    core.validatePopulationLimit("1", 1),
+    core.validatePopulationLimit("10000", 1)
+  ],
+  caps: [core.populationCap(10, 10), core.populationCap(4000, 4000)],
+  formattedTimes: [core.formatTime(0), core.formatTime(61234.9)],
+  formattedAxisTimes: [core.formatAxisTime(0), core.formatAxisTime(9500), core.formatAxisTime(10000), core.formatAxisTime(90000)],
+  substepCounts: [core.physicsSubstepCount(0.032, 0.1), core.physicsSubstepCount(0.032, 10)],
+  collisionIndexes: core.collidingBallIndexes(touchingBalls, 500).sort((a, b) => a - b),
+  protectedCollisionIndexes: core.collidingBallIndexes(protectedBalls, 500),
+  velocityMagnitudes: [
+    Math.hypot(firstVelocity.vx, firstVelocity.vy),
+    Math.hypot(secondVelocity.vx, secondVelocity.vy)
+  ],
+  nextColor,
+  generationOneA,
+  generationOneB,
+  generationTwo,
+  angles,
+  reflected,
+  wallSplitAllowed: core.canSplitAtWall({ wallImmuneUntil: 180 }, 181, 39, 40),
+  wallSplitCoolingDown: core.canSplitAtWall({ wallImmuneUntil: 180 }, 179, 39, 40),
+  wallSplitAtCap: core.canSplitAtWall({ wallImmuneUntil: 0 }, 181, 40, 40)
+}));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result = json.loads(completed.stdout)
+        assert result["defaults"] == {"count": 1, "speed": 1, "color": "#3b82f6", "limit": 64}
+        assert result["normalized"] == {"count": 20, "speed": 10, "color": "#3b82f6", "limit": 10000}
+        assert result["oneLimit"] == 1
+        assert result["raisedLimit"] == 20
+        assert [item["error"] for item in result["limitValidation"][:4]] == ["range"] * 4
+        assert result["limitValidation"][4]["error"] == "count"
+        assert result["limitValidation"][5] == {"valid": True, "value": 1, "error": None}
+        assert result["limitValidation"][6] == {"valid": True, "value": 10000, "error": None}
+        assert result["caps"] == [40, 160]
+        assert result["formattedTimes"] == ["00:00.000", "01:01.234"]
+        assert result["formattedAxisTimes"] == ["0.0s", "9.5s", "10s", "1.5m"]
+        assert result["substepCounts"] == [1, 6]
+        assert result["collisionIndexes"] == [0, 1]
+        assert result["protectedCollisionIndexes"] == []
+        assert all(abs(magnitude - 70) < 1e-9 for magnitude in result["velocityMagnitudes"])
+        assert 0 <= result["nextColor"]["h"] < 360
+        assert result["nextColor"]["h"] != 350
+        assert 46 <= result["nextColor"]["s"] <= 88
+        assert 40 <= result["nextColor"]["l"] <= 68
+        assert result["generationOneA"] == result["generationOneB"]
+        assert result["generationTwo"] != result["generationOneA"]
+        assert abs(result["angles"][0] - 3.641592653589793) < 1e-9
+        assert abs(result["angles"][1] - 2.641592653589793) < 1e-9
+        assert result["reflected"] == {"vx": 10, "vy": 2}
+        assert result["wallSplitAllowed"] is True
+        assert result["wallSplitCoolingDown"] is False
+        assert result["wallSplitAtCap"] is False
 
 
 def test_uuid_url_and_cron_tools_are_local_lazy_and_indexable(client):

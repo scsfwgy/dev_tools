@@ -115,6 +115,17 @@ def render_spa(lang, tool_id, indexable=True, subpage=None):
         template = template.replace(marker, value)
     response = Response(template, mimetype="text/html")
     response.headers["Content-Language"] = "zh-CN" if lang == "zh" else "en"
+    if tool_id == "device" and not subpage:
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: blob:; "
+            "font-src 'self' data:; "
+            "media-src 'self' blob:; "
+            "connect-src 'self'; "
+            "object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+        )
     return response
 
 

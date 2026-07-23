@@ -6,6 +6,8 @@ var DeviceTool = (function () {
   var cleanups = [];
   var report = null;
   var advancedRunning = false;
+  var authorizationInProgress = null;
+  var activeMediaStreams = [];
 
   var SECTION_META = {
     locale: { icon: "◷", title: "device.sections.locale", hint: "device.sectionHints.locale" },
@@ -15,6 +17,17 @@ var DeviceTool = (function () {
     network: { icon: "⇄", title: "device.sections.network", hint: "device.sectionHints.network" },
     privacy: { icon: "◈", title: "device.sections.privacy", hint: "device.sectionHints.privacy" }
   };
+
+  var AUTHORIZED_CHECKS = [
+    { id: "location", icon: "⌖", support: function () { return Boolean(navigator.geolocation); }, run: requestLocationDetails },
+    { id: "camera", icon: "◉", support: function () { return Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia); }, run: function () { return requestMediaDetails("videoinput"); } },
+    { id: "microphone", icon: "◍", support: function () { return Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia); }, run: function () { return requestMediaDetails("audioinput"); } },
+    { id: "screens", icon: "▣", support: function () { return typeof window.getScreenDetails === "function"; }, run: requestScreenDetails },
+    { id: "bluetooth", icon: "ᛒ", support: function () { return Boolean(navigator.bluetooth && navigator.bluetooth.requestDevice); }, run: requestBluetoothDevice },
+    { id: "usb", icon: "⌁", support: function () { return Boolean(navigator.usb && navigator.usb.requestDevice); }, run: requestUsbDevice },
+    { id: "hid", icon: "⌨", support: function () { return Boolean(navigator.hid && navigator.hid.requestDevice); }, run: requestHidDevice },
+    { id: "serial", icon: "⇆", support: function () { return Boolean(navigator.serial && navigator.serial.requestPort); }, run: requestSerialPort }
+  ];
 
   function t(key) {
     return (window.__t && window.__t(key)) || key;
@@ -575,6 +588,160 @@ var DeviceTool = (function () {
     }).join("");
   }
 
+  function authorizedFact(key, labelKey, value, options) {
+    var config = options || {};
+    config.sensitive = true;
+    config.quality = config.quality || "permission";
+    return fact(key, labelKey, value, config);
+  }
+
+  function formatHexIdentifier(value) {
+    if (typeof value !== "number") return t("device.values.unavailable");
+    return "0x" + value.toString(16).toUpperCase().padStart(4, "0");
+  }
+
+  function stopMediaStream(stream) {
+    if (!stream) return;
+    stream.getTracks().forEach(function (track) { track.stop(); });
+    activeMediaStreams = activeMediaStreams.filter(function (item) { return item !== stream; });
+  }
+
+  function requestLocationDetails() {
+    return new Promise(function (resolve, reject) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        var coordinates = position.coords;
+        var facts = [
+          authorizedFact("locationCoordinates", "device.fields.locationCoordinates", coordinates.latitude.toFixed(3) + ", " + coordinates.longitude.toFixed(3), { quality: "masked", note: t("device.authorized.locationRounded") }),
+          authorizedFact("locationAccuracy", "device.fields.locationAccuracy", "±" + Math.round(coordinates.accuracy) + " m", { quality: "approximate" })
+        ];
+        if (coordinates.altitude !== null) facts.push(authorizedFact("altitude", "device.fields.altitude", Math.round(coordinates.altitude) + " m", { quality: "approximate" }));
+        if (coordinates.heading !== null) facts.push(authorizedFact("heading", "device.fields.heading", Math.round(coordinates.heading) + "°", { quality: "live" }));
+        if (coordinates.speed !== null) facts.push(authorizedFact("speed", "device.fields.speed", coordinates.speed.toFixed(2) + " m/s", { quality: "live" }));
+        resolve(facts);
+      }, reject, { enableHighAccuracy: false, maximumAge: 0, timeout: 10000 });
+    });
+  }
+
+  async function requestMediaDetails(kind) {
+    var constraints = kind === "videoinput" ? { video: true, audio: false } : { video: false, audio: true };
+    var stream = await navigator.mediaDevices.getUserMedia(constraints);
+    activeMediaStreams.push(stream);
+    try {
+      var devices = await navigator.mediaDevices.enumerateDevices();
+      var matched = devices.filter(function (item) { return item.kind === kind; });
+      var names = matched.map(function (item) { return item.label; }).filter(Boolean);
+      var isCamera = kind === "videoinput";
+      return [
+        authorizedFact(isCamera ? "cameraCountAuthorized" : "microphoneCountAuthorized", isCamera ? "device.fields.cameraCount" : "device.fields.microphoneCount", matched.length, { quality: "detected" }),
+        authorizedFact(isCamera ? "cameraNames" : "microphoneNames", isCamera ? "device.fields.cameraNames" : "device.fields.microphoneNames", names.join(" · ") || t("device.values.unavailable"), { quality: names.length ? "detected" : "masked" })
+      ];
+    } finally {
+      stopMediaStream(stream);
+    }
+  }
+
+  async function requestScreenDetails() {
+    var details = await window.getScreenDetails();
+    var screens = Array.from(details.screens || []);
+    var layout = screens.map(function (item, index) {
+      return (item.isPrimary ? "★ " : "") + (item.label || ("#" + (index + 1))) + ": " + item.width + "×" + item.height + " @(" + item.left + "," + item.top + ")" + (item.devicePixelRatio ? " " + item.devicePixelRatio + "x" : "");
+    }).join(" · ");
+    return [
+      authorizedFact("screenCount", "device.fields.screenCount", screens.length, { quality: "detected" }),
+      authorizedFact("screenLayout", "device.fields.screenLayout", layout || t("device.values.unavailable"), { quality: "detected" })
+    ];
+  }
+
+  async function requestBluetoothDevice() {
+    var device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+    return [authorizedFact("selectedBluetooth", "device.fields.selectedDevice", device.name || t("device.authorized.unnamedDevice"), { quality: "detected" })];
+  }
+
+  async function requestUsbDevice() {
+    // WebUSB requires at least one matching filter. An empty filter object is
+    // the standards-defined broad match; the browser still blocklists unsafe
+    // device classes and always presents its own user chooser.
+    var device = await navigator.usb.requestDevice({ filters: [{}] });
+    var label = [device.manufacturerName, device.productName].filter(Boolean).join(" · ") || t("device.authorized.unnamedDevice");
+    var identifiers = formatHexIdentifier(device.vendorId) + " / " + formatHexIdentifier(device.productId);
+    return [
+      authorizedFact("selectedUsb", "device.fields.selectedDevice", label, { quality: "detected" }),
+      authorizedFact("usbIdentifiers", "device.fields.deviceIdentifiers", identifiers, { quality: "detected" })
+    ];
+  }
+
+  async function requestHidDevice() {
+    var devices = await navigator.hid.requestDevice({ filters: [] });
+    if (!devices.length) throw new DOMException("No device selected", "NotFoundError");
+    var device = devices[0];
+    return [
+      authorizedFact("selectedHid", "device.fields.selectedDevice", device.productName || t("device.authorized.unnamedDevice"), { quality: "detected" }),
+      authorizedFact("hidIdentifiers", "device.fields.deviceIdentifiers", formatHexIdentifier(device.vendorId) + " / " + formatHexIdentifier(device.productId), { quality: "detected" })
+    ];
+  }
+
+  async function requestSerialPort() {
+    var port = await navigator.serial.requestPort();
+    var info = port.getInfo ? port.getInfo() : {};
+    return [authorizedFact("selectedSerial", "device.fields.deviceIdentifiers", formatHexIdentifier(info.usbVendorId) + " / " + formatHexIdentifier(info.usbProductId), { quality: "detected" })];
+  }
+
+  function authorizationErrorState(error) {
+    if (error && (error.name === "NotFoundError" || error.name === "AbortError")) return "cancelled";
+    if (error && (error.name === "NotAllowedError" || error.name === "SecurityError")) return "denied";
+    return "error";
+  }
+
+  function renderAuthorizedChecks() {
+    var container = byId("device-authorized-grid");
+    if (!container || !report) return;
+    container.innerHTML = AUTHORIZED_CHECKS.map(function (check) {
+      var supported = check.support();
+      var result = report.authorized[check.id] || { state: supported ? "idle" : "unsupported", facts: [] };
+      var state = supported ? result.state : "unsupported";
+      var buttonKey = state === "running" ? "device.authorized.waiting" : (state === "success" ? "device.authorized.runAgain" : "device.authorized.run");
+      var error = result.error ? '<p class="device-authorized-error">' + escapeHtml(result.error) + "</p>" : "";
+      var facts = result.facts && result.facts.length ? '<div class="device-authorized-results">' + result.facts.map(renderFact).join("") + "</div>" : "";
+      return '<article class="device-authorized-card device-authorized-' + escapeHtml(state) + '">' +
+        '<div class="device-authorized-heading"><span aria-hidden="true">' + check.icon + '</span><div><h3>' + escapeHtml(t("device.authorized.checks." + check.id + ".title")) + '</h3><p>' + escapeHtml(t("device.authorized.checks." + check.id + ".description")) + "</p></div></div>" +
+        '<div class="device-authorized-status"><span>' + escapeHtml(t("device.authorized.states." + state)) + '</span><button type="button" data-device-authorize="' + check.id + '"' + (!supported || authorizationInProgress ? " disabled" : "") + '>' + escapeHtml(supported ? t(buttonKey) : t("device.values.unsupported")) + "</button></div>" +
+        error + facts +
+      "</article>";
+    }).join("");
+  }
+
+  async function runAuthorizedCheck(id) {
+    if (!report || authorizationInProgress) return;
+    var check = AUTHORIZED_CHECKS.find(function (item) { return item.id === id; });
+    if (!check || !check.support()) return;
+    authorizationInProgress = id;
+    report.authorized[id] = { state: "running", facts: [], error: "" };
+    renderAuthorizedChecks();
+    try {
+      var facts = await check.run();
+      if (!report) return;
+      report.authorized[id] = { state: "success", facts: facts, error: "" };
+    } catch (error) {
+      if (!report) return;
+      var state = authorizationErrorState(error);
+      report.authorized[id] = { state: state, facts: [], error: state === "error" ? (error.name || t("device.values.unavailable")) : "" };
+    } finally {
+      authorizationInProgress = null;
+      if (report && root) {
+        renderAuthorizedChecks();
+        await collectPermissionDetails();
+      }
+    }
+  }
+
+  function bindAuthorizedChecks() {
+    root.addEventListener("click", function (event) {
+      var button = event.target.closest("[data-device-authorize]");
+      if (!button) return;
+      runAuthorizedCheck(button.dataset.deviceAuthorize);
+    });
+  }
+
   async function runAdvancedDetection() {
     if (advancedRunning) return;
     advancedRunning = true;
@@ -631,6 +798,16 @@ var DeviceTool = (function () {
         });
       });
       output.permissions = report.permissions.slice();
+      output.authorized = {};
+      Object.keys(report.authorized).forEach(function (id) {
+        var result = report.authorized[id];
+        output.authorized[id] = {
+          state: result.state,
+          facts: (result.facts || []).map(function (item) {
+            return { label: item.label, value: item.value, quality: qualityLabel(item.quality), sensitive: true };
+          })
+        };
+      });
     }
     return output;
   }
@@ -728,7 +905,7 @@ var DeviceTool = (function () {
       "</section>";
     }).join("");
     root.innerHTML =
-      '<div class="device-tool">' +
+      '<div class="device-tool" data-clarity-mask="true">' +
       '  <section class="device-hero">' +
       '    <div class="device-hero-copy"><span class="device-local-badge">✓ ' + escapeHtml(t("device.localBadge")) + '</span><h2>' + escapeHtml(t("device.environmentTitle")) + '</h2><p>' + escapeHtml(t("device.environmentHint")) + '</p></div>' +
       '    <div class="device-actions"><button id="device-copy-safe" type="button">' + escapeHtml(t("device.copySafe")) + '</button><button id="device-export-json" type="button">' + escapeHtml(t("device.exportJson")) + '</button><button id="device-export-md" type="button">' + escapeHtml(t("device.exportMarkdown")) + '</button><button id="device-refresh" type="button">' + escapeHtml(t("device.refresh")) + '</button></div>' +
@@ -736,6 +913,7 @@ var DeviceTool = (function () {
       '  </section>' +
       '  <div class="device-sections">' + sections + "</div>" +
       '  <section class="device-section device-capabilities-section"><div class="device-section-heading"><span class="device-section-icon" aria-hidden="true">⌘</span><div><h2>' + escapeHtml(t("device.capabilities")) + '</h2><p>' + escapeHtml(t("device.capabilitiesHint")) + '</p></div></div><div id="device-capabilities" class="device-capabilities"></div></section>' +
+      '  <section class="device-section device-authorized-section"><div class="device-section-heading"><span class="device-section-icon" aria-hidden="true">◆</span><div><h2>' + escapeHtml(t("device.authorized.title")) + '</h2><p>' + escapeHtml(t("device.authorized.intro")) + '</p></div></div><div class="device-authorized-warning">' + escapeHtml(t("device.authorized.warning")) + '</div><div id="device-authorized-grid" class="device-authorized-grid"></div><p class="device-authorized-footnote">' + escapeHtml(t("device.authorized.footnote")) + "</p></section>" +
       '  <details class="device-advanced">' +
       '    <summary><span><strong>' + escapeHtml(t("device.advancedTitle")) + '</strong><small>' + escapeHtml(t("device.advancedSummary")) + '</small></span></summary>' +
       '    <div class="device-advanced-body"><div class="device-advanced-intro"><p>' + escapeHtml(t("device.advancedIntro")) + '</p><button id="device-run-advanced" type="button">' + escapeHtml(t("device.runAdvanced")) + '</button><span id="device-advanced-status" role="status"></span></div>' +
@@ -755,7 +933,8 @@ var DeviceTool = (function () {
       sections: {},
       capabilities: [],
       advanced: {},
-      permissions: []
+      permissions: [],
+      authorized: {}
     };
     renderShell();
     collectLocaleFacts();
@@ -765,8 +944,10 @@ var DeviceTool = (function () {
     collectNetworkFacts();
     collectPrivacyFacts();
     collectCapabilities();
+    renderAuthorizedChecks();
     renderSummary();
     bindFactCopy();
+    bindAuthorizedChecks();
     bindLiveUpdates();
     clockTimer = setInterval(function () {
       if (!root) return;
@@ -801,7 +982,10 @@ var DeviceTool = (function () {
     resizeTimer = null;
     cleanups.forEach(function (cleanup) { cleanup(); });
     cleanups = [];
+    activeMediaStreams.slice().forEach(stopMediaStream);
+    activeMediaStreams = [];
     advancedRunning = false;
+    authorizationInProgress = null;
     report = null;
     root = null;
   }
@@ -813,7 +997,9 @@ var DeviceTool = (function () {
       detectBrowser: detectBrowser,
       detectOS: detectOS,
       formatBytes: formatBytes,
-      timezoneOffset: timezoneOffset
+      timezoneOffset: timezoneOffset,
+      formatHexIdentifier: formatHexIdentifier,
+      authorizationErrorState: authorizationErrorState
     }
   };
 })();

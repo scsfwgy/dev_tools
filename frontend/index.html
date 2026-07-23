@@ -38,7 +38,12 @@
       window.va = window.va || function(){
         (window.vaq = window.vaq || []).push(arguments);
       };
+      function isStrictLocalDeviceRoute() {
+        return /^\/(?:zh|en)\/tool\/device\/?$/.test(window.location.pathname);
+      }
       function loadAnalytics() {
+        // Device diagnostics run in a clean document without analytics or session replay.
+        if (isStrictLocalDeviceRoute()) return;
         if (window.__analyticsLoaded) return;
         window.__analyticsLoaded = true;
         var gtagScript = document.createElement('script');
