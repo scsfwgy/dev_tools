@@ -713,7 +713,9 @@ var BallGameTool = (function () {
     mountVersion += 1;
     container = element;
     container.innerHTML = '<div class="ball-game-tool">' +
-      '<div class="ball-game-layout"><aside class="ball-game-config"><h3>' + t("ballGame.configTitle") + '</h3>' +
+      '<div class="ball-game-layout"><aside class="ball-game-config"><section class="ball-game-guide" aria-labelledby="ball-game-guide-title"><h2 id="ball-game-guide-title">' + t("ballGame.guide.title") + '</h2><ul>' +
+        '<li>' + t("ballGame.guide.item1") + '</li><li>' + t("ballGame.guide.item2") + '</li><li>' + t("ballGame.guide.item3") + '</li><li>' + t("ballGame.guide.item4") + '</li></ul></section>' +
+        '<h3>' + t("ballGame.configTitle") + '</h3>' +
         '<label class="ball-game-control" for="ball-game-count"><span><b>' + t("ballGame.seedCount") + '</b><output id="ball-game-count-value">1</output></span><input id="ball-game-count" type="range" min="1" max="20" step="1" value="1"></label>' +
         '<label class="ball-game-control ball-game-color-control" for="ball-game-color"><span><b>' + t("ballGame.seedColor") + '</b><output id="ball-game-color-value">#3B82F6</output></span><input id="ball-game-color" type="color" value="#3b82f6"></label>' +
         '<label class="ball-game-control" for="ball-game-speed"><span><b>' + t("ballGame.baseSpeed") + '</b><output id="ball-game-speed-value">1.0×</output></span><input id="ball-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"></label>' +

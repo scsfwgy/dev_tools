@@ -2,11 +2,11 @@
 
 ## 产品定位
 
-Tools24 / DevTools 是简洁、快速、注重隐私的在线开发者工具箱，部署于 `https://dev.tools24.uk`。当前提供 39 个公开工具，覆盖数据与编码、文本与文件、安全与网络、计算与效率，以及 Android / Flutter / iOS 开发速查。
+Tools24 / DevTools 是简洁、快速、注重隐私的在线开发者工具箱，部署于 `https://dev.tools24.uk`。当前提供 41 个公开工具，覆盖数据与编码、文本与文件、安全与网络、计算与效率，以及 Android / Flutter / iOS 开发速查。
 
 域名职责必须严格区分：`dev.tools24.uk` 是本项目的正式站点和 SEO 主域名；`tools24.uk` / `www.tools24.uk` 是 Tools24 聚合门户；`qqq.tools24.uk` 是独立的 QQQ Tools 站点。不得把聚合门户域名用作本项目的 canonical、hreflang、Open Graph URL 或 sitemap 主域名。
 
-首页提供工具搜索，以及“收藏 / 分类 / 推荐”三 Tab；三个 Tab 分别使用 `/{lang}/favorites`、`/{lang}/categories`、`/{lang}/recommended` 状态路由，支持直接访问、刷新以及浏览器前进后退。`/{lang}/` 默认展示分类。分类包含全部、开发调试、编码安全、文本文件、数据计算、开发速查和日常效率。推荐 Tab 按投资理财、资源聚合、大模型、科学上网和加密交易分组展示外部资源。收藏仅保存在当前浏览器 `localStorage`。
+首页提供工具搜索，以及“收藏 / 分类 / 推荐”三 Tab；三个 Tab 分别使用 `/{lang}/favorites`、`/{lang}/categories`、`/{lang}/recommended` 状态路由，支持直接访问、刷新以及浏览器前进后退。`/{lang}/` 默认展示分类。分类包含全部、开发调试、编码安全、文本文件、数据计算、开发速查、小游戏和日常效率。推荐 Tab 按投资理财、资源聚合、大模型、科学上网和加密交易分组展示外部资源。收藏仅保存在当前浏览器 `localStorage`。
 
 ## 架构
 

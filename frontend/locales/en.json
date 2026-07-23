@@ -24,6 +24,8 @@
     "exchange": "Exchange Rates",
     "focus": "Focus Training",
     "ball-game": "Ball Genesis",
+    "predator-game": "Predation & Reproduction",
+    "cycle-game": "N-Sided Cycle",
     "image": "Image Tool",
     "converter": "File Converter",
     "text": "Text Processing",
@@ -77,13 +79,13 @@
     }
   },
   "welcome": {
-    "desc": "39+ free developer tools, no sign-in, with local browser processing by default",
+    "desc": "41+ free developer tools, no sign-in, with local browser processing by default",
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
     "free": "Free to use",
     "noLogin": "No sign-in",
-    "toolCount": "39+ tools",
+    "toolCount": "41+ tools",
     "homeSections": "Home tool views",
     "categories": "Categories",
     "recommended": "Recommended",
@@ -95,6 +97,7 @@
       "files": "Text & Files",
       "data": "Data & Calculations",
       "reference": "Developer Reference",
+      "games": "Mini Games",
       "everyday": "Everyday Productivity"
     },
     "searchResults": "Search results",
@@ -138,6 +141,8 @@
       "exchange": "Convert and compare multiple reference rates",
       "focus": "Race through a timed Schulte number grid",
       "ball-game": "Start with one ball and watch every wall create more",
+      "predator-game": "Watch prey, predators and resources evolve together",
+      "cycle-game": "Configure 2–20 factions and watch cyclic dominance unfold",
       "image": "Compress, resize and convert images locally",
       "converter": "Convert JSON with CSV, YAML and XML, plus document formats",
       "fileinfo": "Inspect file details, hashes and media metadata",
@@ -1882,6 +1887,13 @@
     "searchRef": "Search claim name or description..."
   },
   "ballGame": {
+    "guide": {
+      "title": "How it works",
+      "item1": "Every starting ball launches from the exact canvas center in a new random direction.",
+      "item2": "A wall hit splits one ball into two symmetric paths; every ball in a generation shares one solid color.",
+      "item3": "Ball size and selected speed never change. Disappear on contact is enabled by default and can be turned off.",
+      "item4": "Splitting pauses at the population ceiling while bouncing continues; the chart tracks population over time."
+    },
     "configTitle": "Plant the seeds",
     "seedCount": "Starting count",
     "seedColor": "Gene color",
@@ -1920,6 +1932,98 @@
     "errors": {
       "range": "Population limit must be an integer from 1–10,000.",
       "count": "Population limit cannot be lower than the starting count:"
+    }
+  },
+  "predatorGame": {
+    "guide": {
+      "title": "How it works",
+      "item1": "Green resources keep appearing at random; blue prey split in two when they touch one.",
+      "item2": "Red predators pursue prey and also split in two after a successful catch.",
+      "item3": "A predator disappears after 18 seconds without a catch. Every ball keeps the selected speed.",
+      "item4": "The ceiling counts prey and predators only; the chart tracks all three populations over time."
+    },
+    "configTitle": "Build the ecosystem",
+    "preyCount": "Starting prey",
+    "predatorCount": "Starting predators",
+    "baseSpeed": "Base speed",
+    "populationLimit": "Population ceiling",
+    "recommended": "Recommended",
+    "start": "Start evolution",
+    "regenerate": "Regenerate",
+    "pause": "Pause",
+    "resume": "Resume",
+    "fullscreen": "Expand preview",
+    "exitFullscreen": "Exit preview",
+    "fullscreenTitle": "Predation & Reproduction · Living ecosystem",
+    "configNote": "Green resources keep appearing. Blue prey split on resources; red predators split after a catch and disappear after going too long without one.",
+    "totalTime": "Evolution time",
+    "prey": "Prey",
+    "predators": "Predators",
+    "resources": "Resources",
+    "currentSpeed": "Constant speed",
+    "capHint": "Enter an integer ceiling from 1–10,000",
+    "canvasLabel": "A simple ecosystem where prey split on resources and predators pursue prey",
+    "populationChart": "Ecosystem over time",
+    "chartAxes": "X: time · Y: count",
+    "chartTimeAxis": "Time",
+    "chartCountAxis": "Count",
+    "chartLabel": "Line chart showing prey, predator and resource counts over evolution time",
+    "previewHint": "Configure the ecosystem, then start evolution",
+    "legend": {
+      "prey": "Prey",
+      "predators": "Predators",
+      "resources": "Resources"
+    },
+    "status": {
+      "ready": "Waiting for an ecosystem",
+      "running": "The ecosystem is evolving",
+      "paused": "Evolution paused",
+      "limit": "Population ceiling reached; reproduction is paused",
+      "extinct": "The ecosystem is extinct; regenerate to try again"
+    },
+    "errors": {
+      "range": "Population ceiling must be an integer from 1–10,000.",
+      "count": "Population ceiling cannot be lower than starting prey and predators combined:"
+    }
+  },
+  "cycleGame": {
+    "guide": {
+      "title": "How it works",
+      "item1": "Choose 2–20 factions, with three by default. Equal groups launch randomly from a ring.",
+      "item2": "Each faction beats the clockwise half of the ring and loses to the counterclockwise half.",
+      "item3": "With an even count, diametrically opposed factions resolve contact at random. Matching factions do nothing.",
+      "item4": "Total count, ball size and speed stay fixed. Evolution stops at unification while the chart records every faction."
+    },
+    "configTitle": "Initialize the match",
+    "factionCount": "Factions",
+    "initialCount": "Starting count per faction",
+    "baseSpeed": "Base speed",
+    "start": "Start evolution",
+    "regenerate": "Regenerate",
+    "pause": "Pause",
+    "resume": "Resume",
+    "fullscreen": "Expand preview",
+    "exitFullscreen": "Exit preview",
+    "fullscreenTitle": "N-Sided Cycle · Cyclic dominance",
+    "configNote": "Supports 2–20 equal factions. Regenerate for entirely new positions and directions.",
+    "totalTime": "Evolution time",
+    "leader": "Leading faction",
+    "activeFactions": "Factions alive",
+    "totalCount": "Total balls",
+    "currentSpeed": "Constant speed",
+    "totalHint": "Total count, ball size and speed stay constant",
+    "canvasLabel": "An ecosystem animation with two or more factions in balanced cyclic dominance",
+    "populationChart": "Faction populations",
+    "chartTimeAxis": "Time",
+    "chartCountAxis": "Count",
+    "chartLabel": "Line chart showing every faction's ball population over evolution time",
+    "previewHint": "Choose factions, count and speed, then start evolution",
+    "faction": "Faction {number}",
+    "status": {
+      "ready": "Waiting for an ecosystem",
+      "running": "The factions are evolving",
+      "paused": "Evolution paused",
+      "unified": "{faction} has unified the ecosystem"
     }
   },
   "focus": {

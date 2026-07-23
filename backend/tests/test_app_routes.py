@@ -673,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "39+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "41+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -682,6 +682,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": "文本文件",
         "data": "数据计算",
         "reference": "开发速查",
+        "games": "小游戏",
         "everyday": "日常效率",
     }
     assert en_locale["welcome"]["category"] == {
@@ -691,6 +692,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": "Text & Files",
         "data": "Data & Calculations",
         "reference": "Developer Reference",
+        "games": "Mini Games",
         "everyday": "Everyday Productivity",
     }
     assert zh_locale["welcome"]["recommendations"]["groups"]["investing"] == "投资理财"
@@ -747,7 +749,8 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
-        "everyday": ["focus", "ball-game", "content", "translate", "area-search"],
+        "games": ["focus", "ball-game", "predator-game", "cycle-game"],
+        "everyday": ["content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -1792,7 +1795,8 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "everyday", tools: ["focus", "ball-game", "content", "translate", "area-search"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game"] }' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
@@ -1850,6 +1854,9 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert en_locale["ballGame"]["totalTime"] == "Total time"
     assert zh_locale["ballGame"]["collisionMode"] == "相撞消失"
     assert zh_locale["ballGame"]["populationChart"] == "数量变化曲线"
+    assert zh_locale["ballGame"]["guide"]["title"] == "玩法与规则"
+    assert "正中心" in zh_locale["ballGame"]["guide"]["item1"]
+    assert "population ceiling" in en_locale["ballGame"]["guide"]["item4"]
     assert en_locale["ballGame"]["chartAxes"] == "X: time · Y: ball count"
     assert "headline" not in zh_locale["ballGame"]
     assert "subtitle" not in zh_locale["ballGame"]
@@ -1914,6 +1921,8 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert 'id="ball-game-fullscreen"' in script_text
     assert 'id="ball-game-exit-fullscreen"' in script_text
     assert 'id="ball-game-population-chart"' in script_text
+    assert 'class="ball-game-guide"' in script_text
+    assert script_text.index('class="ball-game-guide"') < script_text.index('t("ballGame.configTitle")')
     assert "ball-game-chart-card" in script_text
     assert "ball-game-intro" not in script_text
     assert "ball-game-rules" not in script_text
@@ -1929,6 +1938,7 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert ".ball-game-stage-card.is-fullscreen .ball-game-canvas-shell" in app_css
     assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
     assert ".ball-game-population-chart" in app_css
+    assert ".ball-game-guide" in app_css
     assert ".ball-game-intro" not in app_css
     assert "inset: 112px 0 0;" in app_css
     assert "body.ball-game-fullscreen-active" in app_css
@@ -2039,6 +2049,285 @@ process.stdout.write(JSON.stringify({
         assert result["wallSplitAllowed"] is True
         assert result["wallSplitCoolingDown"] is False
         assert result["wallSplitAtCap"] is False
+
+
+def test_predator_reproduction_ecosystem_is_local_fullscreen_and_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    page = client.get("/zh/tool/predator-game")
+    english_page = client.get("/en/tool/predator-game")
+    script_response = client.get("/js/predator-game-tool.js")
+    script = script_response.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert english_page.status_code == 200
+    assert script_response.status_code == 200
+    assert "捕食与繁衍" in page.get_data(as_text=True)
+    assert "Predation &amp; Reproduction" in english_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/predator-game" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/en/tool/predator-game" in english_page.get_data(as_text=True)
+    assert_tool_is_lazy_loaded(frontend_dir, "predator-game-tool.js")
+    assert TOOL_REGISTRY["predator-game"] == {
+        "order": 237,
+        "icon": "balls",
+        "script": "/js/predator-game-tool.js",
+        "global": "PredatorGameTool",
+        "processing": "local",
+        "indexable": True,
+    }
+    assert zh_locale["menu"]["predator-game"] == "捕食与繁衍"
+    assert en_locale["menu"]["predator-game"] == "Predation & Reproduction"
+    assert zh_locale["predatorGame"]["status"]["extinct"] == "生态已经灭绝，可重新生成"
+    assert en_locale["predatorGame"]["populationChart"] == "Ecosystem over time"
+    assert "18 秒" in zh_locale["predatorGame"]["guide"]["item3"]
+    assert "18 seconds" in en_locale["predatorGame"]["guide"]["item3"]
+    assert zh_locale["welcome"]["category"]["games"] == "小游戏"
+    assert "requestAnimationFrame" in script
+    assert "ResizeObserver" in script
+    assert "MutationObserver" in script
+    assert "function buildSpatialGrid(" in script
+    assert "function nearestTarget(" in script
+    assert "function feedPrey(" in script
+    assert "function feedPredators(" in script
+    assert "function splitAnimal(" in script
+    assert "function removeStarvedPredators(" in script
+    assert "function replenishResources(" in script
+    assert "function drawChartLine(" in script
+    assert "history.length > 1200" in script
+    assert "function enterFullscreen(" in script
+    assert "function exitFullscreen(" in script
+    assert 'id="predator-game-prey" type="range" min="1" max="200"' in script
+    assert 'id="predator-game-predators" type="range" min="1" max="50"' in script
+    assert 'id="predator-game-resources"' not in script
+    assert 'id="predator-game-speed" type="range" min="0.1" max="10"' in script
+    assert 'id="predator-game-limit" type="number" step="1" value="320"' in script
+    assert 'id="predator-game-limit" type="number" min=' not in script
+    assert 'id="predator-game-fullscreen"' in script
+    assert 'id="predator-game-exit-fullscreen"' in script
+    assert 'id="predator-game-chart"' in script
+    assert 'class="ball-game-guide"' in script
+    assert script.index('class="ball-game-guide"') < script.index('t("predatorGame.configTitle")')
+    assert "fetch(" not in script
+    assert "localStorage" not in script
+    assert ".energy" not in script
+    assert "resourceRate" not in script
+    assert 'activeMenuId === "predator-game"' in app_script
+    assert "PredatorGameTool.deactivate" in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game"] }' in app_script
+    assert "--ecosystem-prey" in app_css
+    assert "--ecosystem-predator" in app_css
+    assert "--ecosystem-resource" in app_css
+    assert ".predator-game-legend" in app_css
+    assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = { Math, Number, String, RegExp, Map, Set };
+context.window = context;
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/predator-game-tool.js", "utf8"), context);
+const core = context.PredatorGameTool._test;
+const targets = [{ x: 20, y: 20 }, { x: 80, y: 80 }, { x: 110, y: 110 }];
+const grid = core.buildSpatialGrid(targets, 64);
+const velocity = core.velocityFor(54, Math.PI / 2);
+process.stdout.write(JSON.stringify({
+  defaults: core.normalizeConfig(null, null, null, null, 320),
+  normalized: core.normalizeConfig(999, 999, 99, 99999, 320),
+  validation: [
+    core.validatePopulationLimit("", 36),
+    core.validatePopulationLimit("35", 36),
+    core.validatePopulationLimit("36", 36),
+    core.validatePopulationLimit("10000", 36)
+  ],
+  populationCaps: [core.populationCap(10, 10), core.populationCap(4000, 4000)],
+  resourceCaps: [core.resourceCapacity(10, 10), core.resourceCapacity(4000, 4000)],
+  nearby: core.nearbyIndexes(grid, 20, 20, 20, 64),
+  nearest: core.nearestTarget({ x: 18, y: 18 }, targets, grid, 100, 64),
+  excludedNearest: core.nearestTarget({ x: 18, y: 18 }, targets, grid, 100, 64, new Set([0])),
+  velocityMagnitude: Math.hypot(velocity.vx, velocity.vy),
+  formattedTime: core.formatTime(61234.9),
+  formattedAxis: core.formatAxisTime(90000),
+  substeps: [core.physicsSubstepCount(0.032, 0.1), core.physicsSubstepCount(0.032, 10)]
+}));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result = json.loads(completed.stdout)
+        assert result["defaults"] == {
+            "preyCount": 24,
+            "predatorCount": 3,
+            "speed": 1,
+            "limit": 320,
+        }
+        assert result["normalized"] == {
+            "preyCount": 200,
+            "predatorCount": 50,
+            "speed": 10,
+            "limit": 10000,
+        }
+        assert result["validation"][0]["error"] == "range"
+        assert result["validation"][1]["error"] == "count"
+        assert result["validation"][2] == {"valid": True, "value": 36, "error": None}
+        assert result["validation"][3] == {"valid": True, "value": 10000, "error": None}
+        assert result["populationCaps"] == [160, 1200]
+        assert result["resourceCaps"] == [60, 300]
+        assert result["nearby"] == [0]
+        assert result["nearest"] == 0
+        assert result["excludedNearest"] == 1
+        assert abs(result["velocityMagnitude"] - 54) < 1e-9
+        assert result["formattedTime"] == "01:01.234"
+        assert result["formattedAxis"] == "1.5m"
+        assert result["substeps"] == [1, 9]
+
+
+def test_multi_faction_cycle_is_balanced_constant_local_fullscreen_and_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    page = client.get("/zh/tool/cycle-game")
+    english_page = client.get("/en/tool/cycle-game")
+    script_response = client.get("/js/cycle-game-tool.js")
+    script = script_response.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert english_page.status_code == 200
+    assert script_response.status_code == 200
+    assert "多方循环" in page.get_data(as_text=True)
+    assert "N-Sided Cycle" in english_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/cycle-game" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/en/tool/cycle-game" in english_page.get_data(as_text=True)
+    assert_tool_is_lazy_loaded(frontend_dir, "cycle-game-tool.js")
+    assert TOOL_REGISTRY["cycle-game"] == {
+        "order": 238,
+        "icon": "balls",
+        "script": "/js/cycle-game-tool.js",
+        "global": "CycleGameTool",
+        "processing": "local",
+        "indexable": True,
+    }
+    assert zh_locale["menu"]["cycle-game"] == "多方循环"
+    assert en_locale["menu"]["cycle-game"] == "N-Sided Cycle"
+    assert "2–20 个阵营" in zh_locale["cycleGame"]["guide"]["item1"]
+    assert "clockwise half" in en_locale["cycleGame"]["guide"]["item2"].lower()
+    assert zh_locale["cycleGame"]["status"]["unified"] == "{faction}完成生态统一"
+    assert "requestAnimationFrame" in script
+    assert "ResizeObserver" in script
+    assert "MutationObserver" in script
+    assert "function winnerSpecies(" in script
+    assert "distance === count / 2" in script
+    assert "function speciesHue(" in script
+    assert "function collisionPairs(" in script
+    assert "function resolveConversions(" in script
+    assert "function unifiedSpecies(" in script
+    assert "function drawChartLine(" in script
+    assert "history.length > 1200" in script
+    assert "function enterFullscreen(" in script
+    assert "function exitFullscreen(" in script
+    assert 'id="cycle-game-factions" type="range" min="2" max="20" step="1" value="3"' in script
+    assert 'id="cycle-game-count" type="range" min="1" max="300" step="1" value="30"' in script
+    assert 'id="cycle-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"' in script
+    assert 'id="cycle-game-fullscreen"' in script
+    assert 'id="cycle-game-exit-fullscreen"' in script
+    assert 'id="cycle-game-chart"' in script
+    assert 'class="ball-game-guide"' in script
+    assert "fetch(" not in script
+    assert "localStorage" not in script
+    assert "balls.push(" in script
+    assert "balls.splice(" not in script
+    assert "balls = balls.filter(" not in script
+    assert 'activeMenuId === "cycle-game"' in app_script
+    assert "CycleGameTool.deactivate" in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game"] }' in app_script
+    assert ".cycle-game-swatch" in app_css
+    assert ".ball-game-status.is-unified" in app_css
+    assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = { Math, Number, String, RegExp, Map, Set };
+context.window = context;
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/cycle-game-tool.js", "utf8"), context);
+const core = context.CycleGameTool._test;
+const colliders = [
+  { x: 0, y: 0, species: 0, immuneUntil: 0 },
+  { x: 10, y: 0, species: 1, immuneUntil: 0 },
+  { x: 80, y: 80, species: 2, immuneUntil: 0 }
+];
+const immune = [
+  { x: 0, y: 0, species: 0, immuneUntil: 600 },
+  { x: 10, y: 0, species: 1, immuneUntil: 600 }
+];
+const velocity = core.velocityFor(70, Math.PI / 2);
+process.stdout.write(JSON.stringify({
+  defaults: core.normalizeConfig(null, null, null),
+  normalized: core.normalizeConfig(999, 999, 99),
+  winners: [
+    core.winnerSpecies(0, 1, 3),
+    core.winnerSpecies(1, 2, 3),
+    core.winnerSpecies(2, 0, 3),
+    core.winnerSpecies(1, 0, 3),
+    core.winnerSpecies(0, 2, 4, () => 0.25),
+    core.winnerSpecies(0, 2, 4, () => 0.75),
+    core.winnerSpecies(0, 2, 5),
+    core.winnerSpecies(0, 3, 5),
+    core.winnerSpecies(1, 1, 5)
+  ],
+  counts: core.populationCounts([{ species: 0 }, { species: 0 }, { species: 1 }, { species: 2 }], 4),
+  center: core.clusterCenter(0, 4, 1000, 500),
+  pairs: core.collisionPairs(colliders, 500),
+  immunePairs: core.collisionPairs(immune, 500),
+  unified: [
+    core.unifiedSpecies([5, 0, 0]),
+    core.unifiedSpecies([0, 4, 0]),
+    core.unifiedSpecies([1, 1, 0])
+  ],
+  velocityMagnitude: Math.hypot(velocity.vx, velocity.vy),
+  formattedTime: core.formatTime(61234.9),
+  formattedAxis: core.formatAxisTime(90000),
+  substeps: [core.physicsSubstepCount(0.032, 0.1), core.physicsSubstepCount(0.032, 10)]
+}));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result = json.loads(completed.stdout)
+        assert result["defaults"] == {"factions": 3, "count": 30, "speed": 1}
+        assert result["normalized"] == {"factions": 20, "count": 300, "speed": 10}
+        assert result["winners"] == [0, 1, 2, 0, 0, 2, 0, 3, None]
+        assert result["counts"] == [2, 1, 1, 0]
+        assert result["center"] == {"x": 500, "y": 115}
+        assert result["pairs"] == [[0, 1]]
+        assert result["immunePairs"] == []
+        assert result["unified"] == [0, 1, None]
+        assert abs(result["velocityMagnitude"] - 70) < 1e-9
+        assert result["formattedTime"] == "01:01.234"
+        assert result["formattedAxis"] == "1.5m"
+        assert result["substeps"] == [1, 8]
 
 
 def test_uuid_url_and_cron_tools_are_local_lazy_and_indexable(client):

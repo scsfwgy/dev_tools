@@ -31,6 +31,9 @@
     --preview-shade: rgba(0, 0, 0, 0.12);
     --preview-label-bg: rgba(13, 17, 23, 0.68);
     --ball-game-canvas-bg: #10161f;
+    --ecosystem-prey: #38bdf8;
+    --ecosystem-predator: #fb7185;
+    --ecosystem-resource: #4ade80;
     --sidebar-w: 240px;
     --sidebar-collapsed-w: 52px;
 }
@@ -63,6 +66,9 @@
     --primary-button-bg: #0969da;
     --primary-button-hover: #0550ae;
     --ball-game-canvas-bg: #f8fafc;
+    --ecosystem-prey: #0284c7;
+    --ecosystem-predator: #e11d48;
+    --ecosystem-resource: #16a34a;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -3870,6 +3876,16 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
   background: var(--bg-card);
 }
 .ball-game-config { padding: 17px; }
+.ball-game-guide {
+  margin: -2px -2px 17px;
+  padding: 12px 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--select-bg));
+}
+.ball-game-guide h2 { margin: 0 0 8px; color: var(--text); font-size: .76rem; }
+.ball-game-guide ul { display: grid; gap: 6px; margin: 0; padding-left: 16px; }
+.ball-game-guide li { color: var(--text-secondary); font-size: .69rem; line-height: 1.55; }
 .ball-game-config h3 { margin-bottom: 17px; color: var(--text); font-size: 0.88rem; }
 .ball-game-control { display: block; padding: 12px 0; border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent); }
 .ball-game-control > span { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
@@ -3949,6 +3965,10 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .ball-game-status.is-live > span:first-child { background: var(--green); box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 12%, transparent); }
 .ball-game-status.is-limit { color: var(--amber); }
 .ball-game-status.is-limit > span:first-child { background: var(--amber); box-shadow: 0 0 0 4px color-mix(in srgb, var(--amber) 12%, transparent); }
+.ball-game-status.is-extinct { color: var(--chart-red); }
+.ball-game-status.is-extinct > span:first-child { background: var(--chart-red); box-shadow: 0 0 0 4px color-mix(in srgb, var(--chart-red) 12%, transparent); }
+.ball-game-status.is-unified { color: var(--accent); }
+.ball-game-status.is-unified > span:first-child { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent); }
 .ball-game-canvas-shell {
   position: relative;
   width: 100%;
@@ -3971,6 +3991,13 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .ball-game-chart-card span { color: var(--text-muted); font-size: .61rem; }
 .ball-game-chart-shell { width: 100%; height: 180px; overflow: hidden; border-radius: 7px; background: var(--ball-game-canvas-bg); }
 .ball-game-population-chart { display: block; width: 100%; height: 100%; }
+.predator-game-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px 11px; }
+.ball-game-chart-card .predator-game-legend-item { display: inline-flex; align-items: center; gap: 5px; color: var(--text-secondary); white-space: nowrap; }
+.predator-game-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.predator-game-swatch.is-prey { background: var(--ecosystem-prey); }
+.predator-game-swatch.is-predators { background: var(--ecosystem-predator); }
+.predator-game-swatch.is-resources { background: var(--ecosystem-resource); }
+.cycle-game-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
 .ball-game-fullscreen-toolbar { display: none; }
 .ball-game-stage-card.is-fullscreen {
   position: relative;
@@ -4050,6 +4077,8 @@ body.ball-game-fullscreen-active { overflow: hidden; }
   .ball-game-tool { padding-bottom: 24px; }
   .ball-game-layout { gap: 10px; }
   .ball-game-config { display: block; padding: 14px; border-radius: 11px; }
+  .ball-game-guide { margin-bottom: 15px; padding: 12px; }
+  .ball-game-guide li { font-size: .72rem; }
   .ball-game-config h3 { margin-bottom: 12px; }
   .ball-game-actions button { min-height: 44px; }
   .ball-game-stage-card { padding: 8px; border-radius: 11px; }
@@ -4059,6 +4088,7 @@ body.ball-game-fullscreen-active { overflow: hidden; }
   .ball-game-canvas-shell { height: clamp(350px, 118vw, 475px); border-radius: 9px; }
   .ball-game-chart-card { padding: 8px; }
   .ball-game-chart-card > div:first-child { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .predator-game-legend { justify-content: flex-start; }
   .ball-game-chart-shell { height: 170px; }
   .ball-game-stage-card.is-fullscreen .ball-game-fullscreen-toolbar { min-height: 58px; }
   .ball-game-stage-card.is-fullscreen .ball-game-stats { inset: 58px 0 auto; height: 64px; padding: 7px 5px; gap: 2px; }
