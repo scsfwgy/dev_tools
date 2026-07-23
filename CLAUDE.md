@@ -2,7 +2,7 @@
 
 ## 产品定位
 
-Tools24 / DevTools 是简洁、快速、注重隐私的在线开发者工具箱，部署于 `https://dev.tools24.uk`。当前提供 41 个公开工具，覆盖数据与编码、文本与文件、安全与网络、计算与效率，以及 Android / Flutter / iOS 开发速查。
+Tools24 / DevTools 是简洁、快速、注重隐私的在线开发者工具箱，部署于 `https://dev.tools24.uk`。当前提供 42 个公开工具，覆盖数据与编码、文本与文件、安全与网络、计算与效率，以及 Android / Flutter / iOS 开发速查。
 
 域名职责必须严格区分：`dev.tools24.uk` 是本项目的正式站点和 SEO 主域名；`tools24.uk` / `www.tools24.uk` 是 Tools24 聚合门户；`qqq.tools24.uk` 是独立的 QQQ Tools 站点。不得把聚合门户域名用作本项目的 canonical、hreflang、Open Graph URL 或 sitemap 主域名。
 

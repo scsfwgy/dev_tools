@@ -26,6 +26,7 @@
     "ball-game": "Ball Genesis",
     "predator-game": "Predation & Reproduction",
     "cycle-game": "N-Sided Cycle",
+    "war-game": "Red vs Green",
     "image": "Image Tool",
     "converter": "File Converter",
     "text": "Text Processing",
@@ -79,13 +80,13 @@
     }
   },
   "welcome": {
-    "desc": "41+ free developer tools, no sign-in, with local browser processing by default",
+    "desc": "42+ free developer tools, no sign-in, with local browser processing by default",
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
     "free": "Free to use",
     "noLogin": "No sign-in",
-    "toolCount": "41+ tools",
+    "toolCount": "42+ tools",
     "homeSections": "Home tool views",
     "categories": "Categories",
     "recommended": "Recommended",
@@ -143,6 +144,7 @@
       "ball-game": "Start with one ball and watch every wall create more",
       "predator-game": "Watch prey, predators and resources evolve together",
       "cycle-game": "Configure 2–20 factions and watch cyclic dominance unfold",
+      "war-game": "Split red and green across the field and watch local support move the front",
       "image": "Compress, resize and convert images locally",
       "converter": "Convert JSON with CSV, YAML and XML, plus document formats",
       "fileinfo": "Inspect file details, hashes and media metadata",
@@ -1891,12 +1893,14 @@
       "title": "How it works",
       "item1": "Every starting ball launches from the exact canvas center in a new random direction.",
       "item2": "A wall hit splits one ball into two symmetric paths; every ball in a generation shares one solid color.",
-      "item3": "Ball size and selected speed never change. Disappear on contact is enabled by default and can be turned off.",
+      "item3": "Enter any ball diameter. Every ball keeps that size and the selected speed after starting. Disappear on contact is enabled by default.",
       "item4": "Splitting pauses at the population ceiling while bouncing continues; the chart tracks population over time."
     },
     "configTitle": "Plant the seeds",
     "seedCount": "Starting count",
     "seedColor": "Gene color",
+    "ballSize": "Ball diameter",
+    "pixels": "pixels",
     "baseSpeed": "Base speed",
     "populationLimit": "Population limit",
     "recommended": "Recommended",
@@ -1909,7 +1913,7 @@
     "fullscreen": "Expand preview",
     "exitFullscreen": "Exit preview",
     "fullscreenTitle": "Ball Genesis · Exponential splitting",
-    "configNote": "Enter any integer from 1–10,000; invalid values show an immediate error. Regenerate to apply toggle changes.",
+    "configNote": "Ball size has no preset maximum and accepts any positive number. Population limit must be an integer from 1–10,000. Regenerate to apply changes.",
     "totalTime": "Total time",
     "limitTime": "Time to limit",
     "population": "Balls / limit",
@@ -1931,7 +1935,8 @@
     },
     "errors": {
       "range": "Population limit must be an integer from 1–10,000.",
-      "count": "Population limit cannot be lower than the starting count:"
+      "count": "Population limit cannot be lower than the starting count:",
+      "size": "Ball diameter must be a number greater than 0."
     }
   },
   "predatorGame": {
@@ -2024,6 +2029,45 @@
       "running": "The factions are evolving",
       "paused": "Evolution paused",
       "unified": "{faction} has unified the ecosystem"
+    }
+  },
+  "warGame": {
+    "guide": {
+      "title": "Rules and strength",
+      "item1": "Equal red and green forces launch randomly from the left and right halves of the field.",
+      "item2": "When enemies collide, nearby allies are counted around the contact point. More local support means a higher chance to win.",
+      "item3": "The loser immediately joins the winner. Friendly contact does nothing, while total count, size and speed stay fixed.",
+      "item4": "A side loses when its force reaches zero. The advantage readout and chart reveal every reversal."
+    },
+    "configTitle": "Deploy both sides",
+    "initialCount": "Starting force per side",
+    "baseSpeed": "Base speed",
+    "start": "Start battle",
+    "regenerate": "Redeploy",
+    "pause": "Pause",
+    "resume": "Resume",
+    "fullscreen": "Expand preview",
+    "exitFullscreen": "Exit preview",
+    "fullscreenTitle": "Red vs Green · Local support",
+    "configNote": "Both sides have identical base ability. Local numbers, collision order and random directions decide the outcome.",
+    "totalTime": "Battle time",
+    "red": "Red",
+    "green": "Green",
+    "advantage": "Force advantage",
+    "balance": "Even",
+    "currentSpeed": "Constant speed",
+    "totalHint": "Total force, ball size and speed stay constant",
+    "canvasLabel": "A battlefield animation where red starts left, green starts right and local support drives conversion",
+    "populationChart": "Force over time",
+    "chartTimeAxis": "Time",
+    "chartCountAxis": "Force",
+    "chartLabel": "Line chart showing red and green forces over battle time",
+    "previewHint": "Choose force size and speed, then start the battle",
+    "status": {
+      "ready": "Waiting for deployment",
+      "running": "Both sides are fighting",
+      "paused": "Battle paused",
+      "winner": "{side} has unified the field"
     }
   },
   "focus": {

@@ -26,6 +26,7 @@
     "ball-game": "万象小球",
     "predator-game": "捕食与繁衍",
     "cycle-game": "多方循环",
+    "war-game": "红绿大战",
     "image": "图片处理",
     "converter": "文件转换",
     "text": "文本处理",
@@ -79,13 +80,13 @@
     }
   },
   "welcome": {
-    "desc": "41+ 个免费开发工具，无需登录，优先在浏览器本地处理",
+    "desc": "42+ 个免费开发工具，无需登录，优先在浏览器本地处理",
     "openSource": "代码开源",
     "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
     "localFirst": "✓ 默认本地处理",
     "free": "免费使用",
     "noLogin": "无需登录",
-    "toolCount": "41+ 个工具",
+    "toolCount": "42+ 个工具",
     "homeSections": "首页工具视图",
     "categories": "分类",
     "recommended": "推荐",
@@ -143,6 +144,7 @@
       "ball-game": "从一个球开始，看撞墙如何一生万物",
       "predator-game": "观察猎物、捕食者和资源如何共同演化",
       "cycle-game": "配置 2–20 方，观察循环克制如何反转与统一",
+      "war-game": "红绿各守半场，看抱团支援如何推动战线",
       "image": "本地压缩、缩放并转换图片格式",
       "converter": "JSON 与 CSV、YAML、XML 互转，也支持文档格式",
       "fileinfo": "查看文件信息、哈希与媒体元数据",
@@ -1891,12 +1893,14 @@
       "title": "玩法与规则",
       "item1": "所有初始球都从画布正中心出发，每次采用随机方向。",
       "item2": "小球撞墙便一分为二，沿对称角度发射；同一代共享一种纯色。",
-      "item3": "球的大小和设定速度始终不变；“相撞消失”默认开启，也可以关闭。",
+      "item3": "可自由输入球的直径；开始后所有球保持该大小和设定速度不变。“相撞消失”默认开启。",
       "item4": "达到数量上限后停止分裂、继续反弹；下方曲线记录球数随时间的变化。"
     },
     "configTitle": "播下种子",
     "seedCount": "初始数量",
     "seedColor": "基因颜色",
+    "ballSize": "球的直径",
+    "pixels": "像素",
     "baseSpeed": "基础速度",
     "populationLimit": "数量上限",
     "recommended": "推荐",
@@ -1909,7 +1913,7 @@
     "fullscreen": "浏览器内全屏",
     "exitFullscreen": "退出全屏",
     "fullscreenTitle": "万象小球 · 指数裂变",
-    "configNote": "上限可自由输入 1–10,000 的整数；不满足条件时会直接提示。开关修改后重新生成生效。",
+    "configNote": "球大小不设预设上限，可输入任意正数；数量上限为 1–10,000 的整数。修改后重新生成生效。",
     "totalTime": "总时间",
     "limitTime": "达上限用时",
     "population": "球数 / 上限",
@@ -1931,7 +1935,8 @@
     },
     "errors": {
       "range": "数量上限必须是 1–10,000 的整数。",
-      "count": "数量上限不能小于初始数量："
+      "count": "数量上限不能小于初始数量：",
+      "size": "球的直径必须是大于 0 的数字。"
     }
   },
   "predatorGame": {
@@ -2024,6 +2029,45 @@
       "running": "多方正在循环演化",
       "paused": "演化已暂停",
       "unified": "{faction}完成生态统一"
+    }
+  },
+  "warGame": {
+    "guide": {
+      "title": "玩法与战力",
+      "item1": "红方与绿方数量相同，分别从画布左半场和右半场随机出发。",
+      "item2": "敌对小球相撞时，统计碰撞点附近的双方友军；局部支援越多，获胜概率越高。",
+      "item3": "败方立即转化为胜方；同阵营接触不变，总球数、大小和速度始终恒定。",
+      "item4": "兵力归零的一方战败；优势统计与下方曲线会记录战局如何反转。"
+    },
+    "configTitle": "部署双方",
+    "initialCount": "每方初始兵力",
+    "baseSpeed": "基础速度",
+    "start": "开始交战",
+    "regenerate": "重新部署",
+    "pause": "暂停",
+    "resume": "继续",
+    "fullscreen": "浏览器内全屏",
+    "exitFullscreen": "退出全屏",
+    "fullscreenTitle": "红绿大战 · 局部支援",
+    "configNote": "双方基础能力完全相同。胜负取决于局部兵力、碰撞顺序与随机方向。",
+    "totalTime": "交战时间",
+    "red": "红方",
+    "green": "绿方",
+    "advantage": "兵力优势",
+    "balance": "均势",
+    "currentSpeed": "恒定速度",
+    "totalHint": "总兵力、球大小和速度恒定",
+    "canvasLabel": "红方从左侧、绿方从右侧出发并通过局部支援相互转化的战场动画",
+    "populationChart": "双方兵力曲线",
+    "chartTimeAxis": "时间",
+    "chartCountAxis": "兵力",
+    "chartLabel": "展示红方与绿方兵力随交战时间变化的折线图",
+    "previewHint": "配置每方兵力和速度，然后开始交战",
+    "status": {
+      "ready": "等待部署双方",
+      "running": "双方正在交战",
+      "paused": "交战已暂停",
+      "winner": "{side}统一战场"
     }
   },
   "focus": {

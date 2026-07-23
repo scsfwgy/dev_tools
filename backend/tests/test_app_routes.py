@@ -673,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "41+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "42+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -749,7 +749,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
-        "games": ["focus", "ball-game", "predator-game", "cycle-game"],
+        "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game"],
         "everyday": ["content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
@@ -1795,7 +1795,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
     assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
@@ -1853,6 +1853,8 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert zh_locale["ballGame"]["limitTime"] == "达上限用时"
     assert en_locale["ballGame"]["totalTime"] == "Total time"
     assert zh_locale["ballGame"]["collisionMode"] == "相撞消失"
+    assert zh_locale["ballGame"]["ballSize"] == "球的直径"
+    assert en_locale["ballGame"]["errors"]["size"] == "Ball diameter must be a number greater than 0."
     assert zh_locale["ballGame"]["populationChart"] == "数量变化曲线"
     assert zh_locale["ballGame"]["guide"]["title"] == "玩法与规则"
     assert "正中心" in zh_locale["ballGame"]["guide"]["item1"]
@@ -1878,13 +1880,15 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert "function exitFullscreen(" in script_text
     assert "function updateLimitRecommendation(" in script_text
     assert "function validatePopulationLimit(" in script_text
+    assert "function validateBallSize(" in script_text
     assert "function collidingBallIndexes(" in script_text
     assert "function removeTouchingBalls(" in script_text
     assert "function resetPopulationHistory(" in script_text
     assert "function recordPopulationSample(" in script_text
     assert "function drawPopulationChart(" in script_text
     assert "populationHistory.length > 1200" in script_text
-    assert "var COLLISION_CELL_SIZE = BALL_RADIUS * 2;" in script_text
+    assert "var DEFAULT_BALL_SIZE = 16;" in script_text
+    assert "var collisionCellSize = Math.max(" in script_text
     assert "var x = width / 2;" in script_text
     assert "var y = height / 2;" in script_text
     assert "var angle = randomSource() * Math.PI * 2;" in script_text
@@ -1892,13 +1896,13 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert "if (started && atLimit && reachedLimitAtMs === null) reachedLimitAtMs = elapsedMs;" in script_text
     assert "nextBalls.push.apply(nextBalls, splitAtWall(ball, normalAngle))" in script_text
     assert "function populationCap(" in script_text
-    assert "var BALL_RADIUS = 8;" in script_text
+    assert "function clampToAxis(" in script_text
     assert "var MIN_SPEED = 0.1;" in script_text
     assert "var MAX_SPEED = 10;" in script_text
     assert "var speed = BASE_SPEED * config.speed;" in script_text
     assert "ball.x += ball.vx * deltaSeconds;" in script_text
     assert "ball.y += ball.vy * deltaSeconds;" in script_text
-    assert "context.arc(ball.x, ball.y, BALL_RADIUS" in script_text
+    assert "context.arc(ball.x, ball.y, ball.radius" in script_text
     assert "function speedMultiplier(" not in script_text
     assert "function processCollisions()" not in script_text
     assert "function resolveElasticCollision(" not in script_text
@@ -1911,6 +1915,10 @@ def test_ball_genesis_is_local_randomized_and_wired(client):
     assert "document.fullscreenElement" not in script_text
     assert 'id="ball-game-count-value">1</output>' in script_text
     assert 'id="ball-game-count" type="range" min="1" max="20" step="1" value="1"' in script_text
+    assert 'id="ball-game-size" type="number" step="any" value="16"' in script_text
+    assert 'id="ball-game-size" type="number" min=' not in script_text
+    assert 'id="ball-game-size" type="number" max=' not in script_text
+    assert 'id="ball-game-size-error"' in script_text
     assert 'id="ball-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"' in script_text
     assert 'id="ball-game-limit" type="number" step="1" value="40"' in script_text
     assert 'id="ball-game-limit" type="number" min=' not in script_text
@@ -1982,6 +1990,7 @@ core.reflectFromWall(reflected, 0);
 process.stdout.write(JSON.stringify({
   defaults: core.normalizeConfig(null, null, null, null, 64),
   normalized: core.normalizeConfig(99, 99, "invalid", 99999, 64),
+  customSize: core.normalizeConfig(1, 1, "#3b82f6", 40, 64, 2.5).size,
   oneLimit: core.normalizeConfig(1, 1, "#3b82f6", 1, 64).limit,
   raisedLimit: core.normalizeConfig(20, 1, "#3b82f6", 2, 64).limit,
   limitValidation: [
@@ -1993,10 +2002,19 @@ process.stdout.write(JSON.stringify({
     core.validatePopulationLimit("1", 1),
     core.validatePopulationLimit("10000", 1)
   ],
+  sizeValidation: [
+    core.validateBallSize(""),
+    core.validateBallSize("0"),
+    core.validateBallSize("-1"),
+    core.validateBallSize("1.25"),
+    core.validateBallSize("1000000")
+  ],
   caps: [core.populationCap(10, 10), core.populationCap(4000, 4000)],
   formattedTimes: [core.formatTime(0), core.formatTime(61234.9)],
   formattedAxisTimes: [core.formatAxisTime(0), core.formatAxisTime(9500), core.formatAxisTime(10000), core.formatAxisTime(90000)],
   substepCounts: [core.physicsSubstepCount(0.032, 0.1), core.physicsSubstepCount(0.032, 10)],
+  sizedSubsteps: [core.physicsSubstepCount(0.032, 10, 1), core.physicsSubstepCount(0.032, 10, 40)],
+  axisPositions: [core.clampToAxis(-10, 8, 300), core.clampToAxis(400, 8, 300), core.clampToAxis(20, 200, 300)],
   collisionIndexes: core.collidingBallIndexes(touchingBalls, 500).sort((a, b) => a - b),
   protectedCollisionIndexes: core.collidingBallIndexes(protectedBalls, 500),
   velocityMagnitudes: [
@@ -2022,18 +2040,24 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         result = json.loads(completed.stdout)
-        assert result["defaults"] == {"count": 1, "speed": 1, "color": "#3b82f6", "limit": 64}
-        assert result["normalized"] == {"count": 20, "speed": 10, "color": "#3b82f6", "limit": 10000}
+        assert result["defaults"] == {"count": 1, "speed": 1, "color": "#3b82f6", "limit": 64, "size": 16}
+        assert result["normalized"] == {"count": 20, "speed": 10, "color": "#3b82f6", "limit": 10000, "size": 16}
+        assert result["customSize"] == 2.5
         assert result["oneLimit"] == 1
         assert result["raisedLimit"] == 20
         assert [item["error"] for item in result["limitValidation"][:4]] == ["range"] * 4
         assert result["limitValidation"][4]["error"] == "count"
         assert result["limitValidation"][5] == {"valid": True, "value": 1, "error": None}
         assert result["limitValidation"][6] == {"valid": True, "value": 10000, "error": None}
+        assert [item["error"] for item in result["sizeValidation"][:3]] == ["size"] * 3
+        assert result["sizeValidation"][3] == {"valid": True, "value": 1.25, "error": None}
+        assert result["sizeValidation"][4] == {"valid": True, "value": 1000000, "error": None}
         assert result["caps"] == [40, 160]
         assert result["formattedTimes"] == ["00:00.000", "01:01.234"]
         assert result["formattedAxisTimes"] == ["0.0s", "9.5s", "10s", "1.5m"]
         assert result["substepCounts"] == [1, 6]
+        assert result["sizedSubsteps"] == [45, 2]
+        assert result["axisPositions"] == [8, 292, 150]
         assert result["collisionIndexes"] == [0, 1]
         assert result["protectedCollisionIndexes"] == []
         assert all(abs(magnitude - 70) < 1e-9 for magnitude in result["velocityMagnitudes"])
@@ -2117,7 +2141,7 @@ def test_predator_reproduction_ecosystem_is_local_fullscreen_and_wired(client):
     assert "resourceRate" not in script
     assert 'activeMenuId === "predator-game"' in app_script
     assert "PredatorGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
     assert "--ecosystem-prey" in app_css
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
@@ -2253,7 +2277,7 @@ def test_multi_faction_cycle_is_balanced_constant_local_fullscreen_and_wired(cli
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "cycle-game"' in app_script
     assert "CycleGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
     assert ".cycle-game-swatch" in app_css
     assert ".ball-game-status.is-unified" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2321,6 +2345,145 @@ process.stdout.write(JSON.stringify({
         assert result["winners"] == [0, 1, 2, 0, 0, 2, 0, 3, None]
         assert result["counts"] == [2, 1, 1, 0]
         assert result["center"] == {"x": 500, "y": 115}
+        assert result["pairs"] == [[0, 1]]
+        assert result["immunePairs"] == []
+        assert result["unified"] == [0, 1, None]
+        assert abs(result["velocityMagnitude"] - 70) < 1e-9
+        assert result["formattedTime"] == "01:01.234"
+        assert result["formattedAxis"] == "1.5m"
+        assert result["substeps"] == [1, 8]
+
+
+def test_red_green_war_uses_local_support_and_is_fully_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    page = client.get("/zh/tool/war-game")
+    english_page = client.get("/en/tool/war-game")
+    script_response = client.get("/js/war-game-tool.js")
+    script = script_response.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert english_page.status_code == 200
+    assert script_response.status_code == 200
+    assert "红绿大战" in page.get_data(as_text=True)
+    assert "Red vs Green" in english_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/war-game" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/en/tool/war-game" in english_page.get_data(as_text=True)
+    assert_tool_is_lazy_loaded(frontend_dir, "war-game-tool.js")
+    assert TOOL_REGISTRY["war-game"] == {
+        "order": 238.5,
+        "icon": "balls",
+        "script": "/js/war-game-tool.js",
+        "global": "WarGameTool",
+        "processing": "local",
+        "indexable": True,
+    }
+    assert zh_locale["menu"]["war-game"] == "红绿大战"
+    assert en_locale["menu"]["war-game"] == "Red vs Green"
+    assert "左半场和右半场" in zh_locale["warGame"]["guide"]["item1"]
+    assert "nearby allies" in en_locale["warGame"]["guide"]["item2"].lower()
+    assert zh_locale["warGame"]["status"]["winner"] == "{side}统一战场"
+    assert "requestAnimationFrame" in script
+    assert "ResizeObserver" in script
+    assert "MutationObserver" in script
+    assert "function nearbySupport(" in script
+    assert "function battleWinner(" in script
+    assert "function collisionPairs(" in script
+    assert "function resolveBattles(" in script
+    assert "function winningSpecies(" in script
+    assert "function drawChartLine(" in script
+    assert "history.length > 1200" in script
+    assert "function enterFullscreen(" in script
+    assert "function exitFullscreen(" in script
+    assert 'id="war-game-count" type="range" min="1" max="500" step="1" value="80"' in script
+    assert 'id="war-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"' in script
+    assert 'id="war-game-fullscreen"' in script
+    assert 'id="war-game-exit-fullscreen"' in script
+    assert 'id="war-game-chart"' in script
+    assert 'class="ball-game-guide"' in script
+    assert "fetch(" not in script
+    assert "localStorage" not in script
+    assert "balls.push(" in script
+    assert "balls.splice(" not in script
+    assert "balls = balls.filter(" not in script
+    assert 'activeMenuId === "war-game"' in app_script
+    assert "WarGameTool.deactivate" in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
+    assert "--ecosystem-predator" in app_css
+    assert "--ecosystem-resource" in app_css
+    assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = { Math, Number, String, RegExp, Map, Set };
+context.window = context;
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/war-game-tool.js", "utf8"), context);
+const core = context.WarGameTool._test;
+const supportBalls = [
+  { x: 0, y: 0, species: 0, immuneUntil: 0 },
+  { x: 10, y: 0, species: 0, immuneUntil: 0 },
+  { x: 60, y: 0, species: 1, immuneUntil: 0 }
+];
+const supportGrid = core.buildSpatialGrid(supportBalls, 20);
+const colliders = [
+  { x: 0, y: 0, species: 0, immuneUntil: 0 },
+  { x: 10, y: 0, species: 1, immuneUntil: 0 },
+  { x: 80, y: 80, species: 0, immuneUntil: 0 }
+];
+const immune = [
+  { x: 0, y: 0, species: 0, immuneUntil: 600 },
+  { x: 10, y: 0, species: 1, immuneUntil: 600 }
+];
+const velocity = core.velocityFor(70, Math.PI / 2);
+process.stdout.write(JSON.stringify({
+  defaults: core.normalizeConfig(null, null),
+  normalized: core.normalizeConfig(999, 99),
+  support: [
+    core.nearbySupport(0, 0, 0, supportBalls, supportGrid, 20, 20),
+    core.nearbySupport(1, 0, 0, supportBalls, supportGrid, 20, 20)
+  ],
+  winners: [
+    core.battleWinner(3, 1, () => 0.74),
+    core.battleWinner(3, 1, () => 0.76),
+    core.battleWinner(1, 1, () => 0.49),
+    core.battleWinner(1, 1, () => 0.51)
+  ],
+  counts: core.populationCounts([{ species: 0 }, { species: 0 }, { species: 1 }]),
+  pairs: core.collisionPairs(colliders, 500),
+  immunePairs: core.collisionPairs(immune, 500),
+  unified: [
+    core.winningSpecies([5, 0]),
+    core.winningSpecies([0, 4]),
+    core.winningSpecies([1, 1])
+  ],
+  velocityMagnitude: Math.hypot(velocity.vx, velocity.vy),
+  formattedTime: core.formatTime(61234.9),
+  formattedAxis: core.formatAxisTime(90000),
+  substeps: [core.physicsSubstepCount(0.032, 0.1), core.physicsSubstepCount(0.032, 10)]
+}));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result = json.loads(completed.stdout)
+        assert result["defaults"] == {"count": 80, "speed": 1}
+        assert result["normalized"] == {"count": 500, "speed": 10}
+        assert result["support"] == [2, 1]
+        assert result["winners"] == [0, 1, 0, 1]
+        assert result["counts"] == [2, 1]
         assert result["pairs"] == [[0, 1]]
         assert result["immunePairs"] == []
         assert result["unified"] == [0, 1, None]

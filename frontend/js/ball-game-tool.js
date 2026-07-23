@@ -9,8 +9,7 @@ var BallGameTool = (function () {
   var MIN_LIMIT = 1;
   var MAX_LIMIT = 10000;
   var BASE_SPEED = 70;
-  var BALL_RADIUS = 8;
-  var COLLISION_CELL_SIZE = BALL_RADIUS * 2;
+  var DEFAULT_BALL_SIZE = 16;
   var MAX_DELTA_SECONDS = 0.032;
 
   var container = null;
@@ -52,15 +51,18 @@ var BallGameTool = (function () {
     return minimum + (maximum - minimum) * (rng || randomSource)();
   }
 
-  function normalizeConfig(count, speed, color, limit, recommendation) {
+  function normalizeConfig(count, speed, color, limit, recommendation, size) {
     var normalizedColor = /^#[0-9a-f]{6}$/i.test(String(color || "")) ? String(color).toLowerCase() : "#3b82f6";
     var normalizedCount = clamp(Math.round(Number(count) || 1), MIN_COUNT, MAX_COUNT);
     var fallbackLimit = clamp(Math.round(Number(recommendation) || 40), MIN_LIMIT, MAX_LIMIT);
+    var normalizedSize = Number(size);
+    if (!Number.isFinite(normalizedSize) || normalizedSize <= 0) normalizedSize = DEFAULT_BALL_SIZE;
     return {
       count: normalizedCount,
       speed: clamp(Number(speed) || 1, MIN_SPEED, MAX_SPEED),
       color: normalizedColor,
-      limit: clamp(Math.round(Number(limit) || fallbackLimit), Math.max(MIN_LIMIT, normalizedCount), MAX_LIMIT)
+      limit: clamp(Math.round(Number(limit) || fallbackLimit), Math.max(MIN_LIMIT, normalizedCount), MAX_LIMIT),
+      size: normalizedSize
     };
   }
 
@@ -75,6 +77,15 @@ var BallGameTool = (function () {
       return { valid: false, value: null, error: "range" };
     }
     if (numericValue < count) return { valid: false, value: null, error: "count" };
+    return { valid: true, value: numericValue, error: null };
+  }
+
+  function validateBallSize(rawValue) {
+    var text = String(rawValue === undefined || rawValue === null ? "" : rawValue).trim();
+    var numericValue = Number(text);
+    if (!text || !Number.isFinite(numericValue) || numericValue <= 0) {
+      return { valid: false, value: null, error: "size" };
+    }
     return { valid: true, value: numericValue, error: null };
   }
 
@@ -139,7 +150,7 @@ var BallGameTool = (function () {
   function currentConfig() {
     var config;
     if (!container) {
-      config = normalizeConfig(1, 1, "#3b82f6", recommendedLimit, recommendedLimit);
+      config = normalizeConfig(1, 1, "#3b82f6", recommendedLimit, recommendedLimit, DEFAULT_BALL_SIZE);
       config.disappearOnContact = true;
       return config;
     }
@@ -148,7 +159,8 @@ var BallGameTool = (function () {
       container.querySelector("#ball-game-speed").value,
       container.querySelector("#ball-game-color").value,
       container.querySelector("#ball-game-limit").value,
-      recommendedLimit
+      recommendedLimit,
+      container.querySelector("#ball-game-size").value
     );
     config.disappearOnContact = container.querySelector("#ball-game-collision").checked;
     return config;
@@ -180,12 +192,25 @@ var BallGameTool = (function () {
       : t("ballGame.errors." + validation.error) + (validation.error === "count" ? " " + container.querySelector("#ball-game-count").value : "");
   }
 
-  function createBall(x, y, color, speed, angle, generation, bornAt) {
+  function sizeValidation() {
+    if (!container) return validateBallSize(DEFAULT_BALL_SIZE);
+    return validateBallSize(container.querySelector("#ball-game-size").value);
+  }
+
+  function showSizeError(validation) {
+    if (!container) return;
+    var errorElement = container.querySelector("#ball-game-size-error");
+    if (!errorElement) return;
+    errorElement.classList.toggle("hidden", validation.valid);
+    errorElement.textContent = validation.valid ? "" : t("ballGame.errors.size");
+  }
+
+  function createBall(x, y, radius, color, speed, angle, generation, bornAt) {
     var velocity = velocityFor(speed, angle);
     return {
       x: x,
       y: y,
-      radius: BALL_RADIUS,
+      radius: radius,
       color: color,
       vx: velocity.vx,
       vy: velocity.vy,
@@ -202,6 +227,7 @@ var BallGameTool = (function () {
     return createBall(
       x,
       y,
+      config.size / 2,
       { h: baseColor.h, s: baseColor.s, l: baseColor.l },
       BASE_SPEED * config.speed,
       angle,
@@ -254,8 +280,8 @@ var BallGameTool = (function () {
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     resizePopulationChart(ratio);
     balls.forEach(function (ball) {
-      ball.x = clamp(ball.x * width / previousWidth, BALL_RADIUS, width - BALL_RADIUS);
-      ball.y = clamp(ball.y * height / previousHeight, BALL_RADIUS, height - BALL_RADIUS);
+      ball.x = clampToAxis(ball.x * width / previousWidth, ball.radius, width);
+      ball.y = clampToAxis(ball.y * height / previousHeight, ball.radius, height);
     });
     updateStats();
     if (!running) drawWorld();
@@ -282,10 +308,13 @@ var BallGameTool = (function () {
 
   function resetWorld(shouldRun) {
     var validation = limitValidation();
+    var ballSizeValidation = sizeValidation();
     showLimitError(validation);
-    if (!validation.valid) return false;
+    showSizeError(ballSizeValidation);
+    if (!validation.valid || !ballSizeValidation.valid) return false;
     var config = currentConfig();
     config.limit = validation.value;
+    config.size = ballSizeValidation.value;
     activeConfig = config;
     populationLimit = config.limit;
     var baseColor = hexToHsl(config.color);
@@ -342,12 +371,14 @@ var BallGameTool = (function () {
     var normalY = Math.sin(normalAngle);
     var tangentX = -normalY;
     var tangentY = normalX;
-    var centerX = clamp(ball.x + normalX * (BALL_RADIUS + 2), BALL_RADIUS, width - BALL_RADIUS);
-    var centerY = clamp(ball.y + normalY * (BALL_RADIUS + 2), BALL_RADIUS, height - BALL_RADIUS);
+    var radius = ball.radius;
+    var centerX = clampToAxis(ball.x + normalX * (radius + 2), radius, width);
+    var centerY = clampToAxis(ball.y + normalY * (radius + 2), radius, height);
     return [
       createBall(
-        clamp(centerX + tangentX * BALL_RADIUS * 0.62, BALL_RADIUS, width - BALL_RADIUS),
-        clamp(centerY + tangentY * BALL_RADIUS * 0.62, BALL_RADIUS, height - BALL_RADIUS),
+        clampToAxis(centerX + tangentX * radius * 0.62, radius, width),
+        clampToAxis(centerY + tangentY * radius * 0.62, radius, height),
+        radius,
         color,
         speed,
         angles[0],
@@ -355,8 +386,9 @@ var BallGameTool = (function () {
         elapsedMs
       ),
       createBall(
-        clamp(centerX - tangentX * BALL_RADIUS * 0.62, BALL_RADIUS, width - BALL_RADIUS),
-        clamp(centerY - tangentY * BALL_RADIUS * 0.62, BALL_RADIUS, height - BALL_RADIUS),
+        clampToAxis(centerX - tangentX * radius * 0.62, radius, width),
+        clampToAxis(centerY - tangentY * radius * 0.62, radius, height),
+        radius,
         color,
         speed,
         angles[1],
@@ -366,13 +398,21 @@ var BallGameTool = (function () {
     ];
   }
 
+  function clampToAxis(value, radius, dimension) {
+    if (radius * 2 >= dimension) return dimension / 2;
+    return clamp(value, radius, dimension - radius);
+  }
+
   function wallCollision(ball) {
     var normalX = 0;
     var normalY = 0;
-    if (ball.x <= BALL_RADIUS) { ball.x = BALL_RADIUS; normalX += 1; }
-    else if (ball.x >= width - BALL_RADIUS) { ball.x = width - BALL_RADIUS; normalX -= 1; }
-    if (ball.y <= BALL_RADIUS) { ball.y = BALL_RADIUS; normalY += 1; }
-    else if (ball.y >= height - BALL_RADIUS) { ball.y = height - BALL_RADIUS; normalY -= 1; }
+    var radius = ball.radius;
+    if (radius * 2 >= width) ball.x = width / 2;
+    else if (ball.x <= radius) { ball.x = radius; normalX += 1; }
+    else if (ball.x >= width - radius) { ball.x = width - radius; normalX -= 1; }
+    if (radius * 2 >= height) ball.y = height / 2;
+    else if (ball.y <= radius) { ball.y = radius; normalY += 1; }
+    else if (ball.y >= height - radius) { ball.y = height - radius; normalY -= 1; }
     if (!normalX && !normalY) return null;
     return Math.atan2(normalY, normalX);
   }
@@ -394,10 +434,11 @@ var BallGameTool = (function () {
   function collidingBallIndexes(ballList, now) {
     var grid = new Map();
     var colliding = new Set();
+    var collisionCellSize = Math.max(1, (ballList[0] ? ballList[0].radius : DEFAULT_BALL_SIZE / 2) * 2);
     ballList.forEach(function (ball, index) {
       if (now < ball.collisionImmuneUntil) return;
-      var cellX = Math.floor(ball.x / COLLISION_CELL_SIZE);
-      var cellY = Math.floor(ball.y / COLLISION_CELL_SIZE);
+      var cellX = Math.floor(ball.x / collisionCellSize);
+      var cellY = Math.floor(ball.y / collisionCellSize);
       for (var offsetX = -1; offsetX <= 1; offsetX += 1) {
         for (var offsetY = -1; offsetY <= 1; offsetY += 1) {
           var candidates = grid.get((cellX + offsetX) + ":" + (cellY + offsetY)) || [];
@@ -448,14 +489,15 @@ var BallGameTool = (function () {
     removeTouchingBalls();
   }
 
-  function physicsSubstepCount(deltaSeconds, speedMultiplier) {
-    var maximumStepSeconds = (BALL_RADIUS * 0.5) / Math.max(BASE_SPEED * speedMultiplier, 1);
+  function physicsSubstepCount(deltaSeconds, speedMultiplier, radius) {
+    var activeRadius = Number(radius) > 0 ? Number(radius) : DEFAULT_BALL_SIZE / 2;
+    var maximumStepSeconds = (activeRadius * 0.5) / Math.max(BASE_SPEED * speedMultiplier, 1);
     return Math.max(1, Math.ceil(deltaSeconds / maximumStepSeconds));
   }
 
   function updateWorld(deltaSeconds) {
-    var speedMultiplier = (activeConfig || currentConfig()).speed;
-    var stepCount = physicsSubstepCount(deltaSeconds, speedMultiplier);
+    var config = activeConfig || currentConfig();
+    var stepCount = physicsSubstepCount(deltaSeconds, config.speed, config.size / 2);
     var stepSeconds = deltaSeconds / stepCount;
     for (var step = 0; step < stepCount; step += 1) updateWorldStep(stepSeconds);
   }
@@ -468,7 +510,7 @@ var BallGameTool = (function () {
   function drawBall(ball) {
     context.fillStyle = colorCss(ball.color);
     context.beginPath();
-    context.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2);
+    context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     context.fill();
   }
 
@@ -665,13 +707,16 @@ var BallGameTool = (function () {
     var countInput = container.querySelector("#ball-game-count");
     var speedInput = container.querySelector("#ball-game-speed");
     var colorInput = container.querySelector("#ball-game-color");
+    var sizeInput = container.querySelector("#ball-game-size");
     updateLimitRecommendation();
     container.querySelector("#ball-game-count-value").textContent = countInput.value;
     container.querySelector("#ball-game-speed-value").textContent = Number(speedInput.value).toFixed(1) + "×";
     container.querySelector("#ball-game-color-value").textContent = colorInput.value.toUpperCase();
     var validation = limitValidation();
+    var ballSizeValidation = sizeValidation();
     showLimitError(validation);
-    if (!started && validation.valid) resetWorld(false);
+    showSizeError(ballSizeValidation);
+    if (!started && validation.valid && ballSizeValidation.valid) resetWorld(false);
   }
 
   function handleVisibility() {
@@ -690,7 +735,7 @@ var BallGameTool = (function () {
   function bindEvents() {
     container.querySelector("#ball-game-start").addEventListener("click", function () { resetWorld(true); });
     container.querySelector("#ball-game-pause").addEventListener("click", function () { setRunning(!running); });
-    ["#ball-game-count", "#ball-game-speed", "#ball-game-color", "#ball-game-collision"].forEach(function (selector) {
+    ["#ball-game-count", "#ball-game-speed", "#ball-game-color", "#ball-game-size", "#ball-game-collision"].forEach(function (selector) {
       container.querySelector(selector).addEventListener("input", updateInputLabels);
     });
     container.querySelector("#ball-game-limit").addEventListener("input", function () {
@@ -718,10 +763,12 @@ var BallGameTool = (function () {
         '<h3>' + t("ballGame.configTitle") + '</h3>' +
         '<label class="ball-game-control" for="ball-game-count"><span><b>' + t("ballGame.seedCount") + '</b><output id="ball-game-count-value">1</output></span><input id="ball-game-count" type="range" min="1" max="20" step="1" value="1"></label>' +
         '<label class="ball-game-control ball-game-color-control" for="ball-game-color"><span><b>' + t("ballGame.seedColor") + '</b><output id="ball-game-color-value">#3B82F6</output></span><input id="ball-game-color" type="color" value="#3b82f6"></label>' +
+        '<label class="ball-game-control" for="ball-game-size"><span><b>' + t("ballGame.ballSize") + '</b><output>' + t("ballGame.pixels") + '</output></span><input id="ball-game-size" type="number" step="any" value="16" inputmode="decimal" aria-describedby="ball-game-size-error"></label>' +
         '<label class="ball-game-control" for="ball-game-speed"><span><b>' + t("ballGame.baseSpeed") + '</b><output id="ball-game-speed-value">1.0×</output></span><input id="ball-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"></label>' +
         '<label class="ball-game-control" for="ball-game-limit"><span><b>' + t("ballGame.populationLimit") + '</b><output id="ball-game-limit-recommendation">' + t("ballGame.recommended") + ' 40</output></span><input id="ball-game-limit" type="number" step="1" value="40" inputmode="numeric" aria-describedby="ball-game-limit-error"></label>' +
         '<label class="ball-game-control ball-game-toggle-control" for="ball-game-collision"><span><b>' + t("ballGame.collisionMode") + '</b><input id="ball-game-collision" type="checkbox" checked></span><small>' + t("ballGame.collisionHint") + '</small></label>' +
         '<div class="ball-game-actions"><button id="ball-game-start" class="ball-game-primary" type="button">' + t("ballGame.start") + '</button><button id="ball-game-pause" type="button" disabled aria-pressed="false">' + t("ballGame.resume") + '</button></div>' +
+        '<p id="ball-game-size-error" class="ball-game-config-error hidden" role="alert"></p>' +
         '<p id="ball-game-limit-error" class="ball-game-config-error hidden" role="alert"></p>' +
         '<p class="ball-game-config-note">' + t("ballGame.configNote") + '</p></aside>' +
         '<main id="ball-game-stage" class="ball-game-stage-card"><div class="ball-game-fullscreen-toolbar"><span>' + t("ballGame.fullscreenTitle") + '</span><button id="ball-game-exit-fullscreen" type="button">' + t("ballGame.exitFullscreen") + '</button></div><div class="ball-game-stats">' +
@@ -780,6 +827,7 @@ var BallGameTool = (function () {
       normalizeConfig: normalizeConfig,
       populationCap: populationCap,
       validatePopulationLimit: validatePopulationLimit,
+      validateBallSize: validateBallSize,
       collidingBallIndexes: collidingBallIndexes,
       formatTime: formatTime,
       formatAxisTime: formatAxisTime,
@@ -790,6 +838,7 @@ var BallGameTool = (function () {
       symmetricAngles: symmetricAngles,
       velocityFor: velocityFor,
       reflectFromWall: reflectFromWall,
+      clampToAxis: clampToAxis,
       canSplitAtWall: canSplitAtWall
     }
   };
