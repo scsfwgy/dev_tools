@@ -540,6 +540,36 @@ TOOLS = {
             ],
         },
     },
+    "mindmap": {
+        "zh": {
+            "name": "在线思维导图",
+            "title": "在线思维导图 - 可视化编辑、拖拽节点，导出 PNG/SVG | Tools24",
+            "description": "XMind 风格的在线思维导图工具，支持点击创建节点、拖拽画布、键盘快捷键操作，可导出 PNG、SVG 和 JSON。完全本地运行，无需注册。",
+            "keywords": "思维导图,在线思维导图,mind map,XMind替代,可视化脑图,脑图工具,在线脑图",
+            "intro": "点击画布中央开始编辑，Tab 创建子节点、Enter 创建兄弟节点、Delete 删除、空格键拖拽画布、滚轮缩放。支持导出 PNG 图片、SVG 矢量图和 JSON 数据文件。基于 simple-mind-map 开源引擎。",
+            "features": ["点击节点直接编辑文字", "Tab 添加子节点 / Enter 添加兄弟节点", "空格键拖拽画布 / 滚轮缩放", "支持多种主题和布局", "一键导出 PNG / SVG / JSON", "支持浏览器内全屏编辑", "基于 simple-mind-map 引擎（MIT 协议）"],
+            "faq": [
+                ("思维导图数据会被上传吗？", "不会。所有编辑操作在浏览器本地完成，数据不会上传到任何服务器。simple-mind-map 库通过 CDN 加载，但不会传输你的内容。"),
+                ("导出的文件怎么用？", "PNG 可以直接插入 PPT、Word 或分享；SVG 是矢量格式可无限放大，支持 Illustrator、Figma 等继续编辑；JSON 可以重新导入继续编辑。"),
+                ("支持哪些快捷键？", "Tab 添加子节点、Enter 添加同级节点、Delete 删除、空格键按住拖拽画布、Ctrl+Z 撤销、Ctrl+Y 重做。"),
+                ("可以导入已有的思维导图吗？", "支持导入 JSON 格式（.json 文件）。如果你有其他软件导出的文件，可以先转换为 JSON 格式再导入。"),
+            ],
+        },
+        "en": {
+            "name": "Online Mind Map",
+            "title": "Online Mind Map - Visual Editor with Drag, Keyboard & Export | Tools24",
+            "description": "XMind-style online mind map tool: click to create nodes, drag the canvas, use keyboard shortcuts, and export to PNG, SVG or JSON. Fully local, no sign-up.",
+            "keywords": "mind map,online mind map,mind map editor,XMind alternative,visual brainstorming,brainstorming tool",
+            "intro": "Click the central node to start editing. Tab for child, Enter for sibling, Delete to remove, Space to drag, scroll to zoom. Export to PNG, SVG vector or JSON. Powered by the open-source simple-mind-map engine.",
+            "features": ["Click nodes to edit inline", "Tab for child / Enter for sibling", "Space to drag canvas / scroll to zoom", "Multiple themes and layouts", "One-click PNG / SVG / JSON export", "Fullscreen editing mode", "Powered by simple-mind-map (MIT license)"],
+            "faq": [
+                ("Is my mind map data uploaded?", "No. All editing happens locally in your browser. The simple-mind-map library loads from CDN but your content is never transmitted."),
+                ("How do I use the exported files?", "PNG works in any presentation or document. SVG is a vector format for infinite scaling — edit in Illustrator or Figma. JSON lets you save and re-import to continue editing."),
+                ("What keyboard shortcuts are available?", "Tab for child node, Enter for sibling, Delete to remove, Space+drag to pan, Ctrl+Z to undo, Ctrl+Y to redo."),
+                ("Can I import an existing mind map?", "Yes, JSON format (.json files) is supported. Export from other tools as JSON and re-import here to continue editing."),
+            ],
+        },
+    },
     "markdown": {
         "zh": {
             "name": "Markdown 在线编辑预览工具",
@@ -1256,6 +1286,7 @@ TOOL_REGISTRY = {
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js", "global": "ConverterTool", "processing": "local", "indexable": True},
     "fileinfo": {"order": 260, "icon": "file", "script": "/js/file-info-tool.js?v=20260706", "global": "FileInfoTool", "processing": "local", "indexable": True},
+    "mindmap": {"order": 265, "icon": "md", "script": "/js/mindmap-tool.js", "global": "MindmapTool", "processing": "local", "indexable": True},
     "markdown": {"order": 270, "icon": "md", "script": "/js/md-tool.js?v=20260706", "global": "MdTool", "processing": "local", "indexable": True},
     "content": {"order": 280, "icon": "link", "script": "/js/content-tool.js?v=20260710b", "global": "ContentTool", "processing": "server", "indexable": True},
     "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},

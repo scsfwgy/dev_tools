@@ -673,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "44+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "45+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -746,7 +746,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "all": [],
         "development": ["device", "json", "format", "regex", "url", "http", "curl", "cron"],
         "encoding": ["encoder", "base64", "uuid", "crypto", "jwt", "qrcode"],
-        "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
+        "files": ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
         "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],

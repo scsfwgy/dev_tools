@@ -4059,6 +4059,74 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 }
 .math-curiosities-pager button:disabled { opacity: 0.35; cursor: default; }
 .math-curiosities-pager button:not(:disabled):hover { border-color: var(--accent); color: var(--accent); }
+
+/* Mind Map — Mind Elixir powered */
+.mindmap-container { width: 100%; height: 100%; min-height: 400px; position: relative; }
+.mindmap-loading {
+  position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); font-size: 14px; background: var(--ball-game-canvas-bg); pointer-events: none;
+}
+.mindmap-loading[hidden] { display: none; }
+.mindmap-ops {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 4px;
+}
+.mindmap-ops button {
+  padding: 8px 6px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--select-bg); color: var(--text); font-size: 12px; cursor: pointer;
+  min-height: 40px; transition: background .15s, border-color .15s;
+}
+.mindmap-ops button:hover { border-color: var(--accent); }
+.mindmap-hint {
+  margin: 4px 0 0; min-height: 16px; font-size: 11px; color: var(--chart-red);
+  opacity: 0; transition: opacity .2s;
+}
+.mindmap-hint.is-visible { opacity: 1; }
+.mindmap-shortcuts { list-style: none; padding: 0; margin: 10px 0 12px; font-size: 11px; color: var(--text-muted); line-height: 1.9; }
+.mindmap-shortcuts kbd {
+  display: inline-block; min-width: 20px; padding: 1px 5px; text-align: center;
+  border: 1px solid var(--border); border-radius: 3px; background: var(--select-bg);
+  font-family: "SF Mono", "Fira Code", monospace; font-size: 10px; color: var(--text-secondary);
+}
+/* Inline "+" / "→" buttons inside selected node */
+.mindmap-inline-btns { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
+.mindmap-inline-btn {
+  width: 20px; height: 20px; padding: 0; border: none; border-radius: 50%;
+  background: var(--accent); color: #fff; font-size: 14px; line-height: 20px;
+  text-align: center; cursor: pointer; opacity: 0.75; transition: opacity .15s, transform .15s;
+}
+.mindmap-inline-btn:hover { opacity: 1; transform: scale(1.15); }
+.mindmap-stage { position: relative; overflow: hidden; }
+.mindmap-stage .ball-game-fullscreen-toolbar { display: none; }
+.mindmap-stage.is-fullscreen .ball-game-fullscreen-toolbar { display: flex; }
+/* Fullscreen: pin the map below the toolbar and fill the remaining space. */
+.mindmap-stage.is-fullscreen .mindmap-container {
+  position: absolute; inset: 50px 0 0 0; height: auto;
+}
+.mindmap-tool .ball-game-layout { height: 100%; }
+/* Sub-nodes (level 3+) — give them the same pill / rounded-chip style as main nodes.
+   mind-elixir's me-main > me-wrapper > me-parent > me-tpc is more specific
+   so this only affects deeper nodes. The .mindmap-tool prefix beats the CDN CSS specificity. */
+.mindmap-tool .map-container me-parent me-tpc {
+  background-color: var(--sub-bgcolor);
+  border-radius: 16px;
+  padding: 5px 14px;
+}
+/* XMind-style: floating "+" button that follows hovered nodes */
+.mindmap-float-plus {
+  position: absolute; top: 0; left: 0; z-index: 50;
+  width: 22px; height: 22px; padding: 0; border: none; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 15px; line-height: 22px; text-align: center;
+  cursor: pointer; display: none; pointer-events: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  transition: opacity .12s;
+}
+.mindmap-float-plus:hover { opacity: .85; }
+@media (max-width: 760px) {
+  .mindmap-container { min-height: 280px; }
+  .mindmap-ops { grid-template-columns: 1fr 1fr; }
+  .mindmap-ops button { min-height: 44px; }
+}
 .ball-game-fullscreen-toolbar { display: none; }
 .ball-game-stage-card.is-fullscreen {
   position: relative;

@@ -9,6 +9,8 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 
 | 日期 | 功能 | 说明 |
 |------|------|------|
+| 2026-07-24 | 思维导图 v5 交互优化 | 升级 Mind Elixir 4→5（CSS 分离加载、过渡动画替代滚动、新增拖拽平移/拖拽重组）；新增点击式节点操作按钮（添加子/兄弟节点、重命名、删除）含防静默失败提示；深色/浅色主题自动同步（CSS 变量映射 + MutationObserver）；全屏底部覆盖修复（inline style 不再覆盖 CSS 100dvh）；i18n 补充 8 个新 key；工具脚本从 ~167 行重写至 ~301 行 |
+| 2026-07-24 | 思维导图加载修复 | 修复「加载中…」永久显示：CSS `display:flex` 覆盖了 HTML `hidden` 属性（`.mindmap-loading[hidden] { display:none }`）；同时修正 MindElixir 初始化未传 data 到 `init()` |
 | 2026-07-05 | 项目初始化 | 基于 GlobalAssetHistory 架构搭建，Flask 静态托管 + Vercel 部署 |
 | 2026-07-05 | 设置面板 | 语言切换（中/英）、深色/浅色双主题，右上角齿轮菜单 |
 | 2026-07-05 | 左侧菜单 + JSON 工具 | SPA 菜单布局，JSON 格式化/压缩/树形查看，拖拽分栏 |

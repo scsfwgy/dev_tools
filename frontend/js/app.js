@@ -442,6 +442,7 @@
     if (activeMenuId !== "war-game" && typeof WarGameTool !== "undefined" && WarGameTool.deactivate) WarGameTool.deactivate();
     if (activeMenuId !== "fish-game" && typeof FishGameTool !== "undefined" && FishGameTool.deactivate) FishGameTool.deactivate();
     if (activeMenuId !== "math-curiosities" && typeof MathCuriositiesTool !== "undefined" && MathCuriositiesTool.deactivate) MathCuriositiesTool.deactivate();
+    if (activeMenuId !== "mindmap" && typeof MindmapTool !== "undefined" && MindmapTool.deactivate) MindmapTool.deactivate();
     const el = document.getElementById("content");
     if (activeMenuId !== "home") {
       var headerToolId = activeMenuId;
@@ -456,7 +457,7 @@
             <div class="home-mark" aria-hidden="true">${icons.code}</div>
             <div>
               <h1>DevTools</h1>
-              <p data-i18n="welcome.desc">44+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
+              <p data-i18n="welcome.desc">45+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
             </div>
           </header>
           <label class="home-search" for="home-search">
@@ -671,6 +672,11 @@
       MathCuriositiesTool.init(el);
       return;
     }
+    if (activeMenuId === "mindmap" && typeof MindmapTool !== "undefined") {
+      el.innerHTML = "";
+      MindmapTool.init(el);
+      return;
+    }
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
       el.innerHTML = "";
       FileInfoTool.init(el);
@@ -776,7 +782,7 @@
     { id: "all", tools: [] },
     { id: "development", tools: ["device", "json", "format", "regex", "url", "http", "curl", "cron"] },
     { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "jwt", "qrcode"] },
-    { id: "files", tools: ["text", "diff", "markdown", "image", "converter", "fileinfo"] },
+    { id: "files", tools: ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"] },
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "ai", "android", "flutter", "ios"] },
     { id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
