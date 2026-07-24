@@ -1008,6 +1008,38 @@ TOOLS = {
             ],
         },
     },
+    "math-curiosities": {
+        "zh": {
+            "name": "数学奇观",
+            "title": "数学奇观 - Collatz 猜想、快乐数与数字黑洞可视化 | Tools24",
+            "description": "交互式探索 Collatz 猜想、Juggler 序列、快乐数、Kaprekar 常数和数根等数学奇观，输入任意数字观察序列演化轨迹。",
+            "keywords": "Collatz猜想,3n+1,冰雹猜想,快乐数,Juggler序列,Kaprekar常数,数字黑洞,数根,数学可视化,在线数学工具",
+            "intro": "选择五种数学奇观之一，输入任意正整数，观察在极其简单的规则下演化出的复杂轨迹。所有计算在浏览器本地完成。",
+            "features": ["Collatz (3n+1) 猜想可视化", "Juggler 序列剧烈震荡轨迹", "快乐数平方和黑洞检测", "Kaprekar 6174 四位自循环", "数根递归求和", "自动对数/线性刻度切换", "步数、峰值、终值实时统计", "完全浏览器本地计算"],
+            "faq": [
+                ("Collatz 猜想被证明了吗？", "没有。已验证到约 3×10²⁰ 的所有正整数都最终进入 4→2→1 循环，但至今没有严格的数学证明。它是数学中最著名的未解问题之一。"),
+                ("什么是快乐数？", "不断计算各位数字的平方和，最终到达 1 的数是「快乐数」；否则掉进一个固定的 8 数循环。约 14% 的正整数是快乐数。"),
+                ("Kaprekar 常数对所有四位数都有效吗？", "几乎。任意四位不全相同的数字重复「降序排列减升序排列」，最多 7 步必然到达 6174。四位完全相同（如 1111）会直接得 0。"),
+                ("数根有什么实际用途？", "数根可以快速检验加减乘除计算结果（弃九法），也常用于校验位计算和数字签名。任何数的数根等于该数除以 9 的余数，但 9 的倍数得 9。"),
+                ("数据会被上传吗？", "不会。所有序列计算和图表渲染完全在浏览器本地完成，不会上传到任何服务器。"),
+            ],
+        },
+        "en": {
+            "name": "Math Curiosities",
+            "title": "Math Curiosities - Collatz Conjecture, Happy Numbers & Digital Black Holes | Tools24",
+            "description": "Interactively explore the Collatz conjecture, Juggler sequence, happy numbers, Kaprekar constant and digital root. Enter any number and watch the trajectory unfold.",
+            "keywords": "Collatz conjecture,3n+1,hailstone problem,happy numbers,Juggler sequence,Kaprekar constant,digital root,math visualization,online math tool",
+            "intro": "Choose one of five mathematical curiosities, enter any positive integer, and watch the complex trajectory that emerges from an absurdly simple rule. All computation runs locally.",
+            "features": ["Collatz (3n+1) conjecture visualization", "Juggler sequence with dramatic oscillation", "Happy number square-sum black-hole detection", "Kaprekar 6174 four-digit self-loop", "Digital root recursive sum", "Automatic log/linear scale switching", "Real-time step, peak and final value stats", "Fully local browser computation"],
+            "faq": [
+                ("Has the Collatz conjecture been proven?", "No. Every positive integer tested up to approximately 3×10²⁰ eventually enters the 4→2→1 loop, but no rigorous mathematical proof exists. It remains one of the most famous unsolved problems in mathematics."),
+                ("What is a happy number?", "Repeatedly sum the squares of each digit. Numbers that eventually reach 1 are \"happy\"; others fall into a fixed 8-number cycle. About 14% of positive integers are happy."),
+                ("Does Kaprekar's constant work for all four-digit numbers?", "Almost. Any four-digit number whose digits are not all the same will reach 6174 within 7 iterations of \"descending sort minus ascending sort.\" Identical digits (e.g. 1111) yield 0 immediately."),
+                ("What is the digital root used for?", "It provides a quick sanity check for arithmetic (casting out nines), and is used in checksum calculations and digital signatures. Any number's digital root equals its remainder modulo 9, except multiples of 9 yield 9."),
+                ("Is any data uploaded?", "No. All sequence computation and chart rendering happen entirely in your browser and are never sent to any server."),
+            ],
+        },
+    },
     "focus": {
         "zh": {
             "name": "专注力训练",
@@ -1219,6 +1251,7 @@ TOOL_REGISTRY = {
     "cycle-game": {"order": 238, "icon": "balls", "script": "/js/cycle-game-tool.js", "global": "CycleGameTool", "processing": "local", "indexable": True},
     "war-game": {"order": 238.5, "icon": "balls", "script": "/js/war-game-tool.js", "global": "WarGameTool", "processing": "local", "indexable": True},
     "fish-game": {"order": 238.75, "icon": "balls", "script": "/js/fish-game-tool.js", "global": "FishGameTool", "processing": "local", "indexable": True},
+    "math-curiosities": {"order": 238.9, "icon": "function", "script": "/js/math-curiosities-tool.js", "global": "MathCuriositiesTool", "processing": "local", "indexable": True},
     "cron": {"order": 239, "icon": "clock", "script": "/js/cron-tool.js", "global": "CronTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js", "global": "ConverterTool", "processing": "local", "indexable": True},

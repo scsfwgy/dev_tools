@@ -28,6 +28,7 @@
     "cycle-game": "多方循环",
     "war-game": "红绿大战",
     "fish-game": "大鱼吃小鱼",
+    "math-curiosities": "数学奇观",
     "image": "图片处理",
     "converter": "文件转换",
     "text": "文本处理",
@@ -81,13 +82,13 @@
     }
   },
   "welcome": {
-    "desc": "43+ 个免费开发工具，无需登录，优先在浏览器本地处理",
+    "desc": "44+ 个免费开发工具，无需登录，优先在浏览器本地处理",
     "openSource": "代码开源",
     "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
     "localFirst": "✓ 默认本地处理",
     "free": "免费使用",
     "noLogin": "无需登录",
-    "toolCount": "43+ 个工具",
+    "toolCount": "44+ 个工具",
     "homeSections": "首页工具视图",
     "categories": "分类",
     "recommended": "推荐",
@@ -147,6 +148,7 @@
       "cycle-game": "配置 2–20 方，观察循环克制如何反转与统一",
       "war-game": "红绿各守半场，看抱团支援如何推动战线",
       "fish-game": "小鱼撞墙复制，大鱼在吞并中持续成长",
+      "math-curiosities": "探索 Collatz 猜想与各种数学奇观的轨迹",
       "image": "本地压缩、缩放并转换图片格式",
       "converter": "JSON 与 CSV、YAML、XML 互转，也支持文档格式",
       "fileinfo": "查看文件信息、哈希与媒体元数据",
@@ -2120,6 +2122,51 @@
       "range": "鱼群数量上限必须是 1–10,000 的整数。",
       "count": "鱼群数量上限不能小于初始小鱼数量："
     }
+  },
+  "mathCuriosities": {
+    "guideTitle": "玩法说明",
+    "guideIntro": "选择一个数学奇观，输入任意正整数，观察序列在简单规则下的演化轨迹。所有计算均在浏览器本地完成。",
+    "names": {
+      "collatz": "Collatz 猜想 (3n+1)",
+      "juggler": "Juggler 序列",
+      "happy": "快乐数 (平方和)",
+      "kaprekar": "Kaprekar 常数 (6174)",
+      "digitalRoot": "数根 (各位求和)"
+    },
+    "descriptions": {
+      "collatzDesc": "已验证到 3×10²⁰ 均进入 4→2→1 循环，但无人能证明对所有正整数成立。这是数学中最著名的未解问题之一。",
+      "jugglerDesc": "偶数取平方根的下整，奇数取 1.5 次方的下整。序列先剧烈震荡后归于 1。37 峰值达 2.5×10¹³。",
+      "happyDesc": "各位数字平方和反复迭代。到达 1 则是「快乐数」，否则进入 4→16→37→58→89→145→42→20→4 的 8 数黑洞。",
+      "kaprekarDesc": "四位不全相同的数字，降序排列减升序排列反复操作，最多 7 步必达 6174 并自循环。",
+      "digitalRootDesc": "各位数字反复求和至 1–9 的单数字根。等价于该数 mod 9，9 的倍数得 9。"
+    },
+    "rules": {
+      "collatz": "f(n) = n / 2        (n 为偶数)\nf(n) = 3n + 1      (n 为奇数)\n\n终止条件：n = 1\n已知循环：4 → 2 → 1",
+      "juggler": "f(n) = ⌊n^(1/2)⌋   (n 为偶数)\nf(n) = ⌊n^(3/2)⌋   (n 为奇数)\n\n终止条件：n = 1",
+      "happy": "f(n) = Σ d_i²      其中 d_i 为 n 的各位十进制数字\n\n终止：n = 1（快乐数）\n已知黑洞：4 → 16 → 37 → 58 → 89 → 145 → 42 → 20 → 4",
+      "kaprekar": "f(n) = desc(n) − asc(n)\n其中 desc(n) 为 n 的各位数字降序排列所组成的四位数\nasc(n) 为升序排列，不足四位左侧补 0\n\n前提：1000 ≤ n ≤ 9998，各位不全相同\n终止：n = 6174（自循环）",
+      "digitalRoot": "f(n) = Σ d_i        其中 d_i 为 n 的各位十进制数字\n\n终止：n ∈ [1, 9]\n性质：dr(n) ≡ n (mod 9)，n ≡ 0 (mod 9) 时 dr(n) = 9"
+    },
+    "ruleTitle": "形式化定义",
+    "curiosityLabel": "选择数学奇观",
+    "startingNumber": "起始数字",
+    "run": "计算并绘图",
+    "invalidInput": "请输入 1–999,999,999 之间的有效正整数（Kaprekar 需要四位不全相同的数字）。",
+    "steps": "步数",
+    "peak": "峰值",
+    "final": "终值",
+    "converged": "已收敛",
+    "running": "计算中…",
+    "logScale": "对数刻度",
+    "linearScale": "线性刻度",
+    "canvasLabel": "数学序列折线图，展示每一步的数值变化",
+    "detailTitle": "逐步详情",
+    "entries": "项",
+    "step": "步",
+    "value": "值",
+    "prev": "上一页",
+    "next": "下一页",
+    "page": "第 {0} / {1} 页"
   },
   "focus": {
     "eyebrow": "SCHULTE GRID",

@@ -4000,6 +4000,65 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .cycle-game-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
 .fish-game-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
 .fish-game-swatch.is-giant { background: var(--amber); }
+
+/* Math Curiosities */
+.math-curiosities-select {
+  width: 100%; padding: 8px 10px; font-size: 13px; font-family: inherit;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--select-bg); color: var(--text-primary);
+  margin-bottom: 10px; cursor: pointer;
+}
+.math-curiosities-desc { font-size: 12px; color: var(--text-muted); line-height: 1.55; margin: 4px 0 10px; }
+.math-curiosities-rule-details { margin: 6px 0 12px; }
+.math-curiosities-rule-details summary { font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; user-select: none; }
+.math-curiosities-rule {
+  display: block; margin-top: 6px; padding: 8px 10px;
+  background: var(--select-bg); border: 1px solid var(--border); border-radius: 6px;
+  font-family: "SF Mono", "Fira Code", monospace; font-size: 12px;
+  color: var(--text-primary); line-height: 1.6; white-space: pre-wrap;
+}
+
+/* Detail table */
+.math-curiosities-detail {
+  margin-top: 18px; padding: 16px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+}
+.math-curiosities-detail h3 {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 13px; font-weight: 650; color: var(--text-primary); margin: 0 0 12px;
+}
+.math-curiosities-detail-count { font-weight: 400; color: var(--text-muted); font-size: 11px; }
+.math-curiosities-table-wrap {
+  max-height: 340px; overflow-y: auto;
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.math-curiosities-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.math-curiosities-table thead { position: sticky; top: 0; z-index: 1; }
+.math-curiosities-table th {
+  padding: 9px 14px; text-align: left; font-weight: 650; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .04em;
+  color: var(--text-muted); background: var(--select-bg);
+  border-bottom: 2px solid var(--border);
+}
+.math-curiosities-table td {
+  padding: 7px 14px; border-bottom: 1px solid var(--border); color: var(--text);
+  font-family: "SF Mono", "Fira Code", "Menlo", monospace;
+}
+.math-curiosities-table tbody tr:last-child td { border-bottom: none; }
+.math-curiosities-table tbody tr:hover td { background: var(--hover); }
+.math-curiosities-final td { color: var(--green); font-weight: 600; }
+.math-curiosities-step-col { width: 64px; color: var(--text-muted); font-family: inherit; }
+.math-curiosities-pager {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin-top: 14px; font-size: 12px; color: var(--text-muted);
+}
+.math-curiosities-pager button {
+  padding: 6px 16px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--select-bg); color: var(--text-primary); cursor: pointer;
+  font-size: 12px; font-weight: 500; transition: border-color .15s, color .15s;
+}
+.math-curiosities-pager button:disabled { opacity: 0.35; cursor: default; }
+.math-curiosities-pager button:not(:disabled):hover { border-color: var(--accent); color: var(--accent); }
 .ball-game-fullscreen-toolbar { display: none; }
 .ball-game-stage-card.is-fullscreen {
   position: relative;

@@ -673,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "43+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "44+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -749,7 +749,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
-        "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"],
+        "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
         "everyday": ["content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
@@ -1795,7 +1795,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
@@ -2141,7 +2141,7 @@ def test_predator_reproduction_ecosystem_is_local_fullscreen_and_wired(client):
     assert "resourceRate" not in script
     assert 'activeMenuId === "predator-game"' in app_script
     assert "PredatorGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert "--ecosystem-prey" in app_css
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
@@ -2277,7 +2277,7 @@ def test_multi_faction_cycle_is_balanced_constant_local_fullscreen_and_wired(cli
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "cycle-game"' in app_script
     assert "CycleGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert ".cycle-game-swatch" in app_css
     assert ".ball-game-status.is-unified" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2412,7 +2412,7 @@ def test_red_green_war_uses_local_support_and_is_fully_wired(client):
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "war-game"' in app_script
     assert "WarGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2553,7 +2553,7 @@ def test_big_fish_ecosystem_replicates_merges_grows_and_is_wired(client):
     assert "localStorage" not in script
     assert 'activeMenuId === "fish-game"' in app_script
     assert "FishGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert ".fish-game-swatch.is-giant" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
     assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css

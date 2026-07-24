@@ -28,6 +28,7 @@
     "cycle-game": "N-Sided Cycle",
     "war-game": "Red vs Green",
     "fish-game": "Big Fish Eats Small Fish",
+    "math-curiosities": "Math Curiosities",
     "image": "Image Tool",
     "converter": "File Converter",
     "text": "Text Processing",
@@ -81,13 +82,13 @@
     }
   },
   "welcome": {
-    "desc": "43+ free developer tools, no sign-in, with local browser processing by default",
+    "desc": "44+ free developer tools, no sign-in, with local browser processing by default",
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
     "free": "Free to use",
     "noLogin": "No sign-in",
-    "toolCount": "43+ tools",
+    "toolCount": "44+ tools",
     "homeSections": "Home tool views",
     "categories": "Categories",
     "recommended": "Recommended",
@@ -147,6 +148,7 @@
       "cycle-game": "Configure 2–20 factions and watch cyclic dominance unfold",
       "war-game": "Split red and green across the field and watch local support move the front",
       "fish-game": "Watch small fish replicate at walls and giants grow through absorption",
+      "math-curiosities": "Explore Collatz conjecture and mathematical curiosities",
       "image": "Compress, resize and convert images locally",
       "converter": "Convert JSON with CSV, YAML and XML, plus document formats",
       "fileinfo": "Inspect file details, hashes and media metadata",
@@ -2120,6 +2122,51 @@
       "range": "Fish population limit must be an integer from 1–10,000.",
       "count": "Fish population limit cannot be lower than the starting fish count:"
     }
+  },
+  "mathCuriosities": {
+    "guideTitle": "How it works",
+    "guideIntro": "Pick a mathematical curiosity, enter any positive integer, and watch the sequence evolve under a simple rule. All computation runs locally in your browser.",
+    "names": {
+      "collatz": "Collatz Conjecture (3n+1)",
+      "juggler": "Juggler Sequence",
+      "happy": "Happy Numbers (digit squares)",
+      "kaprekar": "Kaprekar Constant (6174)",
+      "digitalRoot": "Digital Root (digit sum)"
+    },
+    "descriptions": {
+      "collatzDesc": "Verified up to 3×10²⁰ — every tested integer enters the 4→2→1 loop, but no proof exists for all positive integers. The most famous unsolved problem in mathematics.",
+      "jugglerDesc": "Evens floor to √n, odds floor to n^(3/2). The sequence oscillates wildly before settling to 1. 37 peaks at 2.5×10¹³.",
+      "happyDesc": "Repeatedly sum squares of each digit. Reaching 1 means \"happy\"; otherwise falls into the 8-number cycle 4→16→37→58→89→145→42→20→4.",
+      "kaprekarDesc": "For four-digit numbers with non-identical digits: sort descending, subtract ascending, repeat. Converges to 6174 within 7 steps.",
+      "digitalRootDesc": "Repeatedly sum digits to a single digit (1–9). Equivalent to n mod 9, with multiples of 9 yielding 9."
+    },
+    "rules": {
+      "collatz": "f(n) = n / 2        (n even)\nf(n) = 3n + 1      (n odd)\n\nTerminates: n = 1\nKnown cycle: 4 → 2 → 1",
+      "juggler": "f(n) = ⌊n^(1/2)⌋   (n even)\nf(n) = ⌊n^(3/2)⌋   (n odd)\n\nTerminates: n = 1",
+      "happy": "f(n) = Σ d_i²      where d_i are the decimal digits of n\n\nTerminates: n = 1 (happy number)\nKnown black hole: 4 → 16 → 37 → 58 → 89 → 145 → 42 → 20 → 4",
+      "kaprekar": "f(n) = desc(n) − asc(n)\nwhere desc(n) sorts the digits of n in descending order to form a 4-digit number\nasc(n) sorts in ascending order, zero-padded to four digits\n\nPrecondition: 1000 ≤ n ≤ 9998, digits not all identical\nTerminates: n = 6174 (self-loop)",
+      "digitalRoot": "f(n) = Σ d_i        where d_i are the decimal digits of n\n\nTerminates: n ∈ [1, 9]\nProperty: dr(n) ≡ n (mod 9), with dr(n) = 9 when n ≡ 0 (mod 9)"
+    },
+    "ruleTitle": "Formal definition",
+    "curiosityLabel": "Choose a curiosity",
+    "startingNumber": "Starting number",
+    "run": "Compute & plot",
+    "invalidInput": "Please enter a valid positive integer between 1 and 999,999,999 (Kaprekar requires four digits that are not all identical).",
+    "steps": "Steps",
+    "peak": "Peak",
+    "final": "Final",
+    "converged": "Converged",
+    "running": "Running…",
+    "logScale": "Log scale",
+    "linearScale": "Linear scale",
+    "canvasLabel": "Mathematical sequence line chart showing the value at each step",
+    "detailTitle": "Step-by-step details",
+    "entries": "entries",
+    "step": "Step",
+    "value": "Value",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page {0} of {1}"
   },
   "focus": {
     "eyebrow": "SCHULTE GRID",

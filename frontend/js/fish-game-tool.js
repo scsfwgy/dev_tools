@@ -613,10 +613,10 @@ var FishGameTool = (function () {
   function giantColor(mass, breath, settled) {
     var level = Math.log2(Math.max(1, mass));
     var danger = settled ? 0.3 : 1;
-    var hueShift = breath * 12 * danger;
-    var satBoost = (18 + breath * 10) * danger;
+    var hueShift = breath * 8 * danger;
+    var satBoost = (12 + breath * 8) * danger;
     var h = (baseColor.h + level * 34 + hueShift + 360) % 360;
-    var s = clamp(baseColor.s + level * 1.5 + satBoost, 55, 96);
+    var s = clamp(baseColor.s + level * 1.5 + satBoost, 55, 94);
     var l = clamp(baseColor.l + level * 1.2, 42, 64);
     return "hsl(" + h.toFixed(1) + " " + s.toFixed(1) + "% " + l.toFixed(1) + "%)";
   }
@@ -630,8 +630,8 @@ var FishGameTool = (function () {
     });
     var giant = sortedFish.length ? sortedFish[sortedFish.length - 1] : null;
     var settled = giant && fish.length === 1 && !isSmall(giant);
-    var breath = Math.sin(elapsedMs / 800);
-    var giantScale = settled ? 1 + breath * 0.03 : 1 + breath * 0.08;
+    var breath = Math.sin(elapsedMs / 1200);
+    var giantScale = settled ? 1 + breath * 0.02 : 1 + breath * 0.05;
     var scanPhase = (elapsedMs % 2000) / 2000;
     sortedFish.forEach(function (item) {
       context.fillStyle = colorForMass(item.mass);
@@ -640,11 +640,11 @@ var FishGameTool = (function () {
       context.arc(item.x, item.y, r, 0, Math.PI * 2);
       context.fill();
       if (item === giant && !settled) {
-        // Danger glow overlay: pulses red/warm on top of base color
+        // Danger glow overlay: subtle warm pulse
         context.fillStyle = giantColor(item.mass, breath, false);
-        context.globalAlpha = 0.35;
+        context.globalAlpha = 0.22;
         context.beginPath();
-        context.arc(item.x, item.y, r * (1 + breath * 0.06), 0, Math.PI * 2);
+        context.arc(item.x, item.y, r * (1 + breath * 0.04), 0, Math.PI * 2);
         context.fill();
         context.globalAlpha = 1;
         // Double ripple scanning rings
@@ -666,9 +666,9 @@ var FishGameTool = (function () {
       if (item === giant && settled) {
         // Subtle warm glow when ecosystem is complete
         context.fillStyle = giantColor(item.mass, breath, true);
-        context.globalAlpha = 0.2;
+        context.globalAlpha = 0.14;
         context.beginPath();
-        context.arc(item.x, item.y, r * (1 + breath * 0.04), 0, Math.PI * 2);
+        context.arc(item.x, item.y, r * (1 + breath * 0.03), 0, Math.PI * 2);
         context.fill();
         context.globalAlpha = 1;
       }
