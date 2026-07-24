@@ -3998,6 +3998,8 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .predator-game-swatch.is-predators { background: var(--ecosystem-predator); }
 .predator-game-swatch.is-resources { background: var(--ecosystem-resource); }
 .cycle-game-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.fish-game-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.fish-game-swatch.is-giant { background: var(--amber); }
 .ball-game-fullscreen-toolbar { display: none; }
 .ball-game-stage-card.is-fullscreen {
   position: relative;

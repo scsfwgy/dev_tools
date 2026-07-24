@@ -34,6 +34,8 @@ _HEIGHT = 44
 # Process-local fallback store: {captcha_id: (answer_lower, expire_ts)}.
 _local_store: Dict[str, Tuple[str, float]] = {}
 _local_lock = threading.Lock()
+# ponytail: hard cap so a flood of unverified CAPTCHAs can't OOM the process
+_MAX_LOCAL_STORE_SIZE = 500
 
 
 def _purge_expired(now: float) -> None:
@@ -50,6 +52,8 @@ def _store_answer(captcha_id: str, answer: str) -> None:
     now = time.time()
     with _local_lock:
         _purge_expired(now)
+        if len(_local_store) >= _MAX_LOCAL_STORE_SIZE:
+            return  # ponytail: silently drop; better than OOM
         _local_store[captcha_id] = (answer, now + _TTL_SECONDS)
 
 

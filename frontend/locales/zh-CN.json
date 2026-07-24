@@ -27,6 +27,7 @@
     "predator-game": "捕食与繁衍",
     "cycle-game": "多方循环",
     "war-game": "红绿大战",
+    "fish-game": "大鱼吃小鱼",
     "image": "图片处理",
     "converter": "文件转换",
     "text": "文本处理",
@@ -80,13 +81,13 @@
     }
   },
   "welcome": {
-    "desc": "42+ 个免费开发工具，无需登录，优先在浏览器本地处理",
+    "desc": "43+ 个免费开发工具，无需登录，优先在浏览器本地处理",
     "openSource": "代码开源",
     "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
     "localFirst": "✓ 默认本地处理",
     "free": "免费使用",
     "noLogin": "无需登录",
-    "toolCount": "42+ 个工具",
+    "toolCount": "43+ 个工具",
     "homeSections": "首页工具视图",
     "categories": "分类",
     "recommended": "推荐",
@@ -145,6 +146,7 @@
       "predator-game": "观察猎物、捕食者和资源如何共同演化",
       "cycle-game": "配置 2–20 方，观察循环克制如何反转与统一",
       "war-game": "红绿各守半场，看抱团支援如何推动战线",
+      "fish-game": "小鱼撞墙复制，大鱼在吞并中持续成长",
       "image": "本地压缩、缩放并转换图片格式",
       "converter": "JSON 与 CSV、YAML、XML 互转，也支持文档格式",
       "fileinfo": "查看文件信息、哈希与媒体元数据",
@@ -2068,6 +2070,55 @@
       "running": "双方正在交战",
       "paused": "交战已暂停",
       "winner": "{side}统一战场"
+    }
+  },
+  "fishGame": {
+    "guide": {
+      "title": "玩法与生态",
+      "item1": "基础小鱼从画布正中心随机出发，撞到墙壁便复制成两条同样的小鱼。",
+      "item2": "任意两条鱼相撞都会合并；较大的鱼吞掉较小的鱼，两条一样大时随机保留一条。",
+      "item3": "吞噬后的体量相加，直径按面积增长；大鱼撞墙只反弹，不再复制。",
+      "item4": "鱼群数量与最大体量会相互拉扯；只剩一条大鱼时生态完成统治。"
+    },
+    "configTitle": "投放鱼苗",
+    "initialCount": "初始小鱼",
+    "seedColor": "鱼苗颜色",
+    "baseSize": "小鱼直径",
+    "baseSpeed": "恒定速度",
+    "populationLimit": "鱼群数量上限",
+    "recommended": "推荐",
+    "start": "开始演化",
+    "regenerate": "重新投放",
+    "pause": "暂停",
+    "resume": "继续",
+    "fullscreen": "浏览器内全屏",
+    "exitFullscreen": "退出全屏",
+    "fullscreenTitle": "大鱼吃小鱼 · 吞并生态",
+    "configNote": "数量上限限制小鱼撞墙复制；吞并后数量下降，复制便可再次发生。上限可输入 1–10,000。",
+    "totalTime": "演化时间",
+    "population": "鱼数 / 上限",
+    "smallFish": "基础小鱼",
+    "largestMass": "最大体量",
+    "currentSpeed": "恒定速度",
+    "capHint": "小鱼复制增加数量，吞并减少数量",
+    "canvasLabel": "小鱼撞墙复制、相撞后由大鱼吞掉小鱼并持续变大的生态动画",
+    "ecosystemChart": "鱼群与巨鱼曲线",
+    "fishCountSeries": "鱼群数量",
+    "largestSeries": "最大体量",
+    "chartTimeAxis": "时间",
+    "chartValueAxis": "数量 / 体量",
+    "chartLabel": "展示鱼群数量与最大鱼体量随演化时间变化的折线图",
+    "previewHint": "设置鱼苗参数，然后开始演化",
+    "status": {
+      "ready": "等待投放鱼苗",
+      "running": "鱼群正在演化",
+      "paused": "演化已暂停",
+      "limit": "已达数量上限，小鱼暂时只反弹",
+      "settled": "只剩一条大鱼，生态完成统治"
+    },
+    "errors": {
+      "range": "鱼群数量上限必须是 1–10,000 的整数。",
+      "count": "鱼群数量上限不能小于初始小鱼数量："
     }
   },
   "focus": {

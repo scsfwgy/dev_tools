@@ -27,6 +27,7 @@
     "predator-game": "Predation & Reproduction",
     "cycle-game": "N-Sided Cycle",
     "war-game": "Red vs Green",
+    "fish-game": "Big Fish Eats Small Fish",
     "image": "Image Tool",
     "converter": "File Converter",
     "text": "Text Processing",
@@ -80,13 +81,13 @@
     }
   },
   "welcome": {
-    "desc": "42+ free developer tools, no sign-in, with local browser processing by default",
+    "desc": "43+ free developer tools, no sign-in, with local browser processing by default",
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
     "free": "Free to use",
     "noLogin": "No sign-in",
-    "toolCount": "42+ tools",
+    "toolCount": "43+ tools",
     "homeSections": "Home tool views",
     "categories": "Categories",
     "recommended": "Recommended",
@@ -145,6 +146,7 @@
       "predator-game": "Watch prey, predators and resources evolve together",
       "cycle-game": "Configure 2–20 factions and watch cyclic dominance unfold",
       "war-game": "Split red and green across the field and watch local support move the front",
+      "fish-game": "Watch small fish replicate at walls and giants grow through absorption",
       "image": "Compress, resize and convert images locally",
       "converter": "Convert JSON with CSV, YAML and XML, plus document formats",
       "fileinfo": "Inspect file details, hashes and media metadata",
@@ -2068,6 +2070,55 @@
       "running": "Both sides are fighting",
       "paused": "Battle paused",
       "winner": "{side} has unified the field"
+    }
+  },
+  "fishGame": {
+    "guide": {
+      "title": "Rules and ecosystem",
+      "item1": "Base fish launch randomly from the exact canvas center and replicate into two whenever they hit a wall.",
+      "item2": "Any two colliding fish merge. The larger fish eats the smaller; equal fish randomly choose a survivor.",
+      "item3": "Mass adds together and diameter grows by area. Large fish only bounce at walls and no longer replicate.",
+      "item4": "Population and maximum mass pull in opposite directions. Evolution settles when one large fish remains."
+    },
+    "configTitle": "Release the fry",
+    "initialCount": "Starting small fish",
+    "seedColor": "Fry color",
+    "baseSize": "Small-fish diameter",
+    "baseSpeed": "Constant speed",
+    "populationLimit": "Fish population limit",
+    "recommended": "Recommended",
+    "start": "Start evolution",
+    "regenerate": "Release again",
+    "pause": "Pause",
+    "resume": "Resume",
+    "fullscreen": "Expand preview",
+    "exitFullscreen": "Exit preview",
+    "fullscreenTitle": "Big Fish Eats Small Fish · Merge ecosystem",
+    "configNote": "The limit pauses wall replication. Once merging reduces the population, replication can resume. Enter any integer from 1–10,000.",
+    "totalTime": "Evolution time",
+    "population": "Fish / limit",
+    "smallFish": "Base fish",
+    "largestMass": "Largest mass",
+    "currentSpeed": "Constant speed",
+    "capHint": "Replication raises population; merging lowers it",
+    "canvasLabel": "An ecosystem where small fish replicate at walls and larger fish absorb smaller fish to grow",
+    "ecosystemChart": "Population and giant growth",
+    "fishCountSeries": "Fish population",
+    "largestSeries": "Largest mass",
+    "chartTimeAxis": "Time",
+    "chartValueAxis": "Count / mass",
+    "chartLabel": "Line chart showing fish population and largest fish mass over evolution time",
+    "previewHint": "Choose fry settings, then start evolution",
+    "status": {
+      "ready": "Waiting for fry",
+      "running": "The ecosystem is evolving",
+      "paused": "Evolution paused",
+      "limit": "Population limit reached; small fish only bounce for now",
+      "settled": "One large fish remains and rules the ecosystem"
+    },
+    "errors": {
+      "range": "Fish population limit must be an integer from 1–10,000.",
+      "count": "Fish population limit cannot be lower than the starting fish count:"
     }
   },
   "focus": {

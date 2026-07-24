@@ -673,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "42+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "43+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -749,7 +749,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
-        "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game"],
+        "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"],
         "everyday": ["content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
@@ -1795,7 +1795,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
     assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
@@ -2141,7 +2141,7 @@ def test_predator_reproduction_ecosystem_is_local_fullscreen_and_wired(client):
     assert "resourceRate" not in script
     assert 'activeMenuId === "predator-game"' in app_script
     assert "PredatorGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
     assert "--ecosystem-prey" in app_css
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
@@ -2277,7 +2277,7 @@ def test_multi_faction_cycle_is_balanced_constant_local_fullscreen_and_wired(cli
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "cycle-game"' in app_script
     assert "CycleGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
     assert ".cycle-game-swatch" in app_css
     assert ".ball-game-status.is-unified" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2412,7 +2412,7 @@ def test_red_green_war_uses_local_support_and_is_fully_wired(client):
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "war-game"' in app_script
     assert "WarGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game"] }' in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2488,6 +2488,166 @@ process.stdout.write(JSON.stringify({
         assert result["immunePairs"] == []
         assert result["unified"] == [0, 1, None]
         assert abs(result["velocityMagnitude"] - 70) < 1e-9
+        assert result["formattedTime"] == "01:01.234"
+        assert result["formattedAxis"] == "1.5m"
+        assert result["substeps"] == [1, 8]
+
+
+def test_big_fish_ecosystem_replicates_merges_grows_and_is_wired(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+
+    page = client.get("/zh/tool/fish-game")
+    english_page = client.get("/en/tool/fish-game")
+    script_response = client.get("/js/fish-game-tool.js")
+    script = script_response.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+
+    assert page.status_code == 200
+    assert english_page.status_code == 200
+    assert script_response.status_code == 200
+    assert "大鱼吃小鱼" in page.get_data(as_text=True)
+    assert "Big Fish Eats Small Fish" in english_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/fish-game" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/en/tool/fish-game" in english_page.get_data(as_text=True)
+    assert_tool_is_lazy_loaded(frontend_dir, "fish-game-tool.js")
+    assert TOOL_REGISTRY["fish-game"] == {
+        "order": 238.75,
+        "icon": "balls",
+        "script": "/js/fish-game-tool.js",
+        "global": "FishGameTool",
+        "processing": "local",
+        "indexable": True,
+    }
+    assert zh_locale["menu"]["fish-game"] == "大鱼吃小鱼"
+    assert en_locale["menu"]["fish-game"] == "Big Fish Eats Small Fish"
+    assert "撞到墙壁便复制" in zh_locale["fishGame"]["guide"]["item1"]
+    assert "diameter grows by area" in en_locale["fishGame"]["guide"]["item3"].lower()
+    assert zh_locale["fishGame"]["status"]["settled"] == "只剩一条大鱼，生态完成统治"
+    assert "requestAnimationFrame" in script
+    assert "ResizeObserver" in script
+    assert "MutationObserver" in script
+    assert "function fishRadius(" in script
+    assert "function canReplicateAtWall(" in script
+    assert "function splitAtWall(" in script
+    assert "function collisionPairs(" in script
+    assert "function mergeTwo(" in script
+    assert "function resolveMerges(" in script
+    assert "function largestMass(" in script
+    assert "function drawChartLine(" in script
+    assert "history.length > 1200" in script
+    assert "function enterFullscreen(" in script
+    assert "function exitFullscreen(" in script
+    assert 'id="fish-game-count" type="range" min="1" max="20" step="1" value="1"' in script
+    assert 'id="fish-game-size" type="range" min="4" max="30" step="1" value="12"' in script
+    assert 'id="fish-game-speed" type="range" min="0.1" max="10" step="0.1" value="1"' in script
+    assert 'id="fish-game-limit" type="number" step="1" value="80"' in script
+    assert 'id="fish-game-limit" type="number" min=' not in script
+    assert 'id="fish-game-fullscreen"' in script
+    assert 'id="fish-game-exit-fullscreen"' in script
+    assert 'id="fish-game-chart"' in script
+    assert 'class="ball-game-guide"' in script
+    assert "fetch(" not in script
+    assert "localStorage" not in script
+    assert 'activeMenuId === "fish-game"' in app_script
+    assert "FishGameTool.deactivate" in app_script
+    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game"] }' in app_script
+    assert ".fish-game-swatch.is-giant" in app_css
+    assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
+    assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = { Math, Number, String, RegExp, Map, Set };
+context.window = context;
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/fish-game-tool.js", "utf8"), context);
+const core = context.FishGameTool._test;
+const colliders = [
+  { x: 0, y: 0, radius: 6, mass: 1, mergeImmuneUntil: 0 },
+  { x: 10, y: 0, radius: 6, mass: 1, mergeImmuneUntil: 0 },
+  { x: 80, y: 80, radius: 12, mass: 4, mergeImmuneUntil: 0 }
+];
+const immune = [
+  { x: 0, y: 0, radius: 6, mass: 1, mergeImmuneUntil: 600 },
+  { x: 10, y: 0, radius: 6, mass: 1, mergeImmuneUntil: 600 }
+];
+const reflected = { vx: -10, vy: 2 };
+const mergedVelocity = core.normalizedVelocity(0, 0, 70, 3, 4);
+core.reflectFromWall(reflected, 0);
+process.stdout.write(JSON.stringify({
+  defaults: core.normalizeConfig(null, null, null, null, null, 90),
+  normalized: core.normalizeConfig(99, 99, 99, "invalid", 99999, 90),
+  validation: [
+    core.validatePopulationLimit("", 1),
+    core.validatePopulationLimit("2.5", 1),
+    core.validatePopulationLimit("3", 4),
+    core.validatePopulationLimit("1", 1),
+    core.validatePopulationLimit("10000", 1)
+  ],
+  caps: [core.populationCap(10, 10), core.populationCap(4000, 4000)],
+  radii: [core.fishRadius(1, 6), core.fishRadius(4, 6), core.fishRadius(9, 6)],
+  counts: [
+    core.smallFishCount(colliders),
+    core.largestMass(colliders),
+    core.totalMass(colliders)
+  ],
+  pairs: core.collisionPairs(colliders, 500),
+  immunePairs: core.collisionPairs(immune, 500),
+  replicate: [
+    core.canReplicateAtWall({ mass: 1, wallImmuneUntil: 100 }, 101, 9, 10),
+    core.canReplicateAtWall({ mass: 2, wallImmuneUntil: 100 }, 101, 9, 10),
+    core.canReplicateAtWall({ mass: 1, wallImmuneUntil: 100 }, 99, 9, 10),
+    core.canReplicateAtWall({ mass: 1, wallImmuneUntil: 100 }, 101, 10, 10)
+  ],
+  mergedVelocityMagnitude: Math.hypot(mergedVelocity.vx, mergedVelocity.vy),
+  reflected,
+  axis: [core.clampToAxis(-10, 6, 300), core.clampToAxis(400, 6, 300), core.clampToAxis(20, 200, 300)],
+  formattedTime: core.formatTime(61234.9),
+  formattedAxis: core.formatAxisTime(90000),
+  substeps: [core.physicsSubstepCount(0.032, 0.1, 6), core.physicsSubstepCount(0.032, 10, 6)]
+}));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        result = json.loads(completed.stdout)
+        assert result["defaults"] == {
+            "count": 1,
+            "size": 12,
+            "speed": 1,
+            "color": "#38bdf8",
+            "limit": 90,
+        }
+        assert result["normalized"] == {
+            "count": 20,
+            "size": 30,
+            "speed": 10,
+            "color": "#38bdf8",
+            "limit": 10000,
+        }
+        assert [item["error"] for item in result["validation"][:2]] == ["range", "range"]
+        assert result["validation"][2]["error"] == "count"
+        assert result["validation"][3] == {"valid": True, "value": 1, "error": None}
+        assert result["validation"][4] == {"valid": True, "value": 10000, "error": None}
+        assert result["caps"] == [60, 240]
+        assert result["radii"] == [6, 12, 18]
+        assert result["counts"] == [2, 4, 6]
+        assert result["pairs"] == [[0, 1]]
+        assert result["immunePairs"] == []
+        assert result["replicate"] == [True, False, False, False]
+        assert abs(result["mergedVelocityMagnitude"] - 70) < 1e-9
+        assert result["reflected"] == {"vx": 10, "vy": 2}
+        assert result["axis"] == [6, 294, 150]
         assert result["formattedTime"] == "01:01.234"
         assert result["formattedAxis"] == "1.5m"
         assert result["substeps"] == [1, 8]

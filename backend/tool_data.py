@@ -974,6 +974,40 @@ TOOLS = {
             ],
         },
     },
+    "fish-game": {
+        "zh": {
+            "name": "大鱼吃小鱼",
+            "title": "大鱼吃小鱼 - 撞墙复制与吞并成长生态游戏 | Tools24",
+            "description": "基础小鱼撞墙复制成两条，任意两条鱼相撞后由大鱼吞掉小鱼并按面积变大，观察鱼群数量与巨鱼体量的动态变化。",
+            "keywords": "大鱼吃小鱼,吞噬游戏,撞墙分裂,合并成长,生态模拟,粒子游戏,Canvas游戏,小游戏",
+            "intro": "基础小鱼从画布中心随机出发，撞墙后复制为两条；相撞时，大鱼吞掉小鱼并继承双方总质量，两条一样大则随机保留一条。大鱼只反弹、不再复制，形成繁衍与吞并的循环。",
+            "features": ["小鱼从画布正中心随机出发", "基础小鱼撞墙一分为二", "任意两条鱼碰撞后合并", "大鱼吞小鱼并累加质量", "直径按面积守恒方式增长", "大鱼撞墙只反弹", "动态鱼群数量上限", "鱼群数量与最大体量双曲线", "可配置鱼苗数量、颜色、大小和速度", "1–10,000 鱼群上限", "生态画布全屏", "完全浏览器本地运行"],
+            "faq": [
+                ("小鱼和大鱼如何区分？", "初始鱼和撞墙复制出的鱼体量都是 1×，属于基础小鱼。吞并后体量大于 1× 的鱼成为大鱼，颜色也会随体量逐渐变化。"),
+                ("大鱼吃掉小鱼后会变多大？", "双方质量直接相加，圆形直径按面积增长。例如两条 1× 小鱼合并为 2× 质量，半径变为原来的 √2 倍，而不是简单翻倍。"),
+                ("大鱼撞墙也会复制吗？", "不会。只有体量为 1× 的基础小鱼撞墙时会复制；大鱼撞墙只反弹，继续寻找其他鱼吞并。"),
+                ("数量上限如何生效？", "达到上限时基础小鱼撞墙只反弹。碰撞吞并会降低鱼群数量，低于上限后，小鱼便可再次复制。"),
+                ("什么时候演化结束？", "只剩一条体量大于 1× 的大鱼时，生态完成统治并自动停止。重新投放可观察另一条随机演化路径。"),
+                ("数据会上传吗？", "不会。运动、复制、吞并、体量计算和曲线绘制全部在当前浏览器中进行，也不会写入本地存储。"),
+            ],
+        },
+        "en": {
+            "name": "Big Fish Eats Small Fish",
+            "title": "Big Fish Eats Small Fish - Replication and Merge Ecosystem | Tools24",
+            "description": "Small fish replicate at walls, while collisions merge two fish and let the larger absorb the smaller, creating changing population and giant growth.",
+            "keywords": "big fish eats small fish,absorption game,wall replication,merge growth,ecosystem simulation,Canvas game,mini game",
+            "intro": "Base fish launch from the canvas center and replicate at walls. On collision, the larger fish absorbs the smaller and inherits their combined mass; equal fish randomly select a survivor. Large fish bounce instead of replicating.",
+            "features": ["Center-launched small fish with random directions", "Base fish replicate at every wall hit", "Any two colliding fish merge", "Larger fish absorb smaller fish", "Area-based diameter growth", "Large fish only bounce at walls", "Dynamic population ceiling", "Live population and largest-mass curves", "Configurable fry count, color, size and speed", "Population ceiling from 1–10,000", "Ecosystem-canvas fullscreen", "Fully local browser simulation"],
+            "faq": [
+                ("What makes a fish small or large?", "Starting fish and wall-created copies have 1× mass and count as base fish. Any fish above 1× mass is large, and its color shifts as it grows."),
+                ("How much does a fish grow after eating?", "Mass adds directly and circular diameter grows by area. Two 1× fish create 2× mass with a radius √2 times the original, rather than twice the radius."),
+                ("Do large fish replicate at walls?", "No. Only 1× base fish replicate on wall contact. Large fish bounce and keep hunting other fish."),
+                ("How does the population limit work?", "At the ceiling, base fish only bounce. Merging reduces population, so replication can resume as soon as the count drops below the limit."),
+                ("When does evolution end?", "The simulation stops when one fish above 1× mass remains and rules the ecosystem. Release new fry to observe another random path."),
+                ("Is any data uploaded?", "No. Movement, replication, merging, mass calculation and chart rendering all stay in the current browser and are not written to local storage."),
+            ],
+        },
+    },
     "focus": {
         "zh": {
             "name": "专注力训练",
@@ -1184,6 +1218,7 @@ TOOL_REGISTRY = {
     "predator-game": {"order": 237, "icon": "balls", "script": "/js/predator-game-tool.js", "global": "PredatorGameTool", "processing": "local", "indexable": True},
     "cycle-game": {"order": 238, "icon": "balls", "script": "/js/cycle-game-tool.js", "global": "CycleGameTool", "processing": "local", "indexable": True},
     "war-game": {"order": 238.5, "icon": "balls", "script": "/js/war-game-tool.js", "global": "WarGameTool", "processing": "local", "indexable": True},
+    "fish-game": {"order": 238.75, "icon": "balls", "script": "/js/fish-game-tool.js", "global": "FishGameTool", "processing": "local", "indexable": True},
     "cron": {"order": 239, "icon": "clock", "script": "/js/cron-tool.js", "global": "CronTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js", "global": "ConverterTool", "processing": "local", "indexable": True},

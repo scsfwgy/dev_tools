@@ -2,8 +2,15 @@
 import logging
 import os
 import re
+import warnings
 from time import perf_counter
 from uuid import uuid4
+
+# Python 3.13+ Flask debug reloader spawns subprocesses via multiprocessing; the
+# resource_tracker warns about semaphores that the reloader doesn't explicitly
+# clean up. These warnings are harmless — suppress them so they don't mask real
+# issues in the terminal or logs.
+warnings.filterwarnings("ignore", message=".*resource_tracker.*leaked.*")
 
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
