@@ -812,8 +812,8 @@
     { id: "files", tools: ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"] },
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "ai", "android", "flutter", "ios"] },
-    { id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
-    { id: "everyday", tools: ["content", "translate", "area-search", "literacy"] }
+    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
+    { id: "everyday", tools: ["content", "translate", "area-search"] }
   ];
 
   var HOME_RECOMMENDATIONS = [

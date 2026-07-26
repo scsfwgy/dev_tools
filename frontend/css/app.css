@@ -4136,7 +4136,7 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .literacy-card {
   width: 100%; height: 100%; min-height: 260px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 18px; padding: clamp(20px, 4vw, 56px);
+  gap: 12px; padding: clamp(18px, 3vw, 44px); overflow: auto;
 }
 .literacy-char {
   font-size: clamp(120px, 25vw, 420px);
@@ -4148,8 +4148,26 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 }
 .literacy-char.is-emoji { font-family: system-ui, sans-serif; }
 .literacy-image {
-  display: block; max-width: 90%; max-height: min(62vh, 560px);
+  display: block; max-width: 90%; max-height: min(48vh, 430px);
   width: auto; height: auto; object-fit: contain; border-radius: 16px;
+}
+.literacy-vocab,
+.literacy-number-pronunciation {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; color: var(--literacy-card-color, var(--text));
+  text-align: center; transition: color .18s;
+}
+.literacy-vocab { margin-top: 2px; }
+.literacy-number-pronunciation { margin-top: -4px; gap: 4px; }
+.literacy-pinyin,
+.literacy-english,
+.literacy-phonetic {
+  margin: 0; color: inherit; line-height: 1.2;
+}
+.literacy-pinyin {
+  font-family: var(--literacy-font-family, "PingFang SC", system-ui, sans-serif);
+  font-size: clamp(18px, 2.3vw, 28px); font-weight: 600;
+  letter-spacing: .05em; opacity: .86;
 }
 .literacy-caption {
   margin: 0; color: var(--literacy-card-color, var(--text));
@@ -4157,6 +4175,17 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
   font-size: clamp(24px, 4vw, 48px);
   font-weight: var(--literacy-font-weight, 700); line-height: 1.2; text-align: center;
   transition: color .18s;
+}
+.literacy-english {
+  margin-top: 3px;
+  font-family: var(--literacy-font-family, "Arial Rounded MT Bold", system-ui, sans-serif);
+  font-size: clamp(20px, 2.7vw, 32px);
+  font-weight: var(--literacy-font-weight, 700);
+}
+.literacy-phonetic {
+  font-family: "Arial", "Helvetica Neue", system-ui, sans-serif;
+  font-size: clamp(16px, 2vw, 24px); font-weight: 500;
+  letter-spacing: .02em; opacity: .8;
 }
 .literacy-appearance-grid {
   display: grid; grid-template-columns: minmax(0, 1fr) 64px;
@@ -4190,13 +4219,18 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 }
 .literacy-source-status.is-error { color: var(--chart-red); }
 .literacy-stage.is-fullscreen .literacy-char {
-  font-size: clamp(180px, 40vw, 600px);
+  font-size: clamp(160px, 32vw, 500px);
 }
-.literacy-stage.is-fullscreen .literacy-image { max-height: 78vh; }
+.literacy-stage.is-fullscreen .literacy-image { max-height: min(60vh, 620px); }
 @media (max-width: 760px) {
   .literacy-char { font-size: clamp(80px, 30vw, 200px); }
-  .literacy-stage { min-height: 260px; }
-  .literacy-card { padding: 20px; }
+  .literacy-stage { min-height: 480px; }
+  .literacy-card { min-height: 480px; gap: 9px; padding: 16px; }
+  .literacy-image { max-width: 96%; max-height: min(38vh, 300px); border-radius: 12px; }
+  .literacy-pinyin { font-size: clamp(17px, 5vw, 22px); }
+  .literacy-caption { font-size: clamp(24px, 8vw, 36px); }
+  .literacy-english { font-size: clamp(19px, 6vw, 26px); }
+  .literacy-phonetic { font-size: clamp(15px, 4.5vw, 20px); }
 }
 .native-fullscreen-btn {
   padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;

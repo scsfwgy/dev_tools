@@ -749,8 +749,8 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
-        "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
-        "everyday": ["content", "translate", "area-search", "literacy"],
+        "games": ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
+        "everyday": ["content", "translate", "area-search"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -1795,8 +1795,8 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
-    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "literacy"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
@@ -2141,7 +2141,7 @@ def test_predator_reproduction_ecosystem_is_local_fullscreen_and_wired(client):
     assert "resourceRate" not in script
     assert 'activeMenuId === "predator-game"' in app_script
     assert "PredatorGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert "--ecosystem-prey" in app_css
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
@@ -2277,7 +2277,7 @@ def test_multi_faction_cycle_is_balanced_constant_local_fullscreen_and_wired(cli
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "cycle-game"' in app_script
     assert "CycleGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert ".cycle-game-swatch" in app_css
     assert ".ball-game-status.is-unified" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2412,7 +2412,7 @@ def test_red_green_war_uses_local_support_and_is_fully_wired(client):
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "war-game"' in app_script
     assert "WarGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2553,7 +2553,7 @@ def test_big_fish_ecosystem_replicates_merges_grows_and_is_wired(client):
     assert "localStorage" not in script
     assert 'activeMenuId === "fish-game"' in app_script
     assert "FishGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
     assert ".fish-game-swatch.is-giant" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
     assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css
@@ -2717,8 +2717,8 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert_tool_is_lazy_loaded(frontend_dir, "literacy-tool.js")
     assert zh_locale["literacy"]["source"] == "卡片数据源"
     assert en_locale["literacy"]["source"] == "Card data source"
-    assert zh_locale["literacy"]["sourceAnimals"] == "常见动物（21 种）"
-    assert zh_locale["literacy"]["sourceFruits"] == "常见水果（20 种）"
+    assert zh_locale["literacy"]["sourceAnimals"] == "常见动物（36 种）"
+    assert zh_locale["literacy"]["sourceFruits"] == "常见水果（30 种）"
     assert en_locale["literacy"]["imageCredits"] == "View current image sources and licenses"
     assert zh_locale["literacy"]["randomColor"] == "每张卡片随机颜色"
     assert en_locale["literacy"]["fontRounded"] == "Rounded (recommended)"
@@ -2740,20 +2740,35 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert 'loadManifest("fruits", FRUITS_MANIFEST_URL)' in script
     assert 'id="literacy-credits"' in script
     assert 'new window.URL(document.currentScript.src, window.location.href)' in script
+    assert "var NUMBER_PRONUNCIATIONS" in script
+    assert "window.innerWidth <= 760 ? 480 : 260" in script
+    assert '"literacy-pinyin"' in script
+    assert '"literacy-english"' in script
+    assert '"literacy-phonetic"' in script
     assert animal_manifest["id"] == "animals"
-    assert len(animal_manifest["items"]) == 21
+    assert animal_manifest["schemaVersion"] == 2
+    assert len(animal_manifest["items"]) == 36
+    assert {"monkey", "dolphin", "squirrel"} <= {item["id"] for item in animal_manifest["items"]}
     assert all(item["kind"] == "image" for item in animal_manifest["items"])
     assert all(item["src"].endswith(".webp") for item in animal_manifest["items"])
     assert all(item["attribution"]["source"] == "Wikimedia Commons" for item in animal_manifest["items"])
     assert all(item["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/") for item in animal_manifest["items"])
+    assert all(item["pronunciation"]["pinyin"] for item in animal_manifest["items"])
+    assert all(item["pronunciation"]["english"] == item["label"]["en"] for item in animal_manifest["items"])
+    assert all(item["pronunciation"]["ipa"].startswith("/") and item["pronunciation"]["ipa"].endswith("/") for item in animal_manifest["items"])
     assert all(client.get(item["src"]).status_code == 200 for item in animal_manifest["items"])
     assert fruit_manifest["id"] == "fruits"
-    assert len(fruit_manifest["items"]) == 20
+    assert fruit_manifest["schemaVersion"] == 2
+    assert len(fruit_manifest["items"]) == 30
+    assert {"avocado", "lychee", "durian"} <= {item["id"] for item in fruit_manifest["items"]}
     assert all(item["kind"] == "image" for item in fruit_manifest["items"])
     assert all(item["src"].endswith(".webp") for item in fruit_manifest["items"])
     assert all(item["attribution"]["source"] == "Wikimedia Commons" for item in fruit_manifest["items"])
     assert all(item["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/") for item in fruit_manifest["items"])
     assert all("original background retained" in item["attribution"]["modifications"] for item in fruit_manifest["items"])
+    assert all(item["pronunciation"]["pinyin"] for item in fruit_manifest["items"])
+    assert all(item["pronunciation"]["english"] == item["label"]["en"] for item in fruit_manifest["items"])
+    assert all(item["pronunciation"]["ipa"].startswith("/") and item["pronunciation"]["ipa"].endswith("/") for item in fruit_manifest["items"])
     assert all(client.get(item["src"]).status_code == 200 for item in fruit_manifest["items"])
     assert 'activeMenuId === "literacy"' in app_script
     assert "tool script load failed" in app_script
@@ -2808,7 +2823,17 @@ context.LiteracyTool.registerDataSource({
 });
 const sources = context.LiteracyTool.getDataSources();
 const normalized = context.LiteracyTool.__test.normalizeItems(
-  ["一", { id: "tree", kind: "image", src: "/tree.webp", label: "Tree" }],
+  [
+    "一",
+    {
+      id: "tree",
+      kind: "image",
+      src: "/tree.webp",
+      label: {"zh-CN": "树", en: "Tree"},
+      caption: {"zh-CN": "树", en: "Tree"},
+      pronunciation: {pinyin: "shù", english: "Tree", ipa: "/triː/"}
+    }
+  ],
   { id: "sample", defaultKind: "text" }
 );
 process.stdout.write(JSON.stringify({
@@ -2818,6 +2843,10 @@ process.stdout.write(JSON.stringify({
     sources.some(source => source.id === "fruits" && source.async && source.creditsUrl.includes("/fruits/manifest.json")),
   textCard: normalized[0].kind === "text" && normalized[0].value === "一",
   imageCard: normalized[1].kind === "image" && normalized[1].src === "/tree.webp",
+  chineseName: normalized[1].primaryText === "树",
+  pronunciation: normalized[1].pronunciation.pinyin === "shù" &&
+    normalized[1].pronunciation.english === "Tree" &&
+    normalized[1].pronunciation.ipa === "/triː/",
   localizedLabel: context.LiteracyTool.__test.localizedText({"zh-CN": "猫", en: "Cat"}) === "Cat",
   darkColor: context.LiteracyTool.__test.randomColorForTheme("dark", 0) === "#f87171",
   lightColor: context.LiteracyTool.__test.randomColorForTheme("light", 0) === "#b91c1c",

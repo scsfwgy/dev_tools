@@ -49,6 +49,18 @@ var LiteracyTool = (function () {
     dark: ["#f87171", "#fbbf24", "#4ade80", "#60a5fa", "#a78bfa", "#f472b6", "#2dd4bf"],
     light: ["#b91c1c", "#a16207", "#15803d", "#1d4ed8", "#6d28d9", "#be185d", "#0f766e"]
   };
+  var NUMBER_PRONUNCIATIONS = [
+    { value: "0", english: "Zero", ipa: "/ˈzɪroʊ/" },
+    { value: "1", english: "One", ipa: "/wʌn/" },
+    { value: "2", english: "Two", ipa: "/tuː/" },
+    { value: "3", english: "Three", ipa: "/θriː/" },
+    { value: "4", english: "Four", ipa: "/fɔːr/" },
+    { value: "5", english: "Five", ipa: "/faɪv/" },
+    { value: "6", english: "Six", ipa: "/sɪks/" },
+    { value: "7", english: "Seven", ipa: "/ˈsevən/" },
+    { value: "8", english: "Eight", ipa: "/eɪt/" },
+    { value: "9", english: "Nine", ipa: "/naɪn/" }
+  ];
 
   function t(key) {
     return (window.__t && window.__t(key)) || key;
@@ -162,6 +174,21 @@ var LiteracyTool = (function () {
     });
   }
 
+  function numberItems() {
+    return NUMBER_PRONUNCIATIONS.map(function (number) {
+      return {
+        id: number.value,
+        kind: "text",
+        value: number.value,
+        label: number.value,
+        pronunciation: {
+          english: number.english,
+          ipa: number.ipa
+        }
+      };
+    });
+  }
+
   function loadManifest(sourceId, url) {
     if (!manifestPromises[sourceId]) {
       manifestPromises[sourceId] = fetch(url).then(function (response) {
@@ -203,7 +230,7 @@ var LiteracyTool = (function () {
   }
 
   function registerBuiltInSources() {
-    var numbers = rangeItems("0123456789");
+    var numbers = numberItems();
     var uppercase = rangeItems("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     var lowercase = rangeItems("abcdefghijklmnopqrstuvwxyz");
     registerDataSource({ id: "numbers", labelKey: "literacy.sourceNumbers", items: numbers });
@@ -277,6 +304,7 @@ var LiteracyTool = (function () {
     var kind = raw.kind || raw.type || source.defaultKind || "text";
     var label = raw.label || raw.alt || raw.caption || "";
     var id = String(raw.id != null ? raw.id : source.id + "-" + index);
+    var pronunciation = normalizePronunciation(raw);
 
     if (kind === "image") {
       var src = raw.src || raw.value || "";
@@ -286,7 +314,9 @@ var LiteracyTool = (function () {
         kind: "image",
         src: String(src),
         label: label || t("literacy.imageFallback"),
-        caption: raw.caption || ""
+        caption: raw.caption || "",
+        primaryText: raw.primaryText || localizedChineseText(raw.caption || raw.label),
+        pronunciation: pronunciation
       };
     }
 
@@ -299,7 +329,30 @@ var LiteracyTool = (function () {
       kind: kind === "emoji" ? "emoji" : "text",
       value: String(value),
       label: label || String(value),
-      caption: raw.caption || ""
+      caption: raw.caption || "",
+      primaryText: raw.primaryText || "",
+      pronunciation: pronunciation
+    };
+  }
+
+  function localizedChineseText(value) {
+    if (value == null) return "";
+    if (typeof value !== "object") return String(value);
+    return String(value["zh-CN"] || value.zh || localizedText(value) || "");
+  }
+
+  function normalizePronunciation(raw) {
+    var pronunciation = raw.pronunciation && typeof raw.pronunciation === "object"
+      ? raw.pronunciation
+      : {};
+    var english = raw.english || pronunciation.english || "";
+    if (!english && raw.label && typeof raw.label === "object") {
+      english = raw.label.en || raw.label["en-US"] || "";
+    }
+    return {
+      pinyin: String(raw.pinyin || pronunciation.pinyin || ""),
+      english: String(english),
+      ipa: String(raw.ipa || raw.phonetic || pronunciation.ipa || pronunciation.phonetic || "")
     };
   }
 
@@ -347,9 +400,11 @@ var LiteracyTool = (function () {
     var card = container && container.querySelector("#literacy-card");
     if (!card || !item) return;
     var label = localizedText(item.label) || t("literacy.imageFallback");
-    var captionText = localizedText(item.caption);
+    var primaryText = item.primaryText || localizedText(item.caption);
+    var pronunciation = item.pronunciation || {};
+    var spokenParts = [item.kind === "image" ? primaryText : item.value, pronunciation.pinyin, pronunciation.english, pronunciation.ipa].filter(Boolean);
     card.innerHTML = "";
-    card.setAttribute("aria-label", label);
+    card.setAttribute("aria-label", spokenParts.length ? spokenParts.join(", ") : label);
     applyAppearance(true);
 
     if (item.kind === "image") {
@@ -369,12 +424,33 @@ var LiteracyTool = (function () {
       card.appendChild(content);
     }
 
-    if (captionText) {
+    if (item.kind === "image" && (primaryText || pronunciation.pinyin || pronunciation.english || pronunciation.ipa)) {
+      var vocabulary = document.createElement("div");
+      vocabulary.className = "literacy-vocab";
+      if (pronunciation.pinyin) appendCardLine(vocabulary, "literacy-pinyin", pronunciation.pinyin);
+      if (primaryText) appendCardLine(vocabulary, "literacy-caption", primaryText);
+      if (pronunciation.english) appendCardLine(vocabulary, "literacy-english", pronunciation.english);
+      if (pronunciation.ipa) appendCardLine(vocabulary, "literacy-phonetic", pronunciation.ipa);
+      card.appendChild(vocabulary);
+    } else if (pronunciation.english || pronunciation.ipa) {
+      var numberPronunciation = document.createElement("div");
+      numberPronunciation.className = "literacy-number-pronunciation";
+      if (pronunciation.english) appendCardLine(numberPronunciation, "literacy-english", pronunciation.english);
+      if (pronunciation.ipa) appendCardLine(numberPronunciation, "literacy-phonetic", pronunciation.ipa);
+      card.appendChild(numberPronunciation);
+    } else if (primaryText) {
       var caption = document.createElement("p");
       caption.className = "literacy-caption";
-      caption.textContent = captionText;
+      caption.textContent = primaryText;
       card.appendChild(caption);
     }
+  }
+
+  function appendCardLine(parent, className, text) {
+    var line = document.createElement("p");
+    line.className = className;
+    line.textContent = text;
+    parent.appendChild(line);
   }
 
   function showRandom() {
@@ -529,7 +605,8 @@ var LiteracyTool = (function () {
       stage.style.height = "";
       return;
     }
-    stage.style.height = Math.max(260, window.innerHeight - stage.getBoundingClientRect().top - 20) + "px";
+    var minimumHeight = window.innerWidth <= 760 ? 480 : 260;
+    stage.style.height = Math.max(minimumHeight, window.innerHeight - stage.getBoundingClientRect().top - 20) + "px";
   }
 
   function handleKeydown(event) {

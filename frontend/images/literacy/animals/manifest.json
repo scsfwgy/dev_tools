@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "animals",
   "generatedAt": "2026-07-26",
   "source": "Wikimedia Commons",
@@ -40,6 +40,11 @@
         "license": "Public domain",
         "licenseUrl": "",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "māo",
+        "english": "Cat",
+        "ipa": "/kæt/"
       }
     },
     {
@@ -70,6 +75,11 @@
         "license": "CC BY 2.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "gǒu",
+        "english": "Dog",
+        "ipa": "/dɔːɡ/"
       }
     },
     {
@@ -100,6 +110,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "tù zi",
+        "english": "Rabbit",
+        "ipa": "/ˈræbɪt/"
       }
     },
     {
@@ -130,6 +145,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "nǎi niú",
+        "english": "Cow",
+        "ipa": "/kaʊ/"
       }
     },
     {
@@ -160,6 +180,11 @@
         "license": "CC0",
         "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "mǎ",
+        "english": "Horse",
+        "ipa": "/hɔːrs/"
       }
     },
     {
@@ -190,6 +215,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "zhū",
+        "english": "Pig",
+        "ipa": "/pɪɡ/"
       }
     },
     {
@@ -220,6 +250,11 @@
         "license": "CC BY-SA 2.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "jī",
+        "english": "Chicken",
+        "ipa": "/ˈtʃɪkɪn/"
       }
     },
     {
@@ -250,6 +285,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "yā zi",
+        "english": "Duck",
+        "ipa": "/dʌk/"
       }
     },
     {
@@ -280,6 +320,11 @@
         "license": "CC BY 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "dà xiàng",
+        "english": "Elephant",
+        "ipa": "/ˈelɪfənt/"
       }
     },
     {
@@ -310,6 +355,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "cháng jǐng lù",
+        "english": "Giraffe",
+        "ipa": "/dʒəˈræf/"
       }
     },
     {
@@ -340,6 +390,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "dà xióng māo",
+        "english": "Giant panda",
+        "ipa": "/ˌdʒaɪənt ˈpændə/"
       }
     },
     {
@@ -370,6 +425,11 @@
         "license": "CC BY 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lǎo hǔ",
+        "english": "Tiger",
+        "ipa": "/ˈtaɪɡər/"
       }
     },
     {
@@ -400,6 +460,11 @@
         "license": "CC BY 3.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "shī zi",
+        "english": "Lion",
+        "ipa": "/ˈlaɪən/"
       }
     },
     {
@@ -430,6 +495,11 @@
         "license": "CC BY-SA 3.0",
         "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "bān mǎ",
+        "english": "Zebra",
+        "ipa": "/ˈziːbrə/"
       }
     },
     {
@@ -460,6 +530,11 @@
         "license": "Public domain",
         "licenseUrl": "",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hú li",
+        "english": "Fox",
+        "ipa": "/fɑːks/"
       }
     },
     {
@@ -490,6 +565,11 @@
         "license": "CC BY-SA 3.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "zōng xióng",
+        "english": "Brown bear",
+        "ipa": "/ˌbraʊn ˈber/"
       }
     },
     {
@@ -520,6 +600,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "dài shǔ",
+        "english": "Kangaroo",
+        "ipa": "/ˌkæŋɡəˈruː/"
       }
     },
     {
@@ -550,6 +635,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "qǐ é",
+        "english": "Penguin",
+        "ipa": "/ˈpeŋɡwɪn/"
       }
     },
     {
@@ -580,6 +670,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "qīng wā",
+        "english": "Frog",
+        "ipa": "/frɑːɡ/"
       }
     },
     {
@@ -610,6 +705,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hǎi guī",
+        "english": "Sea turtle",
+        "ipa": "/ˈsiː ˌtɜːrtəl/"
       }
     },
     {
@@ -640,6 +740,536 @@
         "license": "CC BY 2.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "jīn yú",
+        "english": "Goldfish",
+        "ipa": "/ˈɡoʊldfɪʃ/"
+      }
+    },
+    {
+      "id": "monkey",
+      "kind": "image",
+      "src": "/images/literacy/animals/monkey.webp",
+      "label": {
+        "zh-CN": "猴子",
+        "en": "Monkey"
+      },
+      "caption": {
+        "zh-CN": "猴子",
+        "en": "Monkey"
+      },
+      "scientificName": "Macaca radiata",
+      "image": {
+        "width": 1200,
+        "height": 1016,
+        "format": "webp",
+        "sha256": "f97963aaae35c22c6f569d07d6a71baf06a203b5101f6b74824fcf855e994051"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Monkey Sholingur Temple.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Monkey_Sholingur_Temple.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/2/28/Monkey_Sholingur_Temple.jpg",
+        "author": "VasuVR",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hóu zi",
+        "english": "Monkey",
+        "ipa": "/ˈmʌŋki/"
+      }
+    },
+    {
+      "id": "sheep",
+      "kind": "image",
+      "src": "/images/literacy/animals/sheep.webp",
+      "label": {
+        "zh-CN": "绵羊",
+        "en": "Sheep"
+      },
+      "caption": {
+        "zh-CN": "绵羊",
+        "en": "Sheep"
+      },
+      "scientificName": "Ovis aries",
+      "image": {
+        "width": 1200,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "212cf4b8e3c05da77e485200eed2f9bcc27059ec89985ac461f2dbca4364161f"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Sheep of Boxford Newbury.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Sheep_of_Boxford_Newbury.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/8/81/Sheep_of_Boxford_Newbury.jpg",
+        "author": "TudorTulok",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "mián yáng",
+        "english": "Sheep",
+        "ipa": "/ʃiːp/"
+      }
+    },
+    {
+      "id": "goat",
+      "kind": "image",
+      "src": "/images/literacy/animals/goat.webp",
+      "label": {
+        "zh-CN": "山羊",
+        "en": "Goat"
+      },
+      "caption": {
+        "zh-CN": "山羊",
+        "en": "Goat"
+      },
+      "scientificName": "Capra hircus",
+      "image": {
+        "width": 1200,
+        "height": 857,
+        "format": "webp",
+        "sha256": "0896c3ff999519e4b3388dc274eef0ccde48da9e0b62762401cfead518a9a57c"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Schokland Netherlands Goat-in-Middlebuurt-02.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Schokland_Netherlands_Goat-in-Middlebuurt-02.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Schokland_Netherlands_Goat-in-Middlebuurt-02.jpg",
+        "author": "CEphoto, Uwe Aranas",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "shān yáng",
+        "english": "Goat",
+        "ipa": "/ɡoʊt/"
+      }
+    },
+    {
+      "id": "deer",
+      "kind": "image",
+      "src": "/images/literacy/animals/deer.webp",
+      "label": {
+        "zh-CN": "鹿",
+        "en": "Deer"
+      },
+      "caption": {
+        "zh-CN": "鹿",
+        "en": "Deer"
+      },
+      "scientificName": "Cervus elaphus",
+      "image": {
+        "width": 1200,
+        "height": 801,
+        "format": "webp",
+        "sha256": "7dfb0fdb253a029dc36b5c6d9a6269b4250ef1fce69de6c81dacb3934a444ccc"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:014 Wild Red Deer Switzerland Photo by Giles Laurent.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:014_Wild_Red_Deer_Switzerland_Photo_by_Giles_Laurent.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/6/66/014_Wild_Red_Deer_Switzerland_Photo_by_Giles_Laurent.jpg",
+        "author": "Giles Laurent",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lù",
+        "english": "Deer",
+        "ipa": "/dɪr/"
+      }
+    },
+    {
+      "id": "camel",
+      "kind": "image",
+      "src": "/images/literacy/animals/camel.webp",
+      "label": {
+        "zh-CN": "骆驼",
+        "en": "Camel"
+      },
+      "caption": {
+        "zh-CN": "骆驼",
+        "en": "Camel"
+      },
+      "scientificName": "Camelus bactrianus",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "93f5891c7aed38216ef3ea05b29cd7283f6f1fe3604f41ee2367d6147cd3dd5c"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Camel in Gobi Desert 01.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Camel_in_Gobi_Desert_01.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/2/21/Camel_in_Gobi_Desert_01.jpg",
+        "author": "Bernard Gagnon",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "luò tuo",
+        "english": "Camel",
+        "ipa": "/ˈkæməl/"
+      }
+    },
+    {
+      "id": "hippo",
+      "kind": "image",
+      "src": "/images/literacy/animals/hippo.webp",
+      "label": {
+        "zh-CN": "河马",
+        "en": "Hippopotamus"
+      },
+      "caption": {
+        "zh-CN": "河马",
+        "en": "Hippopotamus"
+      },
+      "scientificName": "Hippopotamus amphibius",
+      "image": {
+        "width": 1200,
+        "height": 753,
+        "format": "webp",
+        "sha256": "aa3201241a5080b4990b02258ce9bdc500be2030f2c6a37b086917ef4f386f4a"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Hippopotamus amphibius Whipsnade Zoo.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Hippopotamus_amphibius_Whipsnade_Zoo.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Hippopotamus_amphibius_Whipsnade_Zoo.jpg",
+        "author": "William Warby",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hé mǎ",
+        "english": "Hippopotamus",
+        "ipa": "/ˌhɪpəˈpɑːtəməs/"
+      }
+    },
+    {
+      "id": "rhino",
+      "kind": "image",
+      "src": "/images/literacy/animals/rhino.webp",
+      "label": {
+        "zh-CN": "犀牛",
+        "en": "Rhinoceros"
+      },
+      "caption": {
+        "zh-CN": "犀牛",
+        "en": "Rhinoceros"
+      },
+      "scientificName": "Rhinoceros unicornis",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "774b02eefd29afd8a9ad1e66b241ff69fd0925b2a1b19b21cb5ba4d7bcf3b79f"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Indian rhinoceros (Rhinoceros unicornis) 4.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Indian_rhinoceros_(Rhinoceros_unicornis)_4.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Indian_rhinoceros_%28Rhinoceros_unicornis%29_4.jpg",
+        "author": "Charles J. Sharp",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "xī niú",
+        "english": "Rhinoceros",
+        "ipa": "/raɪˈnɑːsərəs/"
+      }
+    },
+    {
+      "id": "crocodile",
+      "kind": "image",
+      "src": "/images/literacy/animals/crocodile.webp",
+      "label": {
+        "zh-CN": "鳄鱼",
+        "en": "Crocodile"
+      },
+      "caption": {
+        "zh-CN": "鳄鱼",
+        "en": "Crocodile"
+      },
+      "scientificName": "Crocodylus porosus",
+      "image": {
+        "width": 1200,
+        "height": 558,
+        "format": "webp",
+        "sha256": "78266798fe24ee8d4a1f67d0535247630c196971aef62abc634434c85fffa8ce"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Crocodylus porosus - Wilhelma.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Crocodylus_porosus_-_Wilhelma.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Crocodylus_porosus_-_Wilhelma.jpg",
+        "author": "H. Zell",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "è yú",
+        "english": "Crocodile",
+        "ipa": "/ˈkrɑːkədaɪl/"
+      }
+    },
+    {
+      "id": "snake",
+      "kind": "image",
+      "src": "/images/literacy/animals/snake.webp",
+      "label": {
+        "zh-CN": "蛇",
+        "en": "Snake"
+      },
+      "caption": {
+        "zh-CN": "蛇",
+        "en": "Snake"
+      },
+      "scientificName": "Boiga jaspidea",
+      "image": {
+        "width": 1200,
+        "height": 801,
+        "format": "webp",
+        "sha256": "92796fcfd5415c75ec9d90c028dd3827df8c13200eeb95f86ae837ce91d36bc1"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Boiga jaspidea, Jasper cat snake.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Boiga_jaspidea%2C_Jasper_cat_snake.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Boiga_jaspidea%2C_Jasper_cat_snake.jpg",
+        "author": "Rushenb",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "shé",
+        "english": "Snake",
+        "ipa": "/sneɪk/"
+      }
+    },
+    {
+      "id": "owl",
+      "kind": "image",
+      "src": "/images/literacy/animals/owl.webp",
+      "label": {
+        "zh-CN": "猫头鹰",
+        "en": "Owl"
+      },
+      "caption": {
+        "zh-CN": "猫头鹰",
+        "en": "Owl"
+      },
+      "scientificName": "Tyto alba",
+      "image": {
+        "width": 1200,
+        "height": 836,
+        "format": "webp",
+        "sha256": "ad27bb858aed6c7bb125ef3fcb4c8993b7e87b90f202e7125c9dd689cceb3c34"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Tyto alba 1 Luc Viatour.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Tyto_alba_1_Luc_Viatour.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Tyto_alba_1_Luc_Viatour.jpg",
+        "author": "Luc Viatour",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "māo tóu yīng",
+        "english": "Owl",
+        "ipa": "/aʊl/"
+      }
+    },
+    {
+      "id": "parrot",
+      "kind": "image",
+      "src": "/images/literacy/animals/parrot.webp",
+      "label": {
+        "zh-CN": "鹦鹉",
+        "en": "Parrot"
+      },
+      "caption": {
+        "zh-CN": "鹦鹉",
+        "en": "Parrot"
+      },
+      "scientificName": "Ara ararauna",
+      "image": {
+        "width": 1200,
+        "height": 927,
+        "format": "webp",
+        "sha256": "12ca60578835eac7b0a407a49e6e1657d54c178e968cca45d699631a5b0cbb21"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Ara ararauna Luc Viatour.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Ara_ararauna_Luc_Viatour.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Ara_ararauna_Luc_Viatour.jpg",
+        "author": "Luc Viatour",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "yīng wǔ",
+        "english": "Parrot",
+        "ipa": "/ˈpærət/"
+      }
+    },
+    {
+      "id": "butterfly",
+      "kind": "image",
+      "src": "/images/literacy/animals/butterfly.webp",
+      "label": {
+        "zh-CN": "蝴蝶",
+        "en": "Butterfly"
+      },
+      "caption": {
+        "zh-CN": "蝴蝶",
+        "en": "Butterfly"
+      },
+      "scientificName": "Aglais io",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "49879851178ed34d801ba5476ca62e7c22a5880d57d402bfabd888e9875be1c9"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Peacock butterfly (Aglais io) 2.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Peacock_butterfly_(Aglais_io)_2.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Peacock_butterfly_%28Aglais_io%29_2.jpg",
+        "author": "Charles J. Sharp",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hú dié",
+        "english": "Butterfly",
+        "ipa": "/ˈbʌtərflaɪ/"
+      }
+    },
+    {
+      "id": "bee",
+      "kind": "image",
+      "src": "/images/literacy/animals/bee.webp",
+      "label": {
+        "zh-CN": "蜜蜂",
+        "en": "Bee"
+      },
+      "caption": {
+        "zh-CN": "蜜蜂",
+        "en": "Bee"
+      },
+      "scientificName": "Apis mellifera",
+      "image": {
+        "width": 1200,
+        "height": 948,
+        "format": "webp",
+        "sha256": "d3e90047ff856be189b7e0850eaf1b65e9ecdfd0d097a30c16979d50faced1e1"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:European honey bee extracts nectar.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:European_honey_bee_extracts_nectar.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/1/1d/European_honey_bee_extracts_nectar.jpg",
+        "author": "John Severns ( Severnjc )",
+        "license": "Public domain",
+        "licenseUrl": "",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "mì fēng",
+        "english": "Bee",
+        "ipa": "/biː/"
+      }
+    },
+    {
+      "id": "dolphin",
+      "kind": "image",
+      "src": "/images/literacy/animals/dolphin.webp",
+      "label": {
+        "zh-CN": "海豚",
+        "en": "Dolphin"
+      },
+      "caption": {
+        "zh-CN": "海豚",
+        "en": "Dolphin"
+      },
+      "scientificName": "Tursiops truncatus",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "e21baf33b2877dc25f3f9962e2f3a4c73b373061cdfacf5d75231b5e5ce3a836"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:010 Atlantic bottlenose dolphin jumping at Pelican point Photo by Giles Laurent.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:010_Atlantic_bottlenose_dolphin_jumping_at_Pelican_point_Photo_by_Giles_Laurent.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/6/60/010_Atlantic_bottlenose_dolphin_jumping_at_Pelican_point_Photo_by_Giles_Laurent.jpg",
+        "author": "Giles Laurent",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hǎi tún",
+        "english": "Dolphin",
+        "ipa": "/ˈdɑːlfɪn/"
+      }
+    },
+    {
+      "id": "squirrel",
+      "kind": "image",
+      "src": "/images/literacy/animals/squirrel.webp",
+      "label": {
+        "zh-CN": "松鼠",
+        "en": "Squirrel"
+      },
+      "caption": {
+        "zh-CN": "松鼠",
+        "en": "Squirrel"
+      },
+      "scientificName": "Sciurus carolinensis",
+      "image": {
+        "width": 1200,
+        "height": 801,
+        "format": "webp",
+        "sha256": "7d0dfff8054149f595f35ecc543690981170c1f762734c4cf4e011bb9d9d73cd"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Grey squirrel (Sciurus carolinensis) 02.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Grey_squirrel_(Sciurus_carolinensis)_02.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/0/07/Grey_squirrel_%28Sciurus_carolinensis%29_02.jpg",
+        "author": "Charles J. Sharp",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "sōng shǔ",
+        "english": "Squirrel",
+        "ipa": "/ˈskwɜːrəl/"
       }
     }
   ]

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "fruits",
   "generatedAt": "2026-07-26",
   "source": "Wikimedia Commons",
@@ -40,6 +40,11 @@
         "license": "CC BY 2.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "píng guǒ",
+        "english": "Apple",
+        "ipa": "/ˈæpəl/"
       }
     },
     {
@@ -70,6 +75,11 @@
         "license": "CC BY-SA 3.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "xiāng jiāo",
+        "english": "Banana",
+        "ipa": "/bəˈnænə/"
       }
     },
     {
@@ -100,6 +110,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "chéng zi",
+        "english": "Orange",
+        "ipa": "/ˈɔːrɪndʒ/"
       }
     },
     {
@@ -130,6 +145,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lí",
+        "english": "Pear",
+        "ipa": "/per/"
       }
     },
     {
@@ -160,6 +180,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "pú tao",
+        "english": "Grape",
+        "ipa": "/ɡreɪp/"
       }
     },
     {
@@ -190,6 +215,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "cǎo méi",
+        "english": "Strawberry",
+        "ipa": "/ˈstrɔːberi/"
       }
     },
     {
@@ -220,6 +250,11 @@
         "license": "CC BY 2.0",
         "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "xī guā",
+        "english": "Watermelon",
+        "ipa": "/ˈwɔːtərmelən/"
       }
     },
     {
@@ -250,6 +285,11 @@
         "license": "Public domain",
         "licenseUrl": "",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "táo zi",
+        "english": "Peach",
+        "ipa": "/piːtʃ/"
       }
     },
     {
@@ -280,6 +320,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "máng guǒ",
+        "english": "Mango",
+        "ipa": "/ˈmæŋɡoʊ/"
       }
     },
     {
@@ -310,6 +355,11 @@
         "license": "CC0",
         "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "bō luó",
+        "english": "Pineapple",
+        "ipa": "/ˈpaɪnæpəl/"
       }
     },
     {
@@ -340,6 +390,11 @@
         "license": "Public domain",
         "licenseUrl": "",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "yīng táo",
+        "english": "Cherry",
+        "ipa": "/ˈtʃeri/"
       }
     },
     {
@@ -370,6 +425,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "níng méng",
+        "english": "Lemon",
+        "ipa": "/ˈlemən/"
       }
     },
     {
@@ -400,6 +460,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "mí hóu táo",
+        "english": "Kiwifruit",
+        "ipa": "/ˈkiːwifruːt/"
       }
     },
     {
@@ -430,6 +495,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "mù guā",
+        "english": "Papaya",
+        "ipa": "/pəˈpaɪə/"
       }
     },
     {
@@ -460,6 +530,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lán méi",
+        "english": "Blueberry",
+        "ipa": "/ˈbluːberi/"
       }
     },
     {
@@ -490,6 +565,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "shí liu",
+        "english": "Pomegranate",
+        "ipa": "/ˈpɑːməɡrænɪt/"
       }
     },
     {
@@ -520,6 +600,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "yē zi",
+        "english": "Coconut",
+        "ipa": "/ˈkoʊkənʌt/"
       }
     },
     {
@@ -550,6 +635,11 @@
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "huǒ lóng guǒ",
+        "english": "Dragon fruit",
+        "ipa": "/ˈdræɡən fruːt/"
       }
     },
     {
@@ -580,6 +670,11 @@
         "license": "CC BY-SA 3.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lǐ zi",
+        "english": "Plum",
+        "ipa": "/plʌm/"
       }
     },
     {
@@ -610,6 +705,361 @@
         "license": "CC BY-SA 3.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
         "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "shì zi",
+        "english": "Persimmon",
+        "ipa": "/pərˈsɪmən/"
+      }
+    },
+    {
+      "id": "avocado",
+      "kind": "image",
+      "src": "/images/literacy/fruits/avocado.webp",
+      "label": {
+        "zh-CN": "牛油果",
+        "en": "Avocado"
+      },
+      "caption": {
+        "zh-CN": "牛油果",
+        "en": "Avocado"
+      },
+      "scientificName": "Persea americana",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "f1c919a5d729cd8db277f83c7cb23a82a7b0932b52405dbe1539cb2c059952ae"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Avocado Hass - single and halved.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Avocado_Hass_-_single_and_halved.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Avocado_Hass_-_single_and_halved.jpg",
+        "author": "Ivar Leidus",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "niú yóu guǒ",
+        "english": "Avocado",
+        "ipa": "/ˌævəˈkɑːdoʊ/"
+      }
+    },
+    {
+      "id": "pomelo",
+      "kind": "image",
+      "src": "/images/literacy/fruits/pomelo.webp",
+      "label": {
+        "zh-CN": "柚子",
+        "en": "Pomelo"
+      },
+      "caption": {
+        "zh-CN": "柚子",
+        "en": "Pomelo"
+      },
+      "scientificName": "Citrus maxima",
+      "image": {
+        "width": 1200,
+        "height": 900,
+        "format": "webp",
+        "sha256": "382fe56f4154bfa33596558fb87d570c47194c7d0278c2f6344d76aeaf4e404a"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Pomelo fruit.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Pomelo_fruit.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Pomelo_fruit.jpg",
+        "author": "Ivar Leidus",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "yòu zi",
+        "english": "Pomelo",
+        "ipa": "/ˈpɑːməloʊ/"
+      }
+    },
+    {
+      "id": "mandarin",
+      "kind": "image",
+      "src": "/images/literacy/fruits/mandarin.webp",
+      "label": {
+        "zh-CN": "橘子",
+        "en": "Mandarin"
+      },
+      "caption": {
+        "zh-CN": "橘子",
+        "en": "Mandarin"
+      },
+      "scientificName": "Citrus reticulata",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "1dd2f34dc2f729d446559f6faafa837f0dfd73bf9f99eeb1ca0ea1ecf144c1b8"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Mandarin Oranges (Citrus Reticulata).jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Mandarin_Oranges_(Citrus_Reticulata).jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/4/49/Mandarin_Oranges_%28Citrus_Reticulata%29.jpg",
+        "author": "Joe Ravi",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "jú zi",
+        "english": "Mandarin",
+        "ipa": "/ˈmændərɪn/"
+      }
+    },
+    {
+      "id": "cantaloupe",
+      "kind": "image",
+      "src": "/images/literacy/fruits/cantaloupe.webp",
+      "label": {
+        "zh-CN": "哈密瓜",
+        "en": "Cantaloupe"
+      },
+      "caption": {
+        "zh-CN": "哈密瓜",
+        "en": "Cantaloupe"
+      },
+      "scientificName": "Cucumis melo",
+      "image": {
+        "width": 1200,
+        "height": 650,
+        "format": "webp",
+        "sha256": "ff4a7f0bbdf49a048af16c71b88cadde39526b4dd0a67504ee21b968f6569713"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Canteloupe and cross section.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Canteloupe_and_cross_section.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Canteloupe_and_cross_section.jpg",
+        "author": "Fir0002",
+        "license": "GFDL 1.2",
+        "licenseUrl": "http://www.gnu.org/licenses/old-licenses/fdl-1.2.html",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "hā mì guā",
+        "english": "Cantaloupe",
+        "ipa": "/ˈkæntəloʊp/"
+      }
+    },
+    {
+      "id": "lychee",
+      "kind": "image",
+      "src": "/images/literacy/fruits/lychee.webp",
+      "label": {
+        "zh-CN": "荔枝",
+        "en": "Lychee"
+      },
+      "caption": {
+        "zh-CN": "荔枝",
+        "en": "Lychee"
+      },
+      "scientificName": "Litchi chinensis",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "583f66cb2c53b55db906fac20506e4b6532c6c1de189eeb97cb4dde933a46d92"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Lychee fruits and seed.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Lychee_fruits_and_seed.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Lychee_fruits_and_seed.jpg",
+        "author": "Ivar Leidus",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lì zhī",
+        "english": "Lychee",
+        "ipa": "/ˈliːtʃiː/"
+      }
+    },
+    {
+      "id": "longan",
+      "kind": "image",
+      "src": "/images/literacy/fruits/longan.webp",
+      "label": {
+        "zh-CN": "龙眼",
+        "en": "Longan"
+      },
+      "caption": {
+        "zh-CN": "龙眼",
+        "en": "Longan"
+      },
+      "scientificName": "Dimocarpus longan",
+      "image": {
+        "width": 900,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "d23728eb97477f96b67f7174d631776216a032995ebe2cdf3ae881eaea392408"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Longan fruit flesh & skin.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Longan_fruit_flesh_%26_skin.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Longan_fruit_flesh_%26_skin.jpg",
+        "author": "Zenyrgarden",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "lóng yǎn",
+        "english": "Longan",
+        "ipa": "/ˈlɔːŋɡən/"
+      }
+    },
+    {
+      "id": "durian",
+      "kind": "image",
+      "src": "/images/literacy/fruits/durian.webp",
+      "label": {
+        "zh-CN": "榴莲",
+        "en": "Durian"
+      },
+      "caption": {
+        "zh-CN": "榴莲",
+        "en": "Durian"
+      },
+      "scientificName": "Durio zibethinus",
+      "image": {
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "sha256": "4a27717938e8488c3124ba7f8731cf20ce0bb60f06cc71890c5458371eed36ab"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Owoce Durian.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Owoce_Durian.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/7/78/Owoce_Durian.jpg",
+        "author": "Agnieszka Kwiecień, Nova",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "liú lián",
+        "english": "Durian",
+        "ipa": "/ˈdʊriən/"
+      }
+    },
+    {
+      "id": "passion-fruit",
+      "kind": "image",
+      "src": "/images/literacy/fruits/passion-fruit.webp",
+      "label": {
+        "zh-CN": "百香果",
+        "en": "Passion fruit"
+      },
+      "caption": {
+        "zh-CN": "百香果",
+        "en": "Passion fruit"
+      },
+      "scientificName": "Passiflora edulis",
+      "image": {
+        "width": 900,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "2a61383b4779c875b5d4abcffbb43156746205f8c6d07934b75e4201e3001082"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Passiflora Edulis Open Fruit2.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Passiflora_Edulis_Open_Fruit2.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Passiflora_Edulis_Open_Fruit2.jpg",
+        "author": "Alexander Klink",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "bǎi xiāng guǒ",
+        "english": "Passion fruit",
+        "ipa": "/ˈpæʃən fruːt/"
+      }
+    },
+    {
+      "id": "guava",
+      "kind": "image",
+      "src": "/images/literacy/fruits/guava.webp",
+      "label": {
+        "zh-CN": "番石榴",
+        "en": "Guava"
+      },
+      "caption": {
+        "zh-CN": "番石榴",
+        "en": "Guava"
+      },
+      "scientificName": "Psidium guajava",
+      "image": {
+        "width": 1200,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "8812d2bad64cb37b192f4d2386172026ac6c2a109afb8bdbbf6af1a149265567"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Goiaba vermelha.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Goiaba_vermelha.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/8/84/Goiaba_vermelha.jpg",
+        "author": "Rodrigo.Argenton",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "fān shí liu",
+        "english": "Guava",
+        "ipa": "/ˈɡwɑːvə/"
+      }
+    },
+    {
+      "id": "raspberry",
+      "kind": "image",
+      "src": "/images/literacy/fruits/raspberry.webp",
+      "label": {
+        "zh-CN": "覆盆子",
+        "en": "Raspberry"
+      },
+      "caption": {
+        "zh-CN": "覆盆子",
+        "en": "Raspberry"
+      },
+      "scientificName": "Rubus idaeus",
+      "image": {
+        "width": 1200,
+        "height": 799,
+        "format": "webp",
+        "sha256": "1acf8d899df2610538216ccaeb211685abde26a08d15314d5a618d9270c4ab88"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Raspberry - whole (Rubus idaeus).jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Raspberry_-_whole_(Rubus_idaeus).jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/9/99/Raspberry_-_whole_%28Rubus_idaeus%29.jpg",
+        "author": "Ivar Leidus",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      },
+      "pronunciation": {
+        "pinyin": "fù pén zi",
+        "english": "Raspberry",
+        "ipa": "/ˈræzberi/"
       }
     }
   ]
