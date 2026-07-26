@@ -4127,6 +4127,76 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
   .mindmap-ops { grid-template-columns: 1fr 1fr; }
   .mindmap-ops button { min-height: 44px; }
 }
+/* Children's Literacy — data-source driven learning cards */
+.literacy-stage {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ball-game-canvas-bg); border-radius: 12px;
+  min-height: 400px; overflow: hidden;
+}
+.literacy-card {
+  width: 100%; height: 100%; min-height: 260px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: clamp(20px, 4vw, 56px);
+}
+.literacy-char {
+  font-size: clamp(120px, 25vw, 420px);
+  font-family: var(--literacy-font-family, "Arial Rounded MT Bold", "PingFang SC", system-ui, sans-serif);
+  font-weight: var(--literacy-font-weight, 800);
+  line-height: 1; color: var(--literacy-card-color, var(--text));
+  user-select: none; text-align: center;
+  transition: color .18s, opacity .15s;
+}
+.literacy-char.is-emoji { font-family: system-ui, sans-serif; }
+.literacy-image {
+  display: block; max-width: 90%; max-height: min(62vh, 560px);
+  width: auto; height: auto; object-fit: contain; border-radius: 16px;
+}
+.literacy-caption {
+  margin: 0; color: var(--literacy-card-color, var(--text));
+  font-family: var(--literacy-font-family, "PingFang SC", system-ui, sans-serif);
+  font-size: clamp(24px, 4vw, 48px);
+  font-weight: var(--literacy-font-weight, 700); line-height: 1.2; text-align: center;
+  transition: color .18s;
+}
+.literacy-appearance-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 64px;
+  align-items: center; gap: 8px 12px; margin-top: 12px;
+}
+.literacy-appearance-grid .settings-select { grid-column: 1 / -1; width: 100%; }
+.literacy-color-input {
+  width: 64px; min-height: 44px; padding: 4px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--select-bg); cursor: pointer;
+}
+.literacy-color-input:disabled { cursor: not-allowed; opacity: .5; }
+.literacy-random-color {
+  grid-column: 1 / -1; min-height: 44px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text); cursor: pointer;
+}
+.literacy-random-color input {
+  width: 20px; height: 20px; margin: 0; accent-color: var(--accent);
+}
+.literacy-source-status {
+  min-height: 20px; margin: 6px 0 2px; color: var(--text-secondary);
+  font-size: 13px; line-height: 1.45;
+}
+.literacy-source-status.is-error { color: var(--chart-red); }
+.literacy-stage.is-fullscreen .literacy-char {
+  font-size: clamp(180px, 40vw, 600px);
+}
+.literacy-stage.is-fullscreen .literacy-image { max-height: 78vh; }
+@media (max-width: 760px) {
+  .literacy-char { font-size: clamp(80px, 30vw, 200px); }
+  .literacy-stage { min-height: 260px; }
+  .literacy-card { padding: 20px; }
+}
+.native-fullscreen-btn {
+  padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--select-bg); color: var(--text-secondary); cursor: pointer;
+  font-size: 13px; min-height: 36px; transition: border-color .15s, color .15s;
+}
+.native-fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
 .ball-game-fullscreen-toolbar { display: none; }
 .ball-game-stage-card.is-fullscreen {
   position: relative;

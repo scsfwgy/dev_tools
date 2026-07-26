@@ -673,7 +673,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "45+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "46+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -750,7 +750,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
         "games": ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
-        "everyday": ["content", "translate", "area-search"],
+        "everyday": ["content", "translate", "area-search", "literacy"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -1796,7 +1796,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
     assert '{ id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
-    assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "literacy"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
@@ -2690,6 +2690,120 @@ def test_uuid_url_and_cron_tools_are_local_lazy_and_indexable(client):
     assert "function parseCron(expression)" in cron_script
     assert "function nextRuns(expression, timeZone, count, fromDate)" in cron_script
     assert "formatToParts" in cron_script
+
+
+def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    script_response = client.get("/js/literacy-tool.js")
+    script = script_response.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    page = client.get("/zh/tool/literacy")
+
+    assert page.status_code == 200
+    assert script_response.status_code == 200
+    assert "儿童识字卡片" in page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/literacy" in page.get_data(as_text=True)
+    assert TOOL_REGISTRY["literacy"]["processing"] == "local"
+    assert TOOL_REGISTRY["literacy"]["indexable"] is True
+    assert TOOL_REGISTRY["literacy"]["global"] == "LiteracyTool"
+    assert_tool_is_lazy_loaded(frontend_dir, "literacy-tool.js")
+    assert zh_locale["literacy"]["source"] == "卡片数据源"
+    assert en_locale["literacy"]["source"] == "Card data source"
+    assert zh_locale["literacy"]["randomColor"] == "每张卡片随机颜色"
+    assert en_locale["literacy"]["fontRounded"] == "Rounded (recommended)"
+    assert zh_locale["toolHeader"]["resourceLoadFailed"] == "工具资源加载失败"
+    assert zh_locale["toolHeader"]["runtimeFailed"] == "工具初始化失败"
+    assert "function registerDataSource(source)" in script
+    assert "function resolveSource(source)" in script
+    assert 'kind === "image"' in script
+    assert 'kind === "emoji"' in script
+    assert "registerDataSource: registerDataSource" in script
+    assert "getDataSources: getDataSources" in script
+    assert 'STORAGE_KEY = "devtools_literacy_preferences"' in script
+    assert "var FONT_OPTIONS" in script
+    assert "var RANDOM_COLORS" in script
+    assert 'id="literacy-color"' in script
+    assert 'id="literacy-random-color"' in script
+    assert 'id="literacy-font"' in script
+    assert "fetch(" not in script
+    assert 'activeMenuId === "literacy"' in app_script
+    assert "tool script load failed" in app_script
+    assert "tool initialization failed" in app_script
+    assert 't("toolHeader.resourceLoadFailed")' in app_script
+    assert 't("toolHeader.runtimeFailed")' in app_script
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const classList = { add() {}, remove() {}, toggle() {} };
+const context = {
+  window: {
+    __t: key => key,
+    innerHeight: 800,
+    addEventListener() {},
+    removeEventListener() {}
+  },
+  document: {
+    addEventListener() {},
+    removeEventListener() {},
+    body: { classList },
+    createElement() { return { className: "", classList, appendChild() {}, addEventListener() {}, set textContent(value) {} }; }
+  },
+  console,
+  Promise,
+  Math,
+  TypeError,
+  Object,
+  Array,
+  String,
+  Number,
+  RegExp,
+  Boolean,
+  setTimeout,
+  clearTimeout
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/literacy-tool.js", "utf8"), context);
+let deactivateSafe = true;
+try {
+  context.LiteracyTool.deactivate();
+} catch (error) {
+  deactivateSafe = false;
+}
+context.LiteracyTool.registerDataSource({
+  id: "animals",
+  label: "Animals",
+  load: () => Promise.resolve([{ id: "cat", kind: "image", src: "/cat.webp", label: "Cat" }])
+});
+const sources = context.LiteracyTool.getDataSources();
+const normalized = context.LiteracyTool.__test.normalizeItems(
+  ["一", { id: "tree", kind: "image", src: "/tree.webp", label: "Tree" }],
+  { id: "sample", defaultKind: "text" }
+);
+process.stdout.write(JSON.stringify({
+  deactivateSafe,
+  builtIns: sources.slice(0, 4).map(source => source.id).join(",") === "numbers,uppercase,lowercase,mixed",
+  asyncSource: sources.some(source => source.id === "animals" && source.async),
+  textCard: normalized[0].kind === "text" && normalized[0].value === "一",
+  imageCard: normalized[1].kind === "image" && normalized[1].src === "/tree.webp",
+  darkColor: context.LiteracyTool.__test.randomColorForTheme("dark", 0) === "#f87171",
+  lightColor: context.LiteracyTool.__test.randomColorForTheme("light", 0) === "#b91c1c",
+  validColor: context.LiteracyTool.__test.isValidColor("#58a6ff"),
+  invalidColor: !context.LiteracyTool.__test.isValidColor("red")
+}));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        assert all(json.loads(completed.stdout).values())
 
 
 def test_first_render_navigation_and_accessibility_regressions(client):

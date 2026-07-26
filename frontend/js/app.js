@@ -79,8 +79,17 @@
     toolScriptPromises[toolId] = new Promise(function (resolve, reject) {
       var script = document.createElement("script");
       script.src = config[1];
-      script.onload = resolve;
-      script.onerror = function () { reject(new Error("Failed to load " + config[1])); };
+      script.onload = function () {
+        if (window[config[0]]) resolve();
+        else {
+          delete toolScriptPromises[toolId];
+          reject(new Error("Loaded " + config[1] + " without global " + config[0]));
+        }
+      };
+      script.onerror = function () {
+        delete toolScriptPromises[toolId];
+        reject(new Error("Failed to load " + config[1]));
+      };
       document.head.appendChild(script);
     });
     return toolScriptPromises[toolId];
@@ -143,6 +152,7 @@
     "map-pin": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
     target: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
     balls: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><circle cx="16.5" cy="7" r="2.5"/><circle cx="15.5" cy="16" r="4.5"/><path d="M9.5 12.7 12 14M12 7.8l2-.4"/></svg>',
+    book: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
   };
 
   function localeToPrefix(lang) {
@@ -443,6 +453,7 @@
     if (activeMenuId !== "fish-game" && typeof FishGameTool !== "undefined" && FishGameTool.deactivate) FishGameTool.deactivate();
     if (activeMenuId !== "math-curiosities" && typeof MathCuriositiesTool !== "undefined" && MathCuriositiesTool.deactivate) MathCuriositiesTool.deactivate();
     if (activeMenuId !== "mindmap" && typeof MindmapTool !== "undefined" && MindmapTool.deactivate) MindmapTool.deactivate();
+    if (activeMenuId !== "literacy" && typeof LiteracyTool !== "undefined" && LiteracyTool.deactivate) LiteracyTool.deactivate();
     const el = document.getElementById("content");
     if (activeMenuId !== "home") {
       var headerToolId = activeMenuId;
@@ -457,7 +468,7 @@
             <div class="home-mark" aria-hidden="true">${icons.code}</div>
             <div>
               <h1>DevTools</h1>
-              <p data-i18n="welcome.desc">45+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
+              <p data-i18n="welcome.desc">46+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
             </div>
           </header>
           <label class="home-search" for="home-search">
@@ -531,9 +542,20 @@
       var loadingToolId = activeMenuId;
       el.innerHTML = '<div class="content-loader"><div class="content-skel-icon"></div><div class="content-skel-bar" style="width:160px;height:22px;margin:0 auto 10px"></div></div>';
       loadToolScript(loadingToolId).then(function () {
-        if (activeMenuId === loadingToolId) renderContent();
-      }).catch(function () {
-        if (activeMenuId === loadingToolId) el.innerHTML = '<div class="tool-placeholder"><h3>' + (currentLang === "en" ? "Failed to load tool" : "工具加载失败") + '</h3></div>';
+        if (activeMenuId !== loadingToolId) return;
+        try {
+          renderContent();
+        } catch (error) {
+          console.error("[app] tool initialization failed:", loadingToolId, error);
+          if (activeMenuId === loadingToolId) {
+            el.innerHTML = '<div class="tool-placeholder"><h3>' + t("toolHeader.runtimeFailed") + '</h3></div>';
+          }
+        }
+      }, function (error) {
+        console.error("[app] tool script load failed:", loadingToolId, error);
+        if (activeMenuId === loadingToolId) {
+          el.innerHTML = '<div class="tool-placeholder"><h3>' + t("toolHeader.resourceLoadFailed") + '</h3></div>';
+        }
       });
       return;
     }
@@ -677,6 +699,11 @@
       MindmapTool.init(el);
       return;
     }
+    if (activeMenuId === "literacy" && typeof LiteracyTool !== "undefined") {
+      el.innerHTML = "";
+      LiteracyTool.init(el);
+      return;
+    }
     if (activeMenuId === "fileinfo" && typeof FileInfoTool !== "undefined") {
       el.innerHTML = "";
       FileInfoTool.init(el);
@@ -786,7 +813,7 @@
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "ai", "android", "flutter", "ios"] },
     { id: "games", tools: ["focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
-    { id: "everyday", tools: ["content", "translate", "area-search"] }
+    { id: "everyday", tools: ["content", "translate", "area-search", "literacy"] }
   ];
 
   var HOME_RECOMMENDATIONS = [

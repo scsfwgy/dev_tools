@@ -570,6 +570,36 @@ TOOLS = {
             ],
         },
     },
+    "literacy": {
+        "zh": {
+            "name": "儿童识字卡片",
+            "title": "儿童识字卡片 - 全屏数字字母展示，定时自动切换 | Tools24",
+            "description": "儿童识字卡片工具，全屏展示单个数字和字母，支持定时自动切换。适合儿童识字练习，完全本地运行。",
+            "keywords": "儿童识字,识字卡片,字母卡片,数字卡片,flashcard,早教,学前教育",
+            "intro": "选择数字或字母数据源，设置切换间隔，即可开始全屏展示。卡片框架支持继续接入动物、植物、文字或图片等数据源。",
+            "features": ["数字 / 大写字母 / 小写字母 / 混合数据源", "自定义文字颜色与逐卡随机颜色", "圆体、黑体、楷体、宋体可选", "统一卡片模型，可扩展文字、Emoji 与图片数据", "支持同步或异步加载卡片数据源", "定时自动切换（1-30 秒可调）", "浏览器内全屏 + 电脑全屏", "完全本地运行，无需注册"],
+            "faq": [
+                ("识字卡片数据会上传吗？", "不会。所有展示内容在浏览器本地生成和渲染，不会上传到任何服务器。"),
+                ("支持哪些显示模式？", "支持四种模式：纯数字（0-9）、大写字母（A-Z）、小写字母（a-z）、以及数字字母混合展示。"),
+                ("切换间隔可以调整吗？", "可以，拖动滑块即可调整 1 到 30 秒的切换间隔，适合不同年龄段的儿童。"),
+                ("以后可以增加动物或植物卡片吗？", "可以。工具使用统一数据源接口，后续可以直接注册动物、植物、文字、Emoji 或图片卡片，无需重写播放与全屏逻辑。"),
+            ],
+        },
+        "en": {
+            "name": "Literacy Flash Cards",
+            "title": "Literacy Flash Cards - Fullscreen Numbers & Letters with Auto-Switch | Tools24",
+            "description": "Children's literacy flash card tool. Fullscreen display of numbers and letters with timed auto-advance. Great for early childhood education. Fully local.",
+            "keywords": "literacy,flash cards,alphabet cards,number cards,early education,preschool,kids learning",
+            "intro": "Choose a number or letter data source, set the interval, and start the fullscreen slideshow. The card framework can later load animal, plant, text, or image sources.",
+            "features": ["Numbers / uppercase / lowercase / mixed data sources", "Custom text color or a new random color per card", "Rounded, sans-serif, Kai-style, and serif typefaces", "Unified card model for text, emoji, and images", "Synchronous or asynchronous card source loading", "Timed auto-switch (1–30 s adjustable)", "Viewport + native fullscreen", "Fully local, no sign-up"],
+            "faq": [
+                ("Is flash card data uploaded?", "No. All content is generated and rendered locally in your browser. Nothing is sent to any server."),
+                ("What display modes are available?", "Four modes: numbers only (0–9), uppercase letters (A–Z), lowercase letters (a–z), and mixed numbers + letters."),
+                ("Can I adjust the switch interval?", "Yes, drag the slider to set any interval from 1 to 30 seconds to suit different age groups."),
+                ("Can animal or plant cards be added later?", "Yes. The shared data-source API can register animal, plant, text, emoji, or image cards without rewriting playback and fullscreen behavior."),
+            ],
+        },
+    },
     "markdown": {
         "zh": {
             "name": "Markdown 在线编辑预览工具",
@@ -1287,6 +1317,7 @@ TOOL_REGISTRY = {
     "converter": {"order": 250, "icon": "file", "script": "/js/converter-tool.js", "global": "ConverterTool", "processing": "local", "indexable": True},
     "fileinfo": {"order": 260, "icon": "file", "script": "/js/file-info-tool.js?v=20260706", "global": "FileInfoTool", "processing": "local", "indexable": True},
     "mindmap": {"order": 265, "icon": "md", "script": "/js/mindmap-tool.js", "global": "MindmapTool", "processing": "local", "indexable": True},
+    "literacy": {"order": 267, "icon": "book", "script": "/js/literacy-tool.js", "global": "LiteracyTool", "processing": "local", "indexable": True},
     "markdown": {"order": 270, "icon": "md", "script": "/js/md-tool.js?v=20260706", "global": "MdTool", "processing": "local", "indexable": True},
     "content": {"order": 280, "icon": "link", "script": "/js/content-tool.js?v=20260710b", "global": "ContentTool", "processing": "server", "indexable": True},
     "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},
