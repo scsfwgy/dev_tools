@@ -13,7 +13,20 @@ var LiteracyTool = (function () {
   var loadSequence = 0;
   var sourceOrder = [];
   var sourceRegistry = Object.create(null);
+  var manifestPromises = Object.create(null);
   var STORAGE_KEY = "devtools_literacy_preferences";
+  var TOOL_ASSET_VERSION = "";
+  try {
+    if (document.currentScript && document.currentScript.src) {
+      TOOL_ASSET_VERSION = new window.URL(document.currentScript.src, window.location.href).searchParams.get("v") || "";
+    }
+  } catch (error) {}
+  function versionedAssetUrl(path) {
+    return path + (TOOL_ASSET_VERSION ? "?v=" + encodeURIComponent(TOOL_ASSET_VERSION) : "");
+  }
+
+  var ANIMALS_MANIFEST_URL = versionedAssetUrl("/images/literacy/animals/manifest.json");
+  var FRUITS_MANIFEST_URL = versionedAssetUrl("/images/literacy/fruits/manifest.json");
   var FONT_OPTIONS = {
     rounded: {
       family: '"Arial Rounded MT Bold","PingFang SC","Microsoft YaHei",system-ui,sans-serif',
@@ -39,6 +52,20 @@ var LiteracyTool = (function () {
 
   function t(key) {
     return (window.__t && window.__t(key)) || key;
+  }
+
+  function localizedText(value) {
+    if (value == null) return "";
+    if (typeof value !== "object") return String(value);
+    var language = (document.documentElement && document.documentElement.lang || "en").toLowerCase();
+    var keys = language.indexOf("zh") === 0
+      ? ["zh-CN", "zh", "en"]
+      : ["en", "en-US", "zh-CN", "zh"];
+    for (var i = 0; i < keys.length; i += 1) {
+      if (value[keys[i]]) return String(value[keys[i]]);
+    }
+    var available = Object.keys(value);
+    return available.length ? String(value[available[0]]) : "";
   }
 
   function isValidColor(value) {
@@ -135,6 +162,19 @@ var LiteracyTool = (function () {
     });
   }
 
+  function loadManifest(sourceId, url) {
+    if (!manifestPromises[sourceId]) {
+      manifestPromises[sourceId] = fetch(url).then(function (response) {
+        if (!response.ok) throw new Error(sourceId + " card manifest returned " + response.status);
+        return response.json();
+      }).catch(function (error) {
+        manifestPromises[sourceId] = null;
+        throw error;
+      });
+    }
+    return manifestPromises[sourceId];
+  }
+
   function registerDataSource(source) {
     if (!source || !/^[a-z0-9][a-z0-9-]*$/i.test(source.id || "")) {
       throw new TypeError("A literacy data source requires a valid id");
@@ -149,6 +189,7 @@ var LiteracyTool = (function () {
       label: source.label || "",
       labelKey: source.labelKey || "",
       defaultKind: source.defaultKind || "text",
+      creditsUrl: source.creditsUrl || "",
       items: Array.isArray(source.items) ? source.items.slice() : null,
       load: typeof source.load === "function" ? source.load : null,
       cachedItems: null
@@ -173,6 +214,28 @@ var LiteracyTool = (function () {
       labelKey: "literacy.sourceMixed",
       items: numbers.concat(uppercase, lowercase)
     });
+    registerDataSource({
+      id: "animals",
+      labelKey: "literacy.sourceAnimals",
+      defaultKind: "image",
+      creditsUrl: ANIMALS_MANIFEST_URL,
+      load: function () {
+        return loadManifest("animals", ANIMALS_MANIFEST_URL).then(function (manifest) {
+          return manifest.items;
+        });
+      }
+    });
+    registerDataSource({
+      id: "fruits",
+      labelKey: "literacy.sourceFruits",
+      defaultKind: "image",
+      creditsUrl: FRUITS_MANIFEST_URL,
+      load: function () {
+        return loadManifest("fruits", FRUITS_MANIFEST_URL).then(function (manifest) {
+          return manifest.items;
+        });
+      }
+    });
   }
 
   function sourceLabel(source) {
@@ -192,6 +255,16 @@ var LiteracyTool = (function () {
       select.appendChild(option);
     });
     if (sourceRegistry[selectedId]) select.value = selectedId;
+    updateCreditsLink(sourceRegistry[select.value]);
+  }
+
+  function updateCreditsLink(source) {
+    var link = container && container.querySelector("#literacy-credits");
+    if (!link) return;
+    var creditsUrl = source && source.creditsUrl;
+    link.hidden = !creditsUrl;
+    if (creditsUrl) link.href = creditsUrl;
+    else link.removeAttribute("href");
   }
 
   function normalizeItem(item, index, source) {
@@ -212,8 +285,8 @@ var LiteracyTool = (function () {
         id: id,
         kind: "image",
         src: String(src),
-        label: String(label || t("literacy.imageFallback")),
-        caption: raw.caption ? String(raw.caption) : ""
+        label: label || t("literacy.imageFallback"),
+        caption: raw.caption || ""
       };
     }
 
@@ -225,8 +298,8 @@ var LiteracyTool = (function () {
       id: id,
       kind: kind === "emoji" ? "emoji" : "text",
       value: String(value),
-      label: String(label || value),
-      caption: raw.caption ? String(raw.caption) : ""
+      label: label || String(value),
+      caption: raw.caption || ""
     };
   }
 
@@ -273,15 +346,17 @@ var LiteracyTool = (function () {
   function renderItem(item) {
     var card = container && container.querySelector("#literacy-card");
     if (!card || !item) return;
+    var label = localizedText(item.label) || t("literacy.imageFallback");
+    var captionText = localizedText(item.caption);
     card.innerHTML = "";
-    card.setAttribute("aria-label", item.label);
+    card.setAttribute("aria-label", label);
     applyAppearance(true);
 
     if (item.kind === "image") {
       var image = document.createElement("img");
       image.className = "literacy-image";
       image.src = item.src;
-      image.alt = item.label;
+      image.alt = label;
       image.addEventListener("error", function () {
         setStatus("literacy.imageLoadFailed", true);
       }, { once: true });
@@ -294,10 +369,10 @@ var LiteracyTool = (function () {
       card.appendChild(content);
     }
 
-    if (item.caption) {
+    if (captionText) {
       var caption = document.createElement("p");
       caption.className = "literacy-caption";
-      caption.textContent = item.caption;
+      caption.textContent = captionText;
       card.appendChild(caption);
     }
   }
@@ -317,6 +392,7 @@ var LiteracyTool = (function () {
     if (!container) return Promise.resolve(false);
     var select = container.querySelector("#literacy-source");
     var source = select && sourceRegistry[select.value];
+    updateCreditsLink(source);
     if (!source) {
       activeItems = [];
       setStatus("literacy.emptySource", true);
@@ -501,6 +577,7 @@ var LiteracyTool = (function () {
             '<p class="math-curiosities-desc">' + t("literacy.guideText") + '</p>' +
             '<label class="fn-expression-label" for="literacy-source">' + t("literacy.source") + '</label>' +
             '<select id="literacy-source" class="settings-select"></select>' +
+            '<a id="literacy-credits" class="literacy-credits-link" target="_blank" rel="noopener" hidden>' + t("literacy.imageCredits") + '</a>' +
             '<div class="literacy-appearance-grid">' +
               '<label class="fn-expression-label" for="literacy-color">' + t("literacy.textColor") + '</label>' +
               '<input id="literacy-color" class="literacy-color-input" type="color">' +
@@ -571,6 +648,7 @@ var LiteracyTool = (function () {
         id: source.id,
         label: source.label,
         labelKey: source.labelKey,
+        creditsUrl: source.creditsUrl,
         async: Boolean(source.load),
         itemCount: source.cachedItems ? source.cachedItems.length : (source.items ? source.items.length : null)
       };
@@ -594,6 +672,7 @@ var LiteracyTool = (function () {
     },
     __test: {
       normalizeItems: normalizeItems,
+      localizedText: localizedText,
       randomColorForTheme: randomColorForTheme,
       isValidColor: isValidColor
     }

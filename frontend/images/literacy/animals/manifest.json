@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 1,
+  "id": "animals",
+  "generatedAt": "2026-07-26",
+  "source": "Wikimedia Commons",
+  "description": {
+    "zh-CN": "儿童识字使用的常见动物实拍图片，保留原始环境背景。",
+    "en": "Photographs of common animals for children’s literacy cards, with the original environment background retained."
+  },
+  "notice": {
+    "zh-CN": "每张图片的作者、许可证和原始文件页见 attribution。衍生图片沿用对应原图许可证。",
+    "en": "See each item attribution for its author, license, and original file page. Each derivative remains under its source license."
+  },
+  "items": [
+    {
+      "id": "cat",
+      "kind": "image",
+      "src": "/images/literacy/animals/cat.webp",
+      "label": {
+        "zh-CN": "猫",
+        "en": "Cat"
+      },
+      "caption": {
+        "zh-CN": "猫",
+        "en": "Cat"
+      },
+      "scientificName": "Felis catus",
+      "image": {
+        "width": 1010,
+        "height": 742,
+        "format": "webp",
+        "sha256": "cd8670b40a2395cd432f86473d69fb376176f70db19f9f9781684554b7cc0b2b"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Orange Tabby Full Body.JPG",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Orange_Tabby_Full_Body.JPG",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/0/08/Orange_Tabby_Full_Body.JPG",
+        "author": "Brian Adler 10:10, 3 July 2007 (UTC)",
+        "license": "Public domain",
+        "licenseUrl": "",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "dog",
+      "kind": "image",
+      "src": "/images/literacy/animals/dog.webp",
+      "label": {
+        "zh-CN": "狗",
+        "en": "Dog"
+      },
+      "caption": {
+        "zh-CN": "狗",
+        "en": "Dog"
+      },
+      "scientificName": "Canis lupus familiaris",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "46b09d68fa94a784eed03f18dc3c9b32685fb3eeceb991a0986162b290352115"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Golden Retriever puppy standing.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Golden_Retriever_puppy_standing.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Golden_Retriever_puppy_standing.jpg",
+        "author": "Scott",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "rabbit",
+      "kind": "image",
+      "src": "/images/literacy/animals/rabbit.webp",
+      "label": {
+        "zh-CN": "兔子",
+        "en": "Rabbit"
+      },
+      "caption": {
+        "zh-CN": "兔子",
+        "en": "Rabbit"
+      },
+      "scientificName": "Oryctolagus cuniculus",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "148b349e15668ca1f83fb3d11b9ebce4fb15daae915ce30bc26b8bdcf5eeebe1"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:European rabbit (Oryctolagus cuniculus) Heligan.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:European_rabbit_(Oryctolagus_cuniculus)_Heligan.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/c/ce/European_rabbit_%28Oryctolagus_cuniculus%29_Heligan.jpg",
+        "author": "Charles J. Sharp",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "cow",
+      "kind": "image",
+      "src": "/images/literacy/animals/cow.webp",
+      "label": {
+        "zh-CN": "奶牛",
+        "en": "Cow"
+      },
+      "caption": {
+        "zh-CN": "奶牛",
+        "en": "Cow"
+      },
+      "scientificName": "Bos taurus",
+      "image": {
+        "width": 1200,
+        "height": 900,
+        "format": "webp",
+        "sha256": "b62ab4e13e47f28c29e2551f56858a9771488118621baca5334029462ba16aa6"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Dairy cow in France.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Dairy_cow_in_France.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/3/32/Dairy_cow_in_France.jpg",
+        "author": "Julietvbarbara",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "horse",
+      "kind": "image",
+      "src": "/images/literacy/animals/horse.webp",
+      "label": {
+        "zh-CN": "马",
+        "en": "Horse"
+      },
+      "caption": {
+        "zh-CN": "马",
+        "en": "Horse"
+      },
+      "scientificName": "Equus ferus caballus",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "6125bf223d25ecba2e620cfb08e0569a7846716f316f87da3dbfcd4ded65dfb0"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Horse posing in the grass.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Horse_posing_in_the_grass.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/4/49/Horse_posing_in_the_grass.jpg",
+        "author": "Joselodos",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "pig",
+      "kind": "image",
+      "src": "/images/literacy/animals/pig.webp",
+      "label": {
+        "zh-CN": "猪",
+        "en": "Pig"
+      },
+      "caption": {
+        "zh-CN": "猪",
+        "en": "Pig"
+      },
+      "scientificName": "Sus scrofa domesticus",
+      "image": {
+        "width": 1200,
+        "height": 900,
+        "format": "webp",
+        "sha256": "43dc4b089e20a4f33dc6d514ffdd3f1db07ddb3b64421a7d1ab49739f15f5025"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Pig, Kilcullen.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Pig,_Kilcullen.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/d/df/Pig%2C_Kilcullen.jpg",
+        "author": "Sheila1988",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "chicken",
+      "kind": "image",
+      "src": "/images/literacy/animals/chicken.webp",
+      "label": {
+        "zh-CN": "鸡",
+        "en": "Chicken"
+      },
+      "caption": {
+        "zh-CN": "鸡",
+        "en": "Chicken"
+      },
+      "scientificName": "Gallus gallus domesticus",
+      "image": {
+        "width": 1200,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "9a5b4290e77090f61412af5712375033cb6c123b3314adec8d6ed3f28ea6a2b7"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Brown Leghorn rooster in Australia.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Brown_Leghorn_rooster_in_Australia.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/5/52/Brown_Leghorn_rooster_in_Australia.jpg",
+        "author": "Fernando de Sousa from Melbourne, Australia",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "duck",
+      "kind": "image",
+      "src": "/images/literacy/animals/duck.webp",
+      "label": {
+        "zh-CN": "鸭子",
+        "en": "Duck"
+      },
+      "caption": {
+        "zh-CN": "鸭子",
+        "en": "Duck"
+      },
+      "scientificName": "Anas platyrhynchos",
+      "image": {
+        "width": 1200,
+        "height": 954,
+        "format": "webp",
+        "sha256": "94243ba4933a991775022d858fd52115c6a6b2eefe1219c46af68a4e2ca20c79"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Male mallard duck standing.png",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Male_mallard_duck_standing.png",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/5/57/Male_mallard_duck_standing.png",
+        "author": "Alorin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "elephant",
+      "kind": "image",
+      "src": "/images/literacy/animals/elephant.webp",
+      "label": {
+        "zh-CN": "大象",
+        "en": "Elephant"
+      },
+      "caption": {
+        "zh-CN": "大象",
+        "en": "Elephant"
+      },
+      "scientificName": "Loxodonta africana",
+      "image": {
+        "width": 1200,
+        "height": 857,
+        "format": "webp",
+        "sha256": "6116a7476ec1f47f02b57c3c60268e1e21a7cbf1f1df467d157c92abe6886b2e"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:African elephant standing.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:African_elephant_standing.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/7/71/African_elephant_standing.jpg",
+        "author": "Stephen Jacobs (Why Steve)",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "giraffe",
+      "kind": "image",
+      "src": "/images/literacy/animals/giraffe.webp",
+      "label": {
+        "zh-CN": "长颈鹿",
+        "en": "Giraffe"
+      },
+      "caption": {
+        "zh-CN": "长颈鹿",
+        "en": "Giraffe"
+      },
+      "scientificName": "Giraffa camelopardalis",
+      "image": {
+        "width": 800,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "1e6add2d8a56145915e662b68156a3cd383f603e11cc7fca4311c53929557608"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Giraffe Standing Lupande Zambia Jul23 A7C 06176.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Giraffe_Standing_Lupande_Zambia_Jul23_A7C_06176.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Giraffe_Standing_Lupande_Zambia_Jul23_A7C_06176.jpg",
+        "author": "This Photo was taken by Timothy A. Gonsalves . Feel free to use my photos, but please mention me as the author. I would much appreciate if you send me an email tagooty@yahoo.com or write on my talk page , for my information. Please contact me before commercial use. Please do not upload an edited image here without consulting me. I would like to make corrections only at my own source to ensure that the changes improve the image and are preserved. Otherwise you may upload an edited image with a new name. Please use one of the templates derivative or extract .",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "panda",
+      "kind": "image",
+      "src": "/images/literacy/animals/panda.webp",
+      "label": {
+        "zh-CN": "大熊猫",
+        "en": "Giant panda"
+      },
+      "caption": {
+        "zh-CN": "大熊猫",
+        "en": "Giant panda"
+      },
+      "scientificName": "Ailuropoda melanoleuca",
+      "image": {
+        "width": 900,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "0fcaab495d7ac4c2cd5d84e763c8af82737c875e446ac4a6b8b2c96c185e8984"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Giant panda, Chongqing Zoo, China.JPG",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Giant_panda,_Chongqing_Zoo,_China.JPG",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/9/90/Giant_panda%2C_Chongqing_Zoo%2C_China.JPG",
+        "author": "Jpbowen",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "tiger",
+      "kind": "image",
+      "src": "/images/literacy/animals/tiger.webp",
+      "label": {
+        "zh-CN": "老虎",
+        "en": "Tiger"
+      },
+      "caption": {
+        "zh-CN": "老虎",
+        "en": "Tiger"
+      },
+      "scientificName": "Panthera tigris",
+      "image": {
+        "width": 1200,
+        "height": 800,
+        "format": "webp",
+        "sha256": "f0810c25fefcf19a0777cf98218524a640edd2d57586be02de88f1c07c00c2d7"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Bengal tiger in Kanha National Park 02.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Bengal_tiger_in_Kanha_National_Park_02.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Bengal_tiger_in_Kanha_National_Park_02.jpg",
+        "author": "Bernard Gagnon",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "lion",
+      "kind": "image",
+      "src": "/images/literacy/animals/lion.webp",
+      "label": {
+        "zh-CN": "狮子",
+        "en": "Lion"
+      },
+      "caption": {
+        "zh-CN": "狮子",
+        "en": "Lion"
+      },
+      "scientificName": "Panthera leo",
+      "image": {
+        "width": 1200,
+        "height": 801,
+        "format": "webp",
+        "sha256": "933e611caddf8e7fd75e46c318ec92b20327b8ed783d22f37662d14f7577e41f"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Panthera leo (male) (181091659).jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Panthera_leo_(male)_(181091659).jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Panthera_leo_%28male%29_%28181091659%29.jpg",
+        "author": "Daniel Aufgang",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "zebra",
+      "kind": "image",
+      "src": "/images/literacy/animals/zebra.webp",
+      "label": {
+        "zh-CN": "斑马",
+        "en": "Zebra"
+      },
+      "caption": {
+        "zh-CN": "斑马",
+        "en": "Zebra"
+      },
+      "scientificName": "Equus quagga",
+      "image": {
+        "width": 1200,
+        "height": 803,
+        "format": "webp",
+        "sha256": "b8cd4ef66b26a984d6a3ad3ab8c85bd8879a0165b738f8540b87fd6845659de8"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Champmans Zebra - Adelaide Zoo - Side View.JPG",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Champmans_Zebra_-_Adelaide_Zoo_-_Side_View.JPG",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Champmans_Zebra_-_Adelaide_Zoo_-_Side_View.JPG",
+        "author": "Peripitus",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "fox",
+      "kind": "image",
+      "src": "/images/literacy/animals/fox.webp",
+      "label": {
+        "zh-CN": "狐狸",
+        "en": "Fox"
+      },
+      "caption": {
+        "zh-CN": "狐狸",
+        "en": "Fox"
+      },
+      "scientificName": "Vulpes vulpes",
+      "image": {
+        "width": 1200,
+        "height": 818,
+        "format": "webp",
+        "sha256": "c492cd3c57ac6f2af7d72314b4227a0680aa42bec417ee32bc98e0d2318848d5"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Vulpes vulpes standing in snow.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Vulpes_vulpes_standing_in_snow.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Vulpes_vulpes_standing_in_snow.jpg",
+        "author": "See source page",
+        "license": "Public domain",
+        "licenseUrl": "",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "bear",
+      "kind": "image",
+      "src": "/images/literacy/animals/bear.webp",
+      "label": {
+        "zh-CN": "棕熊",
+        "en": "Brown bear"
+      },
+      "caption": {
+        "zh-CN": "棕熊",
+        "en": "Brown bear"
+      },
+      "scientificName": "Ursus arctos",
+      "image": {
+        "width": 839,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "958cfa215b3fd79ef8d069c5c2055b6716510eccd1348ab92df5e4a8bd4775bb"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Brown bear (Ursus arctos arctos) standing.png",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Brown_bear_(Ursus_arctos_arctos)_standing.png",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Brown_bear_%28Ursus_arctos_arctos%29_standing.png",
+        "author": "Malene Thyssen",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "kangaroo",
+      "kind": "image",
+      "src": "/images/literacy/animals/kangaroo.webp",
+      "label": {
+        "zh-CN": "袋鼠",
+        "en": "Kangaroo"
+      },
+      "caption": {
+        "zh-CN": "袋鼠",
+        "en": "Kangaroo"
+      },
+      "scientificName": "Macropus giganteus",
+      "image": {
+        "width": 750,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "d0f60598ef0e14d3e9d4e9eacfbce00b8ef9217fb17a7ecfa450d3798abae5d8"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Eastern grey kangaroo standing in grass - DPLA - 65b9d5a7ceea97bdc1fa3ef8572241a1.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Eastern_grey_kangaroo_standing_in_grass_-_DPLA_-_65b9d5a7ceea97bdc1fa3ef8572241a1.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/1/19/Eastern_grey_kangaroo_standing_in_grass_-_DPLA_-_65b9d5a7ceea97bdc1fa3ef8572241a1.jpg",
+        "author": "Garst, Warren, 1922-2016, photographer",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "penguin",
+      "kind": "image",
+      "src": "/images/literacy/animals/penguin.webp",
+      "label": {
+        "zh-CN": "企鹅",
+        "en": "Penguin"
+      },
+      "caption": {
+        "zh-CN": "企鹅",
+        "en": "Penguin"
+      },
+      "scientificName": "Spheniscus demersus",
+      "image": {
+        "width": 900,
+        "height": 1200,
+        "format": "webp",
+        "sha256": "8ced6383fb5c0c2116927553ee0b528f44f06ba24d7cacd32c8d586b5f163269"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:African penguin, Cape Town ( 1050598).jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:African_penguin,_Cape_Town_(_1050598).jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/b/bd/African_penguin%2C_Cape_Town_%28_1050598%29.jpg",
+        "author": "Matti Blume",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "frog",
+      "kind": "image",
+      "src": "/images/literacy/animals/frog.webp",
+      "label": {
+        "zh-CN": "青蛙",
+        "en": "Frog"
+      },
+      "caption": {
+        "zh-CN": "青蛙",
+        "en": "Frog"
+      },
+      "scientificName": "Ranoidea splendida",
+      "image": {
+        "width": 1200,
+        "height": 610,
+        "format": "webp",
+        "sha256": "9b37a5bec6af59885dae3441bcae706af4e4878b8779c91767ec6218c3072e5d"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Magnificent tree frog (Ranoidea splendida) side view at Sydney Zoo 2023-02-01.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Magnificent_tree_frog_(Ranoidea_splendida)_side_view_at_Sydney_Zoo_2023-02-01.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Magnificent_tree_frog_%28Ranoidea_splendida%29_side_view_at_Sydney_Zoo_2023-02-01.jpg",
+        "author": "Pelagic",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "turtle",
+      "kind": "image",
+      "src": "/images/literacy/animals/turtle.webp",
+      "label": {
+        "zh-CN": "海龟",
+        "en": "Sea turtle"
+      },
+      "caption": {
+        "zh-CN": "海龟",
+        "en": "Sea turtle"
+      },
+      "scientificName": "Chelonia mydas",
+      "image": {
+        "width": 1200,
+        "height": 900,
+        "format": "webp",
+        "sha256": "d7d3b7a1ca6a0515357ed5c8cc9bbc9b900cd12264dcebe65acc3bdc4e62a704"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Green Sea Turtle Swimming in the Galápagos.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Green_Sea_Turtle_Swimming_in_the_Gal%C3%A1pagos.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Green_Sea_Turtle_Swimming_in_the_Gal%C3%A1pagos.jpg",
+        "author": "MasterfulNerd",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    },
+    {
+      "id": "fish",
+      "kind": "image",
+      "src": "/images/literacy/animals/fish.webp",
+      "label": {
+        "zh-CN": "金鱼",
+        "en": "Goldfish"
+      },
+      "caption": {
+        "zh-CN": "金鱼",
+        "en": "Goldfish"
+      },
+      "scientificName": "Carassius auratus",
+      "image": {
+        "width": 1200,
+        "height": 747,
+        "format": "webp",
+        "sha256": "188491dfc968d54a42bc0d9efc53d554693de70414960ff3db956654df1cdac9"
+      },
+      "attribution": {
+        "source": "Wikimedia Commons",
+        "fileTitle": "File:Carassius auratus auratus (goldfish) 1.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Carassius_auratus_auratus_(goldfish)_1.jpg",
+        "originalFile": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Carassius_auratus_auratus_%28goldfish%29_1.jpg",
+        "author": "James St. John",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "modifications": "Resized and converted to WebP by Tools24; original background retained."
+      }
+    }
+  ]
+}

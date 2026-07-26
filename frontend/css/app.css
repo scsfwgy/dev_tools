@@ -4177,6 +4177,13 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .literacy-random-color input {
   width: 20px; height: 20px; margin: 0; accent-color: var(--accent);
 }
+.literacy-credits-link {
+  min-height: 44px; display: inline-flex; align-items: center;
+  color: var(--accent); font-size: 13px; line-height: 1.4;
+  text-decoration: none;
+}
+.literacy-credits-link[hidden] { display: none; }
+.literacy-credits-link:hover { text-decoration: underline; }
 .literacy-source-status {
   min-height: 20px; margin: 6px 0 2px; color: var(--text-secondary);
   font-size: 13px; line-height: 1.45;

@@ -2700,9 +2700,15 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     script = script_response.get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
     page = client.get("/zh/tool/literacy")
+    animal_manifest_response = client.get("/images/literacy/animals/manifest.json")
+    animal_manifest = animal_manifest_response.get_json()
+    fruit_manifest_response = client.get("/images/literacy/fruits/manifest.json")
+    fruit_manifest = fruit_manifest_response.get_json()
 
     assert page.status_code == 200
     assert script_response.status_code == 200
+    assert animal_manifest_response.status_code == 200
+    assert fruit_manifest_response.status_code == 200
     assert "儿童识字卡片" in page.get_data(as_text=True)
     assert "https://dev.tools24.uk/zh/tool/literacy" in page.get_data(as_text=True)
     assert TOOL_REGISTRY["literacy"]["processing"] == "local"
@@ -2711,6 +2717,9 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert_tool_is_lazy_loaded(frontend_dir, "literacy-tool.js")
     assert zh_locale["literacy"]["source"] == "卡片数据源"
     assert en_locale["literacy"]["source"] == "Card data source"
+    assert zh_locale["literacy"]["sourceAnimals"] == "常见动物（21 种）"
+    assert zh_locale["literacy"]["sourceFruits"] == "常见水果（20 种）"
+    assert en_locale["literacy"]["imageCredits"] == "View current image sources and licenses"
     assert zh_locale["literacy"]["randomColor"] == "每张卡片随机颜色"
     assert en_locale["literacy"]["fontRounded"] == "Rounded (recommended)"
     assert zh_locale["toolHeader"]["resourceLoadFailed"] == "工具资源加载失败"
@@ -2727,7 +2736,25 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert 'id="literacy-color"' in script
     assert 'id="literacy-random-color"' in script
     assert 'id="literacy-font"' in script
-    assert "fetch(" not in script
+    assert 'loadManifest("animals", ANIMALS_MANIFEST_URL)' in script
+    assert 'loadManifest("fruits", FRUITS_MANIFEST_URL)' in script
+    assert 'id="literacy-credits"' in script
+    assert 'new window.URL(document.currentScript.src, window.location.href)' in script
+    assert animal_manifest["id"] == "animals"
+    assert len(animal_manifest["items"]) == 21
+    assert all(item["kind"] == "image" for item in animal_manifest["items"])
+    assert all(item["src"].endswith(".webp") for item in animal_manifest["items"])
+    assert all(item["attribution"]["source"] == "Wikimedia Commons" for item in animal_manifest["items"])
+    assert all(item["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/") for item in animal_manifest["items"])
+    assert all(client.get(item["src"]).status_code == 200 for item in animal_manifest["items"])
+    assert fruit_manifest["id"] == "fruits"
+    assert len(fruit_manifest["items"]) == 20
+    assert all(item["kind"] == "image" for item in fruit_manifest["items"])
+    assert all(item["src"].endswith(".webp") for item in fruit_manifest["items"])
+    assert all(item["attribution"]["source"] == "Wikimedia Commons" for item in fruit_manifest["items"])
+    assert all(item["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/") for item in fruit_manifest["items"])
+    assert all("original background retained" in item["attribution"]["modifications"] for item in fruit_manifest["items"])
+    assert all(client.get(item["src"]).status_code == 200 for item in fruit_manifest["items"])
     assert 'activeMenuId === "literacy"' in app_script
     assert "tool script load failed" in app_script
     assert "tool initialization failed" in app_script
@@ -2787,9 +2814,11 @@ const normalized = context.LiteracyTool.__test.normalizeItems(
 process.stdout.write(JSON.stringify({
   deactivateSafe,
   builtIns: sources.slice(0, 4).map(source => source.id).join(",") === "numbers,uppercase,lowercase,mixed",
-  asyncSource: sources.some(source => source.id === "animals" && source.async),
+  asyncSource: sources.some(source => source.id === "animals" && source.async) &&
+    sources.some(source => source.id === "fruits" && source.async && source.creditsUrl.includes("/fruits/manifest.json")),
   textCard: normalized[0].kind === "text" && normalized[0].value === "一",
   imageCard: normalized[1].kind === "image" && normalized[1].src === "/tree.webp",
+  localizedLabel: context.LiteracyTool.__test.localizedText({"zh-CN": "猫", en: "Cat"}) === "Cat",
   darkColor: context.LiteracyTool.__test.randomColorForTheme("dark", 0) === "#f87171",
   lightColor: context.LiteracyTool.__test.randomColorForTheme("light", 0) === "#b91c1c",
   validColor: context.LiteracyTool.__test.isValidColor("#58a6ff"),
