@@ -82,6 +82,8 @@ def prevent_api_indexing(response):
         response.headers["Cache-Control"] = "no-store"
     elif request.path.startswith(("/css/", "/js/")):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    elif request.path.startswith("/audio/"):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     elif request.path.startswith("/locales/"):
         response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
     elif request.path == "/api/tool-manifest":

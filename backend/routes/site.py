@@ -67,6 +67,15 @@ def asset_version():
         root = app_settings.FRONTEND_DIR / directory
         if root.exists():
             asset_paths.extend(path for path in root.rglob("*") if path.is_file())
+    asset_paths.extend(
+        path
+        for path in (
+            app_settings.FRONTEND_DIR / "audio" / "literacy" / "core-manifest.json",
+            app_settings.FRONTEND_DIR / "images" / "literacy" / "animals" / "manifest.json",
+            app_settings.FRONTEND_DIR / "images" / "literacy" / "fruits" / "manifest.json",
+        )
+        if path.is_file()
+    )
     for path in sorted(asset_paths):
         try:
             stat = path.stat()
@@ -361,6 +370,11 @@ def tool_subpage(lang, tool_id, subpage):
     if lang not in app_settings.SUPPORTED_LANGS or subpage not in TOOL_SUBPAGES.get(tool_id, {}):
         abort(404)
     return render_spa(lang, tool_id, subpage=subpage)
+
+
+@site_bp.route("/audio/<path:filename>")
+def audio_files(filename):
+    return send_from_directory(str(app_settings.FRONTEND_DIR / "audio"), filename)
 
 
 @site_bp.route("/<path:filename>")

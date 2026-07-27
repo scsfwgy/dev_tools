@@ -1,8 +1,10 @@
 import json
 import logging
+import os
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -149,6 +151,95 @@ process.stdout.write(JSON.stringify(values));
             text=True,
         )
         assert all(json.loads(completed.stdout).values())
+
+        audio_program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = {
+  window: {},
+  document: {
+    currentScript: null,
+    addEventListener() {},
+    removeEventListener() {},
+    body: {classList: {remove() {}}}
+  },
+  console,
+  Promise,
+  Math,
+  TypeError,
+  Object,
+  Array,
+  String,
+  Number,
+  RegExp,
+  Boolean,
+  setTimeout,
+  clearTimeout
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/literacy-tool.js", "utf8"), context);
+
+function fakeClip(name, result, events) {
+  return {
+    currentTime: 0,
+    onended: null,
+    onerror: null,
+    pause() {},
+    load() {},
+    removeAttribute() {},
+    play() {
+      events.push(name);
+      if (result === "ended") setTimeout(() => this.onended && this.onended(), 5);
+      if (result === "error") setTimeout(() => this.onerror && this.onerror(), 5);
+      return Promise.resolve();
+    }
+  };
+}
+
+(async () => {
+  const test = context.LiteracyTool.__test;
+  const events = [];
+  test.setPreparedAudio({
+    "zh-CN": fakeClip("zh-CN", "error", events),
+    "en-US": fakeClip("en-US", "ended", events)
+  });
+  const started = Date.now();
+  const completed = await test.playPronunciationSequence(
+    {pronunciation: {audio: {"zh-CN": "/zh.mp3", "en-US": "/en.mp3"}}},
+    ["zh-CN", "en-US"]
+  );
+  const elapsed = Date.now() - started;
+
+  const cancellationEvents = [];
+  test.setPreparedAudio({
+    "en-US": fakeClip("en-US", "pending", cancellationEvents)
+  });
+  const pending = test.playPronunciationSequence(
+    {pronunciation: {audio: {"en-US": "/en.mp3"}}},
+    ["en-US"]
+  );
+  setTimeout(() => test.cancelAudio(), 5);
+  const cancelled = await pending;
+
+  process.stdout.write(JSON.stringify({
+    continuesAfterFailure: completed && events.join(",") === "zh-CN,en-US",
+    waitsBetweenLanguages: elapsed >= 340,
+    cancellationResolves: cancelled === false &&
+      cancellationEvents.join(",") === "en-US"
+  }));
+})().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});
+'''
+        audio_completed = subprocess.run(
+            [node, "-e", audio_program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        assert all(json.loads(audio_completed.stdout).values())
 
 
 def test_visualization_tool_is_local_lazy_loaded_and_localized(client):
@@ -2700,6 +2791,8 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     script = script_response.get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
     page = client.get("/zh/tool/literacy")
+    core_manifest_response = client.get("/audio/literacy/core-manifest.json")
+    core_manifest = core_manifest_response.get_json()
     animal_manifest_response = client.get("/images/literacy/animals/manifest.json")
     animal_manifest = animal_manifest_response.get_json()
     fruit_manifest_response = client.get("/images/literacy/fruits/manifest.json")
@@ -2707,6 +2800,8 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
 
     assert page.status_code == 200
     assert script_response.status_code == 200
+    assert core_manifest_response.status_code == 200
+    assert core_manifest_response.headers["Cache-Control"] == "public, max-age=31536000, immutable"
     assert animal_manifest_response.status_code == 200
     assert fruit_manifest_response.status_code == 200
     assert "儿童识字卡片" in page.get_data(as_text=True)
@@ -2721,6 +2816,8 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert zh_locale["literacy"]["sourceFruits"] == "常见水果（30 种）"
     assert en_locale["literacy"]["imageCredits"] == "View current image sources and licenses"
     assert zh_locale["literacy"]["randomColor"] == "每张卡片随机颜色"
+    assert zh_locale["literacy"]["autoSpeak"] == "自动朗读中文和英文"
+    assert en_locale["literacy"]["speakEnglish"] == "English"
     assert en_locale["literacy"]["fontRounded"] == "Rounded (recommended)"
     assert zh_locale["toolHeader"]["resourceLoadFailed"] == "工具资源加载失败"
     assert zh_locale["toolHeader"]["runtimeFailed"] == "工具初始化失败"
@@ -2736,17 +2833,35 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert 'id="literacy-color"' in script
     assert 'id="literacy-random-color"' in script
     assert 'id="literacy-font"' in script
+    assert 'id="literacy-auto-speak"' in script
+    assert 'className = "literacy-speech-button"' in script
+    assert 'playPronunciationSequence(item, ["zh-CN", "en-US"])' in script
+    assert "}, 350);" in script
+    assert "}, 10000);" in script
+    assert "function cancelAudio()" in script
+    assert "function clearPreparedAudio()" in script
+    assert "speechSynthesis" not in script
+    assert 'loadManifest("core", CORE_MANIFEST_URL)' in script
     assert 'loadManifest("animals", ANIMALS_MANIFEST_URL)' in script
     assert 'loadManifest("fruits", FRUITS_MANIFEST_URL)' in script
     assert 'id="literacy-credits"' in script
     assert 'new window.URL(document.currentScript.src, window.location.href)' in script
-    assert "var NUMBER_PRONUNCIATIONS" in script
-    assert "window.innerWidth <= 760 ? 480 : 260" in script
+    assert "var NUMBER_PRONUNCIATIONS" not in script
+    assert "window.innerWidth <= 760 ? 520 : 260" in script
     assert '"literacy-pinyin"' in script
     assert '"literacy-english"' in script
     assert '"literacy-phonetic"' in script
+    assert core_manifest["id"] == "core"
+    assert core_manifest["schemaVersion"] in (1, 2)
+    assert len(core_manifest["numbers"]) == 10
+    assert len(core_manifest["letters"]) == 26
+    assert [item["value"] for item in core_manifest["numbers"]] == list("0123456789")
+    assert [item["pronunciation"]["chinese"] for item in core_manifest["numbers"]] == list("零一二三四五六七八九")
+    assert all(item["pronunciation"]["pinyin"] for item in core_manifest["numbers"])
+    assert all(item["pronunciation"]["english"] for item in core_manifest["numbers"])
+    assert all(item["pronunciation"]["ipa"].startswith("/") for item in core_manifest["numbers"])
     assert animal_manifest["id"] == "animals"
-    assert animal_manifest["schemaVersion"] == 2
+    assert animal_manifest["schemaVersion"] in (2, 3)
     assert len(animal_manifest["items"]) == 36
     assert {"monkey", "dolphin", "squirrel"} <= {item["id"] for item in animal_manifest["items"]}
     assert all(item["kind"] == "image" for item in animal_manifest["items"])
@@ -2758,7 +2873,7 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert all(item["pronunciation"]["ipa"].startswith("/") and item["pronunciation"]["ipa"].endswith("/") for item in animal_manifest["items"])
     assert all(client.get(item["src"]).status_code == 200 for item in animal_manifest["items"])
     assert fruit_manifest["id"] == "fruits"
-    assert fruit_manifest["schemaVersion"] == 2
+    assert fruit_manifest["schemaVersion"] in (2, 3)
     assert len(fruit_manifest["items"]) == 30
     assert {"avocado", "lychee", "durian"} <= {item["id"] for item in fruit_manifest["items"]}
     assert all(item["kind"] == "image" for item in fruit_manifest["items"])
@@ -2822,6 +2937,14 @@ context.LiteracyTool.registerDataSource({
   load: () => Promise.resolve([{ id: "cat", kind: "image", src: "/cat.webp", label: "Cat" }])
 });
 const sources = context.LiteracyTool.getDataSources();
+const upperA = context.LiteracyTool.__test.letterItems(
+  [{value: "A", ipa: "/eɪ/", audio: {"en-US": "/a.mp3"}}],
+  false
+)[0];
+const lowerA = context.LiteracyTool.__test.letterItems(
+  [{value: "A", ipa: "/eɪ/", audio: {"en-US": "/a.mp3"}}],
+  true
+)[0];
 const normalized = context.LiteracyTool.__test.normalizeItems(
   [
     "一",
@@ -2831,7 +2954,13 @@ const normalized = context.LiteracyTool.__test.normalizeItems(
       src: "/tree.webp",
       label: {"zh-CN": "树", en: "Tree"},
       caption: {"zh-CN": "树", en: "Tree"},
-      pronunciation: {pinyin: "shù", english: "Tree", ipa: "/triː/"}
+      pronunciation: {
+        chinese: "树",
+        pinyin: "shù",
+        english: "Tree",
+        ipa: "/triː/",
+        audio: {"zh-CN": "/tree.zh.mp3", "en-US": "/tree.en.mp3"}
+      }
     }
   ],
   { id: "sample", defaultKind: "text" }
@@ -2845,8 +2974,13 @@ process.stdout.write(JSON.stringify({
   imageCard: normalized[1].kind === "image" && normalized[1].src === "/tree.webp",
   chineseName: normalized[1].primaryText === "树",
   pronunciation: normalized[1].pronunciation.pinyin === "shù" &&
+    normalized[1].pronunciation.chinese === "树" &&
     normalized[1].pronunciation.english === "Tree" &&
-    normalized[1].pronunciation.ipa === "/triː/",
+    normalized[1].pronunciation.ipa === "/triː/" &&
+    normalized[1].pronunciation.audio["zh-CN"] === "/tree.zh.mp3" &&
+    normalized[1].pronunciation.audio["en-US"] === "/tree.en.mp3",
+  sharedLetterAudio: upperA.value === "A" && lowerA.value === "a" &&
+    upperA.pronunciation.audio["en-US"] === lowerA.pronunciation.audio["en-US"],
   localizedLabel: context.LiteracyTool.__test.localizedText({"zh-CN": "猫", en: "Cat"}) === "Cat",
   darkColor: context.LiteracyTool.__test.randomColorForTheme("dark", 0) === "#f87171",
   lightColor: context.LiteracyTool.__test.randomColorForTheme("light", 0) === "#b91c1c",
@@ -2862,6 +2996,71 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         assert all(json.loads(completed.stdout).values())
+
+
+def test_literacy_audio_generation_contract_and_optional_catalog_verification():
+    root = Path(__file__).resolve().parents[2]
+    script_path = root / "scripts" / "generate_literacy_audio.py"
+    catalog_path = root / "frontend" / "audio" / "literacy" / "catalog.json"
+
+    listing = subprocess.run(
+        [sys.executable, str(script_path), "--list", "--json"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    summary = json.loads(listing.stdout)
+    assert summary == {
+        "groups": {
+            "animals:en-US": 36,
+            "animals:zh-CN": 36,
+            "fruits:en-US": 30,
+            "fruits:zh-CN": 30,
+            "letters:en-US": 26,
+            "numbers:en-US": 10,
+            "numbers:zh-CN": 10,
+        },
+        "total": 178,
+    }
+
+    source = script_path.read_text()
+    assert "AZURE_SPEECH_KEY" in source
+    assert "AZURE_SPEECH_REGION" in source
+    assert "zh-CN-XiaoxiaoNeural" in source
+    assert "en-US-JennyNeural" in source
+    assert "audio-24khz-48kbitrate-mono-mp3" in source
+    assert "loudnorm=I=-18:TP=-1.5:LRA=7" in source
+    assert '"reviewed": False' in source
+
+    no_credentials_env = os.environ.copy()
+    no_credentials_env.pop("AZURE_SPEECH_KEY", None)
+    no_credentials_env.pop("AZURE_SPEECH_REGION", None)
+    missing_credentials = subprocess.run(
+        [sys.executable, str(script_path), "--generate"],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=no_credentials_env,
+    )
+    assert missing_credentials.returncode == 1
+    assert "Set AZURE_SPEECH_KEY and AZURE_SPEECH_REGION" in missing_credentials.stderr
+
+    if catalog_path.exists():
+        verified = subprocess.run(
+            [
+                sys.executable,
+                str(script_path),
+                "--verify",
+                "--require-reviewed",
+            ],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert verified.returncode == 0, verified.stderr
 
 
 def test_first_render_navigation_and_accessibility_regressions(client):

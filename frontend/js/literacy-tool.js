@@ -8,9 +8,17 @@ var LiteracyTool = (function () {
   var isFullscreen = false;
   var activeItems = [];
   var activeSourceId = "";
+  var currentItem = null;
   var lastItemId = "";
   var lastRandomColor = "";
   var loadSequence = 0;
+  var playbackToken = 0;
+  var audioPlayer = null;
+  var audioResolve = null;
+  var audioTimeoutTimer = null;
+  var audioGapTimer = null;
+  var audioGapResolve = null;
+  var preparedAudio = Object.create(null);
   var sourceOrder = [];
   var sourceRegistry = Object.create(null);
   var manifestPromises = Object.create(null);
@@ -25,6 +33,7 @@ var LiteracyTool = (function () {
     return path + (TOOL_ASSET_VERSION ? "?v=" + encodeURIComponent(TOOL_ASSET_VERSION) : "");
   }
 
+  var CORE_MANIFEST_URL = versionedAssetUrl("/audio/literacy/core-manifest.json");
   var ANIMALS_MANIFEST_URL = versionedAssetUrl("/images/literacy/animals/manifest.json");
   var FRUITS_MANIFEST_URL = versionedAssetUrl("/images/literacy/fruits/manifest.json");
   var FONT_OPTIONS = {
@@ -49,19 +58,6 @@ var LiteracyTool = (function () {
     dark: ["#f87171", "#fbbf24", "#4ade80", "#60a5fa", "#a78bfa", "#f472b6", "#2dd4bf"],
     light: ["#b91c1c", "#a16207", "#15803d", "#1d4ed8", "#6d28d9", "#be185d", "#0f766e"]
   };
-  var NUMBER_PRONUNCIATIONS = [
-    { value: "0", english: "Zero", ipa: "/ˈzɪroʊ/" },
-    { value: "1", english: "One", ipa: "/wʌn/" },
-    { value: "2", english: "Two", ipa: "/tuː/" },
-    { value: "3", english: "Three", ipa: "/θriː/" },
-    { value: "4", english: "Four", ipa: "/fɔːr/" },
-    { value: "5", english: "Five", ipa: "/faɪv/" },
-    { value: "6", english: "Six", ipa: "/sɪks/" },
-    { value: "7", english: "Seven", ipa: "/ˈsevən/" },
-    { value: "8", english: "Eight", ipa: "/eɪt/" },
-    { value: "9", english: "Nine", ipa: "/naɪn/" }
-  ];
-
   function t(key) {
     return (window.__t && window.__t(key)) || key;
   }
@@ -109,14 +105,15 @@ var LiteracyTool = (function () {
   }
 
   function loadPreferences() {
-    var defaults = { color: defaultColor(), randomColor: false, font: "rounded" };
+    var defaults = { color: defaultColor(), randomColor: false, font: "rounded", autoSpeak: true };
     try {
       var stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (!stored || typeof stored !== "object") return defaults;
       return {
         color: isValidColor(stored.color) ? stored.color : defaults.color,
         randomColor: stored.randomColor === true,
-        font: FONT_OPTIONS[stored.font] ? stored.font : defaults.font
+        font: FONT_OPTIONS[stored.font] ? stored.font : defaults.font,
+        autoSpeak: stored.autoSpeak !== false
       };
     } catch (error) {
       return defaults;
@@ -128,10 +125,12 @@ var LiteracyTool = (function () {
     var color = container.querySelector("#literacy-color");
     var randomColor = container.querySelector("#literacy-random-color");
     var font = container.querySelector("#literacy-font");
+    var autoSpeak = container.querySelector("#literacy-auto-speak");
     return {
       color: color && isValidColor(color.value) ? color.value : defaultColor(),
       randomColor: Boolean(randomColor && randomColor.checked),
-      font: font && FONT_OPTIONS[font.value] ? font.value : "rounded"
+      font: font && FONT_OPTIONS[font.value] ? font.value : "rounded",
+      autoSpeak: !autoSpeak || autoSpeak.checked
     };
   }
 
@@ -168,22 +167,23 @@ var LiteracyTool = (function () {
     savePreferences(currentPreferences());
   }
 
-  function rangeItems(text) {
-    return text.split("").map(function (value) {
-      return { id: value, kind: "text", value: value, label: value };
-    });
+  function coreManifest() {
+    return loadManifest("core", CORE_MANIFEST_URL);
   }
 
-  function numberItems() {
-    return NUMBER_PRONUNCIATIONS.map(function (number) {
+  function letterItems(letters, lowercase) {
+    return letters.map(function (letter) {
+      var value = lowercase ? letter.value.toLowerCase() : letter.value;
       return {
-        id: number.value,
+        id: value,
         kind: "text",
-        value: number.value,
-        label: number.value,
+        value: value,
+        label: value,
+        displayPronunciation: false,
         pronunciation: {
-          english: number.english,
-          ipa: number.ipa
+          english: letter.value,
+          ipa: letter.ipa,
+          audio: letter.audio || {}
         }
       };
     });
@@ -230,16 +230,42 @@ var LiteracyTool = (function () {
   }
 
   function registerBuiltInSources() {
-    var numbers = numberItems();
-    var uppercase = rangeItems("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    var lowercase = rangeItems("abcdefghijklmnopqrstuvwxyz");
-    registerDataSource({ id: "numbers", labelKey: "literacy.sourceNumbers", items: numbers });
-    registerDataSource({ id: "uppercase", labelKey: "literacy.sourceUppercase", items: uppercase });
-    registerDataSource({ id: "lowercase", labelKey: "literacy.sourceLowercase", items: lowercase });
+    registerDataSource({
+      id: "numbers",
+      labelKey: "literacy.sourceNumbers",
+      load: function () {
+        return coreManifest().then(function (manifest) { return manifest.numbers; });
+      }
+    });
+    registerDataSource({
+      id: "uppercase",
+      labelKey: "literacy.sourceUppercase",
+      load: function () {
+        return coreManifest().then(function (manifest) {
+          return letterItems(manifest.letters, false);
+        });
+      }
+    });
+    registerDataSource({
+      id: "lowercase",
+      labelKey: "literacy.sourceLowercase",
+      load: function () {
+        return coreManifest().then(function (manifest) {
+          return letterItems(manifest.letters, true);
+        });
+      }
+    });
     registerDataSource({
       id: "mixed",
       labelKey: "literacy.sourceMixed",
-      items: numbers.concat(uppercase, lowercase)
+      load: function () {
+        return coreManifest().then(function (manifest) {
+          return manifest.numbers.concat(
+            letterItems(manifest.letters, false),
+            letterItems(manifest.letters, true)
+          );
+        });
+      }
     });
     registerDataSource({
       id: "animals",
@@ -316,7 +342,8 @@ var LiteracyTool = (function () {
         label: label || t("literacy.imageFallback"),
         caption: raw.caption || "",
         primaryText: raw.primaryText || localizedChineseText(raw.caption || raw.label),
-        pronunciation: pronunciation
+        pronunciation: pronunciation,
+        displayPronunciation: raw.displayPronunciation !== false
       };
     }
 
@@ -331,7 +358,8 @@ var LiteracyTool = (function () {
       label: label || String(value),
       caption: raw.caption || "",
       primaryText: raw.primaryText || "",
-      pronunciation: pronunciation
+      pronunciation: pronunciation,
+      displayPronunciation: raw.displayPronunciation !== false
     };
   }
 
@@ -349,10 +377,18 @@ var LiteracyTool = (function () {
     if (!english && raw.label && typeof raw.label === "object") {
       english = raw.label.en || raw.label["en-US"] || "";
     }
+    var audio = pronunciation.audio && typeof pronunciation.audio === "object"
+      ? pronunciation.audio
+      : (raw.audio && typeof raw.audio === "object" ? raw.audio : {});
     return {
+      chinese: String(raw.chinese || pronunciation.chinese || ""),
       pinyin: String(raw.pinyin || pronunciation.pinyin || ""),
       english: String(english),
-      ipa: String(raw.ipa || raw.phonetic || pronunciation.ipa || pronunciation.phonetic || "")
+      ipa: String(raw.ipa || raw.phonetic || pronunciation.ipa || pronunciation.phonetic || ""),
+      audio: {
+        "zh-CN": typeof audio["zh-CN"] === "string" ? audio["zh-CN"] : "",
+        "en-US": typeof audio["en-US"] === "string" ? audio["en-US"] : ""
+      }
     };
   }
 
@@ -402,7 +438,14 @@ var LiteracyTool = (function () {
     var label = localizedText(item.label) || t("literacy.imageFallback");
     var primaryText = item.primaryText || localizedText(item.caption);
     var pronunciation = item.pronunciation || {};
-    var spokenParts = [item.kind === "image" ? primaryText : item.value, pronunciation.pinyin, pronunciation.english, pronunciation.ipa].filter(Boolean);
+    var spokenParts = [
+      item.kind === "image" ? primaryText : item.value,
+      pronunciation.pinyin,
+      pronunciation.chinese,
+      pronunciation.english,
+      pronunciation.ipa
+    ].filter(Boolean);
+    clearPreparedAudio();
     card.innerHTML = "";
     card.setAttribute("aria-label", spokenParts.length ? spokenParts.join(", ") : label);
     applyAppearance(true);
@@ -432,18 +475,28 @@ var LiteracyTool = (function () {
       if (pronunciation.english) appendCardLine(vocabulary, "literacy-english", pronunciation.english);
       if (pronunciation.ipa) appendCardLine(vocabulary, "literacy-phonetic", pronunciation.ipa);
       card.appendChild(vocabulary);
-    } else if (pronunciation.english || pronunciation.ipa) {
+    } else if (pronunciation.chinese) {
       var numberPronunciation = document.createElement("div");
       numberPronunciation.className = "literacy-number-pronunciation";
+      if (pronunciation.pinyin) appendCardLine(numberPronunciation, "literacy-pinyin", pronunciation.pinyin);
+      appendCardLine(numberPronunciation, "literacy-caption", pronunciation.chinese);
       if (pronunciation.english) appendCardLine(numberPronunciation, "literacy-english", pronunciation.english);
       if (pronunciation.ipa) appendCardLine(numberPronunciation, "literacy-phonetic", pronunciation.ipa);
       card.appendChild(numberPronunciation);
+    } else if (item.displayPronunciation && (pronunciation.english || pronunciation.ipa)) {
+      var textPronunciation = document.createElement("div");
+      textPronunciation.className = "literacy-number-pronunciation";
+      if (pronunciation.english) appendCardLine(textPronunciation, "literacy-english", pronunciation.english);
+      if (pronunciation.ipa) appendCardLine(textPronunciation, "literacy-phonetic", pronunciation.ipa);
+      card.appendChild(textPronunciation);
     } else if (primaryText) {
       var caption = document.createElement("p");
       caption.className = "literacy-caption";
       caption.textContent = primaryText;
       card.appendChild(caption);
     }
+    prepareItemAudio(item);
+    renderSpeechControls(card, item);
   }
 
   function appendCardLine(parent, className, text) {
@@ -453,15 +506,203 @@ var LiteracyTool = (function () {
     parent.appendChild(line);
   }
 
+  function renderSpeechControls(card, item) {
+    var audio = item.pronunciation && item.pronunciation.audio || {};
+    if (!audio["zh-CN"] && !audio["en-US"]) return;
+    var controls = document.createElement("div");
+    controls.className = "literacy-speech-controls";
+    if (audio["zh-CN"]) {
+      controls.appendChild(createSpeechButton("zh-CN", t("literacy.speakChinese")));
+    }
+    if (audio["en-US"]) {
+      controls.appendChild(createSpeechButton("en-US", t("literacy.speakEnglish")));
+    }
+    card.appendChild(controls);
+  }
+
+  function createSpeechButton(locale, text) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "literacy-speech-button";
+    button.setAttribute("data-locale", locale);
+    button.setAttribute("aria-label", text);
+    button.textContent = "🔊 " + text;
+    button.addEventListener("click", function () {
+      speakCurrent(locale);
+    });
+    return button;
+  }
+
+  function prepareItemAudio(item) {
+    if (!window.Audio || !item || !item.pronunciation) return;
+    var audio = item.pronunciation.audio || {};
+    ["zh-CN", "en-US"].forEach(function (locale) {
+      if (!audio[locale]) return;
+      var clip = new window.Audio(audio[locale]);
+      clip.preload = "auto";
+      preparedAudio[locale] = clip;
+      if (clip.load) clip.load();
+    });
+  }
+
+  function clearPreparedAudio() {
+    Object.keys(preparedAudio).forEach(function (locale) {
+      var clip = preparedAudio[locale];
+      clip.onended = null;
+      clip.onerror = null;
+      if (clip.pause) clip.pause();
+      try { clip.currentTime = 0; } catch (error) {}
+      if (clip.removeAttribute) clip.removeAttribute("src");
+      if (clip.load) clip.load();
+    });
+    preparedAudio = Object.create(null);
+  }
+
+  function cancelAudio() {
+    playbackToken += 1;
+    if (audioTimeoutTimer) {
+      clearTimeout(audioTimeoutTimer);
+      audioTimeoutTimer = null;
+    }
+    if (audioGapTimer) {
+      clearTimeout(audioGapTimer);
+      audioGapTimer = null;
+    }
+    if (audioGapResolve) {
+      var resolveGap = audioGapResolve;
+      audioGapResolve = null;
+      resolveGap(false);
+    }
+    if (audioPlayer) {
+      audioPlayer.onended = null;
+      audioPlayer.onerror = null;
+      if (audioPlayer.pause) audioPlayer.pause();
+      try { audioPlayer.currentTime = 0; } catch (error) {}
+      audioPlayer = null;
+    }
+    if (audioResolve) {
+      var resolveAudio = audioResolve;
+      audioResolve = null;
+      resolveAudio(false);
+    }
+  }
+
+  function playPreparedClip(locale, token) {
+    var clip = preparedAudio[locale];
+    if (!clip || token !== playbackToken) return Promise.resolve(false);
+    audioPlayer = clip;
+    try { clip.currentTime = 0; } catch (error) {}
+    return new Promise(function (resolve) {
+      var settled = false;
+      function finish(success) {
+        if (settled) return;
+        settled = true;
+        if (audioTimeoutTimer) {
+          clearTimeout(audioTimeoutTimer);
+          audioTimeoutTimer = null;
+        }
+        clip.onended = null;
+        clip.onerror = null;
+        if (audioPlayer === clip) audioPlayer = null;
+        if (audioResolve === finish) audioResolve = null;
+        resolve(success && token === playbackToken);
+      }
+      audioResolve = finish;
+      clip.onended = function () { finish(true); };
+      clip.onerror = function () {
+        setStatus("literacy.audioLoadFailed", true);
+        finish(false);
+      };
+      audioTimeoutTimer = setTimeout(function () {
+        if (clip.pause) clip.pause();
+        setStatus("literacy.audioLoadFailed", true);
+        finish(false);
+      }, 10000);
+      var playResult;
+      try {
+        playResult = clip.play();
+      } catch (error) {
+        setStatus("literacy.audioPlayFailed", true);
+        finish(false);
+        return;
+      }
+      if (playResult && typeof playResult.catch === "function") {
+        playResult.catch(function () {
+          setStatus("literacy.audioPlayFailed", true);
+          finish(false);
+        });
+      }
+    });
+  }
+
+  function waitForAudioGap(token) {
+    if (token !== playbackToken) return Promise.resolve(false);
+    return new Promise(function (resolve) {
+      audioGapResolve = resolve;
+      audioGapTimer = setTimeout(function () {
+        audioGapTimer = null;
+        audioGapResolve = null;
+        resolve(token === playbackToken);
+      }, 350);
+    });
+  }
+
+  function playPronunciationSequence(item, locales) {
+    cancelAudio();
+    var token = playbackToken;
+    var available = locales.filter(function (locale) {
+      return Boolean(item && item.pronunciation && item.pronunciation.audio[locale]);
+    });
+    function playAt(index) {
+      if (token !== playbackToken || index >= available.length) {
+        return Promise.resolve(token === playbackToken);
+      }
+      return playPreparedClip(available[index], token).then(function () {
+        if (token !== playbackToken || index === available.length - 1) {
+          return token === playbackToken;
+        }
+        return waitForAudioGap(token).then(function (continuePlayback) {
+          return continuePlayback ? playAt(index + 1) : false;
+        });
+      });
+    }
+    return playAt(0);
+  }
+
+  function runCardCycle(item) {
+    if (!running || !item) return;
+    if (!currentPreferences().autoSpeak) {
+      scheduleNext();
+      return;
+    }
+    playPronunciationSequence(item, ["zh-CN", "en-US"]).then(function (completed) {
+      if (completed && running && currentItem === item) scheduleNext();
+    });
+  }
+
+  function speakCurrent(locale) {
+    if (!currentItem || !currentItem.pronunciation.audio[locale]) return;
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    var item = currentItem;
+    playPronunciationSequence(item, [locale]).then(function (completed) {
+      if (completed && running && currentItem === item) scheduleNext();
+    });
+  }
+
   function showRandom() {
-    if (!activeItems.length) return;
+    if (!activeItems.length) return null;
     var candidates = activeItems;
     if (activeItems.length > 1 && lastItemId) {
       candidates = activeItems.filter(function (item) { return item.id !== lastItemId; });
     }
     var item = candidates[Math.floor(Math.random() * candidates.length)];
     lastItemId = item.id;
+    currentItem = item;
     renderItem(item);
+    return item;
   }
 
   function loadSelectedSource(showCard) {
@@ -481,6 +722,7 @@ var LiteracyTool = (function () {
       if (!container || sequence !== loadSequence) return false;
       activeSourceId = source.id;
       activeItems = items;
+      currentItem = null;
       lastItemId = "";
       setLoading(false);
       if (!items.length) {
@@ -493,6 +735,7 @@ var LiteracyTool = (function () {
     }).catch(function (error) {
       if (!container || sequence !== loadSequence) return false;
       activeItems = [];
+      currentItem = null;
       setLoading(false);
       setStatus("literacy.sourceLoadFailed", true);
       console.error("[literacy] data source failed:", source.id, error);
@@ -515,8 +758,8 @@ var LiteracyTool = (function () {
   function scheduleNext() {
     if (!running) return;
     timer = setTimeout(function () {
-      showRandom();
-      scheduleNext();
+      timer = null;
+      runCardCycle(showRandom());
     }, getInterval());
   }
 
@@ -532,13 +775,19 @@ var LiteracyTool = (function () {
     if (running || !container) return;
     var sourceId = container.querySelector("#literacy-source").value;
     var ready = sourceId === activeSourceId && activeItems.length;
-    var prepare = ready ? Promise.resolve(true) : loadSelectedSource(false);
-    prepare.then(function (loaded) {
-      if (!loaded || !container) return;
+    function beginPlayback() {
+      if (!container) return;
       running = true;
-      if (!lastItemId) showRandom();
+      var item = currentItem || showRandom();
       updatePlaybackControls();
-      scheduleNext();
+      runCardCycle(item);
+    }
+    if (ready) {
+      beginPlayback();
+      return;
+    }
+    loadSelectedSource(false).then(function (loaded) {
+      if (loaded) beginPlayback();
     });
   }
 
@@ -548,11 +797,14 @@ var LiteracyTool = (function () {
       clearTimeout(timer);
       timer = null;
     }
+    cancelAudio();
     updatePlaybackControls();
   }
 
   function stop() {
     pause();
+    clearPreparedAudio();
+    currentItem = null;
     lastItemId = "";
     var card = container && container.querySelector("#literacy-card");
     if (card) {
@@ -565,11 +817,12 @@ var LiteracyTool = (function () {
   function handleSourceChange() {
     var shouldResume = running;
     pause();
+    clearPreparedAudio();
     loadSelectedSource(true).then(function (loaded) {
       if (shouldResume && loaded && container) {
         running = true;
         updatePlaybackControls();
-        scheduleNext();
+        runCardCycle(currentItem);
       }
     });
   }
@@ -577,6 +830,7 @@ var LiteracyTool = (function () {
   function toggleFullscreen() {
     var stage = container && container.querySelector("#literacy-stage");
     if (!stage) return;
+    var wasFullscreen = isFullscreen;
     isFullscreen = !isFullscreen;
     stage.classList.toggle("is-viewport-fullscreen", isFullscreen);
     stage.classList.toggle("is-fullscreen", isFullscreen);
@@ -584,6 +838,14 @@ var LiteracyTool = (function () {
     var button = container.querySelector("#literacy-fullscreen");
     if (button) button.setAttribute("aria-pressed", String(isFullscreen));
     resizeStage();
+    if (wasFullscreen && running) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      cancelAudio();
+      scheduleNext();
+    }
   }
 
   function nativeFullscreen() {
@@ -605,12 +867,23 @@ var LiteracyTool = (function () {
       stage.style.height = "";
       return;
     }
-    var minimumHeight = window.innerWidth <= 760 ? 480 : 260;
+    var minimumHeight = window.innerWidth <= 760 ? 520 : 260;
     stage.style.height = Math.max(minimumHeight, window.innerHeight - stage.getBoundingClientRect().top - 20) + "px";
   }
 
   function handleKeydown(event) {
     if (event.key === "Escape" && isFullscreen) toggleFullscreen();
+  }
+
+  function handleNativeFullscreenChange() {
+    if (!document.fullscreenElement && running) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      cancelAudio();
+      scheduleNext();
+    }
   }
 
   function bindEvents() {
@@ -624,10 +897,22 @@ var LiteracyTool = (function () {
     container.querySelector("#literacy-font").addEventListener("change", function () {
       handleAppearanceChange(false);
     });
+    container.querySelector("#literacy-auto-speak").addEventListener("change", function () {
+      savePreferences(currentPreferences());
+      if (running && currentItem) {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        cancelAudio();
+        runCardCycle(currentItem);
+      }
+    });
     container.querySelector("#literacy-interval").addEventListener("input", function () {
       updateIntervalLabel();
-      if (running) {
+      if (running && timer) {
         clearTimeout(timer);
+        timer = null;
         scheduleNext();
       }
     });
@@ -640,6 +925,7 @@ var LiteracyTool = (function () {
     container.querySelector("#literacy-exit-fs").addEventListener("click", toggleFullscreen);
     container.querySelector("#literacy-native-fs").addEventListener("click", nativeFullscreen);
     document.addEventListener("keydown", handleKeydown);
+    document.addEventListener("fullscreenchange", handleNativeFullscreenChange);
     window.addEventListener("resize", resizeStage);
   }
 
@@ -669,6 +955,10 @@ var LiteracyTool = (function () {
                 '<input id="literacy-random-color" type="checkbox">' +
                 '<span>' + t("literacy.randomColor") + '</span>' +
               '</label>' +
+              '<label class="literacy-auto-speak" for="literacy-auto-speak">' +
+                '<input id="literacy-auto-speak" type="checkbox">' +
+                '<span>' + t("literacy.autoSpeak") + '</span>' +
+              '</label>' +
             '</div>' +
             '<p id="literacy-source-status" class="literacy-source-status" role="status" aria-live="polite"></p>' +
             '<label class="fn-expression-label" for="literacy-interval">' + t("literacy.interval") + ' <output id="literacy-interval-value">3s</output></label>' +
@@ -692,6 +982,7 @@ var LiteracyTool = (function () {
     container.querySelector("#literacy-color").value = preferences.color;
     container.querySelector("#literacy-random-color").checked = preferences.randomColor;
     container.querySelector("#literacy-font").value = preferences.font;
+    container.querySelector("#literacy-auto-speak").checked = preferences.autoSpeak;
     updateAppearanceControls();
     applyAppearance(false);
     updateIntervalLabel();
@@ -707,12 +998,16 @@ var LiteracyTool = (function () {
       clearTimeout(timer);
       timer = null;
     }
+    cancelAudio();
+    clearPreparedAudio();
     document.removeEventListener("keydown", handleKeydown);
+    document.removeEventListener("fullscreenchange", handleNativeFullscreenChange);
     window.removeEventListener("resize", resizeStage);
     document.body.classList.remove("ball-game-fullscreen-active");
     container = null;
     activeItems = [];
     activeSourceId = "";
+    currentItem = null;
     lastItemId = "";
     lastRandomColor = "";
     isFullscreen = false;
@@ -749,9 +1044,17 @@ var LiteracyTool = (function () {
     },
     __test: {
       normalizeItems: normalizeItems,
+      normalizePronunciation: normalizePronunciation,
+      letterItems: letterItems,
       localizedText: localizedText,
       randomColorForTheme: randomColorForTheme,
-      isValidColor: isValidColor
+      isValidColor: isValidColor,
+      setPreparedAudio: function (audio) {
+        clearPreparedAudio();
+        preparedAudio = audio || Object.create(null);
+      },
+      playPronunciationSequence: playPronunciationSequence,
+      cancelAudio: cancelAudio
     }
   };
 })();

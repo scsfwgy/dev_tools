@@ -4159,6 +4159,23 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 }
 .literacy-vocab { margin-top: 2px; }
 .literacy-number-pronunciation { margin-top: -4px; gap: 4px; }
+.literacy-speech-controls {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 4px;
+}
+.literacy-speech-button {
+  min-width: 118px; min-height: 44px; padding: 8px 16px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--select-bg); color: var(--text);
+  font: 700 14px/1.2 system-ui, sans-serif; cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s, transform .15s;
+}
+.literacy-speech-button:hover {
+  border-color: var(--accent); color: var(--accent); transform: translateY(-1px);
+}
+.literacy-speech-button:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
 .literacy-pinyin,
 .literacy-english,
 .literacy-phonetic {
@@ -4203,7 +4220,13 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
   display: flex; align-items: center; gap: 10px;
   color: var(--text); cursor: pointer;
 }
-.literacy-random-color input {
+.literacy-auto-speak {
+  grid-column: 1 / -1; min-height: 44px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text); cursor: pointer;
+}
+.literacy-random-color input,
+.literacy-auto-speak input {
   width: 20px; height: 20px; margin: 0; accent-color: var(--accent);
 }
 .literacy-credits-link {
@@ -4224,13 +4247,15 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .literacy-stage.is-fullscreen .literacy-image { max-height: min(60vh, 620px); }
 @media (max-width: 760px) {
   .literacy-char { font-size: clamp(80px, 30vw, 200px); }
-  .literacy-stage { min-height: 480px; }
-  .literacy-card { min-height: 480px; gap: 9px; padding: 16px; }
-  .literacy-image { max-width: 96%; max-height: min(38vh, 300px); border-radius: 12px; }
+  .literacy-stage { min-height: 520px; }
+  .literacy-card { min-height: 520px; gap: 8px; padding: 16px; }
+  .literacy-image { max-width: 96%; max-height: min(32vh, 260px); border-radius: 12px; }
   .literacy-pinyin { font-size: clamp(17px, 5vw, 22px); }
   .literacy-caption { font-size: clamp(24px, 8vw, 36px); }
   .literacy-english { font-size: clamp(19px, 6vw, 26px); }
   .literacy-phonetic { font-size: clamp(15px, 4.5vw, 20px); }
+  .literacy-speech-controls { gap: 8px; margin-top: 2px; }
+  .literacy-speech-button { min-width: 108px; padding-inline: 12px; }
 }
 .native-fullscreen-btn {
   padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;

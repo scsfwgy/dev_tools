@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "id": "core",
+  "description": {
+    "zh-CN": "儿童识字数字与英文字母发音数据。",
+    "en": "Pronunciation data for children's number and English letter cards."
+  },
+  "numbers": [
+    {
+      "id": "0",
+      "kind": "text",
+      "value": "0",
+      "label": "0",
+      "pronunciation": {
+        "chinese": "零",
+        "pinyin": "líng",
+        "english": "Zero",
+        "ipa": "/ˈzɪroʊ/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "1",
+      "kind": "text",
+      "value": "1",
+      "label": "1",
+      "pronunciation": {
+        "chinese": "一",
+        "pinyin": "yī",
+        "english": "One",
+        "ipa": "/wʌn/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "2",
+      "kind": "text",
+      "value": "2",
+      "label": "2",
+      "pronunciation": {
+        "chinese": "二",
+        "pinyin": "èr",
+        "english": "Two",
+        "ipa": "/tuː/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "3",
+      "kind": "text",
+      "value": "3",
+      "label": "3",
+      "pronunciation": {
+        "chinese": "三",
+        "pinyin": "sān",
+        "english": "Three",
+        "ipa": "/θriː/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "4",
+      "kind": "text",
+      "value": "4",
+      "label": "4",
+      "pronunciation": {
+        "chinese": "四",
+        "pinyin": "sì",
+        "english": "Four",
+        "ipa": "/fɔːr/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "5",
+      "kind": "text",
+      "value": "5",
+      "label": "5",
+      "pronunciation": {
+        "chinese": "五",
+        "pinyin": "wǔ",
+        "english": "Five",
+        "ipa": "/faɪv/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "6",
+      "kind": "text",
+      "value": "6",
+      "label": "6",
+      "pronunciation": {
+        "chinese": "六",
+        "pinyin": "liù",
+        "english": "Six",
+        "ipa": "/sɪks/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "7",
+      "kind": "text",
+      "value": "7",
+      "label": "7",
+      "pronunciation": {
+        "chinese": "七",
+        "pinyin": "qī",
+        "english": "Seven",
+        "ipa": "/ˈsevən/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "8",
+      "kind": "text",
+      "value": "8",
+      "label": "8",
+      "pronunciation": {
+        "chinese": "八",
+        "pinyin": "bā",
+        "english": "Eight",
+        "ipa": "/eɪt/",
+        "audio": {}
+      }
+    },
+    {
+      "id": "9",
+      "kind": "text",
+      "value": "9",
+      "label": "9",
+      "pronunciation": {
+        "chinese": "九",
+        "pinyin": "jiǔ",
+        "english": "Nine",
+        "ipa": "/naɪn/",
+        "audio": {}
+      }
+    }
+  ],
+  "letters": [
+    { "id": "a", "value": "A", "ipa": "/eɪ/", "audio": {} },
+    { "id": "b", "value": "B", "ipa": "/biː/", "audio": {} },
+    { "id": "c", "value": "C", "ipa": "/siː/", "audio": {} },
+    { "id": "d", "value": "D", "ipa": "/diː/", "audio": {} },
+    { "id": "e", "value": "E", "ipa": "/iː/", "audio": {} },
+    { "id": "f", "value": "F", "ipa": "/ef/", "audio": {} },
+    { "id": "g", "value": "G", "ipa": "/dʒiː/", "audio": {} },
+    { "id": "h", "value": "H", "ipa": "/eɪtʃ/", "audio": {} },
+    { "id": "i", "value": "I", "ipa": "/aɪ/", "audio": {} },
+    { "id": "j", "value": "J", "ipa": "/dʒeɪ/", "audio": {} },
+    { "id": "k", "value": "K", "ipa": "/keɪ/", "audio": {} },
+    { "id": "l", "value": "L", "ipa": "/el/", "audio": {} },
+    { "id": "m", "value": "M", "ipa": "/em/", "audio": {} },
+    { "id": "n", "value": "N", "ipa": "/en/", "audio": {} },
+    { "id": "o", "value": "O", "ipa": "/oʊ/", "audio": {} },
+    { "id": "p", "value": "P", "ipa": "/piː/", "audio": {} },
+    { "id": "q", "value": "Q", "ipa": "/kjuː/", "audio": {} },
+    { "id": "r", "value": "R", "ipa": "/ɑːr/", "audio": {} },
+    { "id": "s", "value": "S", "ipa": "/es/", "audio": {} },
+    { "id": "t", "value": "T", "ipa": "/tiː/", "audio": {} },
+    { "id": "u", "value": "U", "ipa": "/juː/", "audio": {} },
+    { "id": "v", "value": "V", "ipa": "/viː/", "audio": {} },
+    { "id": "w", "value": "W", "ipa": "/ˈdʌbəljuː/", "audio": {} },
+    { "id": "x", "value": "X", "ipa": "/eks/", "audio": {} },
+    { "id": "y", "value": "Y", "ipa": "/waɪ/", "audio": {} },
+    { "id": "z", "value": "Z", "ipa": "/ziː/", "audio": {} }
+  ]
+}
