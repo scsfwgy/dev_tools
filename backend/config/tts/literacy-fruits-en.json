@@ -6,28 +6,125 @@
   "provider": "volcengine",
   "description": "儿童识字 - 水果英文发音",
   "segments": [
-    {"text": "Apple", "filename": "fruits_apple_en-US"},
-    {"text": "Banana", "filename": "fruits_banana_en-US"},
-    {"text": "Orange", "filename": "fruits_orange_en-US"},
-    {"text": "Pear", "filename": "fruits_pear_en-US"},
-    {"text": "Grape", "filename": "fruits_grape_en-US"},
-    {"text": "Strawberry", "filename": "fruits_strawberry_en-US"},
-    {"text": "Watermelon", "filename": "fruits_watermelon_en-US"},
-    {"text": "Peach", "filename": "fruits_peach_en-US"},
-    {"text": "Mango", "filename": "fruits_mango_en-US"},
-    {"text": "Pineapple", "filename": "fruits_pineapple_en-US"},
-    {"text": "Cherry", "filename": "fruits_cherry_en-US"},
-    {"text": "Lemon", "filename": "fruits_lemon_en-US"},
-    {"text": "Kiwifruit", "filename": "fruits_kiwi_en-US"},
-    {"text": "Papaya", "filename": "fruits_papaya_en-US"},
-    {"text": "Blueberry", "filename": "fruits_blueberry_en-US"},
-    {"text": "Pomegranate", "filename": "fruits_pomegranate_en-US"},
-    {"text": "Coconut", "filename": "fruits_coconut_en-US"},
-    {"text": "Dragon fruit", "filename": "fruits_dragon-fruit_en-US"},
-    {"text": "Plum", "filename": "fruits_plum_en-US"},
-    {"text": "Persimmon", "filename": "fruits_persimmon_en-US"},
-    {"text": "Avocado", "filename": "fruits_avocado_en-US"},
-    {"text": "Pomelo", "filename": "fruits_pomelo_en-US"},
-    {"text": "Mandarin", "filename": "fruits_mandarin_en-US"}
+    {
+      "text": "Apple",
+      "filename": "fruits_apple_en-US"
+    },
+    {
+      "text": "Banana",
+      "filename": "fruits_banana_en-US"
+    },
+    {
+      "text": "Orange",
+      "filename": "fruits_orange_en-US"
+    },
+    {
+      "text": "Pear",
+      "filename": "fruits_pear_en-US"
+    },
+    {
+      "text": "Grape",
+      "filename": "fruits_grape_en-US"
+    },
+    {
+      "text": "Strawberry",
+      "filename": "fruits_strawberry_en-US"
+    },
+    {
+      "text": "Watermelon",
+      "filename": "fruits_watermelon_en-US"
+    },
+    {
+      "text": "Peach",
+      "filename": "fruits_peach_en-US"
+    },
+    {
+      "text": "Mango",
+      "filename": "fruits_mango_en-US"
+    },
+    {
+      "text": "Pineapple",
+      "filename": "fruits_pineapple_en-US"
+    },
+    {
+      "text": "Cherry",
+      "filename": "fruits_cherry_en-US"
+    },
+    {
+      "text": "Lemon",
+      "filename": "fruits_lemon_en-US"
+    },
+    {
+      "text": "Kiwifruit",
+      "filename": "fruits_kiwi_en-US"
+    },
+    {
+      "text": "Papaya",
+      "filename": "fruits_papaya_en-US"
+    },
+    {
+      "text": "Blueberry",
+      "filename": "fruits_blueberry_en-US"
+    },
+    {
+      "text": "Pomegranate",
+      "filename": "fruits_pomegranate_en-US"
+    },
+    {
+      "text": "Coconut",
+      "filename": "fruits_coconut_en-US"
+    },
+    {
+      "text": "Dragon fruit",
+      "filename": "fruits_dragon-fruit_en-US"
+    },
+    {
+      "text": "Plum",
+      "filename": "fruits_plum_en-US"
+    },
+    {
+      "text": "Persimmon",
+      "filename": "fruits_persimmon_en-US"
+    },
+    {
+      "text": "Avocado",
+      "filename": "fruits_avocado_en-US"
+    },
+    {
+      "text": "Pomelo",
+      "filename": "fruits_pomelo_en-US"
+    },
+    {
+      "text": "Mandarin",
+      "filename": "fruits_mandarin_en-US"
+    },
+    {
+      "text": "Cantaloupe",
+      "filename": "fruits_cantaloupe_en-US"
+    },
+    {
+      "text": "Lychee",
+      "filename": "fruits_lychee_en-US"
+    },
+    {
+      "text": "Longan",
+      "filename": "fruits_longan_en-US"
+    },
+    {
+      "text": "Durian",
+      "filename": "fruits_durian_en-US"
+    },
+    {
+      "text": "Passion fruit",
+      "filename": "fruits_passion-fruit_en-US"
+    },
+    {
+      "text": "Guava",
+      "filename": "fruits_guava_en-US"
+    },
+    {
+      "text": "Raspberry",
+      "filename": "fruits_raspberry_en-US"
+    }
   ]
 }
