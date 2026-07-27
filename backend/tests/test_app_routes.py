@@ -2814,6 +2814,8 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert en_locale["literacy"]["source"] == "Card data source"
     assert zh_locale["literacy"]["sourceAnimals"] == "常见动物（36 种）"
     assert zh_locale["literacy"]["sourceFruits"] == "常见水果（30 种）"
+    assert zh_locale["literacy"]["sourcePlants"] == "常见植物（22 种）"
+    assert en_locale["literacy"]["sourcePlants"] == "Common plants (22)"
     assert en_locale["literacy"]["imageCredits"] == "View current image sources and licenses"
     assert zh_locale["literacy"]["randomColor"] == "每张卡片随机颜色"
     assert zh_locale["literacy"]["autoSpeak"] == "自动朗读中文和英文"

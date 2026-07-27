@@ -36,6 +36,7 @@ var LiteracyTool = (function () {
   var CORE_MANIFEST_URL = versionedAssetUrl("/audio/literacy/core-manifest.json");
   var ANIMALS_MANIFEST_URL = versionedAssetUrl("/images/literacy/animals/manifest.json");
   var FRUITS_MANIFEST_URL = versionedAssetUrl("/images/literacy/fruits/manifest.json");
+  var PLANTS_MANIFEST_URL = versionedAssetUrl("/images/literacy/plants/manifest.json");
   var FONT_OPTIONS = {
     rounded: {
       family: '"Arial Rounded MT Bold","PingFang SC","Microsoft YaHei",system-ui,sans-serif',
@@ -298,6 +299,36 @@ var LiteracyTool = (function () {
           return manifest.items;
         });
       }
+    });
+    registerDataSource({
+      id: "plants",
+      labelKey: "literacy.sourcePlants",
+      audioCategory: "plants",
+      defaultKind: "emoji",
+      items: [
+        {"id": "flower",          "kind": "emoji", "value": "🌸", "label": {"zh-CN": "花",     "en": "Flower"},          "pronunciation": {"pinyin": "huā",            "english": "Flower",          "ipa": "/ˈflaʊər/"}},
+        {"id": "tree",            "kind": "emoji", "value": "🌳", "label": {"zh-CN": "树",     "en": "Tree"},            "pronunciation": {"pinyin": "shù",            "english": "Tree",            "ipa": "/triː/"}},
+        {"id": "grass",           "kind": "emoji", "value": "🌿", "label": {"zh-CN": "草",     "en": "Grass"},           "pronunciation": {"pinyin": "cǎo",            "english": "Grass",           "ipa": "/ɡræs/"}},
+        {"id": "leaf",            "kind": "emoji", "value": "🍃", "label": {"zh-CN": "叶子",   "en": "Leaf"},            "pronunciation": {"pinyin": "yè zi",          "english": "Leaf",            "ipa": "/liːf/"}},
+        {"id": "sunflower",       "kind": "emoji", "value": "🌻", "label": {"zh-CN": "向日葵", "en": "Sunflower"},       "pronunciation": {"pinyin": "xiàng rì kuí",   "english": "Sunflower",       "ipa": "/ˈsʌnflaʊər/"}},
+        {"id": "rose",            "kind": "emoji", "value": "🌹", "label": {"zh-CN": "玫瑰",   "en": "Rose"},            "pronunciation": {"pinyin": "méi guī",        "english": "Rose",            "ipa": "/roʊz/"}},
+        {"id": "chrysanthemum",   "kind": "emoji", "value": "🌼", "label": {"zh-CN": "菊花",   "en": "Chrysanthemum"},   "pronunciation": {"pinyin": "jú huā",         "english": "Chrysanthemum",   "ipa": "/krɪˈsænθəməm/"}},
+        {"id": "plum-blossom",    "kind": "emoji", "value": "🏵️",  "label": {"zh-CN": "梅花",   "en": "Plum blossom"},    "pronunciation": {"pinyin": "méi huā",        "english": "Plum blossom",    "ipa": "/plʌm ˈblɑsəm/"}},
+        {"id": "orchid",          "kind": "emoji", "value": "🌺", "label": {"zh-CN": "兰花",   "en": "Orchid"},          "pronunciation": {"pinyin": "lán huā",        "english": "Orchid",          "ipa": "/ˈɔːrkɪd/"}},
+        {"id": "bamboo",          "kind": "emoji", "value": "🎋", "label": {"zh-CN": "竹子",   "en": "Bamboo"},          "pronunciation": {"pinyin": "zhú zi",         "english": "Bamboo",          "ipa": "/bæmˈbuː/"}},
+        {"id": "lotus",           "kind": "emoji", "value": "🪷", "label": {"zh-CN": "荷花",   "en": "Lotus"},           "pronunciation": {"pinyin": "hé huā",         "english": "Lotus",           "ipa": "/ˈloʊtəs/"}},
+        {"id": "peony",           "kind": "emoji", "value": "💐", "label": {"zh-CN": "牡丹",   "en": "Peony"},           "pronunciation": {"pinyin": "mǔ dān",         "english": "Peony",           "ipa": "/ˈpiːəni/"}},
+        {"id": "cherry-blossom",  "kind": "emoji", "value": "🌸", "label": {"zh-CN": "樱花",   "en": "Cherry blossom"},  "pronunciation": {"pinyin": "yīng huā",       "english": "Cherry blossom",  "ipa": "/ˈtʃeri ˈblɑsəm/"}},
+        {"id": "cactus",          "kind": "emoji", "value": "🌵", "label": {"zh-CN": "仙人掌", "en": "Cactus"},          "pronunciation": {"pinyin": "xiān rén zhǎng", "english": "Cactus",          "ipa": "/ˈkæktəs/"}},
+        {"id": "pine",            "kind": "emoji", "value": "🌲", "label": {"zh-CN": "松树",   "en": "Pine"},            "pronunciation": {"pinyin": "sōng shù",       "english": "Pine",            "ipa": "/paɪn/"}},
+        {"id": "willow",          "kind": "emoji", "value": "🌿", "label": {"zh-CN": "柳树",   "en": "Willow"},          "pronunciation": {"pinyin": "liǔ shù",        "english": "Willow",          "ipa": "/ˈwɪloʊ/"}},
+        {"id": "dandelion",       "kind": "emoji", "value": "🌼", "label": {"zh-CN": "蒲公英", "en": "Dandelion"},       "pronunciation": {"pinyin": "pú gōng yīng",   "english": "Dandelion",       "ipa": "/ˈdændɪlaɪən/"}},
+        {"id": "lily",            "kind": "emoji", "value": "🌷", "label": {"zh-CN": "百合",   "en": "Lily"},            "pronunciation": {"pinyin": "bǎi hé",         "english": "Lily",            "ipa": "/ˈlɪli/"}},
+        {"id": "tulip",           "kind": "emoji", "value": "🌷", "label": {"zh-CN": "郁金香", "en": "Tulip"},           "pronunciation": {"pinyin": "yù jīn xiāng",   "english": "Tulip",           "ipa": "/ˈtuːlɪp/"}},
+        {"id": "lavender",        "kind": "emoji", "value": "💜", "label": {"zh-CN": "薰衣草", "en": "Lavender"},        "pronunciation": {"pinyin": "xūn yī cǎo",     "english": "Lavender",        "ipa": "/ˈlævəndər/"}},
+        {"id": "maple",           "kind": "emoji", "value": "🍁", "label": {"zh-CN": "枫树",   "en": "Maple"},           "pronunciation": {"pinyin": "fēng shù",       "english": "Maple",           "ipa": "/ˈmeɪpəl/"}},
+        {"id": "mushroom",        "kind": "emoji", "value": "🍄", "label": {"zh-CN": "蘑菇",   "en": "Mushroom"},        "pronunciation": {"pinyin": "mó gu",          "english": "Mushroom",        "ipa": "/ˈmʌʃruːm/"}}
+      ]
     });
   }
 
