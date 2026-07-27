@@ -15,8 +15,7 @@
         "chinese": "零",
         "pinyin": "líng",
         "english": "Zero",
-        "ipa": "/ˈzɪroʊ/",
-        "audio": {}
+        "ipa": "/ˈzɪroʊ/"
       }
     },
     {
@@ -28,8 +27,7 @@
         "chinese": "一",
         "pinyin": "yī",
         "english": "One",
-        "ipa": "/wʌn/",
-        "audio": {}
+        "ipa": "/wʌn/"
       }
     },
     {
@@ -41,8 +39,7 @@
         "chinese": "二",
         "pinyin": "èr",
         "english": "Two",
-        "ipa": "/tuː/",
-        "audio": {}
+        "ipa": "/tuː/"
       }
     },
     {
@@ -54,8 +51,7 @@
         "chinese": "三",
         "pinyin": "sān",
         "english": "Three",
-        "ipa": "/θriː/",
-        "audio": {}
+        "ipa": "/θriː/"
       }
     },
     {
@@ -67,8 +63,7 @@
         "chinese": "四",
         "pinyin": "sì",
         "english": "Four",
-        "ipa": "/fɔːr/",
-        "audio": {}
+        "ipa": "/fɔːr/"
       }
     },
     {
@@ -80,8 +75,7 @@
         "chinese": "五",
         "pinyin": "wǔ",
         "english": "Five",
-        "ipa": "/faɪv/",
-        "audio": {}
+        "ipa": "/faɪv/"
       }
     },
     {
@@ -93,8 +87,7 @@
         "chinese": "六",
         "pinyin": "liù",
         "english": "Six",
-        "ipa": "/sɪks/",
-        "audio": {}
+        "ipa": "/sɪks/"
       }
     },
     {
@@ -106,8 +99,7 @@
         "chinese": "七",
         "pinyin": "qī",
         "english": "Seven",
-        "ipa": "/ˈsevən/",
-        "audio": {}
+        "ipa": "/ˈsevən/"
       }
     },
     {
@@ -119,8 +111,7 @@
         "chinese": "八",
         "pinyin": "bā",
         "english": "Eight",
-        "ipa": "/eɪt/",
-        "audio": {}
+        "ipa": "/eɪt/"
       }
     },
     {
@@ -132,37 +123,36 @@
         "chinese": "九",
         "pinyin": "jiǔ",
         "english": "Nine",
-        "ipa": "/naɪn/",
-        "audio": {}
+        "ipa": "/naɪn/"
       }
     }
   ],
   "letters": [
-    { "id": "a", "value": "A", "ipa": "/eɪ/", "audio": {} },
-    { "id": "b", "value": "B", "ipa": "/biː/", "audio": {} },
-    { "id": "c", "value": "C", "ipa": "/siː/", "audio": {} },
-    { "id": "d", "value": "D", "ipa": "/diː/", "audio": {} },
-    { "id": "e", "value": "E", "ipa": "/iː/", "audio": {} },
-    { "id": "f", "value": "F", "ipa": "/ef/", "audio": {} },
-    { "id": "g", "value": "G", "ipa": "/dʒiː/", "audio": {} },
-    { "id": "h", "value": "H", "ipa": "/eɪtʃ/", "audio": {} },
-    { "id": "i", "value": "I", "ipa": "/aɪ/", "audio": {} },
-    { "id": "j", "value": "J", "ipa": "/dʒeɪ/", "audio": {} },
-    { "id": "k", "value": "K", "ipa": "/keɪ/", "audio": {} },
-    { "id": "l", "value": "L", "ipa": "/el/", "audio": {} },
-    { "id": "m", "value": "M", "ipa": "/em/", "audio": {} },
-    { "id": "n", "value": "N", "ipa": "/en/", "audio": {} },
-    { "id": "o", "value": "O", "ipa": "/oʊ/", "audio": {} },
-    { "id": "p", "value": "P", "ipa": "/piː/", "audio": {} },
-    { "id": "q", "value": "Q", "ipa": "/kjuː/", "audio": {} },
-    { "id": "r", "value": "R", "ipa": "/ɑːr/", "audio": {} },
-    { "id": "s", "value": "S", "ipa": "/es/", "audio": {} },
-    { "id": "t", "value": "T", "ipa": "/tiː/", "audio": {} },
-    { "id": "u", "value": "U", "ipa": "/juː/", "audio": {} },
-    { "id": "v", "value": "V", "ipa": "/viː/", "audio": {} },
-    { "id": "w", "value": "W", "ipa": "/ˈdʌbəljuː/", "audio": {} },
-    { "id": "x", "value": "X", "ipa": "/eks/", "audio": {} },
-    { "id": "y", "value": "Y", "ipa": "/waɪ/", "audio": {} },
-    { "id": "z", "value": "Z", "ipa": "/ziː/", "audio": {} }
+    { "id": "a", "value": "A", "ipa": "/eɪ/" },
+    { "id": "b", "value": "B", "ipa": "/biː/" },
+    { "id": "c", "value": "C", "ipa": "/siː/" },
+    { "id": "d", "value": "D", "ipa": "/diː/" },
+    { "id": "e", "value": "E", "ipa": "/iː/" },
+    { "id": "f", "value": "F", "ipa": "/ef/" },
+    { "id": "g", "value": "G", "ipa": "/dʒiː/" },
+    { "id": "h", "value": "H", "ipa": "/eɪtʃ/" },
+    { "id": "i", "value": "I", "ipa": "/aɪ/" },
+    { "id": "j", "value": "J", "ipa": "/dʒeɪ/" },
+    { "id": "k", "value": "K", "ipa": "/keɪ/" },
+    { "id": "l", "value": "L", "ipa": "/el/" },
+    { "id": "m", "value": "M", "ipa": "/em/" },
+    { "id": "n", "value": "N", "ipa": "/en/" },
+    { "id": "o", "value": "O", "ipa": "/oʊ/" },
+    { "id": "p", "value": "P", "ipa": "/piː/" },
+    { "id": "q", "value": "Q", "ipa": "/kjuː/" },
+    { "id": "r", "value": "R", "ipa": "/ɑːr/" },
+    { "id": "s", "value": "S", "ipa": "/es/" },
+    { "id": "t", "value": "T", "ipa": "/tiː/" },
+    { "id": "u", "value": "U", "ipa": "/juː/" },
+    { "id": "v", "value": "V", "ipa": "/viː/" },
+    { "id": "w", "value": "W", "ipa": "/ˈdʌbəljuː/" },
+    { "id": "x", "value": "X", "ipa": "/eks/" },
+    { "id": "y", "value": "Y", "ipa": "/waɪ/" },
+    { "id": "z", "value": "Z", "ipa": "/ziː/" }
   ]
 }
