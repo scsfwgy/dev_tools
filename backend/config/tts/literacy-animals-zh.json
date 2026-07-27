@@ -1,0 +1,32 @@
+{
+  "output_dir": "./tts-output/literacy/animals",
+  "speaker": "zh_female_xiaoxue_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 动物中文发音",
+  "segments": [
+    {"text": "猫", "filename": "animals_cat_zh-CN"},
+    {"text": "狗", "filename": "animals_dog_zh-CN"},
+    {"text": "兔子", "filename": "animals_rabbit_zh-CN"},
+    {"text": "奶牛", "filename": "animals_cow_zh-CN"},
+    {"text": "马", "filename": "animals_horse_zh-CN"},
+    {"text": "猪", "filename": "animals_pig_zh-CN"},
+    {"text": "鸡", "filename": "animals_chicken_zh-CN"},
+    {"text": "鸭子", "filename": "animals_duck_zh-CN"},
+    {"text": "大象", "filename": "animals_elephant_zh-CN"},
+    {"text": "长颈鹿", "filename": "animals_giraffe_zh-CN"},
+    {"text": "大熊猫", "filename": "animals_panda_zh-CN"},
+    {"text": "老虎", "filename": "animals_tiger_zh-CN"},
+    {"text": "狮子", "filename": "animals_lion_zh-CN"},
+    {"text": "斑马", "filename": "animals_zebra_zh-CN"},
+    {"text": "狐狸", "filename": "animals_fox_zh-CN"},
+    {"text": "棕熊", "filename": "animals_bear_zh-CN"},
+    {"text": "袋鼠", "filename": "animals_kangaroo_zh-CN"},
+    {"text": "企鹅", "filename": "animals_penguin_zh-CN"},
+    {"text": "青蛙", "filename": "animals_frog_zh-CN"},
+    {"text": "海龟", "filename": "animals_turtle_zh-CN"},
+    {"text": "金鱼", "filename": "animals_fish_zh-CN"},
+    {"text": "猴子", "filename": "animals_monkey_zh-CN"}
+  ]
+}

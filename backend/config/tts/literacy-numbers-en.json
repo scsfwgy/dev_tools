@@ -1,0 +1,20 @@
+{
+  "output_dir": "./tts-output/literacy/numbers",
+  "speaker": "en_female_stokie_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 数字英文发音 (0-9)",
+  "segments": [
+    {"text": "Zero", "filename": "numbers_0_en-US"},
+    {"text": "One", "filename": "numbers_1_en-US"},
+    {"text": "Two", "filename": "numbers_2_en-US"},
+    {"text": "Three", "filename": "numbers_3_en-US"},
+    {"text": "Four", "filename": "numbers_4_en-US"},
+    {"text": "Five", "filename": "numbers_5_en-US"},
+    {"text": "Six", "filename": "numbers_6_en-US"},
+    {"text": "Seven", "filename": "numbers_7_en-US"},
+    {"text": "Eight", "filename": "numbers_8_en-US"},
+    {"text": "Nine", "filename": "numbers_9_en-US"}
+  ]
+}

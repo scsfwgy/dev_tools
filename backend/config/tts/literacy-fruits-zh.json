@@ -1,0 +1,33 @@
+{
+  "output_dir": "./tts-output/literacy/fruits",
+  "speaker": "zh_female_xiaoxue_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 水果中文发音",
+  "segments": [
+    {"text": "苹果", "filename": "fruits_apple_zh-CN"},
+    {"text": "香蕉", "filename": "fruits_banana_zh-CN"},
+    {"text": "橙子", "filename": "fruits_orange_zh-CN"},
+    {"text": "梨", "filename": "fruits_pear_zh-CN"},
+    {"text": "葡萄", "filename": "fruits_grape_zh-CN"},
+    {"text": "草莓", "filename": "fruits_strawberry_zh-CN"},
+    {"text": "西瓜", "filename": "fruits_watermelon_zh-CN"},
+    {"text": "桃子", "filename": "fruits_peach_zh-CN"},
+    {"text": "芒果", "filename": "fruits_mango_zh-CN"},
+    {"text": "菠萝", "filename": "fruits_pineapple_zh-CN"},
+    {"text": "樱桃", "filename": "fruits_cherry_zh-CN"},
+    {"text": "柠檬", "filename": "fruits_lemon_zh-CN"},
+    {"text": "猕猴桃", "filename": "fruits_kiwi_zh-CN"},
+    {"text": "木瓜", "filename": "fruits_papaya_zh-CN"},
+    {"text": "蓝莓", "filename": "fruits_blueberry_zh-CN"},
+    {"text": "石榴", "filename": "fruits_pomegranate_zh-CN"},
+    {"text": "椰子", "filename": "fruits_coconut_zh-CN"},
+    {"text": "火龙果", "filename": "fruits_dragon-fruit_zh-CN"},
+    {"text": "李子", "filename": "fruits_plum_zh-CN"},
+    {"text": "柿子", "filename": "fruits_persimmon_zh-CN"},
+    {"text": "牛油果", "filename": "fruits_avocado_zh-CN"},
+    {"text": "柚子", "filename": "fruits_pomelo_zh-CN"},
+    {"text": "橘子", "filename": "fruits_mandarin_zh-CN"}
+  ]
+}

@@ -1,0 +1,1812 @@
+{
+  "schemaVersion": 1,
+  "id": "literacy-audio-volcengine",
+  "provider": "Volcengine TTS (seed-tts-2.0)",
+  "speakers": {
+    "zh-CN": "zh_female_xiaoxue_uranus_bigtts",
+    "en-US": "en_female_stokie_uranus_bigtts"
+  },
+  "speed": 0.85,
+  "clips": [
+    {
+      "category": "numbers",
+      "id": "0",
+      "locale": "zh-CN",
+      "text": "零",
+      "filename": "numbers_0_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_0_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "a4d96329be3e2fd4a8e92f25d1556d240ec191f517ec14162275e5e5268a0540"
+    },
+    {
+      "category": "numbers",
+      "id": "0",
+      "locale": "en-US",
+      "text": "Zero",
+      "filename": "numbers_0_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_0_en-US.mp3",
+      "size": 20013,
+      "sha256": "dbb892e9e3ed5eb6ba6f3cc9d69a064e1775acdd4221018bb68720e4e2b8fd79"
+    },
+    {
+      "category": "numbers",
+      "id": "1",
+      "locale": "zh-CN",
+      "text": "一",
+      "filename": "numbers_1_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_1_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "9f6c0e8a2c9bb6dd3dd84056861bb9b53c29f8e5af806120f78f820550cbb3b8"
+    },
+    {
+      "category": "numbers",
+      "id": "1",
+      "locale": "en-US",
+      "text": "One",
+      "filename": "numbers_1_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_1_en-US.mp3",
+      "size": 15789,
+      "sha256": "95bb5603fdda19ab832fa35178ab61f1a72d24cc3786634278741abea6626393"
+    },
+    {
+      "category": "numbers",
+      "id": "2",
+      "locale": "zh-CN",
+      "text": "二",
+      "filename": "numbers_2_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_2_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "f1c4408135689c1f5a725bc2227a725da54fc3e24c1751fc210dde4e6d35a641"
+    },
+    {
+      "category": "numbers",
+      "id": "2",
+      "locale": "en-US",
+      "text": "Two",
+      "filename": "numbers_2_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_2_en-US.mp3",
+      "size": 20013,
+      "sha256": "6a2078caebc885f889bbf85d1b237b4202d00a4f43036e6de4818c385ff1f1ba"
+    },
+    {
+      "category": "numbers",
+      "id": "3",
+      "locale": "zh-CN",
+      "text": "三",
+      "filename": "numbers_3_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_3_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "7658790a34dd026f1075e08df96605cceec90d04fc294670ed3c37d374257ab8"
+    },
+    {
+      "category": "numbers",
+      "id": "3",
+      "locale": "en-US",
+      "text": "Three",
+      "filename": "numbers_3_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_3_en-US.mp3",
+      "size": 23085,
+      "sha256": "16d130b9ea5120fe7911b30705eb85b65bc983eab901f3f33a2bfbd3ec0f2770"
+    },
+    {
+      "category": "numbers",
+      "id": "4",
+      "locale": "zh-CN",
+      "text": "四",
+      "filename": "numbers_4_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_4_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "048d403c52ce101572eba1d3c6d8c6c2d41bfa2857817b70f0afc667d137f2e8"
+    },
+    {
+      "category": "numbers",
+      "id": "4",
+      "locale": "en-US",
+      "text": "Four",
+      "filename": "numbers_4_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_4_en-US.mp3",
+      "size": 19629,
+      "sha256": "3bc0cdda98c06080be290b4b04e63042ccdcf4e84917668a92fb55fe6ce7f7e5"
+    },
+    {
+      "category": "numbers",
+      "id": "5",
+      "locale": "zh-CN",
+      "text": "五",
+      "filename": "numbers_5_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_5_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "4fffdb63b99e43505ff24728c10e54962a24e1420434d7161c999d45c76801cf"
+    },
+    {
+      "category": "numbers",
+      "id": "5",
+      "locale": "en-US",
+      "text": "Five",
+      "filename": "numbers_5_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_5_en-US.mp3",
+      "size": 20013,
+      "sha256": "86b3e19ce5aaa357adc6e9fcdd0a696f3ba87bdaf479352d3c639a19ba029572"
+    },
+    {
+      "category": "numbers",
+      "id": "6",
+      "locale": "zh-CN",
+      "text": "六",
+      "filename": "numbers_6_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_6_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "d3c7bb68c48557c4a86085487f340f9fc828d8d0ba2c01abaf17b2e31d62e421"
+    },
+    {
+      "category": "numbers",
+      "id": "6",
+      "locale": "en-US",
+      "text": "Six",
+      "filename": "numbers_6_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_6_en-US.mp3",
+      "size": 19629,
+      "sha256": "8329d01ca16bc350b059a6f79ef3b91f9aeac7a942caea791633ae1f5877f8ed"
+    },
+    {
+      "category": "numbers",
+      "id": "7",
+      "locale": "zh-CN",
+      "text": "七",
+      "filename": "numbers_7_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_7_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "acbc7e877ae941a47b88af41b587b521ac0c50f2a537da724aa111b500add978"
+    },
+    {
+      "category": "numbers",
+      "id": "7",
+      "locale": "en-US",
+      "text": "Seven",
+      "filename": "numbers_7_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_7_en-US.mp3",
+      "size": 19629,
+      "sha256": "81b61615d0cd14ea91d84a00f5cdfb20b72d82de7754445268e074835247553c"
+    },
+    {
+      "category": "numbers",
+      "id": "8",
+      "locale": "zh-CN",
+      "text": "八",
+      "filename": "numbers_8_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_8_zh-CN.mp3",
+      "size": 20013,
+      "sha256": "76d1ea13d7ee4596cbaaa6a57da49239d7601b724b946669baaed151f057de74"
+    },
+    {
+      "category": "numbers",
+      "id": "8",
+      "locale": "en-US",
+      "text": "Eight",
+      "filename": "numbers_8_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_8_en-US.mp3",
+      "size": 15789,
+      "sha256": "f3766987d387301ef613e208f343e6708cbb09172e223eb6b5489f9e84213c40"
+    },
+    {
+      "category": "numbers",
+      "id": "9",
+      "locale": "zh-CN",
+      "text": "九",
+      "filename": "numbers_9_zh-CN.mp3",
+      "path": "/audio/literacy/numbers/numbers_9_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "27f1e3af72b91e83e5489f6923f6e552616b46127aa8c6f12caa28b405cf3877"
+    },
+    {
+      "category": "numbers",
+      "id": "9",
+      "locale": "en-US",
+      "text": "Nine",
+      "filename": "numbers_9_en-US.mp3",
+      "path": "/audio/literacy/numbers/numbers_9_en-US.mp3",
+      "size": 23085,
+      "sha256": "11e8ecf91d1fb07b45cbe7a6a61b069af29870811212bb3487955298cf0504cd"
+    },
+    {
+      "category": "letters",
+      "id": "a",
+      "locale": "en-US",
+      "text": "A",
+      "filename": "letters_a_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_a_en-US.mp3",
+      "size": 15789,
+      "sha256": "cbdab5a2eb90ae17f7533068077dbc79ab7f33feb881e6f73c747bce8e4304ed"
+    },
+    {
+      "category": "letters",
+      "id": "b",
+      "locale": "en-US",
+      "text": "B",
+      "filename": "letters_b_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_b_en-US.mp3",
+      "size": 20013,
+      "sha256": "c27e91ded9a88c85add96d880b88aede0b398764d01527b5c0ab28d22a1ede9c"
+    },
+    {
+      "category": "letters",
+      "id": "c",
+      "locale": "en-US",
+      "text": "C",
+      "filename": "letters_c_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_c_en-US.mp3",
+      "size": 19629,
+      "sha256": "449acc25a9df0da9c265e44531f6785d3a2bab660a9b42b7589c8e4a243c4397"
+    },
+    {
+      "category": "letters",
+      "id": "d",
+      "locale": "en-US",
+      "text": "D",
+      "filename": "letters_d_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_d_en-US.mp3",
+      "size": 20013,
+      "sha256": "8fe49e76694cd54b8df99c04b27ecaeddd73c3415aa4348d5c7618e549de6830"
+    },
+    {
+      "category": "letters",
+      "id": "e",
+      "locale": "en-US",
+      "text": "E",
+      "filename": "letters_e_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_e_en-US.mp3",
+      "size": 15789,
+      "sha256": "0a60396f4dcabe46f5b6deda12d2c640517a42f9c44e022f624dfbcaf088e074"
+    },
+    {
+      "category": "letters",
+      "id": "f",
+      "locale": "en-US",
+      "text": "F",
+      "filename": "letters_f_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_f_en-US.mp3",
+      "size": 15789,
+      "sha256": "a31cff66e15a67d868c8b7949f7f39e6485bab79fc5f2bc60be3408934dbffd1"
+    },
+    {
+      "category": "letters",
+      "id": "g",
+      "locale": "en-US",
+      "text": "G",
+      "filename": "letters_g_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_g_en-US.mp3",
+      "size": 20013,
+      "sha256": "d2176ee6d8e89509dc4626eeee3a1802a9ddb769c8695d831ca62539e43d8e3e"
+    },
+    {
+      "category": "letters",
+      "id": "h",
+      "locale": "en-US",
+      "text": "H",
+      "filename": "letters_h_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_h_en-US.mp3",
+      "size": 15405,
+      "sha256": "705c0689a0b9bd2c622bbdeba13843b8286954b0aa52d9bf687fc77ec212c7fc"
+    },
+    {
+      "category": "letters",
+      "id": "i",
+      "locale": "en-US",
+      "text": "I",
+      "filename": "letters_i_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_i_en-US.mp3",
+      "size": 15789,
+      "sha256": "fce1e1f2143fd3664617b396401a0c84f3f9f5eadef20d5f159649393c10939f"
+    },
+    {
+      "category": "letters",
+      "id": "j",
+      "locale": "en-US",
+      "text": "J",
+      "filename": "letters_j_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_j_en-US.mp3",
+      "size": 23085,
+      "sha256": "28397dc99ccdd37e2eab700ab12b704389bf1c62075d8d1a5023819a4382fd20"
+    },
+    {
+      "category": "letters",
+      "id": "k",
+      "locale": "en-US",
+      "text": "K",
+      "filename": "letters_k_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_k_en-US.mp3",
+      "size": 20013,
+      "sha256": "0487462a4f68c304a8954e8925af89a4dd627d1847d3244dd226f9c6c882a581"
+    },
+    {
+      "category": "letters",
+      "id": "l",
+      "locale": "en-US",
+      "text": "L",
+      "filename": "letters_l_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_l_en-US.mp3",
+      "size": 20013,
+      "sha256": "04390b53760158d0a188d293f5188d6c90ffd102ad91e954b3d62ef801862daf"
+    },
+    {
+      "category": "letters",
+      "id": "m",
+      "locale": "en-US",
+      "text": "M",
+      "filename": "letters_m_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_m_en-US.mp3",
+      "size": 15789,
+      "sha256": "05f71f66606a9112c6f20b01a5272b5ff28e1124a64144923d9125dbb1a62119"
+    },
+    {
+      "category": "letters",
+      "id": "n",
+      "locale": "en-US",
+      "text": "N",
+      "filename": "letters_n_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_n_en-US.mp3",
+      "size": 20013,
+      "sha256": "a843cbc034c0c1386741119c227c1564f8636e301bbae4cb9cbfa1a4179ee71c"
+    },
+    {
+      "category": "letters",
+      "id": "o",
+      "locale": "en-US",
+      "text": "O",
+      "filename": "letters_o_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_o_en-US.mp3",
+      "size": 15789,
+      "sha256": "9d30763ff8020b97c794bc11765420e475c199c502c43a854d70033037e2b6c6"
+    },
+    {
+      "category": "letters",
+      "id": "p",
+      "locale": "en-US",
+      "text": "P",
+      "filename": "letters_p_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_p_en-US.mp3",
+      "size": 20013,
+      "sha256": "958f297cfc7ba4d24311c1c8a3f53a2a8e8708f057b340bf4c5b656246fc11a0"
+    },
+    {
+      "category": "letters",
+      "id": "q",
+      "locale": "en-US",
+      "text": "Q",
+      "filename": "letters_q_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_q_en-US.mp3",
+      "size": 20013,
+      "sha256": "4447f869186988c404c9673ac6db8223bae4e45ae44a81dd11821c73d24421d7"
+    },
+    {
+      "category": "letters",
+      "id": "r",
+      "locale": "en-US",
+      "text": "R",
+      "filename": "letters_r_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_r_en-US.mp3",
+      "size": 20013,
+      "sha256": "91188b834ab851a0104fda8aed82eb6bcabc507a694b9a5f1a7f47b6721ed099"
+    },
+    {
+      "category": "letters",
+      "id": "s",
+      "locale": "en-US",
+      "text": "S",
+      "filename": "letters_s_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_s_en-US.mp3",
+      "size": 20013,
+      "sha256": "20c60f4dfe9f2a5193bc465b0a57feca91a73891323e74cff919e7e45d4eedcb"
+    },
+    {
+      "category": "letters",
+      "id": "t",
+      "locale": "en-US",
+      "text": "T",
+      "filename": "letters_t_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_t_en-US.mp3",
+      "size": 20013,
+      "sha256": "2e3bde34c56905e783f406c8eb8d61035454d01b76dbc4402d400612133f15ae"
+    },
+    {
+      "category": "letters",
+      "id": "u",
+      "locale": "en-US",
+      "text": "U",
+      "filename": "letters_u_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_u_en-US.mp3",
+      "size": 20013,
+      "sha256": "bdd651b7175f3f82847c34fd691e0fbef1737f74894716013c335dd915a3576c"
+    },
+    {
+      "category": "letters",
+      "id": "v",
+      "locale": "en-US",
+      "text": "V",
+      "filename": "letters_v_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_v_en-US.mp3",
+      "size": 19629,
+      "sha256": "5b80144f64fd8c24dbf399b48df066ef74c3a5ee57dc566da2a81030536a5676"
+    },
+    {
+      "category": "letters",
+      "id": "w",
+      "locale": "en-US",
+      "text": "W",
+      "filename": "letters_w_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_w_en-US.mp3",
+      "size": 20013,
+      "sha256": "25d7db15c9a7e59cc2d6ab24dedbb806fee51ff2672ab61510c165eabead7613"
+    },
+    {
+      "category": "letters",
+      "id": "x",
+      "locale": "en-US",
+      "text": "X",
+      "filename": "letters_x_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_x_en-US.mp3",
+      "size": 20013,
+      "sha256": "2235ce0c752ac2596a79721c8c1a4c3fdccc84239e4dbd6c7d677bb2aa5a38db"
+    },
+    {
+      "category": "letters",
+      "id": "y",
+      "locale": "en-US",
+      "text": "Y",
+      "filename": "letters_y_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_y_en-US.mp3",
+      "size": 20013,
+      "sha256": "6c77e9e02efc0375fcc1190caa9c531ab6423e82b05ba8d01cd3688d78f71d2c"
+    },
+    {
+      "category": "letters",
+      "id": "z",
+      "locale": "en-US",
+      "text": "Z",
+      "filename": "letters_z_en-US.mp3",
+      "path": "/audio/literacy/letters/letters_z_en-US.mp3",
+      "size": 20013,
+      "sha256": "b84723f4dfc3336bfc6bf9d72e5700c483b94a0a98bf37d29f658a91ad4274c9"
+    },
+    {
+      "category": "animals",
+      "id": "cat",
+      "locale": "zh-CN",
+      "text": "猫",
+      "filename": "animals_cat_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_cat_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "b3ce048706632435db3e76364cf18be80c0432c8ca8a9ac3aa375c0a479070b9"
+    },
+    {
+      "category": "animals",
+      "id": "cat",
+      "locale": "en-US",
+      "text": "Cat",
+      "filename": "animals_cat_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_cat_en-US.mp3",
+      "size": 23085,
+      "sha256": "7c713183f0dea3426840c0c681830a3209cb2b7251853c89de6a93a87ecfaf27"
+    },
+    {
+      "category": "animals",
+      "id": "dog",
+      "locale": "zh-CN",
+      "text": "狗",
+      "filename": "animals_dog_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_dog_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "6d4a8ec1acdcb10f28fb58b9eba7d589ebf691b6ad0271fea8a5125adf617b31"
+    },
+    {
+      "category": "animals",
+      "id": "dog",
+      "locale": "en-US",
+      "text": "Dog",
+      "filename": "animals_dog_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_dog_en-US.mp3",
+      "size": 19629,
+      "sha256": "68ae4265802757a50400990a4e5b8e9fef1a95919b3be9300f22819a5140aee4"
+    },
+    {
+      "category": "animals",
+      "id": "rabbit",
+      "locale": "zh-CN",
+      "text": "兔子",
+      "filename": "animals_rabbit_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_rabbit_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "dab6d868c411d54ca9feed865cb31022129efb82271b931bf0950e4867ecf4b9"
+    },
+    {
+      "category": "animals",
+      "id": "rabbit",
+      "locale": "en-US",
+      "text": "Rabbit",
+      "filename": "animals_rabbit_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_rabbit_en-US.mp3",
+      "size": 19629,
+      "sha256": "65112ce4d71870a00b8ce606351128f3fb092e4f67c3fb7427cce569bca5744d"
+    },
+    {
+      "category": "animals",
+      "id": "cow",
+      "locale": "zh-CN",
+      "text": "奶牛",
+      "filename": "animals_cow_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_cow_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "6bc73af21bfe590c4927435211239ba6acf2f85d95e83151f466f9c1a25a6d72"
+    },
+    {
+      "category": "animals",
+      "id": "cow",
+      "locale": "en-US",
+      "text": "Cow",
+      "filename": "animals_cow_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_cow_en-US.mp3",
+      "size": 23085,
+      "sha256": "066db1d9e9de925979845b5d82285f1895f2416f9dddd06424eab4b432094b4b"
+    },
+    {
+      "category": "animals",
+      "id": "horse",
+      "locale": "zh-CN",
+      "text": "马",
+      "filename": "animals_horse_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_horse_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "6ebdacef5aed862693f9ec6a776f6383c03f94f1d478cf350ff0d98d6582cff4"
+    },
+    {
+      "category": "animals",
+      "id": "horse",
+      "locale": "en-US",
+      "text": "Horse",
+      "filename": "animals_horse_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_horse_en-US.mp3",
+      "size": 27309,
+      "sha256": "15c00b536acbbce71c7334dc102b2332bda70dc98b39ef1c15603ded7e40bf9b"
+    },
+    {
+      "category": "animals",
+      "id": "pig",
+      "locale": "zh-CN",
+      "text": "猪",
+      "filename": "animals_pig_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_pig_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "bf261be420126fa6d7fe43510658a09c8ae784647f2d561d61a21dbac757250e"
+    },
+    {
+      "category": "animals",
+      "id": "pig",
+      "locale": "en-US",
+      "text": "Pig",
+      "filename": "animals_pig_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_pig_en-US.mp3",
+      "size": 15405,
+      "sha256": "daf2f139342855863de51e8f4f44fc2c0ddb72524e61d1dff5dbd384275da573"
+    },
+    {
+      "category": "animals",
+      "id": "chicken",
+      "locale": "zh-CN",
+      "text": "鸡",
+      "filename": "animals_chicken_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_chicken_zh-CN.mp3",
+      "size": 19629,
+      "sha256": "686c7445104b39e9c4c516eb098587601a5d8811657232b0efbba01566c76b5f"
+    },
+    {
+      "category": "animals",
+      "id": "chicken",
+      "locale": "en-US",
+      "text": "Chicken",
+      "filename": "animals_chicken_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_chicken_en-US.mp3",
+      "size": 23085,
+      "sha256": "fbd517d9ef8a47ce17e494b501455ad7bdef7e1e0e42e5f927b016a671202442"
+    },
+    {
+      "category": "animals",
+      "id": "duck",
+      "locale": "zh-CN",
+      "text": "鸭子",
+      "filename": "animals_duck_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_duck_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "ca18fd6d66dc5d7b843d116c6dc1dd22a154802edb570031c8a8f9a687a03592"
+    },
+    {
+      "category": "animals",
+      "id": "duck",
+      "locale": "en-US",
+      "text": "Duck",
+      "filename": "animals_duck_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_duck_en-US.mp3",
+      "size": 15789,
+      "sha256": "fff15bba475ec72d663cdaa9f278c3c78555bfb04192dbff3dcc4a7b10833c2f"
+    },
+    {
+      "category": "animals",
+      "id": "elephant",
+      "locale": "zh-CN",
+      "text": "大象",
+      "filename": "animals_elephant_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_elephant_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "151bf0a8157725a2cdbe26fea2a853e66070662738be13a7eb5b74e7fbc92c60"
+    },
+    {
+      "category": "animals",
+      "id": "elephant",
+      "locale": "en-US",
+      "text": "Elephant",
+      "filename": "animals_elephant_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_elephant_en-US.mp3",
+      "size": 23085,
+      "sha256": "e40de5ebfd3de9b6c5f5e1a7998c4b443eae6f5b08e25d3d8ebac51cbeceee5f"
+    },
+    {
+      "category": "animals",
+      "id": "giraffe",
+      "locale": "zh-CN",
+      "text": "长颈鹿",
+      "filename": "animals_giraffe_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_giraffe_zh-CN.mp3",
+      "size": 34989,
+      "sha256": "d8143044497453a65a971a6683b485415ba56277b9187599d59ee6ce20e5a891"
+    },
+    {
+      "category": "animals",
+      "id": "giraffe",
+      "locale": "en-US",
+      "text": "Giraffe",
+      "filename": "animals_giraffe_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_giraffe_en-US.mp3",
+      "size": 23085,
+      "sha256": "fa4e05b2fc13a6355e7211c29cfe2ee7a68bcaa19ffe8ea87110a2b009dbb69e"
+    },
+    {
+      "category": "animals",
+      "id": "panda",
+      "locale": "zh-CN",
+      "text": "大熊猫",
+      "filename": "animals_panda_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_panda_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "292155777f32a2412d245caeca2a5867e7f11aa8c6c1409706c02d0a78a44ada"
+    },
+    {
+      "category": "animals",
+      "id": "panda",
+      "locale": "en-US",
+      "text": "Giant panda",
+      "filename": "animals_panda_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_panda_en-US.mp3",
+      "size": 30765,
+      "sha256": "9fc1e7758d3d869d96006d7855aa00eba221d7bbbc926a56b5b5eb476006be90"
+    },
+    {
+      "category": "animals",
+      "id": "tiger",
+      "locale": "zh-CN",
+      "text": "老虎",
+      "filename": "animals_tiger_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_tiger_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "0086ddae91cddf2388aaf6ef4529290668920df0bf08fb377943d2f9f79aecf1"
+    },
+    {
+      "category": "animals",
+      "id": "tiger",
+      "locale": "en-US",
+      "text": "Tiger",
+      "filename": "animals_tiger_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_tiger_en-US.mp3",
+      "size": 23085,
+      "sha256": "093403e3a62ae602817a3ae9f031584f1e9243ce0dad0df971908a9a5ba347ac"
+    },
+    {
+      "category": "animals",
+      "id": "lion",
+      "locale": "zh-CN",
+      "text": "狮子",
+      "filename": "animals_lion_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_lion_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "b941d1ea680524d6fdfae3edea8ab7f497ba09b69cdea4949d0f70706fe7bf47"
+    },
+    {
+      "category": "animals",
+      "id": "lion",
+      "locale": "en-US",
+      "text": "Lion",
+      "filename": "animals_lion_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_lion_en-US.mp3",
+      "size": 20013,
+      "sha256": "f02950dc419341204305a24c5b856dcfe16c58d6971e3c28f5510f7befef3f26"
+    },
+    {
+      "category": "animals",
+      "id": "zebra",
+      "locale": "zh-CN",
+      "text": "斑马",
+      "filename": "animals_zebra_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_zebra_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "22bccec8da17dd9d64925d6672a1d8d7deb97c5effe6539834f5bce61c46ef8f"
+    },
+    {
+      "category": "animals",
+      "id": "zebra",
+      "locale": "en-US",
+      "text": "Zebra",
+      "filename": "animals_zebra_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_zebra_en-US.mp3",
+      "size": 19629,
+      "sha256": "7a492c0b49312e5b1c733b0187c04c0214b2bab7d0241baa051d5d3cae891a7e"
+    },
+    {
+      "category": "animals",
+      "id": "fox",
+      "locale": "zh-CN",
+      "text": "狐狸",
+      "filename": "animals_fox_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_fox_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "75996e5def4ffce7b2dcba59bfc2e3f014b00a57e7ab2ec8c3d4354f8c9f019a"
+    },
+    {
+      "category": "animals",
+      "id": "fox",
+      "locale": "en-US",
+      "text": "Fox",
+      "filename": "animals_fox_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_fox_en-US.mp3",
+      "size": 15789,
+      "sha256": "c641ed5f24d24191159ec5c52fc0a3aee0cd7376b2278910296b43ffd3870e89"
+    },
+    {
+      "category": "animals",
+      "id": "bear",
+      "locale": "zh-CN",
+      "text": "棕熊",
+      "filename": "animals_bear_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_bear_zh-CN.mp3",
+      "size": 34605,
+      "sha256": "6f8e33cded4b8070dd9b7414b2a8b5729e076802b47261f469ccef8795ace467"
+    },
+    {
+      "category": "animals",
+      "id": "bear",
+      "locale": "en-US",
+      "text": "Brown bear",
+      "filename": "animals_bear_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_bear_en-US.mp3",
+      "size": 38061,
+      "sha256": "1dfbfcc082a1fd21e35d20a1715e3ef041a06c238c019b6cb285a5d39cbd3919"
+    },
+    {
+      "category": "animals",
+      "id": "kangaroo",
+      "locale": "zh-CN",
+      "text": "袋鼠",
+      "filename": "animals_kangaroo_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_kangaroo_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "2d0377bc28574487d6205929e87238239279a4a1f3987e89512f0bb7b60f044b"
+    },
+    {
+      "category": "animals",
+      "id": "kangaroo",
+      "locale": "en-US",
+      "text": "Kangaroo",
+      "filename": "animals_kangaroo_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_kangaroo_en-US.mp3",
+      "size": 27309,
+      "sha256": "8b21debf575fd3f3c352449a51b4d8d957b128df731f2b7ed0a11f256569bd94"
+    },
+    {
+      "category": "animals",
+      "id": "penguin",
+      "locale": "zh-CN",
+      "text": "企鹅",
+      "filename": "animals_penguin_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_penguin_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "c9118757e27af33edf515c04f7a8bb1c4e830fe86da2fbc950506bf0288e8c1f"
+    },
+    {
+      "category": "animals",
+      "id": "penguin",
+      "locale": "en-US",
+      "text": "Penguin",
+      "filename": "animals_penguin_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_penguin_en-US.mp3",
+      "size": 20013,
+      "sha256": "008dfca5625c1cbb7ae6ca642026e27f531cb39ab1f2e3d95606d8312d71fe3d"
+    },
+    {
+      "category": "animals",
+      "id": "frog",
+      "locale": "zh-CN",
+      "text": "青蛙",
+      "filename": "animals_frog_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_frog_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "3e9b7733e9b31024b9a1be1610fb099ef7afaf5b5323a760450efedb2ecda2e4"
+    },
+    {
+      "category": "animals",
+      "id": "frog",
+      "locale": "en-US",
+      "text": "Frog",
+      "filename": "animals_frog_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_frog_en-US.mp3",
+      "size": 19629,
+      "sha256": "24c72be3045511b29809dd9c6d883f9efeb7ff4d247b9b00d674374be18752b7"
+    },
+    {
+      "category": "animals",
+      "id": "turtle",
+      "locale": "zh-CN",
+      "text": "海龟",
+      "filename": "animals_turtle_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_turtle_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "d28b5257b777bbdf6c5599aab8c54fa483a00101403de87fb01f2c19e35b1b49"
+    },
+    {
+      "category": "animals",
+      "id": "turtle",
+      "locale": "en-US",
+      "text": "Sea turtle",
+      "filename": "animals_turtle_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_turtle_en-US.mp3",
+      "size": 27309,
+      "sha256": "8befff885e71df66e772ea9056d1013e24b7eb1b659aebfd25f26794a2156fb2"
+    },
+    {
+      "category": "animals",
+      "id": "fish",
+      "locale": "zh-CN",
+      "text": "金鱼",
+      "filename": "animals_fish_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_fish_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "1be5578351df21b776218f68d9520f4ca71c7b7e388c5826acb992990b3ab6c4"
+    },
+    {
+      "category": "animals",
+      "id": "fish",
+      "locale": "en-US",
+      "text": "Goldfish",
+      "filename": "animals_fish_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_fish_en-US.mp3",
+      "size": 23085,
+      "sha256": "e58a7a4dea3c4363580bb12d7cc3050efe25d3367ad355f25a9839c2a34c5c4a"
+    },
+    {
+      "category": "animals",
+      "id": "monkey",
+      "locale": "zh-CN",
+      "text": "猴子",
+      "filename": "animals_monkey_zh-CN.mp3",
+      "path": "/audio/literacy/animals/animals_monkey_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "9b3bdd24523bf05755d7e3a40fa4aae81b1321a993814c1f34196e4f3d3538e4"
+    },
+    {
+      "category": "animals",
+      "id": "monkey",
+      "locale": "en-US",
+      "text": "Monkey",
+      "filename": "animals_monkey_en-US.mp3",
+      "path": "/audio/literacy/animals/animals_monkey_en-US.mp3",
+      "size": 23085,
+      "sha256": "2db573bf5ddfc106ed90d65c2e299c153c660e972fbd90c03616a4d16502a76a"
+    },
+    {
+      "category": "fruits",
+      "id": "apple",
+      "locale": "zh-CN",
+      "text": "苹果",
+      "filename": "fruits_apple_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_apple_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "72e16cd4181fc15b18c8a5dd2b9037ce66ba257b53f4d06efc9b25c739799d4f"
+    },
+    {
+      "category": "fruits",
+      "id": "apple",
+      "locale": "en-US",
+      "text": "Apple",
+      "filename": "fruits_apple_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_apple_en-US.mp3",
+      "size": 15405,
+      "sha256": "c6225f5e8e45245d02304050098cfb53bcc30667e434c66eff46badc304189f5"
+    },
+    {
+      "category": "fruits",
+      "id": "banana",
+      "locale": "zh-CN",
+      "text": "香蕉",
+      "filename": "fruits_banana_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_banana_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "d1545df50a7a3c1e720dd01e1a252f854e50d4f88b329a57decf3cd26ff74ded"
+    },
+    {
+      "category": "fruits",
+      "id": "banana",
+      "locale": "en-US",
+      "text": "Banana",
+      "filename": "fruits_banana_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_banana_en-US.mp3",
+      "size": 20013,
+      "sha256": "5298b2a251ed792d7981af606236b9ef595b307b92e2f3478b9bacb0c6b3d0aa"
+    },
+    {
+      "category": "fruits",
+      "id": "orange",
+      "locale": "zh-CN",
+      "text": "橙子",
+      "filename": "fruits_orange_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_orange_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "e0f3a979a9120cbd53d2301a9177f04fe99dd3a9186765cb4a842b6b64c82b52"
+    },
+    {
+      "category": "fruits",
+      "id": "orange",
+      "locale": "en-US",
+      "text": "Orange",
+      "filename": "fruits_orange_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_orange_en-US.mp3",
+      "size": 23085,
+      "sha256": "15cf334002e05dda7363bfd8bc09800215021d1469cd5400adcd673a53e884bb"
+    },
+    {
+      "category": "fruits",
+      "id": "pear",
+      "locale": "zh-CN",
+      "text": "梨",
+      "filename": "fruits_pear_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_pear_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "dce4c994d8e4c09a2cc065e0c9ccda24b71eb26fef34451decd83d244527cb8f"
+    },
+    {
+      "category": "fruits",
+      "id": "pear",
+      "locale": "en-US",
+      "text": "Pear",
+      "filename": "fruits_pear_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_pear_en-US.mp3",
+      "size": 20013,
+      "sha256": "c6db5e204329ad710e52a15e5ef946e10a79061743508de13c520469eed82f2d"
+    },
+    {
+      "category": "fruits",
+      "id": "grape",
+      "locale": "zh-CN",
+      "text": "葡萄",
+      "filename": "fruits_grape_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_grape_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "e0fa9040d469d89ecf8a25b2dd270cfcf4e0a344e3604190e49ef58c402ddd6f"
+    },
+    {
+      "category": "fruits",
+      "id": "grape",
+      "locale": "en-US",
+      "text": "Grape",
+      "filename": "fruits_grape_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_grape_en-US.mp3",
+      "size": 20013,
+      "sha256": "e1b4c021656ff047f14f13112bc01d8512deacdcf54998bd70349a277bf85a2c"
+    },
+    {
+      "category": "fruits",
+      "id": "strawberry",
+      "locale": "zh-CN",
+      "text": "草莓",
+      "filename": "fruits_strawberry_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_strawberry_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "ff06b6c4ad71d393f644f646d836963f01ea8374c210cc3630054ca58cde3791"
+    },
+    {
+      "category": "fruits",
+      "id": "strawberry",
+      "locale": "en-US",
+      "text": "Strawberry",
+      "filename": "fruits_strawberry_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_strawberry_en-US.mp3",
+      "size": 27309,
+      "sha256": "ad1fcc9d8fb3e7f041ea5a6a39cef88a4f8a6b9d42f5c485c09cfd435e91b0e3"
+    },
+    {
+      "category": "fruits",
+      "id": "watermelon",
+      "locale": "zh-CN",
+      "text": "西瓜",
+      "filename": "fruits_watermelon_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_watermelon_zh-CN.mp3",
+      "size": 30381,
+      "sha256": "82baa8f037ce531c2ccb82428f46a41cec5397667e3bb2ce7c22398749f74e74"
+    },
+    {
+      "category": "fruits",
+      "id": "watermelon",
+      "locale": "en-US",
+      "text": "Watermelon",
+      "filename": "fruits_watermelon_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_watermelon_en-US.mp3",
+      "size": 23085,
+      "sha256": "5296dff05c554841b3606eb6601616370f665abecdb3421ba630fd56a079bc3b"
+    },
+    {
+      "category": "fruits",
+      "id": "peach",
+      "locale": "zh-CN",
+      "text": "桃子",
+      "filename": "fruits_peach_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_peach_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "0def31754cec481e90dd7654977dfca504453a57f652f72650b7760342814b4c"
+    },
+    {
+      "category": "fruits",
+      "id": "peach",
+      "locale": "en-US",
+      "text": "Peach",
+      "filename": "fruits_peach_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_peach_en-US.mp3",
+      "size": 23085,
+      "sha256": "c3a569d96280d7ce31c1428ff7300583c758ed62917a6d0e7688b4d1e9d6f12f"
+    },
+    {
+      "category": "fruits",
+      "id": "mango",
+      "locale": "zh-CN",
+      "text": "芒果",
+      "filename": "fruits_mango_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_mango_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "50ff97ba0efc0212e5a60e4a33406575c1760ca6ae1e442e2bdd9e80bc7cbe11"
+    },
+    {
+      "category": "fruits",
+      "id": "mango",
+      "locale": "en-US",
+      "text": "Mango",
+      "filename": "fruits_mango_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_mango_en-US.mp3",
+      "size": 23085,
+      "sha256": "083dd1435f58061bd523cfb1c3c59f203b98107ae338a4d906160090fc64e3a3"
+    },
+    {
+      "category": "fruits",
+      "id": "pineapple",
+      "locale": "zh-CN",
+      "text": "菠萝",
+      "filename": "fruits_pineapple_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_pineapple_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "e952c692d105b7b4761a785735bc20bf9d82c5637e38b18925b8bb09a55d85db"
+    },
+    {
+      "category": "fruits",
+      "id": "pineapple",
+      "locale": "en-US",
+      "text": "Pineapple",
+      "filename": "fruits_pineapple_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_pineapple_en-US.mp3",
+      "size": 27309,
+      "sha256": "6451d1fa03cf5ddf5ff1e92ce0a442f6131b930c4f79751b96c0d3df2d22fada"
+    },
+    {
+      "category": "fruits",
+      "id": "cherry",
+      "locale": "zh-CN",
+      "text": "樱桃",
+      "filename": "fruits_cherry_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_cherry_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "501ccbec55be0f777a6fc0fc7818cb0818e6ffcdf4e423e89d207cd651b6efff"
+    },
+    {
+      "category": "fruits",
+      "id": "cherry",
+      "locale": "en-US",
+      "text": "Cherry",
+      "filename": "fruits_cherry_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_cherry_en-US.mp3",
+      "size": 20013,
+      "sha256": "16e8badab73851692fd6e01cbf5edf8fdbff247be66b350d8317e9fca1b57e73"
+    },
+    {
+      "category": "fruits",
+      "id": "lemon",
+      "locale": "zh-CN",
+      "text": "柠檬",
+      "filename": "fruits_lemon_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_lemon_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "15859e379a8a0cd404a705794f2e3245513ebb1f081b39f3aad98e13ac1a42ff"
+    },
+    {
+      "category": "fruits",
+      "id": "lemon",
+      "locale": "en-US",
+      "text": "Lemon",
+      "filename": "fruits_lemon_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_lemon_en-US.mp3",
+      "size": 19629,
+      "sha256": "e5986fce9cf350f2dcaf67d5b8d3a286762e0b4d5ca0ee0ebe8c752245fbbb72"
+    },
+    {
+      "category": "fruits",
+      "id": "kiwi",
+      "locale": "zh-CN",
+      "text": "猕猴桃",
+      "filename": "fruits_kiwi_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_kiwi_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "751d18f4503d0bb33926aa0488790b8a3c2808518061b4dbc23d917d92f6fa4f"
+    },
+    {
+      "category": "fruits",
+      "id": "kiwi",
+      "locale": "en-US",
+      "text": "Kiwifruit",
+      "filename": "fruits_kiwi_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_kiwi_en-US.mp3",
+      "size": 27693,
+      "sha256": "96978bc88418f64459a70eced362b3e9e0e79ad3e5eb544e4a43e5866ca64584"
+    },
+    {
+      "category": "fruits",
+      "id": "papaya",
+      "locale": "zh-CN",
+      "text": "木瓜",
+      "filename": "fruits_papaya_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_papaya_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "af8208f2c4d5a7daa6dc3b18cae2f90f0e572f2c3d785d7e20ab428dc50539a9"
+    },
+    {
+      "category": "fruits",
+      "id": "papaya",
+      "locale": "en-US",
+      "text": "Papaya",
+      "filename": "fruits_papaya_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_papaya_en-US.mp3",
+      "size": 23469,
+      "sha256": "54e58ba791541a7ce8f98c8a15f9c16b5496168eed369c34de021c433a0dee30"
+    },
+    {
+      "category": "fruits",
+      "id": "blueberry",
+      "locale": "zh-CN",
+      "text": "蓝莓",
+      "filename": "fruits_blueberry_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_blueberry_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "e5567412aa3c98190eea71f9c18880610741fbb46c05e8abf130dbcf479adb14"
+    },
+    {
+      "category": "fruits",
+      "id": "blueberry",
+      "locale": "en-US",
+      "text": "Blueberry",
+      "filename": "fruits_blueberry_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_blueberry_en-US.mp3",
+      "size": 27309,
+      "sha256": "97cafa54a6004b7ee250a22238d479840930b6dbed32a4ff7525475c3334811f"
+    },
+    {
+      "category": "fruits",
+      "id": "pomegranate",
+      "locale": "zh-CN",
+      "text": "石榴",
+      "filename": "fruits_pomegranate_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_pomegranate_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "57f334138e35091ec37a3b69b39bc9ea42d956d03b4c3c6aa2a951f8be0c7a20"
+    },
+    {
+      "category": "fruits",
+      "id": "pomegranate",
+      "locale": "en-US",
+      "text": "Pomegranate",
+      "filename": "fruits_pomegranate_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_pomegranate_en-US.mp3",
+      "size": 27309,
+      "sha256": "5bbb57074952b6db6487df678c82148b7315608a90e596fc3882031b62c0bd45"
+    },
+    {
+      "category": "fruits",
+      "id": "coconut",
+      "locale": "zh-CN",
+      "text": "椰子",
+      "filename": "fruits_coconut_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_coconut_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "1fecfe8c74945b4c778d098b5cfa3eb95afb5a4b578d11b2c4d6d35835283153"
+    },
+    {
+      "category": "fruits",
+      "id": "coconut",
+      "locale": "en-US",
+      "text": "Coconut",
+      "filename": "fruits_coconut_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_coconut_en-US.mp3",
+      "size": 20013,
+      "sha256": "a18e1b4f00dd8badc6a9fd057e818fb438b0a9fbdc4c2e2e0061da9a2b442937"
+    },
+    {
+      "category": "fruits",
+      "id": "dragon-fruit",
+      "locale": "zh-CN",
+      "text": "火龙果",
+      "filename": "fruits_dragon-fruit_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_dragon-fruit_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "91857a47993b9bf1a7650a5452a39a844aaa16cd8cc81ecfa7c5f5515f5bd850"
+    },
+    {
+      "category": "fruits",
+      "id": "dragon-fruit",
+      "locale": "en-US",
+      "text": "Dragon fruit",
+      "filename": "fruits_dragon-fruit_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_dragon-fruit_en-US.mp3",
+      "size": 27309,
+      "sha256": "dd7fce49f0add96eb1aaa22a1485e1ddf952c1f9ba49df6375f62ee04a404a31"
+    },
+    {
+      "category": "fruits",
+      "id": "plum",
+      "locale": "zh-CN",
+      "text": "李子",
+      "filename": "fruits_plum_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_plum_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "f5fe1e132dd6c78e22ddd6ddffb9a8c22ce24cf384f4604bdff3cef7a1992575"
+    },
+    {
+      "category": "fruits",
+      "id": "plum",
+      "locale": "en-US",
+      "text": "Plum",
+      "filename": "fruits_plum_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_plum_en-US.mp3",
+      "size": 19629,
+      "sha256": "5df8c5d370977386747c0f481fa16b0850dbf72359cf0ce3bc048c46ee79028a"
+    },
+    {
+      "category": "fruits",
+      "id": "persimmon",
+      "locale": "zh-CN",
+      "text": "柿子",
+      "filename": "fruits_persimmon_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_persimmon_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "3d7ce8c7e4fc1fc35b281e2c2dad15ca7f326d23bbb39bbf74ce4be7deccc89e"
+    },
+    {
+      "category": "fruits",
+      "id": "persimmon",
+      "locale": "en-US",
+      "text": "Persimmon",
+      "filename": "fruits_persimmon_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_persimmon_en-US.mp3",
+      "size": 23085,
+      "sha256": "f5c8031df02a17bbe320a5a7853a20885d3a08e6dd4938d24a14d3ede47f522a"
+    },
+    {
+      "category": "fruits",
+      "id": "avocado",
+      "locale": "zh-CN",
+      "text": "牛油果",
+      "filename": "fruits_avocado_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_avocado_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "6a865e1b442ef1701292a8d3f5f2cac94d5d1175b06e75fdeac20384c74fdf51"
+    },
+    {
+      "category": "fruits",
+      "id": "avocado",
+      "locale": "en-US",
+      "text": "Avocado",
+      "filename": "fruits_avocado_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_avocado_en-US.mp3",
+      "size": 27309,
+      "sha256": "77a66b8775e67f4e666364172d343d3a097045a19cc136392370b1a360da56c0"
+    },
+    {
+      "category": "fruits",
+      "id": "pomelo",
+      "locale": "zh-CN",
+      "text": "柚子",
+      "filename": "fruits_pomelo_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_pomelo_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "3746e15393490417d634e091a1c2dcfac9e115ff547e06025df8be6e568b5f4f"
+    },
+    {
+      "category": "fruits",
+      "id": "pomelo",
+      "locale": "en-US",
+      "text": "Pomelo",
+      "filename": "fruits_pomelo_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_pomelo_en-US.mp3",
+      "size": 23085,
+      "sha256": "2a2026b7ad77d8a9fad6b13409b91ac3574422d576e0447247f0802ffdbcb5b6"
+    },
+    {
+      "category": "fruits",
+      "id": "mandarin",
+      "locale": "zh-CN",
+      "text": "橘子",
+      "filename": "fruits_mandarin_zh-CN.mp3",
+      "path": "/audio/literacy/fruits/fruits_mandarin_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "10b9a50ec63a89dc3ada06cbc3375672c9e55a831c4be96ebcfb39e1e9986e94"
+    },
+    {
+      "category": "fruits",
+      "id": "mandarin",
+      "locale": "en-US",
+      "text": "Mandarin",
+      "filename": "fruits_mandarin_en-US.mp3",
+      "path": "/audio/literacy/fruits/fruits_mandarin_en-US.mp3",
+      "size": 23085,
+      "sha256": "c0b1e3eea7926f06e983257f57955e011af2673b3bb9ef424d6ca80cb63c9742"
+    },
+    {
+      "category": "plants",
+      "id": "flower",
+      "locale": "zh-CN",
+      "text": "花",
+      "filename": "plants_flower_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_flower_zh-CN.mp3",
+      "size": 23085,
+      "sha256": "c170130b2b5fe3cb7a8518ed2e6d0879dc0e78b0e40c4fd98dcfae53ecfb8ef7"
+    },
+    {
+      "category": "plants",
+      "id": "flower",
+      "locale": "en-US",
+      "text": "Flower",
+      "filename": "plants_flower_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_flower_en-US.mp3",
+      "size": 23085,
+      "sha256": "90e7d897fb9aaba6464a1190a10abc2ff591709cdd039d776d483c0e0ac0b344"
+    },
+    {
+      "category": "plants",
+      "id": "tree",
+      "locale": "zh-CN",
+      "text": "树",
+      "filename": "plants_tree_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_tree_zh-CN.mp3",
+      "size": 23469,
+      "sha256": "fbf329fa7e7c18483a54020ba3a54139c3927cdcba34e174fae63f6e98ef529b"
+    },
+    {
+      "category": "plants",
+      "id": "tree",
+      "locale": "en-US",
+      "text": "Tree",
+      "filename": "plants_tree_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_tree_en-US.mp3",
+      "size": 23085,
+      "sha256": "c539b0caddf3c6dbc18a8a0606cd50c2c35ac45b3d76b7336497a5de54dd707e"
+    },
+    {
+      "category": "plants",
+      "id": "grass",
+      "locale": "zh-CN",
+      "text": "草",
+      "filename": "plants_grass_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_grass_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "c805a9185adc76e08283ef57418a6fad311ae6c3ac5148b9fd9de3b6137504ba"
+    },
+    {
+      "category": "plants",
+      "id": "grass",
+      "locale": "en-US",
+      "text": "Grass",
+      "filename": "plants_grass_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_grass_en-US.mp3",
+      "size": 19629,
+      "sha256": "2ba7a5a36033a9d68d3212fc1b8bb7f835d0ba5a8a00d255b8bd2926187186ff"
+    },
+    {
+      "category": "plants",
+      "id": "leaf",
+      "locale": "zh-CN",
+      "text": "叶子",
+      "filename": "plants_leaf_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_leaf_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "ec6bc0391892c4b30c9b124f4347a179c8255c74432f7e07c16bfb0e84855a10"
+    },
+    {
+      "category": "plants",
+      "id": "leaf",
+      "locale": "en-US",
+      "text": "Leaf",
+      "filename": "plants_leaf_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_leaf_en-US.mp3",
+      "size": 19629,
+      "sha256": "ac02bc3a77259a64fc3bc00449bd532cf6802b6a80d425debbae16df9c6a1f85"
+    },
+    {
+      "category": "plants",
+      "id": "sunflower",
+      "locale": "zh-CN",
+      "text": "向日葵",
+      "filename": "plants_sunflower_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_sunflower_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "5e7bd3ef30b267f26a593c3bcfc758c5584451128efc25ac47121048d4320cbb"
+    },
+    {
+      "category": "plants",
+      "id": "sunflower",
+      "locale": "en-US",
+      "text": "Sunflower",
+      "filename": "plants_sunflower_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_sunflower_en-US.mp3",
+      "size": 23469,
+      "sha256": "f6855505ae8ca1d27634a3b30c5a30412e39b729097254bb0a496641753e6649"
+    },
+    {
+      "category": "plants",
+      "id": "rose",
+      "locale": "zh-CN",
+      "text": "玫瑰",
+      "filename": "plants_rose_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_rose_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "ba65ef44d34e1a90693f70f458605b28bf45c8b2b92a92ba911ef196a9b6cd55"
+    },
+    {
+      "category": "plants",
+      "id": "rose",
+      "locale": "en-US",
+      "text": "Rose",
+      "filename": "plants_rose_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_rose_en-US.mp3",
+      "size": 23469,
+      "sha256": "d9ee122140e1fa8e7cd0fe5119a6481b0f8e55a3145975e0d3a434021ac0213f"
+    },
+    {
+      "category": "plants",
+      "id": "chrysanthemum",
+      "locale": "zh-CN",
+      "text": "菊花",
+      "filename": "plants_chrysanthemum_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_chrysanthemum_zh-CN.mp3",
+      "size": 26925,
+      "sha256": "d1d9ed6125137ee9b619597063589b46f20a688b3c45ca3c4e78ca0200a0b326"
+    },
+    {
+      "category": "plants",
+      "id": "chrysanthemum",
+      "locale": "en-US",
+      "text": "Chrysanthemum",
+      "filename": "plants_chrysanthemum_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_chrysanthemum_en-US.mp3",
+      "size": 27309,
+      "sha256": "423e5b2bba84b9d838904795d6176c67419b80a4fdf2fd47416aa1912100f4cc"
+    },
+    {
+      "category": "plants",
+      "id": "plum-blossom",
+      "locale": "zh-CN",
+      "text": "梅花",
+      "filename": "plants_plum-blossom_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_plum-blossom_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "8890d6a10773907eb935d2a45e22cda0b967e802cdca09b9c2b475d9e7b38407"
+    },
+    {
+      "category": "plants",
+      "id": "plum-blossom",
+      "locale": "en-US",
+      "text": "Plum blossom",
+      "filename": "plants_plum-blossom_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_plum-blossom_en-US.mp3",
+      "size": 27309,
+      "sha256": "eee0af9368cb11de295cb35a5b52d08b848f6254a9c8a4c4e623595277eefda4"
+    },
+    {
+      "category": "plants",
+      "id": "orchid",
+      "locale": "zh-CN",
+      "text": "兰花",
+      "filename": "plants_orchid_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_orchid_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "48e5af8590e071e5016fe3aa5cbddb5ae122b94cb863644a710cdd93bbc8fbb2"
+    },
+    {
+      "category": "plants",
+      "id": "orchid",
+      "locale": "en-US",
+      "text": "Orchid",
+      "filename": "plants_orchid_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_orchid_en-US.mp3",
+      "size": 19629,
+      "sha256": "f8724b64e74c147278f453f9b02330e86fb2a458b0a03d0716e591b9dc6bf72a"
+    },
+    {
+      "category": "plants",
+      "id": "bamboo",
+      "locale": "zh-CN",
+      "text": "竹子",
+      "filename": "plants_bamboo_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_bamboo_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "7602989e6cea321dcee9cbc291d08cf65dbe08433ddbbc442ded70fcd81aed84"
+    },
+    {
+      "category": "plants",
+      "id": "bamboo",
+      "locale": "en-US",
+      "text": "Bamboo",
+      "filename": "plants_bamboo_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_bamboo_en-US.mp3",
+      "size": 23085,
+      "sha256": "7a1c49eb93b1092695cd81bbe37431932b40c53c1d3e958beb136f3c37874f5b"
+    },
+    {
+      "category": "plants",
+      "id": "lotus",
+      "locale": "zh-CN",
+      "text": "荷花",
+      "filename": "plants_lotus_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_lotus_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "9b355d90197c4d08d4b06adb7f0441a061da7cefcbd21078652ce7cc76ccde68"
+    },
+    {
+      "category": "plants",
+      "id": "lotus",
+      "locale": "en-US",
+      "text": "Lotus",
+      "filename": "plants_lotus_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_lotus_en-US.mp3",
+      "size": 23085,
+      "sha256": "9b967ba376069aba532ae31707e66339c5e9fc9c41b6c429873b0d2dc1d085b1"
+    },
+    {
+      "category": "plants",
+      "id": "peony",
+      "locale": "zh-CN",
+      "text": "牡丹",
+      "filename": "plants_peony_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_peony_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "1b58ec795a4cd2a451cb8b2f525d3eeac593cf4cb1d5c4d201bff32bfb5ebf64"
+    },
+    {
+      "category": "plants",
+      "id": "peony",
+      "locale": "en-US",
+      "text": "Peony",
+      "filename": "plants_peony_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_peony_en-US.mp3",
+      "size": 23085,
+      "sha256": "bc9eb7da8cb65dcf9e139e5585202b85b40946a981bc69152a8f1bcc5ffcda3a"
+    },
+    {
+      "category": "plants",
+      "id": "cherry-blossom",
+      "locale": "zh-CN",
+      "text": "樱花",
+      "filename": "plants_cherry-blossom_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_cherry-blossom_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "81cdd562a8964d9fa6a6eaff8bb7b76df443cd8a135550d9bb4ea829fec4d6ea"
+    },
+    {
+      "category": "plants",
+      "id": "cherry-blossom",
+      "locale": "en-US",
+      "text": "Cherry blossom",
+      "filename": "plants_cherry-blossom_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_cherry-blossom_en-US.mp3",
+      "size": 27309,
+      "sha256": "5c6d2422a07bba9c1c286fa752153f4b1434ae6a1b4d18b9664198b110a9eda6"
+    },
+    {
+      "category": "plants",
+      "id": "cactus",
+      "locale": "zh-CN",
+      "text": "仙人掌",
+      "filename": "plants_cactus_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_cactus_zh-CN.mp3",
+      "size": 38061,
+      "sha256": "5079baffc8dc1c12f58202a94b6b19d11aea9ec5b2faa02515968f670557444c"
+    },
+    {
+      "category": "plants",
+      "id": "cactus",
+      "locale": "en-US",
+      "text": "Cactus",
+      "filename": "plants_cactus_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_cactus_en-US.mp3",
+      "size": 27309,
+      "sha256": "60b200faf80c833ccce01ee9198c08d5df87ab3f4708a9759549be5f571ee003"
+    },
+    {
+      "category": "plants",
+      "id": "pine",
+      "locale": "zh-CN",
+      "text": "松树",
+      "filename": "plants_pine_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_pine_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "181a23e605f3d8ee8ba596e734e048bd96b12fcff5f778ac0adcf49b3ee12b7f"
+    },
+    {
+      "category": "plants",
+      "id": "pine",
+      "locale": "en-US",
+      "text": "Pine",
+      "filename": "plants_pine_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_pine_en-US.mp3",
+      "size": 23085,
+      "sha256": "ba5d41da542587e173c8f78d23fd0ae8f0188435c09afefb7da9d06f1f4e3dc6"
+    },
+    {
+      "category": "plants",
+      "id": "willow",
+      "locale": "zh-CN",
+      "text": "柳树",
+      "filename": "plants_willow_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_willow_zh-CN.mp3",
+      "size": 27309,
+      "sha256": "b373fd5de68d67996f8305bc77474cd4909b39f0569b1d338f565828208edb5c"
+    },
+    {
+      "category": "plants",
+      "id": "willow",
+      "locale": "en-US",
+      "text": "Willow",
+      "filename": "plants_willow_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_willow_en-US.mp3",
+      "size": 20013,
+      "sha256": "fb66f9ae8829f0d246cf0c875cb5e37cde4f4292b3e5081b2f018e14ef864df5"
+    },
+    {
+      "category": "plants",
+      "id": "dandelion",
+      "locale": "zh-CN",
+      "text": "蒲公英",
+      "filename": "plants_dandelion_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_dandelion_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "5f1e084fdbb72d3d278ead17a7219c7c915f196660e4e4045b17878cb7779c3e"
+    },
+    {
+      "category": "plants",
+      "id": "dandelion",
+      "locale": "en-US",
+      "text": "Dandelion",
+      "filename": "plants_dandelion_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_dandelion_en-US.mp3",
+      "size": 23085,
+      "sha256": "6171b12f0d8de7e6b96cc8419c1c9543c845260b1e260f22153a824c41c7508a"
+    },
+    {
+      "category": "plants",
+      "id": "lily",
+      "locale": "zh-CN",
+      "text": "百合",
+      "filename": "plants_lily_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_lily_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "16964540472186879c52a100cb7e01edcd46597e66b537fc8fb3455fe50c873e"
+    },
+    {
+      "category": "plants",
+      "id": "lily",
+      "locale": "en-US",
+      "text": "Lily",
+      "filename": "plants_lily_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_lily_en-US.mp3",
+      "size": 15405,
+      "sha256": "7b9cc7626843c611d85a9e8b2b6c58052ef558750960c8e0f5d67045d02debfe"
+    },
+    {
+      "category": "plants",
+      "id": "tulip",
+      "locale": "zh-CN",
+      "text": "郁金香",
+      "filename": "plants_tulip_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_tulip_zh-CN.mp3",
+      "size": 34989,
+      "sha256": "980ee0baee65bc95bd07af64d59bafa1cee99a232903144de755796f0a7a8e21"
+    },
+    {
+      "category": "plants",
+      "id": "tulip",
+      "locale": "en-US",
+      "text": "Tulip",
+      "filename": "plants_tulip_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_tulip_en-US.mp3",
+      "size": 20013,
+      "sha256": "a2cdfb9deb86c10ad628762d3515661357a9b86e2ae097c835dac003b51cf884"
+    },
+    {
+      "category": "plants",
+      "id": "lavender",
+      "locale": "zh-CN",
+      "text": "薰衣草",
+      "filename": "plants_lavender_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_lavender_zh-CN.mp3",
+      "size": 34605,
+      "sha256": "d58b245bb51440ad743aa9f47f2bc419d691a5d07cdf2f5fe1d54fe34b5591d6"
+    },
+    {
+      "category": "plants",
+      "id": "lavender",
+      "locale": "en-US",
+      "text": "Lavender",
+      "filename": "plants_lavender_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_lavender_en-US.mp3",
+      "size": 27309,
+      "sha256": "3328b5201caa5b463afe4f41f46c92d6a788c6e0c3e5dafc0e93368a92eead77"
+    },
+    {
+      "category": "plants",
+      "id": "maple",
+      "locale": "zh-CN",
+      "text": "枫树",
+      "filename": "plants_maple_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_maple_zh-CN.mp3",
+      "size": 30765,
+      "sha256": "f5b5070647c3efa91cbbde5e43a3927b20a33ff9d1e490455472c320a7535498"
+    },
+    {
+      "category": "plants",
+      "id": "maple",
+      "locale": "en-US",
+      "text": "Maple",
+      "filename": "plants_maple_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_maple_en-US.mp3",
+      "size": 20013,
+      "sha256": "f945fdfbd84f7d4579dc9e82bbf2b3c3b933bc1430d864d9ea61b19b638df203"
+    },
+    {
+      "category": "plants",
+      "id": "mushroom",
+      "locale": "zh-CN",
+      "text": "蘑菇",
+      "filename": "plants_mushroom_zh-CN.mp3",
+      "path": "/audio/literacy/plants/plants_mushroom_zh-CN.mp3",
+      "size": 27693,
+      "sha256": "ad93bd1f7b05f4217379805578e06d826d0362c40485ae5abc9aca4e12290ac5"
+    },
+    {
+      "category": "plants",
+      "id": "mushroom",
+      "locale": "en-US",
+      "text": "Mushroom",
+      "filename": "plants_mushroom_en-US.mp3",
+      "path": "/audio/literacy/plants/plants_mushroom_en-US.mp3",
+      "size": 23085,
+      "sha256": "60d6f3981797ea0fbdda4599f73d3eaef71d6e9ec44704bf45b46fcf711fca99"
+    }
+  ]
+}

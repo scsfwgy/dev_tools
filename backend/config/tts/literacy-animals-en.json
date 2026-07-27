@@ -1,0 +1,32 @@
+{
+  "output_dir": "./tts-output/literacy/animals",
+  "speaker": "en_female_stokie_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 动物英文发音",
+  "segments": [
+    {"text": "Cat", "filename": "animals_cat_en-US"},
+    {"text": "Dog", "filename": "animals_dog_en-US"},
+    {"text": "Rabbit", "filename": "animals_rabbit_en-US"},
+    {"text": "Cow", "filename": "animals_cow_en-US"},
+    {"text": "Horse", "filename": "animals_horse_en-US"},
+    {"text": "Pig", "filename": "animals_pig_en-US"},
+    {"text": "Chicken", "filename": "animals_chicken_en-US"},
+    {"text": "Duck", "filename": "animals_duck_en-US"},
+    {"text": "Elephant", "filename": "animals_elephant_en-US"},
+    {"text": "Giraffe", "filename": "animals_giraffe_en-US"},
+    {"text": "Giant panda", "filename": "animals_panda_en-US"},
+    {"text": "Tiger", "filename": "animals_tiger_en-US"},
+    {"text": "Lion", "filename": "animals_lion_en-US"},
+    {"text": "Zebra", "filename": "animals_zebra_en-US"},
+    {"text": "Fox", "filename": "animals_fox_en-US"},
+    {"text": "Brown bear", "filename": "animals_bear_en-US"},
+    {"text": "Kangaroo", "filename": "animals_kangaroo_en-US"},
+    {"text": "Penguin", "filename": "animals_penguin_en-US"},
+    {"text": "Frog", "filename": "animals_frog_en-US"},
+    {"text": "Sea turtle", "filename": "animals_turtle_en-US"},
+    {"text": "Goldfish", "filename": "animals_fish_en-US"},
+    {"text": "Monkey", "filename": "animals_monkey_en-US"}
+  ]
+}

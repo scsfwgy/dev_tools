@@ -105,7 +105,7 @@ var LiteracyTool = (function () {
   }
 
   function loadPreferences() {
-    var defaults = { color: defaultColor(), randomColor: false, font: "rounded", autoSpeak: true };
+    var defaults = { color: defaultColor(), randomColor: false, font: "rounded", speakChinese: true, speakEnglish: true };
     try {
       var stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (!stored || typeof stored !== "object") return defaults;
@@ -113,7 +113,9 @@ var LiteracyTool = (function () {
         color: isValidColor(stored.color) ? stored.color : defaults.color,
         randomColor: stored.randomColor === true,
         font: FONT_OPTIONS[stored.font] ? stored.font : defaults.font,
-        autoSpeak: stored.autoSpeak !== false
+        autoSpeak: stored.autoSpeak !== false,
+        speakChinese: stored.speakChinese !== false,
+        speakEnglish: stored.speakEnglish !== false
       };
     } catch (error) {
       return defaults;
@@ -125,12 +127,14 @@ var LiteracyTool = (function () {
     var color = container.querySelector("#literacy-color");
     var randomColor = container.querySelector("#literacy-random-color");
     var font = container.querySelector("#literacy-font");
-    var autoSpeak = container.querySelector("#literacy-auto-speak");
+    var speakChinese = container.querySelector("#literacy-speak-zh");
+    var speakEnglish = container.querySelector("#literacy-speak-en");
     return {
       color: color && isValidColor(color.value) ? color.value : defaultColor(),
       randomColor: Boolean(randomColor && randomColor.checked),
       font: font && FONT_OPTIONS[font.value] ? font.value : "rounded",
-      autoSpeak: !autoSpeak || autoSpeak.checked
+      speakChinese: !speakChinese || speakChinese.checked,
+      speakEnglish: !speakEnglish || speakEnglish.checked
     };
   }
 
@@ -215,6 +219,7 @@ var LiteracyTool = (function () {
       id: source.id,
       label: source.label || "",
       labelKey: source.labelKey || "",
+      audioCategory: source.audioCategory || "",
       defaultKind: source.defaultKind || "text",
       creditsUrl: source.creditsUrl || "",
       items: Array.isArray(source.items) ? source.items.slice() : null,
@@ -233,6 +238,7 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "numbers",
       labelKey: "literacy.sourceNumbers",
+      audioCategory: "numbers",
       load: function () {
         return coreManifest().then(function (manifest) { return manifest.numbers; });
       }
@@ -240,6 +246,7 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "uppercase",
       labelKey: "literacy.sourceUppercase",
+      audioCategory: "letters",
       load: function () {
         return coreManifest().then(function (manifest) {
           return letterItems(manifest.letters, false);
@@ -249,6 +256,7 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "lowercase",
       labelKey: "literacy.sourceLowercase",
+      audioCategory: "letters",
       load: function () {
         return coreManifest().then(function (manifest) {
           return letterItems(manifest.letters, true);
@@ -270,6 +278,7 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "animals",
       labelKey: "literacy.sourceAnimals",
+      audioCategory: "animals",
       defaultKind: "image",
       creditsUrl: ANIMALS_MANIFEST_URL,
       load: function () {
@@ -281,6 +290,7 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "fruits",
       labelKey: "literacy.sourceFruits",
+      audioCategory: "fruits",
       defaultKind: "image",
       creditsUrl: FRUITS_MANIFEST_URL,
       load: function () {
@@ -320,6 +330,20 @@ var LiteracyTool = (function () {
     else link.removeAttribute("href");
   }
 
+  function fillAudioUrls(item, source) {
+    if (!source || !source.audioCategory) return item;
+    if (!item || !item.pronunciation) return item;
+    var cat = source.audioCategory;
+    var base = "/audio/literacy/" + cat + "/" + cat + "_" + item.id;
+    if (!item.pronunciation.audio["zh-CN"]) {
+      item.pronunciation.audio["zh-CN"] = base + "_zh-CN.mp3";
+    }
+    if (!item.pronunciation.audio["en-US"]) {
+      item.pronunciation.audio["en-US"] = base + "_en-US.mp3";
+    }
+    return item;
+  }
+
   function normalizeItem(item, index, source) {
     var raw = item;
     if (typeof raw === "string" || typeof raw === "number") {
@@ -335,7 +359,7 @@ var LiteracyTool = (function () {
     if (kind === "image") {
       var src = raw.src || raw.value || "";
       if (!src) return null;
-      return {
+      return fillAudioUrls({
         id: id,
         kind: "image",
         src: String(src),
@@ -344,14 +368,14 @@ var LiteracyTool = (function () {
         primaryText: raw.primaryText || localizedChineseText(raw.caption || raw.label),
         pronunciation: pronunciation,
         displayPronunciation: raw.displayPronunciation !== false
-      };
+      }, source);
     }
 
     var value = raw.value;
     if (value == null) value = raw.text;
     if (value == null) value = raw.content;
     if (value == null) return null;
-    return {
+    return fillAudioUrls({
       id: id,
       kind: kind === "emoji" ? "emoji" : "text",
       value: String(value),
@@ -360,7 +384,7 @@ var LiteracyTool = (function () {
       primaryText: raw.primaryText || "",
       pronunciation: pronunciation,
       displayPronunciation: raw.displayPronunciation !== false
-    };
+    }, source);
   }
 
   function localizedChineseText(value) {
@@ -671,11 +695,15 @@ var LiteracyTool = (function () {
 
   function runCardCycle(item) {
     if (!running || !item) return;
-    if (!currentPreferences().autoSpeak) {
+    var prefs = currentPreferences();
+    var locales = [];
+    if (prefs.speakChinese) locales.push("zh-CN");
+    if (prefs.speakEnglish) locales.push("en-US");
+    if (!locales.length) {
       scheduleNext();
       return;
     }
-    playPronunciationSequence(item, ["zh-CN", "en-US"]).then(function (completed) {
+    playPronunciationSequence(item, locales).then(function (completed) {
       if (completed && running && currentItem === item) scheduleNext();
     });
   }
@@ -897,7 +925,7 @@ var LiteracyTool = (function () {
     container.querySelector("#literacy-font").addEventListener("change", function () {
       handleAppearanceChange(false);
     });
-    container.querySelector("#literacy-auto-speak").addEventListener("change", function () {
+    function onSpeakPrefChange() {
       savePreferences(currentPreferences());
       if (running && currentItem) {
         if (timer) {
@@ -907,7 +935,9 @@ var LiteracyTool = (function () {
         cancelAudio();
         runCardCycle(currentItem);
       }
-    });
+    }
+    container.querySelector("#literacy-speak-zh").addEventListener("change", onSpeakPrefChange);
+    container.querySelector("#literacy-speak-en").addEventListener("change", onSpeakPrefChange);
     container.querySelector("#literacy-interval").addEventListener("input", function () {
       updateIntervalLabel();
       if (running && timer) {
@@ -955,9 +985,13 @@ var LiteracyTool = (function () {
                 '<input id="literacy-random-color" type="checkbox">' +
                 '<span>' + t("literacy.randomColor") + '</span>' +
               '</label>' +
-              '<label class="literacy-auto-speak" for="literacy-auto-speak">' +
-                '<input id="literacy-auto-speak" type="checkbox">' +
-                '<span>' + t("literacy.autoSpeak") + '</span>' +
+              '<label class="literacy-speak-option" for="literacy-speak-zh">' +
+                '<input id="literacy-speak-zh" type="checkbox" checked>' +
+                '<span>' + t("literacy.speakChinese") + '</span>' +
+              '</label>' +
+              '<label class="literacy-speak-option" for="literacy-speak-en">' +
+                '<input id="literacy-speak-en" type="checkbox" checked>' +
+                '<span>' + t("literacy.speakEnglish") + '</span>' +
               '</label>' +
             '</div>' +
             '<p id="literacy-source-status" class="literacy-source-status" role="status" aria-live="polite"></p>' +
@@ -982,7 +1016,8 @@ var LiteracyTool = (function () {
     container.querySelector("#literacy-color").value = preferences.color;
     container.querySelector("#literacy-random-color").checked = preferences.randomColor;
     container.querySelector("#literacy-font").value = preferences.font;
-    container.querySelector("#literacy-auto-speak").checked = preferences.autoSpeak;
+    container.querySelector("#literacy-speak-zh").checked = preferences.speakChinese;
+    container.querySelector("#literacy-speak-en").checked = preferences.speakEnglish;
     updateAppearanceControls();
     applyAppearance(false);
     updateIntervalLabel();

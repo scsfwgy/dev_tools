@@ -2833,9 +2833,10 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert 'id="literacy-color"' in script
     assert 'id="literacy-random-color"' in script
     assert 'id="literacy-font"' in script
-    assert 'id="literacy-auto-speak"' in script
+    assert 'id="literacy-speak-zh"' in script
+    assert 'id="literacy-speak-en"' in script
     assert 'className = "literacy-speech-button"' in script
-    assert 'playPronunciationSequence(item, ["zh-CN", "en-US"])' in script
+    assert 'playPronunciationSequence(item, [locale])' in script
     assert "}, 350);" in script
     assert "}, 10000);" in script
     assert "function cancelAudio()" in script

@@ -4225,8 +4225,14 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
   display: flex; align-items: center; gap: 10px;
   color: var(--text); cursor: pointer;
 }
+.literacy-speak-option {
+  min-height: 44px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text); cursor: pointer;
+}
 .literacy-random-color input,
-.literacy-auto-speak input {
+.literacy-auto-speak input,
+.literacy-speak-option input {
   width: 20px; height: 20px; margin: 0; accent-color: var(--accent);
 }
 .literacy-credits-link {

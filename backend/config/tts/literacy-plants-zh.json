@@ -1,0 +1,32 @@
+{
+  "output_dir": "./tts-output/literacy/plants",
+  "speaker": "zh_female_xiaoxue_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 植物中文发音",
+  "segments": [
+    {"text": "花", "filename": "plants_flower_zh-CN"},
+    {"text": "树", "filename": "plants_tree_zh-CN"},
+    {"text": "草", "filename": "plants_grass_zh-CN"},
+    {"text": "叶子", "filename": "plants_leaf_zh-CN"},
+    {"text": "向日葵", "filename": "plants_sunflower_zh-CN"},
+    {"text": "玫瑰", "filename": "plants_rose_zh-CN"},
+    {"text": "菊花", "filename": "plants_chrysanthemum_zh-CN"},
+    {"text": "梅花", "filename": "plants_plum-blossom_zh-CN"},
+    {"text": "兰花", "filename": "plants_orchid_zh-CN"},
+    {"text": "竹子", "filename": "plants_bamboo_zh-CN"},
+    {"text": "荷花", "filename": "plants_lotus_zh-CN"},
+    {"text": "牡丹", "filename": "plants_peony_zh-CN"},
+    {"text": "樱花", "filename": "plants_cherry-blossom_zh-CN"},
+    {"text": "仙人掌", "filename": "plants_cactus_zh-CN"},
+    {"text": "松树", "filename": "plants_pine_zh-CN"},
+    {"text": "柳树", "filename": "plants_willow_zh-CN"},
+    {"text": "蒲公英", "filename": "plants_dandelion_zh-CN"},
+    {"text": "百合", "filename": "plants_lily_zh-CN"},
+    {"text": "郁金香", "filename": "plants_tulip_zh-CN"},
+    {"text": "薰衣草", "filename": "plants_lavender_zh-CN"},
+    {"text": "枫树", "filename": "plants_maple_zh-CN"},
+    {"text": "蘑菇", "filename": "plants_mushroom_zh-CN"}
+  ]
+}

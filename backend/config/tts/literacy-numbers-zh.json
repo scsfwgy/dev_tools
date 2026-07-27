@@ -1,0 +1,20 @@
+{
+  "output_dir": "./tts-output/literacy/numbers",
+  "speaker": "zh_female_xiaoxue_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 数字中文发音 (0-9)",
+  "segments": [
+    {"text": "零", "filename": "numbers_0_zh-CN"},
+    {"text": "一", "filename": "numbers_1_zh-CN"},
+    {"text": "二", "filename": "numbers_2_zh-CN"},
+    {"text": "三", "filename": "numbers_3_zh-CN"},
+    {"text": "四", "filename": "numbers_4_zh-CN"},
+    {"text": "五", "filename": "numbers_5_zh-CN"},
+    {"text": "六", "filename": "numbers_6_zh-CN"},
+    {"text": "七", "filename": "numbers_7_zh-CN"},
+    {"text": "八", "filename": "numbers_8_zh-CN"},
+    {"text": "九", "filename": "numbers_9_zh-CN"}
+  ]
+}

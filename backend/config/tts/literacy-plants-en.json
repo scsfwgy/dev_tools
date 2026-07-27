@@ -1,0 +1,32 @@
+{
+  "output_dir": "./tts-output/literacy/plants",
+  "speaker": "en_female_stokie_uranus_bigtts",
+  "format": "mp3",
+  "speed": 0.85,
+  "provider": "volcengine",
+  "description": "儿童识字 - 植物英文发音",
+  "segments": [
+    {"text": "Flower", "filename": "plants_flower_en-US"},
+    {"text": "Tree", "filename": "plants_tree_en-US"},
+    {"text": "Grass", "filename": "plants_grass_en-US"},
+    {"text": "Leaf", "filename": "plants_leaf_en-US"},
+    {"text": "Sunflower", "filename": "plants_sunflower_en-US"},
+    {"text": "Rose", "filename": "plants_rose_en-US"},
+    {"text": "Chrysanthemum", "filename": "plants_chrysanthemum_en-US"},
+    {"text": "Plum blossom", "filename": "plants_plum-blossom_en-US"},
+    {"text": "Orchid", "filename": "plants_orchid_en-US"},
+    {"text": "Bamboo", "filename": "plants_bamboo_en-US"},
+    {"text": "Lotus", "filename": "plants_lotus_en-US"},
+    {"text": "Peony", "filename": "plants_peony_en-US"},
+    {"text": "Cherry blossom", "filename": "plants_cherry-blossom_en-US"},
+    {"text": "Cactus", "filename": "plants_cactus_en-US"},
+    {"text": "Pine", "filename": "plants_pine_en-US"},
+    {"text": "Willow", "filename": "plants_willow_en-US"},
+    {"text": "Dandelion", "filename": "plants_dandelion_en-US"},
+    {"text": "Lily", "filename": "plants_lily_en-US"},
+    {"text": "Tulip", "filename": "plants_tulip_en-US"},
+    {"text": "Lavender", "filename": "plants_lavender_en-US"},
+    {"text": "Maple", "filename": "plants_maple_en-US"},
+    {"text": "Mushroom", "filename": "plants_mushroom_en-US"}
+  ]
+}
