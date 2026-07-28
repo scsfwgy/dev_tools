@@ -76,11 +76,11 @@ def prevent_api_indexing(response):
         response.headers["X-Robots-Tag"] = "noindex, nofollow"
     if response.status_code == 404:
         response.headers["Cache-Control"] = "public, max-age=0, s-maxage=300"
-    elif request.path.startswith(("/css/", "/js/")) and not immutable_asset_cache_enabled():
+    elif request.path.startswith(("/css/", "/js/", "/data/")) and not immutable_asset_cache_enabled():
         response.headers["Cache-Control"] = "no-store"
     elif request.path.startswith(("/locales/", "/api/tool-manifest")) and not immutable_asset_cache_enabled():
         response.headers["Cache-Control"] = "no-store"
-    elif request.path.startswith(("/css/", "/js/")):
+    elif request.path.startswith(("/css/", "/js/", "/data/")):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     elif request.path.startswith("/audio/"):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"

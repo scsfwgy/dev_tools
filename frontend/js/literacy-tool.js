@@ -33,10 +33,8 @@ var LiteracyTool = (function () {
     return path + (TOOL_ASSET_VERSION ? "?v=" + encodeURIComponent(TOOL_ASSET_VERSION) : "");
   }
 
-  var CORE_MANIFEST_URL = versionedAssetUrl("/audio/literacy/core-manifest.json");
-  var ANIMALS_MANIFEST_URL = versionedAssetUrl("/images/literacy/animals/manifest.json");
-  var FRUITS_MANIFEST_URL = versionedAssetUrl("/images/literacy/fruits/manifest.json");
-  var PLANTS_MANIFEST_URL = versionedAssetUrl("/images/literacy/plants/manifest.json");
+  var CORE_MANIFEST_URL = versionedAssetUrl("/data/literacy/core-manifest.json");
+  var REMOTE_MANIFEST_URL = versionedAssetUrl("/data/literacy/manifest.json");
   var FONT_OPTIONS = {
     rounded: {
       family: '"Arial Rounded MT Bold","PingFang SC","Microsoft YaHei",system-ui,sans-serif',
@@ -106,7 +104,14 @@ var LiteracyTool = (function () {
   }
 
   function loadPreferences() {
-    var defaults = { color: defaultColor(), randomColor: false, font: "rounded", speakChinese: true, speakEnglish: true };
+    var defaults = {
+      color: defaultColor(),
+      randomColor: false,
+      font: "rounded",
+      autoSpeak: true,
+      speakChinese: true,
+      speakEnglish: true
+    };
     try {
       var stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (!stored || typeof stored !== "object") return defaults;
@@ -128,12 +133,14 @@ var LiteracyTool = (function () {
     var color = container.querySelector("#literacy-color");
     var randomColor = container.querySelector("#literacy-random-color");
     var font = container.querySelector("#literacy-font");
+    var autoSpeak = container.querySelector("#literacy-auto-speak");
     var speakChinese = container.querySelector("#literacy-speak-zh");
     var speakEnglish = container.querySelector("#literacy-speak-en");
     return {
       color: color && isValidColor(color.value) ? color.value : defaultColor(),
       randomColor: Boolean(randomColor && randomColor.checked),
       font: font && FONT_OPTIONS[font.value] ? font.value : "rounded",
+      autoSpeak: !autoSpeak || autoSpeak.checked,
       speakChinese: !speakChinese || speakChinese.checked,
       speakEnglish: !speakEnglish || speakEnglish.checked
     };
@@ -173,7 +180,59 @@ var LiteracyTool = (function () {
   }
 
   function coreManifest() {
-    return loadManifest("core", CORE_MANIFEST_URL);
+    return loadManifest("core", CORE_MANIFEST_URL).then(function (manifest) {
+      if (manifest.__audioReady) return manifest;
+      manifest.numbers.forEach(function (item) {
+        item.pronunciation.audio = {
+          "zh-CN": "/audio/literacy/numbers/numbers_" + item.id + "_zh-CN.mp3",
+          "en-US": "/audio/literacy/numbers/numbers_" + item.id + "_en-US.mp3"
+        };
+      });
+      manifest.letters.forEach(function (item) {
+        item.audio = {
+          "en-US": "/audio/literacy/letters/letters_" + item.id + "_en-US.mp3"
+        };
+      });
+      Object.defineProperty(manifest, "__audioReady", { value: true });
+      return manifest;
+    });
+  }
+
+  function remoteManifest() {
+    return loadManifest("remote", REMOTE_MANIFEST_URL);
+  }
+
+  function remoteCategoryItems(categoryId) {
+    return remoteManifest().then(function (manifest) {
+      var category = manifest.categories.find(function (candidate) {
+        return candidate.id === categoryId;
+      });
+      if (!category) throw new Error("Missing remote literacy category: " + categoryId);
+      return mapRemoteItems(category);
+    });
+  }
+
+  function mapRemoteItems(category) {
+    return category.items.map(function (item) {
+      var imageUrl = item.image && item.image.url;
+      if (imageUrl) {
+        return {
+          id: item.id,
+          kind: "image",
+          src: imageUrl,
+          label: item.label,
+          caption: item.label,
+          pronunciation: item.pronunciation
+        };
+      }
+      return {
+        id: item.id,
+        kind: "text",
+        value: item.label["zh-CN"],
+        label: item.label,
+        pronunciation: item.pronunciation
+      };
+    });
   }
 
   function letterItems(letters, lowercase) {
@@ -220,7 +279,6 @@ var LiteracyTool = (function () {
       id: source.id,
       label: source.label || "",
       labelKey: source.labelKey || "",
-      audioCategory: source.audioCategory || "",
       defaultKind: source.defaultKind || "text",
       creditsUrl: source.creditsUrl || "",
       items: Array.isArray(source.items) ? source.items.slice() : null,
@@ -239,7 +297,6 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "numbers",
       labelKey: "literacy.sourceNumbers",
-      audioCategory: "numbers",
       load: function () {
         return coreManifest().then(function (manifest) { return manifest.numbers; });
       }
@@ -247,7 +304,6 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "uppercase",
       labelKey: "literacy.sourceUppercase",
-      audioCategory: "letters",
       load: function () {
         return coreManifest().then(function (manifest) {
           return letterItems(manifest.letters, false);
@@ -257,7 +313,6 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "lowercase",
       labelKey: "literacy.sourceLowercase",
-      audioCategory: "letters",
       load: function () {
         return coreManifest().then(function (manifest) {
           return letterItems(manifest.letters, true);
@@ -279,37 +334,37 @@ var LiteracyTool = (function () {
     registerDataSource({
       id: "animals",
       labelKey: "literacy.sourceAnimals",
-      audioCategory: "animals",
       defaultKind: "image",
-      creditsUrl: ANIMALS_MANIFEST_URL,
+      creditsUrl: REMOTE_MANIFEST_URL,
       load: function () {
-        return loadManifest("animals", ANIMALS_MANIFEST_URL).then(function (manifest) {
-          return manifest.items;
-        });
+        return remoteCategoryItems("animals");
       }
     });
     registerDataSource({
       id: "fruits",
       labelKey: "literacy.sourceFruits",
-      audioCategory: "fruits",
       defaultKind: "image",
-      creditsUrl: FRUITS_MANIFEST_URL,
+      creditsUrl: REMOTE_MANIFEST_URL,
       load: function () {
-        return loadManifest("fruits", FRUITS_MANIFEST_URL).then(function (manifest) {
-          return manifest.items;
-        });
+        return remoteCategoryItems("fruits");
       }
     });
     registerDataSource({
       id: "plants",
       labelKey: "literacy.sourcePlants",
-      audioCategory: "plants",
       defaultKind: "image",
-      creditsUrl: PLANTS_MANIFEST_URL,
+      creditsUrl: REMOTE_MANIFEST_URL,
       load: function () {
-        return loadManifest("plants", PLANTS_MANIFEST_URL).then(function (manifest) {
-          return manifest.items;
-        });
+        return remoteCategoryItems("plants");
+      }
+    });
+    registerDataSource({
+      id: "vehicles",
+      labelKey: "literacy.sourceVehicles",
+      defaultKind: "image",
+      creditsUrl: REMOTE_MANIFEST_URL,
+      load: function () {
+        return remoteCategoryItems("vehicles");
       }
     });
   }
@@ -343,20 +398,6 @@ var LiteracyTool = (function () {
     else link.removeAttribute("href");
   }
 
-  function fillAudioUrls(item, source) {
-    if (!source || !source.audioCategory) return item;
-    if (!item || !item.pronunciation) return item;
-    var cat = source.audioCategory;
-    var base = "/audio/literacy/" + cat + "/" + cat + "_" + item.id;
-    if (!item.pronunciation.audio["zh-CN"]) {
-      item.pronunciation.audio["zh-CN"] = base + "_zh-CN.mp3";
-    }
-    if (!item.pronunciation.audio["en-US"]) {
-      item.pronunciation.audio["en-US"] = base + "_en-US.mp3";
-    }
-    return item;
-  }
-
   function normalizeItem(item, index, source) {
     var raw = item;
     if (typeof raw === "string" || typeof raw === "number") {
@@ -372,7 +413,7 @@ var LiteracyTool = (function () {
     if (kind === "image") {
       var src = raw.src || raw.value || "";
       if (!src) return null;
-      return fillAudioUrls({
+      return {
         id: id,
         kind: "image",
         src: String(src),
@@ -381,14 +422,14 @@ var LiteracyTool = (function () {
         primaryText: raw.primaryText || localizedChineseText(raw.caption || raw.label),
         pronunciation: pronunciation,
         displayPronunciation: raw.displayPronunciation !== false
-      }, source);
+      };
     }
 
     var value = raw.value;
     if (value == null) value = raw.text;
     if (value == null) value = raw.content;
     if (value == null) return null;
-    return fillAudioUrls({
+    return {
       id: id,
       kind: kind === "emoji" ? "emoji" : "text",
       value: String(value),
@@ -397,7 +438,7 @@ var LiteracyTool = (function () {
       primaryText: raw.primaryText || "",
       pronunciation: pronunciation,
       displayPronunciation: raw.displayPronunciation !== false
-    }, source);
+    };
   }
 
   function localizedChineseText(value) {
@@ -484,6 +525,11 @@ var LiteracyTool = (function () {
     ].filter(Boolean);
     clearPreparedAudio();
     card.innerHTML = "";
+    card.classList.remove("has-image-error");
+    card.classList.toggle(
+      "is-word-only",
+      item.kind === "text" && Boolean(pronunciation.chinese) && String(item.value) === pronunciation.chinese
+    );
     card.setAttribute("aria-label", spokenParts.length ? spokenParts.join(", ") : label);
     applyAppearance(true);
 
@@ -493,6 +539,8 @@ var LiteracyTool = (function () {
       image.src = item.src;
       image.alt = label;
       image.addEventListener("error", function () {
+        image.hidden = true;
+        card.classList.add("has-image-error");
         setStatus("literacy.imageLoadFailed", true);
       }, { once: true });
       card.appendChild(image);
@@ -516,7 +564,9 @@ var LiteracyTool = (function () {
       var numberPronunciation = document.createElement("div");
       numberPronunciation.className = "literacy-number-pronunciation";
       if (pronunciation.pinyin) appendCardLine(numberPronunciation, "literacy-pinyin", pronunciation.pinyin);
-      appendCardLine(numberPronunciation, "literacy-caption", pronunciation.chinese);
+      if (String(item.value) !== pronunciation.chinese) {
+        appendCardLine(numberPronunciation, "literacy-caption", pronunciation.chinese);
+      }
       if (pronunciation.english) appendCardLine(numberPronunciation, "literacy-english", pronunciation.english);
       if (pronunciation.ipa) appendCardLine(numberPronunciation, "literacy-phonetic", pronunciation.ipa);
       card.appendChild(numberPronunciation);
@@ -709,6 +759,10 @@ var LiteracyTool = (function () {
   function runCardCycle(item) {
     if (!running || !item) return;
     var prefs = currentPreferences();
+    if (!prefs.autoSpeak) {
+      scheduleNext();
+      return;
+    }
     var locales = [];
     if (prefs.speakChinese) locales.push("zh-CN");
     if (prefs.speakEnglish) locales.push("en-US");
@@ -949,6 +1003,7 @@ var LiteracyTool = (function () {
         runCardCycle(currentItem);
       }
     }
+    container.querySelector("#literacy-auto-speak").addEventListener("change", onSpeakPrefChange);
     container.querySelector("#literacy-speak-zh").addEventListener("change", onSpeakPrefChange);
     container.querySelector("#literacy-speak-en").addEventListener("change", onSpeakPrefChange);
     container.querySelector("#literacy-interval").addEventListener("input", function () {
@@ -998,6 +1053,10 @@ var LiteracyTool = (function () {
                 '<input id="literacy-random-color" type="checkbox">' +
                 '<span>' + t("literacy.randomColor") + '</span>' +
               '</label>' +
+              '<label class="literacy-auto-speak" for="literacy-auto-speak">' +
+                '<input id="literacy-auto-speak" type="checkbox" checked>' +
+                '<span>' + t("literacy.autoSpeak") + '</span>' +
+              '</label>' +
               '<label class="literacy-speak-option" for="literacy-speak-zh">' +
                 '<input id="literacy-speak-zh" type="checkbox" checked>' +
                 '<span>' + t("literacy.speakChinese") + '</span>' +
@@ -1029,6 +1088,7 @@ var LiteracyTool = (function () {
     container.querySelector("#literacy-color").value = preferences.color;
     container.querySelector("#literacy-random-color").checked = preferences.randomColor;
     container.querySelector("#literacy-font").value = preferences.font;
+    container.querySelector("#literacy-auto-speak").checked = preferences.autoSpeak;
     container.querySelector("#literacy-speak-zh").checked = preferences.speakChinese;
     container.querySelector("#literacy-speak-en").checked = preferences.speakEnglish;
     updateAppearanceControls();
@@ -1094,6 +1154,7 @@ var LiteracyTool = (function () {
       normalizeItems: normalizeItems,
       normalizePronunciation: normalizePronunciation,
       letterItems: letterItems,
+      mapRemoteItems: mapRemoteItems,
       localizedText: localizedText,
       randomColorForTheme: randomColorForTheme,
       isValidColor: isValidColor,

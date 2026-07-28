@@ -27,6 +27,7 @@ def content_last_modified():
                 "git", "log", "-1", "--format=%cs", "--",
                 "backend/app.py", "backend/tool_data.py", "backend/routes/site.py",
                 "frontend/index.html", "frontend/css", "frontend/js", "frontend/locales",
+                "frontend/data",
             ],
             cwd=app_settings.FRONTEND_DIR.parent,
             check=True,
@@ -63,19 +64,10 @@ def asset_version():
         return vercel_sha.strip()[:8]
     digest = hashlib.sha256()
     asset_paths = [app_settings.FRONTEND_DIR / "index.html"]
-    for directory in ("css", "js", "locales"):
+    for directory in ("css", "js", "locales", "data"):
         root = app_settings.FRONTEND_DIR / directory
         if root.exists():
             asset_paths.extend(path for path in root.rglob("*") if path.is_file())
-    asset_paths.extend(
-        path
-        for path in (
-            app_settings.FRONTEND_DIR / "audio" / "literacy" / "core-manifest.json",
-            app_settings.FRONTEND_DIR / "images" / "literacy" / "animals" / "manifest.json",
-            app_settings.FRONTEND_DIR / "images" / "literacy" / "fruits" / "manifest.json",
-        )
-        if path.is_file()
-    )
     for path in sorted(asset_paths):
         try:
             stat = path.stat()
@@ -375,6 +367,11 @@ def tool_subpage(lang, tool_id, subpage):
 @site_bp.route("/audio/<path:filename>")
 def audio_files(filename):
     return send_from_directory(str(app_settings.FRONTEND_DIR / "audio"), filename)
+
+
+@site_bp.route("/data/<path:filename>")
+def data_files(filename):
+    return send_from_directory(str(app_settings.FRONTEND_DIR / "data"), filename)
 
 
 @site_bp.route("/<path:filename>")

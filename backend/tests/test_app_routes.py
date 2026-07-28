@@ -2791,32 +2791,35 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     script = script_response.get_data(as_text=True)
     app_script = client.get("/js/app.js").get_data(as_text=True)
     page = client.get("/zh/tool/literacy")
-    core_manifest_response = client.get("/audio/literacy/core-manifest.json")
+    core_manifest_response = client.get("/data/literacy/core-manifest.json")
     core_manifest = core_manifest_response.get_json()
-    animal_manifest_response = client.get("/images/literacy/animals/manifest.json")
-    animal_manifest = animal_manifest_response.get_json()
-    fruit_manifest_response = client.get("/images/literacy/fruits/manifest.json")
-    fruit_manifest = fruit_manifest_response.get_json()
+    remote_manifest_response = client.get("/data/literacy/manifest.json")
+    remote_manifest = remote_manifest_response.get_json()
 
     assert page.status_code == 200
     assert script_response.status_code == 200
     assert core_manifest_response.status_code == 200
-    assert core_manifest_response.headers["Cache-Control"] == "public, max-age=31536000, immutable"
-    assert animal_manifest_response.status_code == 200
-    assert fruit_manifest_response.status_code == 200
+    assert core_manifest_response.headers["Cache-Control"] == "no-store"
+    assert remote_manifest_response.status_code == 200
+    assert remote_manifest_response.headers["Cache-Control"] == "no-store"
+    assert client.get("/audio/literacy/numbers/numbers_0_zh-CN.mp3").status_code == 200
+    assert client.get("/audio/literacy/letters/letters_a_en-US.mp3").status_code == 200
+    assert client.get("/images/literacy/animals/manifest.json").status_code == 404
+    assert client.get("/audio/literacy/animals/animals_cat_zh-CN.mp3").status_code == 404
     assert "儿童识字卡片" in page.get_data(as_text=True)
     assert "https://dev.tools24.uk/zh/tool/literacy" in page.get_data(as_text=True)
-    assert TOOL_REGISTRY["literacy"]["processing"] == "local"
+    assert TOOL_REGISTRY["literacy"]["processing"] == "hybrid"
     assert TOOL_REGISTRY["literacy"]["indexable"] is True
     assert TOOL_REGISTRY["literacy"]["global"] == "LiteracyTool"
     assert_tool_is_lazy_loaded(frontend_dir, "literacy-tool.js")
     assert zh_locale["literacy"]["source"] == "卡片数据源"
     assert en_locale["literacy"]["source"] == "Card data source"
-    assert zh_locale["literacy"]["sourceAnimals"] == "常见动物（36 种）"
-    assert zh_locale["literacy"]["sourceFruits"] == "常见水果（30 种）"
-    assert zh_locale["literacy"]["sourcePlants"] == "常见植物（22 种）"
-    assert en_locale["literacy"]["sourcePlants"] == "Common plants (22)"
-    assert en_locale["literacy"]["imageCredits"] == "View current image sources and licenses"
+    assert zh_locale["literacy"]["sourceAnimals"] == "常见动物（40 种）"
+    assert zh_locale["literacy"]["sourceFruits"] == "常见水果（40 种）"
+    assert zh_locale["literacy"]["sourcePlants"] == "常见植物（40 种）"
+    assert zh_locale["literacy"]["sourceVehicles"] == "常见交通工具（40 种）"
+    assert en_locale["literacy"]["sourceVehicles"] == "Common vehicles (40)"
+    assert en_locale["literacy"]["imageCredits"] == "View remote resources and image licenses"
     assert zh_locale["literacy"]["randomColor"] == "每张卡片随机颜色"
     assert zh_locale["literacy"]["autoSpeak"] == "自动朗读中文和英文"
     assert en_locale["literacy"]["speakEnglish"] == "English"
@@ -2835,6 +2838,7 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert 'id="literacy-color"' in script
     assert 'id="literacy-random-color"' in script
     assert 'id="literacy-font"' in script
+    assert 'id="literacy-auto-speak"' in script
     assert 'id="literacy-speak-zh"' in script
     assert 'id="literacy-speak-en"' in script
     assert 'className = "literacy-speech-button"' in script
@@ -2843,10 +2847,14 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert "}, 10000);" in script
     assert "function cancelAudio()" in script
     assert "function clearPreparedAudio()" in script
+    assert "if (!prefs.autoSpeak)" in script
     assert "speechSynthesis" not in script
     assert 'loadManifest("core", CORE_MANIFEST_URL)' in script
-    assert 'loadManifest("animals", ANIMALS_MANIFEST_URL)' in script
-    assert 'loadManifest("fruits", FRUITS_MANIFEST_URL)' in script
+    assert 'loadManifest("remote", REMOTE_MANIFEST_URL)' in script
+    assert 'return remoteCategoryItems("animals")' in script
+    assert 'return remoteCategoryItems("fruits")' in script
+    assert 'return remoteCategoryItems("plants")' in script
+    assert 'return remoteCategoryItems("vehicles")' in script
     assert 'id="literacy-credits"' in script
     assert 'new window.URL(document.currentScript.src, window.location.href)' in script
     assert "var NUMBER_PRONUNCIATIONS" not in script
@@ -2863,31 +2871,68 @@ def test_literacy_tool_uses_extensible_data_sources_and_safe_lifecycle(client):
     assert all(item["pronunciation"]["pinyin"] for item in core_manifest["numbers"])
     assert all(item["pronunciation"]["english"] for item in core_manifest["numbers"])
     assert all(item["pronunciation"]["ipa"].startswith("/") for item in core_manifest["numbers"])
-    assert animal_manifest["id"] == "animals"
-    assert animal_manifest["schemaVersion"] in (2, 3)
-    assert len(animal_manifest["items"]) == 36
-    assert {"monkey", "dolphin", "squirrel"} <= {item["id"] for item in animal_manifest["items"]}
-    assert all(item["kind"] == "image" for item in animal_manifest["items"])
-    assert all(item["src"].endswith(".webp") for item in animal_manifest["items"])
-    assert all(item["attribution"]["source"] == "Wikimedia Commons" for item in animal_manifest["items"])
-    assert all(item["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/") for item in animal_manifest["items"])
-    assert all(item["pronunciation"]["pinyin"] for item in animal_manifest["items"])
-    assert all(item["pronunciation"]["english"] == item["label"]["en"] for item in animal_manifest["items"])
-    assert all(item["pronunciation"]["ipa"].startswith("/") and item["pronunciation"]["ipa"].endswith("/") for item in animal_manifest["items"])
-    assert all(client.get(item["src"]).status_code == 200 for item in animal_manifest["items"])
-    assert fruit_manifest["id"] == "fruits"
-    assert fruit_manifest["schemaVersion"] in (2, 3)
-    assert len(fruit_manifest["items"]) == 30
-    assert {"avocado", "lychee", "durian"} <= {item["id"] for item in fruit_manifest["items"]}
-    assert all(item["kind"] == "image" for item in fruit_manifest["items"])
-    assert all(item["src"].endswith(".webp") for item in fruit_manifest["items"])
-    assert all(item["attribution"]["source"] == "Wikimedia Commons" for item in fruit_manifest["items"])
-    assert all(item["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/") for item in fruit_manifest["items"])
-    assert all("original background retained" in item["attribution"]["modifications"] for item in fruit_manifest["items"])
-    assert all(item["pronunciation"]["pinyin"] for item in fruit_manifest["items"])
-    assert all(item["pronunciation"]["english"] == item["label"]["en"] for item in fruit_manifest["items"])
-    assert all(item["pronunciation"]["ipa"].startswith("/") and item["pronunciation"]["ipa"].endswith("/") for item in fruit_manifest["items"])
-    assert all(client.get(item["src"]).status_code == 200 for item in fruit_manifest["items"])
+    assert remote_manifest["schemaVersion"] == 1
+    assert remote_manifest["id"] == "literacy-remote"
+    assert remote_manifest["media"] == {
+        "mode": "remote",
+        "provider": "Aliyun OSS",
+        "host": "mateo-oss.oss-cn-shanghai.aliyuncs.com",
+    }
+    categories = {category["id"]: category for category in remote_manifest["categories"]}
+    assert set(categories) == {"animals", "fruits", "plants", "vehicles"}
+    assert all(len(category["items"]) == 40 for category in categories.values())
+    remote_items = [
+        (category_id, item)
+        for category_id, category in categories.items()
+        for item in category["items"]
+    ]
+    assert len(remote_items) == 160
+    assert all(item["pronunciation"]["pinyin"] for _, item in remote_items)
+    assert all(item["pronunciation"]["english"] == item["label"]["en"] for _, item in remote_items)
+    assert all(
+        item["pronunciation"]["ipa"].startswith("/")
+        and item["pronunciation"]["ipa"].endswith("/")
+        for _, item in remote_items
+    )
+    assert all(
+        item["pronunciation"]["audio"][locale]
+        == (
+            "https://mateo-oss.oss-cn-shanghai.aliyuncs.com/literacy/audio/"
+            f"{category_id}/{item['id']}_{suffix}.mp3"
+        )
+        for category_id, item in remote_items
+        for locale, suffix in (("zh-CN", "zh"), ("en-US", "en"))
+    )
+    image_counts = {
+        category_id: sum(item["image"] is not None for item in category["items"])
+        for category_id, category in categories.items()
+    }
+    assert image_counts == {"animals": 37, "fruits": 31, "plants": 40, "vehicles": 40}
+    image_items = [item for _, item in remote_items if item["image"]]
+    assert all(
+        item["image"]["url"].startswith(
+            "https://mateo-oss.oss-cn-shanghai.aliyuncs.com/literacy/images/"
+        )
+        for item in image_items
+    )
+    assert all(item["image"]["attribution"]["source"] == "Wikimedia Commons" for item in image_items)
+    assert all(
+        item["image"]["attribution"]["sourcePage"].startswith("https://commons.wikimedia.org/")
+        for item in image_items
+    )
+    missing_images = {
+        item["id"]
+        for _, item in remote_items
+        if item["image"] is None
+    }
+    assert missing_images == {
+        "ladybug", "goldfish", "ant", "kiwi", "papaya", "plum", "avocado",
+        "raspberry", "jackfruit", "star-fruit", "guava", "jujube",
+    }
+    remote_serialized = json.dumps(remote_manifest)
+    assert "/Users/" not in remote_serialized
+    assert "/images/literacy/" not in remote_serialized
+    assert "/audio/literacy/animals/" not in remote_serialized
     assert 'activeMenuId === "literacy"' in app_script
     assert "tool script load failed" in app_script
     assert "tool initialization failed" in app_script
@@ -2968,11 +3013,33 @@ const normalized = context.LiteracyTool.__test.normalizeItems(
   ],
   { id: "sample", defaultKind: "text" }
 );
+const remoteMapped = context.LiteracyTool.__test.mapRemoteItems({
+  id: "animals",
+  items: [
+    {
+      id: "cat",
+      label: {"zh-CN": "猫", en: "Cat"},
+      image: {url: "https://cdn.example/cat.webp"},
+      pronunciation: {chinese: "猫", pinyin: "māo", english: "Cat", ipa: "/kæt/", audio: {"zh-CN": "https://cdn.example/cat_zh.mp3", "en-US": "https://cdn.example/cat_en.mp3"}}
+    },
+    {
+      id: "ant",
+      label: {"zh-CN": "蚂蚁", en: "Ant"},
+      image: null,
+      pronunciation: {chinese: "蚂蚁", pinyin: "mǎ yǐ", english: "Ant", ipa: "/ænt/", audio: {"zh-CN": "https://cdn.example/ant_zh.mp3", "en-US": "https://cdn.example/ant_en.mp3"}}
+    }
+  ]
+});
 process.stdout.write(JSON.stringify({
   deactivateSafe,
   builtIns: sources.slice(0, 4).map(source => source.id).join(",") === "numbers,uppercase,lowercase,mixed",
   asyncSource: sources.some(source => source.id === "animals" && source.async) &&
-    sources.some(source => source.id === "fruits" && source.async && source.creditsUrl.includes("/fruits/manifest.json")),
+    sources.some(source => source.id === "fruits" && source.async && source.creditsUrl.includes("/data/literacy/manifest.json")) &&
+    sources.some(source => source.id === "plants" && source.async) &&
+    sources.some(source => source.id === "vehicles" && source.async),
+  remoteImage: remoteMapped[0].kind === "image" && remoteMapped[0].src === "https://cdn.example/cat.webp",
+  remoteFallback: remoteMapped[1].kind === "text" && remoteMapped[1].value === "蚂蚁" &&
+    remoteMapped[1].pronunciation.audio["en-US"] === "https://cdn.example/ant_en.mp3",
   textCard: normalized[0].kind === "text" && normalized[0].value === "一",
   imageCard: normalized[1].kind === "image" && normalized[1].src === "/tree.webp",
   chineseName: normalized[1].primaryText === "树",

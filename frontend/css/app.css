@@ -4147,6 +4147,9 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
   transition: color .18s, opacity .15s;
 }
 .literacy-char.is-emoji { font-family: system-ui, sans-serif; }
+.literacy-card.is-word-only .literacy-char {
+  font-size: clamp(88px, 18vw, 240px);
+}
 .literacy-image {
   display: block; max-width: 90%; max-height: min(48vh, 430px);
   width: auto; height: auto; object-fit: contain; border-radius: 16px;
@@ -4250,9 +4253,13 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 .literacy-stage.is-fullscreen .literacy-char {
   font-size: clamp(160px, 32vw, 500px);
 }
+.literacy-stage.is-fullscreen .literacy-card.is-word-only .literacy-char {
+  font-size: clamp(128px, 24vw, 360px);
+}
 .literacy-stage.is-fullscreen .literacy-image { max-height: min(60vh, 620px); }
 @media (max-width: 760px) {
   .literacy-char { font-size: clamp(80px, 30vw, 200px); }
+  .literacy-card.is-word-only .literacy-char { font-size: clamp(72px, 24vw, 152px); }
   .literacy-stage { min-height: 520px; }
   .literacy-card { min-height: 520px; gap: 8px; padding: 16px; }
   .literacy-image { max-width: 96%; max-height: min(32vh, 260px); border-radius: 12px; }
