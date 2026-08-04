@@ -142,7 +142,7 @@ TOOLS = {
             "description": "在线 JSON 格式化、压缩、校验和树形查看工具，支持快速检查 JSON 语法错误并复制格式化结果。",
             "keywords": "JSON格式化,JSON校验,JSON压缩,JSON Viewer,JSON Formatter,在线JSON工具",
             "intro": "粘贴 JSON 后即可格式化、压缩、校验语法并查看树形结构，适合接口调试、日志查看和配置文件整理。",
-            "features": ["JSON 格式化与压缩", "语法错误提示", "树形层级查看", "JSON 转换为 YAML/XML/CSV/JS/Kotlin/Java/Go", "本地浏览器处理，不上传数据"],
+            "features": ["JSON 格式化与压缩", "语法错误提示", "树形层级查看", "JSON / CSV / YAML / XML 文本互转", "本地浏览器处理，不上传数据"],
             "faq": [
                 ("JSON 格式化会上传数据吗？", "不会，Tools24 的 JSON 工具在浏览器本地运行。"),
                 ("支持 JSON 压缩吗？", "支持，可以把格式化 JSON 压缩成单行。"),
@@ -154,7 +154,7 @@ TOOLS = {
             "description": "Paste or test JSON online to validate syntax, locate errors, format, compact and inspect nested data in a tree view.",
             "keywords": "JSON format checker,JSON formatter,JSON validator,test JSON online,JSON viewer,JSON compact",
             "intro": "Paste or test JSON online to check syntax, locate errors, format or compact the document, and inspect nested data in a tree view.",
-            "features": ["Format and compact JSON", "Syntax validation", "Tree view", "Convert JSON to YAML/XML/CSV/JS/Kotlin/Java/Go", "Local browser processing"],
+            "features": ["Format and compact JSON", "Syntax validation", "Tree view", "Convert between JSON / CSV / YAML / XML", "Local browser processing"],
             "faq": [
                 ("How can I test whether JSON is valid online?", "Paste the JSON and choose Format or Validate. The checker reports syntax errors with their line and column when available."),
                 ("Does the JSON checker show the error location?", "Yes. Invalid JSON is reported with a line, column and nearby source context to help you fix it."),

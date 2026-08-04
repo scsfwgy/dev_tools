@@ -162,15 +162,24 @@ var ConverterTool = (function () {
 
   function finishConversionUi() { byId("converter-run").disabled = false; byId("converter-run").textContent = t("converter.convert"); byId("converter-cancel").classList.add("hidden"); setTimeout(function () { byId("converter-progress").classList.add("hidden"); }, 500); }
 
+  // Text-based structured conversion (no file) shared with the JSON tool's convert tab.
+  // Resolves to {content, mime}. Only the routes in ROUTES for json/csv/yaml/xml are supported.
+  async function convertText(from, to, text) {
+    if (from === "json") return convertJson(text, to);
+    if (from === "yaml" && to === "json") return convertYamlToJson(text);
+    if (from === "xml" && to === "json") return convertXmlToJson(text);
+    if (from === "csv" && to === "json") return convertCsvToJson(text);
+    throw new Error(t("converter.unsupportedRoute"));
+  }
+
   async function convertRoute(file, from, to) {
     if (from === "docx") return convertDocx(file, to);
     if (from === "xlsx") return convertXlsx(file, to);
     if (from === "csv" && to === "xlsx") return convertCsvToXlsx(file);
     var text = await file.text();
-    if (from === "json") return convertJson(text, to);
-    if (from === "yaml" && to === "json") return convertYamlToJson(text);
-    if (from === "xml" && to === "json") return convertXmlToJson(text);
-    if (from === "csv" && to === "json") return convertCsvToJson(text);
+    if (from === "json" || from === "yaml" || from === "xml" || (from === "csv" && to === "json")) {
+      return convertText(from, to, text);
+    }
     if (from === "txt" && to === "md") return textResult(text, "text/markdown", textPreview(text));
     if (from === "txt" && (to === "html" || to === "pdf")) {
       var txtHtml = '<pre style="white-space:pre-wrap;word-break:break-word">' + escapeHtml(text) + '</pre>';
@@ -261,7 +270,8 @@ var ConverterTool = (function () {
     var rows = Array.isArray(value) ? value : [value];
     if (!rows.length) return "";
     if (rows.some(function (row) { return !row || typeof row !== "object" || Array.isArray(row); })) throw new Error(t("converter.jsonTabularOnly"));
-    var flattened = rows.map(flattenObject);
+    // ponytail: rows.map(flattenObject) would pass (index, array) as (prefix, result) — wrap to pass only the row.
+    var flattened = rows.map(function (row) { return flattenObject(row); });
     var headers = [];
     flattened.forEach(function (row) { Object.keys(row).forEach(function (key) { if (headers.indexOf(key) === -1) headers.push(key); }); });
     if (!headers.length) throw new Error(t("converter.jsonTabularOnly"));
@@ -513,5 +523,5 @@ var ConverterTool = (function () {
   function saveHistory(name, from, to, size) { var history = loadHistory(); history.unshift({ name: name, from: from, to: to, size: size, time: Date.now() }); localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, MAX_HISTORY))); }
   function renderHistory() { var target = byId("converter-history"); if (!target) return; var history = loadHistory(); target.innerHTML = history.length ? '<span class="history-label">' + t("history.label") + '</span>' + history.map(function (item) { return '<span class="history-item">' + escapeHtml(item.name) + ' · ' + item.from.toUpperCase() + '→' + item.to.toUpperCase() + ' · ' + formatBytes(item.size) + '</span>'; }).join("") : ""; }
 
-  return { init: init };
+  return { init: init, convertText: convertText };
 })();

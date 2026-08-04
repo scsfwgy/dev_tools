@@ -1,6 +1,16 @@
-// JSON Tool — a focused single-editor formatter, compactor and collapsible tree.
+// JSON Tool — formatter, compactor, collapsible tree + paste-based JSON/CSV/YAML/XML conversion.
 var JsonTool = (function () {
   var editor, lineNumbers, tree, viewMode = "editor";
+  var splitRatio = 0.5;
+  var convertTimer = null;
+  // ponytail: conversion logic lives in ConverterTool (file converter); keep this URL in sync with TOOL_REGISTRY's converter script.
+  var CONVERTER_URL = "/js/converter-tool.js";
+  var CONVERT_TARGETS = {
+    json: ["yaml", "csv", "xml"],
+    csv: ["json"],
+    yaml: ["json"],
+    xml: ["json"]
+  };
   var EXAMPLES = {
     api: { status: "ok", data: [{ id: 101, name: "Tools24", active: true }], pagination: { page: 1, total: 1 } },
     config: { app: { name: "DevTools", locale: "zh-CN", theme: "dark" }, features: ["json", "jwt", "image"], debug: false },
@@ -12,19 +22,41 @@ var JsonTool = (function () {
   function init(parent) {
     parent.innerHTML =
       '<div class="json-tool json-tool-single">' +
-      '  <div class="json-toolbar">' +
-      '    <button id="jt-format" class="jt-btn jt-btn-primary" type="button">' + t("json.formatBtn") + '</button>' +
-      '    <button id="jt-compact" class="jt-btn" type="button">' + t("json.compact") + '</button>' +
-      '    <button id="jt-fold" class="jt-btn" type="button" aria-pressed="false">' + t("json.fold") + '</button>' +
-      '    <button id="jt-analyze" class="jt-btn" type="button" aria-pressed="false">' + t("json.analyze") + '</button>' +
-      '    <button id="jt-copy" class="jt-btn" type="button">' + t("json.copy") + '</button>' +
-      '    <select id="jt-example" class="settings-select jt-example-select"><option value="">' + t("json.loadExample") + '</option><option value="api">' + t("json.exampleApi") + '</option><option value="config">' + t("json.exampleConfig") + '</option><option value="nested">' + t("json.exampleNested") + '</option></select>' +
-      '    <span id="jt-msg" class="jt-msg" aria-live="polite"></span>' +
+      '  <div class="b64-tabs" role="tablist" aria-label="' + t("json.tabGroup") + '">' +
+      '    <button id="jt-tab-format" class="b64-tab active" type="button" role="tab" aria-selected="true">' + t("json.format") + '</button>' +
+      '    <button id="jt-tab-convert" class="b64-tab" type="button" role="tab" aria-selected="false">' + t("json.convert") + '</button>' +
       '  </div>' +
-      '  <div class="jt-editor-wrap json-editor-single">' +
-      '    <pre id="jt-line-numbers" class="jt-line-numbers" aria-hidden="true">1</pre>' +
-      '    <textarea id="jt-editor" class="jt-editor" spellcheck="false" placeholder="' + t("json.placeholder") + '"></textarea>' +
-      '    <div id="jt-tree" class="jt-tree hidden" tabindex="0" role="region" aria-label="' + t("json.foldedView") + '"></div>' +
+      '  <div id="jt-pane-format" class="b64-pane">' +
+      '    <div class="json-toolbar">' +
+      '      <button id="jt-format" class="jt-btn jt-btn-primary" type="button">' + t("json.formatBtn") + '</button>' +
+      '      <button id="jt-compact" class="jt-btn" type="button">' + t("json.compact") + '</button>' +
+      '      <button id="jt-fold" class="jt-btn" type="button" aria-pressed="false">' + t("json.fold") + '</button>' +
+      '      <button id="jt-analyze" class="jt-btn" type="button" aria-pressed="false">' + t("json.analyze") + '</button>' +
+      '      <button id="jt-copy" class="jt-btn" type="button">' + t("json.copy") + '</button>' +
+      '      <select id="jt-example" class="settings-select jt-example-select"><option value="">' + t("json.loadExample") + '</option><option value="api">' + t("json.exampleApi") + '</option><option value="config">' + t("json.exampleConfig") + '</option><option value="nested">' + t("json.exampleNested") + '</option></select>' +
+      '      <span id="jt-msg" class="jt-msg" aria-live="polite"></span>' +
+      '    </div>' +
+      '    <div class="jt-editor-wrap json-editor-single">' +
+      '      <pre id="jt-line-numbers" class="jt-line-numbers" aria-hidden="true">1</pre>' +
+      '      <textarea id="jt-editor" class="jt-editor" spellcheck="false" placeholder="' + t("json.placeholder") + '"></textarea>' +
+      '      <div id="jt-tree" class="jt-tree hidden" tabindex="0" role="region" aria-label="' + t("json.foldedView") + '"></div>' +
+      '    </div>' +
+      '  </div>' +
+      '  <div id="jt-pane-convert" class="b64-pane hidden">' +
+      '    <div class="json-toolbar">' +
+      '      <select id="jc-from" class="settings-select" style="width:auto" aria-label="' + t("json.cvFrom") + '">' + renderFormatOptions("json") + '</select>' +
+      '      <span aria-hidden="true">→</span>' +
+      '      <select id="jc-to" class="settings-select" style="width:auto" aria-label="' + t("json.cvTo") + '"></select>' +
+      '      <button id="jc-convert" class="jt-btn jt-btn-primary" type="button">' + t("json.convertBtn") + '</button>' +
+      '      <button id="jc-swap" class="jt-btn" type="button" aria-label="' + t("json.swapDir") + '" title="' + t("json.swapDir") + '">⇄</button>' +
+      '      <button id="jc-copy" class="jt-btn" type="button">' + t("json.copy") + '</button>' +
+      '      <span id="jc-msg" class="jt-msg" aria-live="polite"></span>' +
+      '    </div>' +
+      '    <div class="json-panes">' +
+      '      <div class="json-pane json-pane-left"><textarea id="jc-input" class="jt-editor" spellcheck="false" placeholder="' + t("json.cvPlaceholder") + '"></textarea></div>' +
+      '      <div id="jc-resizer" class="jt-resizer"></div>' +
+      '      <div class="json-pane json-pane-right"><textarea id="jc-output" class="jt-editor" readonly spellcheck="false" placeholder="' + t("json.cvOutputPlaceholder") + '"></textarea></div>' +
+      '    </div>' +
       '  </div>' +
       '</div>';
 
@@ -32,6 +64,8 @@ var JsonTool = (function () {
     lineNumbers = document.getElementById("jt-line-numbers");
     tree = document.getElementById("jt-tree");
 
+    document.getElementById("jt-tab-format").addEventListener("click", function () { switchTab("format"); });
+    document.getElementById("jt-tab-convert").addEventListener("click", function () { switchTab("convert"); });
     document.getElementById("jt-format").addEventListener("click", formatJson);
     document.getElementById("jt-compact").addEventListener("click", compactJson);
     document.getElementById("jt-fold").addEventListener("click", toggleFoldedView);
@@ -45,6 +79,62 @@ var JsonTool = (function () {
       }
     });
     bindLineNumbers(editor, lineNumbers);
+    initConvertPane(parent);
+  }
+
+  function initConvertPane(parent) {
+    renderTargets("json", "yaml");
+    var input = document.getElementById("jc-input");
+    var resizer = document.getElementById("jc-resizer");
+    var leftPane = parent.querySelector("#jt-pane-convert .json-pane-left");
+    var rightPane = parent.querySelector("#jt-pane-convert .json-pane-right");
+    document.getElementById("jc-convert").addEventListener("click", doConvert);
+    document.getElementById("jc-swap").addEventListener("click", swapDirection);
+    document.getElementById("jc-copy").addEventListener("click", copyConvertResult);
+    document.getElementById("jc-from").addEventListener("change", function () { renderTargets(this.value); });
+    input.addEventListener("input", function () {
+      clearTimeout(convertTimer);
+      convertTimer = setTimeout(doConvert, 300);
+    });
+    resizer.addEventListener("mousedown", function (event) {
+      event.preventDefault();
+      var panes = parent.querySelector("#jt-pane-convert .json-panes");
+      var startX = event.clientX, startRatio = splitRatio, width = panes.getBoundingClientRect().width;
+      function onMove(ev) { splitRatio = Math.max(0.2, Math.min(0.8, startRatio + (ev.clientX - startX) / width)); applyConvertSplit(leftPane, rightPane); }
+      function onUp() { document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); document.body.style.cursor = ""; document.body.style.userSelect = ""; }
+      document.body.style.cursor = "col-resize"; document.body.style.userSelect = "none";
+      document.addEventListener("mousemove", onMove); document.addEventListener("mouseup", onUp);
+    });
+    applyConvertSplit(leftPane, rightPane);
+  }
+
+  function applyConvertSplit(leftPane, rightPane) {
+    leftPane.style.flex = "0 0 " + (splitRatio * 100) + "%";
+    rightPane.style.flex = "0 0 " + ((1 - splitRatio) * 100) + "%";
+  }
+
+  function switchTab(mode) {
+    document.getElementById("jt-tab-format").classList.toggle("active", mode === "format");
+    document.getElementById("jt-tab-convert").classList.toggle("active", mode === "convert");
+    document.getElementById("jt-tab-format").setAttribute("aria-selected", String(mode === "format"));
+    document.getElementById("jt-tab-convert").setAttribute("aria-selected", String(mode === "convert"));
+    document.getElementById("jt-pane-format").classList.toggle("hidden", mode !== "format");
+    document.getElementById("jt-pane-convert").classList.toggle("hidden", mode !== "convert");
+  }
+
+  function renderFormatOptions(selected) {
+    return ["json", "csv", "yaml", "xml"].map(function (format) {
+      return '<option value="' + format + '">' + format.toUpperCase() + '</option>';
+    }).join("");
+  }
+
+  function renderTargets(from, keep) {
+    var targets = CONVERT_TARGETS[from] || [];
+    var select = document.getElementById("jc-to");
+    select.innerHTML = targets.map(function (format) {
+      return '<option value="' + format + '">' + format.toUpperCase() + '</option>';
+    }).join("");
+    if (keep !== undefined && targets.indexOf(keep) !== -1) select.value = keep;
   }
 
   function parseEditor() {
@@ -171,6 +261,70 @@ var JsonTool = (function () {
     if (!message) return;
     message.textContent = text;
     message.className = "jt-msg" + (isError ? " jt-msg-error" : " jt-msg-ok");
+  }
+
+  function setConvertMsg(text, isError) {
+    var message = document.getElementById("jc-msg");
+    if (!message) return;
+    message.textContent = text;
+    message.className = "jt-msg" + (isError ? " jt-msg-error" : " jt-msg-ok");
+  }
+
+  // ═══ Convert tab ═══
+
+  function ensureConverter() {
+    if (window.ConverterTool && window.ConverterTool.convertText) return Promise.resolve();
+    return new Promise(function (resolve, reject) {
+      var script = document.createElement("script");
+      script.src = CONVERTER_URL;
+      script.onload = resolve;
+      script.onerror = function () { reject(new Error(t("json.cvLoadFailed"))); };
+      document.head.appendChild(script);
+    });
+  }
+
+  function doConvert() {
+    var input = document.getElementById("jc-input");
+    var output = document.getElementById("jc-output");
+    var from = document.getElementById("jc-from").value;
+    var to = document.getElementById("jc-to").value;
+    var raw = input.value;
+    if (!raw.trim()) { output.value = ""; setConvertMsg("", false); return; }
+    if (from === to) { output.value = raw; setConvertMsg("", false); return; }
+    setConvertMsg(t("json.converting"), false);
+    ensureConverter().then(function () {
+      return window.ConverterTool.convertText(from, to, raw);
+    }).then(function (result) {
+      output.value = result.content;
+      setConvertMsg("✓ " + t("json.cvConverted"), false);
+    }).catch(function (error) {
+      output.value = "";
+      setConvertMsg("✗ " + (error && error.message ? error.message : error), true);
+    });
+  }
+
+  function copyConvertResult() {
+    var output = document.getElementById("jc-output");
+    if (!output.value) return;
+    navigator.clipboard.writeText(output.value).then(function () {
+      showCopyToast(t("json.copied"));
+      setConvertMsg("✓ " + t("json.copied"), false);
+    });
+  }
+
+  function swapDirection() {
+    var fromEl = document.getElementById("jc-from");
+    var toEl = document.getElementById("jc-to");
+    var input = document.getElementById("jc-input");
+    var output = document.getElementById("jc-output");
+    var newFrom = toEl.value;
+    renderTargets(newFrom, fromEl.value);
+    fromEl.value = newFrom;
+    var inputValue = input.value;
+    input.value = output.value;
+    output.value = inputValue;
+    setConvertMsg("", false);
+    if (input.value.trim()) doConvert();
   }
 
   function showJsonError(error, raw) {

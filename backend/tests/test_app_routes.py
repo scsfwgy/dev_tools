@@ -922,16 +922,91 @@ def test_json_error_location_examples_and_jwt_security_analysis(client):
     assert 'class="jt-fold-placeholder">…' in json_script
     assert 'isArray && !showCounts ? ""' in json_script
     assert 'id="jt-output"' not in json_script
-    assert 'id="jt-pane-convert"' not in json_script
     assert 'id="json-history"' not in json_script
+    assert 'id="jt-tab-format"' in json_script
+    assert 'id="jt-tab-convert"' in json_script
+    assert 'id="jt-pane-format"' in json_script
+    assert 'id="jt-pane-convert"' in json_script
+    assert 'id="jc-from"' in json_script
+    assert 'id="jc-to"' in json_script
+    assert 'id="jc-input"' in json_script
+    assert 'id="jc-output"' in json_script
+    assert 'id="jc-convert"' in json_script
+    assert 'id="jc-swap"' in json_script
+    assert 'json: ["yaml", "csv", "xml"]' in json_script
+    assert 'CONVERTER_URL = "/js/converter-tool.js"' in json_script
+    assert "function ensureConverter()" in json_script
+    assert "window.ConverterTool.convertText(" in json_script
+    assert 'role="tablist"' in json_script
+    assert 'aria-label="' in json_script
     assert zh_locale["json"]["errorLocation"] == "第 {line} 行，第 {column} 列"
     assert zh_locale["json"]["fold"] == "折叠"
     assert zh_locale["json"]["analyze"] == "分析"
+    assert zh_locale["json"]["tabGroup"] == "JSON 工具分区"
+    assert zh_locale["json"]["cvConverted"] == "转换完成"
+    assert zh_locale["json"]["cvLoadFailed"] == "转换组件加载失败，请检查网络后重试"
+    assert en_locale["json"]["cvPlaceholder"] == "Paste JSON / CSV / YAML / XML text..."
+    assert en_locale["json"]["cvFrom"] == "Source format"
+    assert en_locale["json"]["cvTo"] == "Target format"
     assert "function renderTokenAnalysis(" in jwt_script
     assert "warningLongLifetime" in jwt_script
     assert "decodedNotVerified" in jwt_script
     assert "jwt-verification-state" in jwt_script
     assert en_locale["jwt"]["statusNoExpiry"] == "Lifetime unknown: exp is missing"
+
+
+def test_converter_convert_text_shared_api_handles_structured_routes():
+    node = shutil.which("node")
+    if node is None:
+        return
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = {
+  window: {
+    __t: key => key,
+    jsyaml: {
+      load: text => { const name = text.split("\n")[0].split(":")[1].trim(); return { name, enabled: true }; },
+      dump: value => "name: " + value.name + "\nenabled: " + value.enabled
+    }
+  },
+  document: { createElement() { return { set src(v) {}, onload: null, onerror: null }; }, head: { appendChild() {} } },
+  console, Promise, Object, Array, String, Number, Boolean, JSON, RegExp, Error, Date, Math, isFinite,
+  setTimeout, clearTimeout
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/converter-tool.js", "utf8"), context);
+const ct = context.ConverterTool;
+(async () => {
+  const json2csv = await ct.convertText("json", "csv", '[{"name":"JSON","local":true},{"name":"YAML","local":false}]');
+  const csv2json = await ct.convertText("csv", "json", "name,category\nJSON,Developer\nYAML,Config");
+  const json2xml = await ct.convertText("json", "xml", '{"root":{"name":"JSON","local":true}}');
+  const json2yaml = await ct.convertText("json", "yaml", '{"name":"JSON","enabled":true}');
+  const yaml2json = await ct.convertText("yaml", "json", "name: JSON\nenabled: true");
+  const rejected = await ct.convertText("csv", "xml", "a,b\n1,2").then(() => false, () => true);
+  const rows = json2csv.content.split("\r\n");
+  const values = {
+    csvHeader: rows[0] === "name,local",
+    csvRow: rows[1] === "JSON,true",
+    csvTypes: rows[1].split(",")[1] === "true",
+    jsonArray: Array.isArray(JSON.parse(csv2json.content)) && JSON.parse(csv2json.content)[0].category === "Developer",
+    xmlRoot: json2xml.content.includes("<root>") && json2xml.content.includes("</root>"),
+    yamlDump: json2yaml.content === "name: JSON\nenabled: true",
+    yamlLoad: JSON.parse(yaml2json.content).name === "JSON",
+    unsupportedRejected: rejected
+  };
+  process.stdout.write(JSON.stringify(values));
+})().catch(error => { process.stderr.write(String(error)); process.exit(1); });
+'''
+    completed = subprocess.run(
+        [node, "-e", program],
+        cwd=frontend_dir.parent,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert all(json.loads(completed.stdout).values())
 
 
 def test_file_converter_routes_are_local_and_lazy_loaded(client):

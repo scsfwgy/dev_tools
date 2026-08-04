@@ -612,10 +612,16 @@
     "exampleNested": "Nested object",
     "items": "items",
     "keys": "keys",
-    "cvPlaceholder": "Paste JSON (or YAML/XML/CSV/JS object)...",
+    "tabGroup": "JSON tool sections",
+    "cvFrom": "Source format",
+    "cvTo": "Target format",
+    "cvPlaceholder": "Paste JSON / CSV / YAML / XML text...",
     "cvOutputPlaceholder": "Conversion result",
     "convertBtn": "Convert",
-    "swapDir": "Swap direction"
+    "swapDir": "Swap direction",
+    "converting": "Converting...",
+    "cvConverted": "Converted",
+    "cvLoadFailed": "Failed to load converter, please check your network"
   },
   "visualization": {
     "dataTitle": "Input data",

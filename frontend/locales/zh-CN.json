@@ -612,10 +612,16 @@
     "exampleNested": "嵌套对象",
     "items": "项",
     "keys": "个字段",
-    "cvPlaceholder": "粘贴 JSON（或 YAML/XML/CSV/JS 对象）...",
+    "tabGroup": "JSON 工具分区",
+    "cvFrom": "源格式",
+    "cvTo": "目标格式",
+    "cvPlaceholder": "粘贴 JSON / CSV / YAML / XML 文本...",
     "cvOutputPlaceholder": "转换结果",
     "convertBtn": "转换",
-    "swapDir": "切换方向"
+    "swapDir": "切换方向",
+    "converting": "转换中...",
+    "cvConverted": "转换完成",
+    "cvLoadFailed": "转换组件加载失败，请检查网络后重试"
   },
   "visualization": {
     "dataTitle": "输入数据",
