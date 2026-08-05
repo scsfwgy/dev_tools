@@ -31,11 +31,16 @@ class _RestorePathMiddleware:
                 if path:
                     environ["PATH_INFO"] = path
             else:
-                # Temporary probe: no recognized forwarded header — return the
-                # x-vercel-* header names the runtime actually set (names only,
-                # never values) so we can correct the lookup. Removed once fixed.
-                names = sorted(key[5:].lower() for key in environ if key.startswith("HTTP_X_VERCEL"))
-                body = ("vercel_rewrite_no_forwarded_path headers=" + ",".join(names)).encode("utf-8")
+                # Temporary probe: no recognized forwarded header — dump the
+                # path-related WSGI environ keys (names, and values for keys
+                # whose name looks path/url-ish, truncated) so we can locate the
+                # original request path. Removed once fixed.
+                path_keys = [k for k in environ if "path" in k.lower() or "uri" in k.lower() or "url" in k.lower() or "script" in k.lower()]
+                dump = []
+                for k in path_keys:
+                    v = str(environ[k])
+                    dump.append(k + "=" + (v if len(v) < 60 else v[:57] + "..."))
+                body = ("probe path_keys=" + "|".join(dump)).encode("utf-8")
                 start_response("200 OK", [("Content-Type", "text/plain; charset=utf-8"), ("Content-Length", str(len(body)))])
                 return [body]
         return self._wsgi_app(environ, start_response)
