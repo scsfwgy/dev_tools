@@ -31,15 +31,13 @@ class _RestorePathMiddleware:
                 if path:
                     environ["PATH_INFO"] = path
             else:
-                # Diagnostic only: log which x-vercel-* headers the runtime
-                # actually set (names only, never values) so we can correct the
-                # forwarded-header lookup if Vercel changes the contract.
-                import logging
-
+                # Temporary probe: no recognized forwarded header — return the
+                # x-vercel-* header names the runtime actually set (names only,
+                # never values) so we can correct the lookup. Removed once fixed.
                 names = sorted(key[5:].lower() for key in environ if key.startswith("HTTP_X_VERCEL"))
-                logging.getLogger(__name__).warning(
-                    "vercel_rewrite_no_forwarded_path headers=%s", ",".join(names)
-                )
+                body = ("vercel_rewrite_no_forwarded_path headers=" + ",".join(names)).encode("utf-8")
+                start_response("200 OK", [("Content-Type", "text/plain; charset=utf-8"), ("Content-Length", str(len(body)))])
+                return [body]
         return self._wsgi_app(environ, start_response)
 
 
