@@ -1009,6 +1009,39 @@ const ct = context.ConverterTool;
     assert all(json.loads(completed.stdout).values())
 
 
+def test_vercel_entrypoint_restores_original_path_from_forwarded_header():
+    """Vercel rewrites every route to /api/index and forwards the original URL
+    in x-vercel-forwarded-url; the entry-point middleware must restore PATH_INFO
+    so Flask routes on the real path instead of 404ing on /api/index."""
+    import importlib.util
+
+    project_root = Path(__file__).resolve().parents[2]
+    spec = importlib.util.spec_from_file_location("vercel_index", project_root / "api" / "index.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    seen = {}
+
+    def dummy_app(environ, start_response):
+        seen["path"] = environ["PATH_INFO"]
+        start_response("200 OK", [])
+        return []
+
+    start = lambda status, headers: None  # noqa: E731
+    middleware = module._RestorePathMiddleware(dummy_app)
+
+    middleware({"PATH_INFO": "/api/index", "HTTP_X_VERCEL_FORWARDED_URL": "https://dev.tools24.uk/zh/tool/json?x=1"}, start)
+    assert seen["path"] == "/zh/tool/json"
+
+    # Direct /api/index call carries its own forwarded URL → unchanged.
+    middleware({"PATH_INFO": "/api/index", "HTTP_X_VERCEL_FORWARDED_URL": "https://dev.tools24.uk/api/index"}, start)
+    assert seen["path"] == "/api/index"
+
+    # No forwarded header → untouched.
+    middleware({"PATH_INFO": "/api/health"}, start)
+    assert seen["path"] == "/api/health"
+
+
 def test_file_converter_routes_are_local_and_lazy_loaded(client):
     page = client.get("/zh/tool/converter")
     script = client.get("/js/converter-tool.js")
