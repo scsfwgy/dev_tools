@@ -20,29 +20,20 @@ class _RestorePathMiddleware:
 
     def __call__(self, environ, start_response):
         if environ.get("PATH_INFO") == "/api/index":
-            forwarded = (
-                environ.get("HTTP_X_VERCEL_FORWARDED_URL")
-                or environ.get("HTTP_X_VERCEL_FORWARDED_PATH")
-            )
-            if forwarded:
-                from urllib.parse import urlsplit
+            # vercel.json rewrites every route to /api/index and injects the
+            # original path as the __path query param (Vercel no longer passes
+            # the original path anywhere in the WSGI environ). First value wins
+            # so the rewrite's own injection takes precedence over any client
+            # forgery.
+            path = None
+            for part in environ.get("QUERY_STRING", "").split("&"):
+                if part.startswith("__path="):
+                    path = part[len("__path="):]
+                    break
+            if path is not None:
+                from urllib.parse import unquote
 
-                path = urlsplit(forwarded).path
-                if path:
-                    environ["PATH_INFO"] = path
-            else:
-                # Temporary probe: no recognized forwarded header — dump the
-                # path-related WSGI environ keys (names, and values for keys
-                # whose name looks path/url-ish, truncated) so we can locate the
-                # original request path. Removed once fixed.
-                path_keys = [k for k in environ if "path" in k.lower() or "uri" in k.lower() or "url" in k.lower() or "script" in k.lower()]
-                dump = []
-                for k in path_keys:
-                    v = str(environ[k])
-                    dump.append(k + "=" + (v if len(v) < 60 else v[:57] + "..."))
-                body = ("probe path_keys=" + "|".join(dump)).encode("utf-8")
-                start_response("200 OK", [("Content-Type", "text/plain; charset=utf-8"), ("Content-Length", str(len(body)))])
-                return [body]
+                environ["PATH_INFO"] = unquote(path) or "/"
         return self._wsgi_app(environ, start_response)
 
 

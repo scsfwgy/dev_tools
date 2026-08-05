@@ -1009,10 +1009,11 @@ const ct = context.ConverterTool;
     assert all(json.loads(completed.stdout).values())
 
 
-def test_vercel_entrypoint_restores_original_path_from_forwarded_header():
-    """Vercel rewrites every route to /api/index and forwards the original URL
-    in x-vercel-forwarded-url; the entry-point middleware must restore PATH_INFO
-    so Flask routes on the real path instead of 404ing on /api/index."""
+def test_vercel_entrypoint_restores_original_path_from_rewrite_query_param():
+    """Vercel rewrites every route to /api/index and injects the original path
+    as the __path query param (Vercel no longer passes the original path in the
+    WSGI environ). The entry-point middleware must restore PATH_INFO so Flask
+    routes on the real path instead of 404ing on /api/index."""
     import importlib.util
 
     project_root = Path(__file__).resolve().parents[2]
@@ -1030,14 +1031,24 @@ def test_vercel_entrypoint_restores_original_path_from_forwarded_header():
     start = lambda status, headers: None  # noqa: E731
     middleware = module._RestorePathMiddleware(dummy_app)
 
-    middleware({"PATH_INFO": "/api/index", "HTTP_X_VERCEL_FORWARDED_URL": "https://dev.tools24.uk/zh/tool/json?x=1"}, start)
+    middleware({"PATH_INFO": "/api/index", "QUERY_STRING": "__path=/zh/tool/json&x=1"}, start)
     assert seen["path"] == "/zh/tool/json"
 
-    # Direct /api/index call carries its own forwarded URL → unchanged.
-    middleware({"PATH_INFO": "/api/index", "HTTP_X_VERCEL_FORWARDED_URL": "https://dev.tools24.uk/api/index"}, start)
+    # URL-encoded path and root both decode correctly.
+    middleware({"PATH_INFO": "/api/index", "QUERY_STRING": "__path=/"}, start)
+    assert seen["path"] == "/"
+    middleware({"PATH_INFO": "/api/index", "QUERY_STRING": "__path=/zh/tool/a%20b"}, start)
+    assert seen["path"] == "/zh/tool/a b"
+
+    # First __path wins: the rewrite's injection takes precedence over forgery.
+    middleware({"PATH_INFO": "/api/index", "QUERY_STRING": "__path=/zh/tool/json&__path=/evil"}, start)
+    assert seen["path"] == "/zh/tool/json"
+
+    # Direct /api/index call: rewrite injects its own path → stays /api/index.
+    middleware({"PATH_INFO": "/api/index", "QUERY_STRING": "__path=/api/index"}, start)
     assert seen["path"] == "/api/index"
 
-    # No forwarded header → untouched.
+    # No rewrite → untouched.
     middleware({"PATH_INFO": "/api/health"}, start)
     assert seen["path"] == "/api/health"
 
