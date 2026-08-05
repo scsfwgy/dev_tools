@@ -2726,6 +2726,8 @@ body.diff-immersive .diff-tool.controls-open .diff-toolbar-controls {
 
 .at-table-wrap { overflow-x: auto; }
 
+.at-group-title { margin: 18px 0 8px; font-size: 0.95rem; color: var(--text-secondary); }
+
 .at-table {
     width: 100%;
     border-collapse: collapse;

@@ -9,6 +9,8 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 
 | 日期 | 功能 | 说明 |
 |------|------|------|
+| 2026-08-05 | 新增 Docker / Kubernetes 常用速查 | 参照 Git/终端命令速查模式新增两个开发速查工具：Docker 覆盖镜像、容器、运行与执行、网络、数据卷、Compose、Dockerfile 指令与系统清理八大类共 63 条；Kubernetes 覆盖 kubectl 基础、Pod、工作负载、Service 与网络、配置与密钥、存储、命名空间与 RBAC、排查运维八大类共 68 条。均支持分类 Tab、中英文关键词搜索与点击复制，全本地处理。新增 docker/kubernetes 图标、菜单、toolHints 与双语 SEO 元数据，加入首页「开发速查」分类。自动化测试新增 2 个用例并更新分类断言 |
+| 2026-08-05 | Docker / K8s 速查补充常用地址 | 两个工具新增「常用地址」Tab（外链新窗口打开）：Docker 分官方与文档（官网/文档/Docker Hub/Dockerfile/Compose）、国内镜像加速参考（dongyubin/DockerHub 汇总、腾讯云教程、1ms.run）、在线练习（Play with Docker）；Kubernetes 分官方与文档（官网/中文文档/kubectl 速查表/命令参考/API）、常用工具与学习（Helm/K9s/Minikube/kubeadm/Kuboard）、在线练习（Play with Kubernetes）。链接均带 rel=noopener noreferrer，新增 .at-group-title 样式与双语链接表文案，测试断言链接数据与分组 |
 | 2026-08-05 | 修复 Vercel 全站 404 | Vercel 新版平台对被 rewrite 到 `/api/index` 的 serverless 函数不再传原始路径（WSGI environ 中 `PATH_INFO` 只剩 `/api/index`，无 forwarded-url header），Flask 所有路由失配导致全站 404、静态文件正常。改为 `vercel.json` 用 catch-all rewrite 把原始路径注入 `__path` 查询参数，入口 WSGI 中间件据此恢复 `PATH_INFO`（首个 `__path` 优先防伪造）。定位过程用临时探针列出运行时实际 header/WSGI 键确认原始路径去向，完成后移除 |
 | 2026-08-04 | JSON 工具新增格式转换标签 | JSON 工具恢复「转换」Tab，粘贴文本即可完成 JSON / CSV / YAML / XML 互转（无需上传文件）；复用文件转换工具 `ConverterTool.convertText` 本地逻辑，目标格式按源格式动态过滤，支持一键互换方向、防抖自动转换与复制结果；双语文案与 SEO features 同步更新 |
 | 2026-07-26 | 儿童识字预置发音框架 | 数字、字母、动物、水果统一接入可选 `zh-CN` / `en-US` 静态音频字段；数字新增拼音与中文名称，大小写字母共享英文发音；新增双语 44px 朗读按钮、默认开启且本地持久化的自动朗读、中文后 350ms 播放英文、读完后再计算切卡间隔，以及暂停/停止/切源/退出全屏/离开工具时的统一取消和 10 秒故障跳过。提供 Azure Speech 批量生成、FFmpeg 响度/静音处理、内容哈希命名和逐条审核目录校验脚本，预期 178 条。完整 81 项测试通过，并用本机 Chrome 验证中文浅色桌面数字和动物实拍卡布局；macOS 随后锁屏，英文、深色和移动视觉待解锁后复核。当前环境缺少 `AZURE_SPEECH_KEY` / `AZURE_SPEECH_REGION`，正式 MP3、schema v3 清单和逐条人工审核尚待有效配置后生成，不使用设备 TTS 降级。 |

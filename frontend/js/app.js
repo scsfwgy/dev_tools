@@ -144,6 +144,8 @@
     ai: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v1.5h.5A2.5 2.5 0 0 1 19 10v1.5a2.5 2.5 0 0 1-2 2.45V14a4 4 0 0 1-4 4h-1.5a2.5 2.5 0 0 1-2.45-2H7.5A2.5 2.5 0 0 1 5 13.5V12a4 4 0 0 1 2.4-3.6"/><circle cx="9" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/><path d="M9 13c.83 1.19 2 1.5 3 1.5s2.17-.31 3-1.5"/></svg>',
     translate: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l4 4-4 4"/><path d="M19 8l-4 4 4 4"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
     git: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M12 8v7"/><path d="M6 16h12"/></svg>',
+    docker: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+    kubernetes: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>',
     file: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     md: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
@@ -754,6 +756,16 @@
       TerminalTool.init(el);
       return;
     }
+    if (activeMenuId === "docker" && typeof DockerTool !== "undefined") {
+      el.innerHTML = "";
+      DockerTool.init(el);
+      return;
+    }
+    if (activeMenuId === "kubernetes" && typeof KubernetesTool !== "undefined") {
+      el.innerHTML = "";
+      KubernetesTool.init(el);
+      return;
+    }
     if (activeMenuId === "curl" && typeof CurlTool !== "undefined") {
       el.innerHTML = "";
       CurlTool.init(el);
@@ -811,7 +823,7 @@
     { id: "encoding", tools: ["encoder", "base64", "uuid", "crypto", "jwt", "qrcode"] },
     { id: "files", tools: ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"] },
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
-    { id: "reference", tools: ["terminal", "git", "ai", "android", "flutter", "ios"] },
+    { id: "reference", tools: ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"] },
     { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
     { id: "everyday", tools: ["content", "translate", "area-search"] }
   ];

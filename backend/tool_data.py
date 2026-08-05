@@ -680,6 +680,58 @@ TOOLS = {
             ],
         },
     },
+    "docker": {
+        "zh": {
+            "name": "Docker 常用速查",
+            "title": "Docker 常用命令速查 - 镜像 容器 Compose Dockerfile | Tools24",
+            "description": "Docker 常用命令速查表，覆盖镜像管理、容器管理、运行与执行、网络、数据卷、Compose、Dockerfile 指令和系统清理八大类。",
+            "keywords": "Docker命令,Docker速查,Docker Cheat Sheet,容器命令,Compose,Dockerfile,镜像命令,容器管理",
+            "intro": "面向开发者和运维的 Docker 常用命令速查，按镜像、容器、运行、网络、数据卷、Compose、Dockerfile 与系统清理分类，支持搜索和一键复制。",
+            "features": ["镜像管理命令", "容器管理命令", "运行与执行命令", "网络与数据卷", "Compose 命令", "Dockerfile 指令", "系统清理与状态"],
+            "faq": [
+                ("这些命令适用于哪个版本？", "命令基于 Docker 20+ 与 docker compose 插件 v2 语法，docker-compose 旧版同样兼容大部分命令。"),
+                ("如何查找特定命令？", "点击对应分类标签后使用搜索框，支持中英文关键词过滤，点击示例即可复制。"),
+            ],
+        },
+        "en": {
+            "name": "Docker Commands",
+            "title": "Docker Cheat Sheet - Image Container Compose Dockerfile | Tools24",
+            "description": "Docker commands quick reference covering image management, containers, run & exec, networks, volumes, Compose, Dockerfile instructions and system cleanup.",
+            "keywords": "Docker commands,Docker cheat sheet,container commands,Compose,Dockerfile,image commands,docker reference",
+            "intro": "A Docker commands quick reference for developers and ops, organized into images, containers, running, networks, volumes, Compose, Dockerfile and system cleanup, with search and one-click copy.",
+            "features": ["Image commands", "Container commands", "Run & exec commands", "Networks and volumes", "Compose commands", "Dockerfile instructions", "System cleanup and info"],
+            "faq": [
+                ("Which Docker version do these commands target?", "Commands target Docker 20+ and the docker compose v2 plugin syntax; most also work with legacy docker-compose."),
+                ("How do I find a specific command?", "Click a category tab then use the search box. Supports keyword filtering in both English and Chinese; click an example to copy it."),
+            ],
+        },
+    },
+    "kubernetes": {
+        "zh": {
+            "name": "Kubernetes 常用速查",
+            "title": "Kubernetes 常用命令速查 - kubectl Pod Deployment Service | Tools24",
+            "description": "Kubernetes 常用命令速查表，覆盖 kubectl 基础、Pod、工作负载、Service 与网络、配置与密钥、存储、命名空间与权限和排查运维八大类。",
+            "keywords": "Kubernetes命令,kubectl,K8s速查,Kubernetes Cheat Sheet,Pod命令,Deployment,Service,Ingress",
+            "intro": "面向开发者和运维的 Kubernetes 常用命令速查，覆盖 kubectl 基础、Pod、工作负载、Service、ConfigMap/Secret、存储、RBAC 与排查运维，支持搜索和一键复制。",
+            "features": ["kubectl 基础命令", "Pod 操作命令", "Deployment 工作负载命令", "Service 与 Ingress", "ConfigMap 与 Secret", "PV/PVC 存储", "命名空间与 RBAC", "事件与排查运维"],
+            "faq": [
+                ("命令是否需要集群权限？", "多数 kubectl 命令需要当前 kubeconfig 具备相应权限，无权限时可先用 kubectl auth can-i 检查。"),
+                ("如何查看命令参数说明？", "任何命令都可加 --help，或使用 kubectl explain 查看资源字段含义。"),
+            ],
+        },
+        "en": {
+            "name": "Kubernetes Commands",
+            "title": "Kubernetes Cheat Sheet - kubectl Pod Deployment Service | Tools24",
+            "description": "Kubernetes commands quick reference covering kubectl basics, Pods, workloads, Service & networking, ConfigMaps & Secrets, storage, namespaces & RBAC and troubleshooting.",
+            "keywords": "Kubernetes commands,kubectl,K8s cheat sheet,Pod commands,Deployment,Service,Ingress,kubectl reference",
+            "intro": "A Kubernetes commands quick reference for developers and ops, covering kubectl basics, Pods, workloads, Services, ConfigMap/Secret, storage, RBAC and troubleshooting, with search and one-click copy.",
+            "features": ["kubectl basics", "Pod commands", "Deployment workload commands", "Service & Ingress", "ConfigMap & Secret", "PV/PVC storage", "Namespaces & RBAC", "Events and troubleshooting"],
+            "faq": [
+                ("Do the commands need cluster permissions?", "Most kubectl commands require the current kubeconfig to have matching permissions; use kubectl auth can-i to check if access is denied."),
+                ("How do I learn command parameters?", "Append --help to any command, or use kubectl explain to view resource field meanings."),
+            ],
+        },
+    },
     "ai": {
         "zh": {
             "name": "AI 指令速查",
@@ -1296,6 +1348,8 @@ TOOL_REGISTRY = {
     "translate": {"order": 130, "icon": "translate", "script": "/js/translate-tool.js?v=20260707", "global": "TranslateTool", "processing": "server", "indexable": True},
     "git": {"order": 140, "icon": "git", "script": "/js/git-tool.js?v=20260708", "global": "GitTool", "processing": "local", "indexable": True},
     "terminal": {"order": 150, "icon": "console", "script": "/js/terminal-tool.js?v=20260707", "global": "TerminalTool", "processing": "local", "indexable": True},
+    "docker": {"order": 152, "icon": "docker", "script": "/js/docker-tool.js?v=20260805", "global": "DockerTool", "processing": "local", "indexable": True},
+    "kubernetes": {"order": 154, "icon": "kubernetes", "script": "/js/kubernetes-tool.js?v=20260805", "global": "KubernetesTool", "processing": "local", "indexable": True},
     "ai": {"order": 160, "icon": "ai", "script": "/js/ai-tool.js?v=20260710a", "global": "AiTool", "processing": "local", "indexable": True},
     "qrcode": {"order": 170, "icon": "qr", "script": "/js/qrcode-tool.js?v=20260706", "global": "QrcodeTool", "processing": "local", "indexable": True},
     "curl": {"order": 180, "icon": "terminal", "script": "/js/curl-tool.js?v=20260706", "global": "CurlTool", "processing": "local", "indexable": True},

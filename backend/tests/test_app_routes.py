@@ -839,7 +839,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "encoding": ["encoder", "base64", "uuid", "crypto", "jwt", "qrcode"],
         "files": ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
-        "reference": ["terminal", "git", "ai", "android", "flutter", "ios"],
+        "reference": ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"],
         "games": ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
         "everyday": ["content", "translate", "area-search"],
     }
@@ -1642,6 +1642,69 @@ def test_ai_tool_uses_verified_commands_categories_and_comparison(client):
     assert en_locale["ai"]["categories"]["all"] == "All"
     assert en_locale["ai"]["categories"]["review"] == "Code Review"
     assert_tool_is_lazy_loaded(frontend_dir, "ai-tool.js")
+
+
+def test_docker_tool_is_local_lazy_loaded_and_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    script_response = client.get("/js/docker-tool.js")
+    script = script_response.get_data(as_text=True)
+
+    assert script_response.status_code == 200
+    assert client.get("/zh/tool/docker").status_code == 200
+    assert TOOL_REGISTRY["docker"]["processing"] == "local"
+    assert TOOL_REGISTRY["docker"]["icon"] == "docker"
+    assert TOOL_REGISTRY["docker"]["global"] == "DockerTool"
+    assert zh_locale["menu"]["docker"] == "Docker 常用"
+    assert en_locale["menu"]["docker"] == "Docker"
+    assert zh_locale["docker"]["compose"] == "Compose"
+    assert en_locale["docker"]["image"] == "Images"
+    assert zh_locale["docker"]["command"] == "命令"
+    assert zh_locale["docker"]["links"] == "常用地址"
+    assert en_locale["docker"]["links"] == "Useful Links"
+    assert zh_locale["docker"]["linksMirror"] == "国内镜像加速参考"
+    assert 'typeof DockerTool !== "undefined"' in app_script
+    assert 'data-dtab="' in script
+    assert '{ id: "dockerfile", i18n: "docker.dockerfile", data: DOCKERFILE_CMDS }' in script
+    assert 'data-copy="' in script
+    assert 'HEALTHCHECK CMD curl -f' in script
+    assert 'function buildLinks(groups)' in script
+    assert '{ id: "links",  i18n: "docker.links",  data: LINKS, links: true }' in script
+    assert "https://hub.docker.com" in script
+    assert "https://1ms.run" in script
+    assert_tool_is_lazy_loaded(frontend_dir, "docker-tool.js")
+
+
+def test_kubernetes_tool_is_local_lazy_loaded_and_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    script_response = client.get("/js/kubernetes-tool.js")
+    script = script_response.get_data(as_text=True)
+
+    assert script_response.status_code == 200
+    assert client.get("/zh/tool/kubernetes").status_code == 200
+    assert TOOL_REGISTRY["kubernetes"]["processing"] == "local"
+    assert TOOL_REGISTRY["kubernetes"]["icon"] == "kubernetes"
+    assert TOOL_REGISTRY["kubernetes"]["global"] == "KubernetesTool"
+    assert zh_locale["menu"]["kubernetes"] == "K8s 常用"
+    assert en_locale["menu"]["kubernetes"] == "Kubernetes"
+    assert zh_locale["kubernetes"]["workload"] == "工作负载"
+    assert en_locale["kubernetes"]["rbac"] == "Namespaces & RBAC"
+    assert zh_locale["kubernetes"]["links"] == "常用地址"
+    assert en_locale["kubernetes"]["linksTools"] == "Tools & Learning"
+    assert 'typeof KubernetesTool !== "undefined"' in app_script
+    assert 'data-ktab="' in script
+    assert '{ id: "workload", i18n: "kubernetes.workload", data: WORKLOAD_CMDS }' in script
+    assert 'kubectl rollout undo deploy/web --to-revision=2' in script
+    assert 'function buildLinks(groups)' in script
+    assert '{ id: "links",  i18n: "kubernetes.links",  data: LINKS, links: true }' in script
+    assert "https://kubernetes.io/zh-cn/" in script
+    assert "https://kubernetes.io/docs/reference/kubectl/cheatsheet/" in script
+    assert_tool_is_lazy_loaded(frontend_dir, "kubernetes-tool.js")
 
 
 def test_visit_counter_is_read_only_then_increments(client):
