@@ -1329,7 +1329,7 @@ HOME_META = {
 
 TOOL_REGISTRY = {
     "device": {"order": 10, "icon": "console", "script": "/js/device-tool.js", "global": "DeviceTool", "processing": "local", "indexable": True},
-    "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260715", "global": "JsonTool", "processing": "local", "indexable": True},
+    "json": {"order": 20, "icon": "json", "script": "/js/json-tool.js?v=20260808", "global": "JsonTool", "processing": "local", "indexable": True},
     "visualization": {"order": 25, "icon": "chart", "script": "/js/visualization-tool.js", "global": "VisualizationTool", "processing": "local", "indexable": True},
     "function": {"order": 27, "icon": "function", "script": "/js/function-tool.js", "global": "FunctionTool", "processing": "local", "indexable": True},
     "format": {"order": 30, "icon": "code", "script": "/js/format-tool.js?v=20260708", "global": "FormatTool", "processing": "local", "indexable": True},
@@ -1354,7 +1354,7 @@ TOOL_REGISTRY = {
     "qrcode": {"order": 170, "icon": "qr", "script": "/js/qrcode-tool.js?v=20260706", "global": "QrcodeTool", "processing": "local", "indexable": True},
     "curl": {"order": 180, "icon": "terminal", "script": "/js/curl-tool.js?v=20260706", "global": "CurlTool", "processing": "local", "indexable": True},
     "base64": {"order": 190, "icon": "lock", "script": "/js/base64-tool.js?v=20260706", "global": "Base64Tool", "processing": "local", "indexable": True},
-    "diff": {"order": 200, "icon": "diff", "script": "/js/diff-tool.js?v=20260715", "global": "DiffTool", "processing": "local", "indexable": True},
+    "diff": {"order": 200, "icon": "diff", "script": "/js/diff-tool.js?v=20260808", "global": "DiffTool", "processing": "local", "indexable": True},
     "text": {"order": 210, "icon": "code", "script": "/js/text-tool.js?v=20260710a", "global": "TextTool", "processing": "local", "indexable": True},
     "tax": {"order": 220, "icon": "dollar", "script": "/js/tax-tool.js?v=20260710d", "global": "TaxTool", "processing": "local", "indexable": True},
     "mortgage": {"order": 230, "icon": "home", "script": "/js/mortgage-tool.js?v=20260710d", "global": "MortgageTool", "processing": "local", "indexable": True},

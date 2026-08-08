@@ -410,6 +410,50 @@ var DiffTool = (function () {
     return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;");
   }
 
+  // Per-line diff status for embedding (used by JSON tool's Compare tab to color the
+  // line-number gutters): maps line numbers to "same" | "rm" | "add", plus add/remove counts.
+  // Returns null when the comparison would be too large.
+  function compareStatuses(left, right) {
+    var leftLines = left.split("\n"), rightLines = right.split("\n");
+    if (leftLines.length > MAX_LINES || rightLines.length > MAX_LINES || leftLines.length * rightLines.length > MAX_MATRIX_CELLS) {
+      return null;
+    }
+    var rows = alignRows(diffLines(leftLines, rightLines, { ignoreWhitespace: false, ignoreCase: false }));
+    var leftStatus = {}, rightStatus = {};
+    rows.forEach(function (row) {
+      if (row.equal) {
+        leftStatus[row.lineL] = "same";
+        rightStatus[row.lineR] = "same";
+      } else {
+        if (row.left !== null) leftStatus[row.lineL] = "rm";
+        if (row.right !== null) rightStatus[row.lineR] = "add";
+      }
+    });
+    return {
+      left: leftStatus,
+      right: rightStatus,
+      added: rows.filter(function (row) { return row.right !== null && !row.equal; }).length,
+      removed: rows.filter(function (row) { return row.left !== null && !row.equal; }).length,
+    };
+  }
+
+  // Reusable diff for embedding (used by JSON tool's Compare tab): returns rendered per-pane
+  // HTML + add/remove counts, or null when the comparison would be too large.
+  function compareTexts(left, right) {
+    var leftLines = left.split("\n"), rightLines = right.split("\n");
+    if (leftLines.length > MAX_LINES || rightLines.length > MAX_LINES || leftLines.length * rightLines.length > MAX_MATRIX_CELLS) {
+      return null;
+    }
+    var rows = alignRows(diffLines(leftLines, rightLines, { ignoreWhitespace: false, ignoreCase: false }));
+    var panes = renderPanes(rows);
+    return {
+      left: panes.left,
+      right: panes.right,
+      added: rows.filter(function (row) { return row.right !== null && !row.equal; }).length,
+      removed: rows.filter(function (row) { return row.left !== null && !row.equal; }).length,
+    };
+  }
+
   function renderHistory() {
     var list = loadHistory();
     var el = document.getElementById("diff-history");
@@ -439,6 +483,8 @@ var DiffTool = (function () {
   return {
     init: init,
     deactivate: deactivate,
+    compare: compareTexts,
+    compareStatuses: compareStatuses,
     _test: { normalizeLine: normalizeLine, diffLines: diffLines, alignRows: alignRows, highlightPair: highlightPair },
   };
 })();

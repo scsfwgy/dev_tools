@@ -9,6 +9,7 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 
 | 日期 | 功能 | 说明 |
 |------|------|------|
+| 2026-08-08 | JSON 工具收敛为格式化、对比、转换三项核心能力 | 子 Tab 固定为「格式化 → 对比 → 转换」。格式化区恢复原生 textarea 编辑（保留可靠的输入法、撤销、粘贴和文本选择），格式化后切换到同行号的只读代码视图，支持逐节点/全部展开收起；行号、折叠按钮和折叠预览与代码文本分栏且不可选，局部复制只包含 JSON 文本。对比区左右默认 1:1 横向铺满，支持 Pointer 拖动与键盘调整分隔条、350ms 自动校验和差异高亮，文本本身保持正常可编辑可复制。转换区支持 JSON/YAML/CSV/XML 任意方向转换，非 JSON 格式之间经浏览器内存中的 JSON 中间态串联，全程本地处理。补充中英文状态文案、响应式触控尺寸及自动化断言；84 项 pytest、JS/JSON 语法与 diff 检查通过，并用真实浏览器覆盖中英、深浅主题、桌面/移动布局、格式化折叠、纯文本复制、自动对比、错误提示和跨格式转换。 |
 | 2026-08-05 | 新增 Docker / Kubernetes 常用速查 | 参照 Git/终端命令速查模式新增两个开发速查工具：Docker 覆盖镜像、容器、运行与执行、网络、数据卷、Compose、Dockerfile 指令与系统清理八大类共 63 条；Kubernetes 覆盖 kubectl 基础、Pod、工作负载、Service 与网络、配置与密钥、存储、命名空间与 RBAC、排查运维八大类共 68 条。均支持分类 Tab、中英文关键词搜索与点击复制，全本地处理。新增 docker/kubernetes 图标、菜单、toolHints 与双语 SEO 元数据，加入首页「开发速查」分类。自动化测试新增 2 个用例并更新分类断言 |
 | 2026-08-05 | Docker / K8s 速查补充常用地址 | 两个工具新增「常用地址」Tab（外链新窗口打开）：Docker 分官方与文档（官网/文档/Docker Hub/Dockerfile/Compose）、国内镜像加速参考（dongyubin/DockerHub 汇总、腾讯云教程、1ms.run）、在线练习（Play with Docker）；Kubernetes 分官方与文档（官网/中文文档/kubectl 速查表/命令参考/API）、常用工具与学习（Helm/K9s/Minikube/kubeadm/Kuboard）、在线练习（Play with Kubernetes）。链接均带 rel=noopener noreferrer，新增 .at-group-title 样式与双语链接表文案，测试断言链接数据与分组 |
 | 2026-08-05 | 修复 Vercel 全站 404 | Vercel 新版平台对被 rewrite 到 `/api/index` 的 serverless 函数不再传原始路径（WSGI environ 中 `PATH_INFO` 只剩 `/api/index`，无 forwarded-url header），Flask 所有路由失配导致全站 404、静态文件正常。改为 `vercel.json` 用 catch-all rewrite 把原始路径注入 `__path` 查询参数，入口 WSGI 中间件据此恢复 `PATH_INFO`（首个 `__path` 优先防伪造）。定位过程用临时探针列出运行时实际 header/WSGI 键确认原始路径去向，完成后移除 |

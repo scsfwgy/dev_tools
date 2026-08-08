@@ -908,19 +908,25 @@ def test_json_error_location_examples_and_jwt_security_analysis(client):
 
     assert "function locateJsonError(" in json_script
     assert "function bindLineNumbers(" in json_script
-    assert "jt-line-numbers" in json_script
+    assert 'id="jt-editor"' in json_script
+    assert 'id="jt-line-numbers"' in json_script
+    assert 'id="jt-view"' in json_script
+    assert 'id="jt-view-gutter"' in json_script
+    assert 'id="jt-view-code"' in json_script
+    assert 'id="jt-clear"' in json_script
     assert "var EXAMPLES" in json_script
-    assert 'id="jt-fold"' in json_script
-    assert 'id="jt-analyze"' in json_script
+    assert 'id="jt-analyze"' not in json_script
     assert 'option value="api"' in json_script
     assert 'option value="config"' in json_script
     assert 'option value="nested"' in json_script
-    assert "function toggleFoldedView()" in json_script
-    assert "function toggleAnalysisView()" in json_script
-    assert "function buildNode(value, showCounts)" in json_script
-    assert 'showCounts ? \'<span class="jt-count">\'' in json_script
-    assert 'class="jt-fold-placeholder">…' in json_script
-    assert 'isArray && !showCounts ? ""' in json_script
+    assert "function toggleAnalysisView()" not in json_script
+    assert "function computeFoldModel(" in json_script
+    assert "function renderViewer(" in json_script
+    assert "function copyViewerSelection(" in json_script
+    assert "function highlightJsonLine(" in json_script
+    assert "function toggleFold(" in json_script
+    assert "function expandAll(" in json_script
+    assert "function collapseAll(" in json_script
     assert 'id="jt-output"' not in json_script
     assert 'id="json-history"' not in json_script
     assert 'id="jt-tab-format"' in json_script
@@ -934,9 +940,27 @@ def test_json_error_location_examples_and_jwt_security_analysis(client):
     assert 'id="jc-convert"' in json_script
     assert 'id="jc-swap"' in json_script
     assert 'json: ["yaml", "csv", "xml"]' in json_script
+    assert 'yaml: ["json", "csv", "xml"]' in json_script
+    assert 'csv: ["json", "yaml", "xml"]' in json_script
+    assert 'xml: ["json", "yaml", "csv"]' in json_script
     assert 'CONVERTER_URL = "/js/converter-tool.js"' in json_script
     assert "function ensureConverter()" in json_script
+    assert "function convertStructuredText(" in json_script
+    assert 'convertText(from, "json", raw)' in json_script
     assert "window.ConverterTool.convertText(" in json_script
+    assert 'id="jt-tab-compare"' in json_script
+    assert 'id="jt-pane-compare"' in json_script
+    assert 'id="jc-left"' in json_script
+    assert 'id="jc-right"' in json_script
+    assert 'id="jc-left-hl"' in json_script
+    assert 'id="jc-right-hl"' in json_script
+    assert "function runCompare()" in json_script
+    assert "function renderCompareHl(" in json_script
+    assert "function ensureDiffTool()" in json_script
+    assert "compareStatuses" in json_script
+    assert 'DIFF_URL = "/js/diff-tool.js"' in json_script
+    assert 'setTimeout(runCompare, 350)' in json_script
+    assert json_script.index('id="jt-tab-format"') < json_script.index('id="jt-tab-compare"') < json_script.index('id="jt-tab-convert"')
     assert 'role="tablist"' in json_script
     assert 'aria-label="' in json_script
     assert zh_locale["json"]["errorLocation"] == "第 {line} 行，第 {column} 列"
@@ -945,6 +969,7 @@ def test_json_error_location_examples_and_jwt_security_analysis(client):
     assert zh_locale["json"]["tabGroup"] == "JSON 工具分区"
     assert zh_locale["json"]["cvConverted"] == "转换完成"
     assert zh_locale["json"]["cvLoadFailed"] == "转换组件加载失败，请检查网络后重试"
+    assert zh_locale["json"]["compareReady"] == "输入后自动校验并对比"
     assert en_locale["json"]["cvPlaceholder"] == "Paste JSON / CSV / YAML / XML text..."
     assert en_locale["json"]["cvFrom"] == "Source format"
     assert en_locale["json"]["cvTo"] == "Target format"
