@@ -5392,3 +5392,83 @@ textarea:focus-visible,
     min-height: 44px;
   }
 }
+
+
+/* ── 纯色填充 Solid Color Fill ── */
+.solid-color-config { max-width: 560px; }
+.solid-color-field { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin: 14px 0 0; }
+.solid-color-field[hidden] { display: none; }
+
+/* 模式：分段胶囊（隐藏原生 radio，用 label 联动） */
+.solid-color-modes-wrap { border: 0; padding: 0; margin-top: 14px; }
+.solid-color-modes-wrap legend { margin: 0 0 8px; padding: 0; color: var(--text-secondary); font-size: .78rem; font-weight: 600; }
+.solid-color-mode-row { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: 10px; background: var(--select-bg); }
+.solid-color-mode { position: relative; }
+.solid-color-mode input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.solid-color-mode span { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 7px; color: var(--text-secondary); font-size: .8rem; font-weight: 600; white-space: nowrap; cursor: pointer; user-select: none; }
+.solid-color-mode:hover span { color: var(--text); }
+.solid-color-mode input:checked + span { background: var(--primary-button-bg); color: var(--on-color); }
+.solid-color-mode input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.solid-color-label { color: var(--text-secondary); font-size: .78rem; font-weight: 600; }
+#solid-color-single, #solid-color-custom-input { width: 72px; height: 40px; padding: 3px; border: 1px solid var(--border); border-radius: 8px; background: var(--select-bg); cursor: pointer; }
+#solid-color-frame { width: 150px; min-height: 42px; padding: 8px 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--select-bg); color: var(--text); font: 400 .86rem -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+#solid-color-frame:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+.solid-color-unit { color: var(--text-muted); font-size: .74rem; }
+#solid-color-duration { min-width: 170px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--select-bg); color: var(--text); }
+
+.solid-color-presets-wrap { align-items: flex-start; flex-direction: column; }
+.solid-color-presets { display: flex; flex-wrap: wrap; gap: 8px; }
+.solid-color-swatch { width: 36px; height: 36px; padding: 0; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; }
+.solid-color-swatch[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.solid-color-custom { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.solid-color-custom-row { display: flex; align-items: center; gap: 10px; }
+.solid-color-custom-row button { min-height: 40px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--select-bg); color: var(--text-secondary); font-size: .78rem; font-weight: 600; cursor: pointer; }
+.solid-color-custom-row button:hover { border-color: var(--accent); color: var(--accent); }
+
+.solid-color-playlist-wrap { align-items: flex-start; flex-direction: column; }
+.solid-color-playlist { display: flex; flex-wrap: wrap; gap: 8px; }
+.solid-color-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--select-bg); }
+.solid-color-chip-color { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex: none; }
+.solid-color-chip code { color: var(--text-secondary); font-size: .72rem; }
+.solid-color-remove { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--text-muted); font-size: 1rem; line-height: 1; cursor: pointer; }
+.solid-color-remove:hover { color: var(--diff-remove-text); background: var(--diff-remove-bg); }
+.solid-color-playlist-empty { margin: 0; color: var(--text-muted); font-size: .74rem; }
+
+.solid-color-actions { margin: 18px 0 0; }
+.solid-color-start {
+  min-height: 44px;
+  padding: 8px 28px;
+  border: 1px solid var(--primary-button-bg);
+  border-radius: 10px;
+  background: var(--primary-button-bg);
+  color: var(--on-color);
+  font-size: .88rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 12%, transparent) inset;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.solid-color-start:hover:not(:disabled) { border-color: var(--primary-button-hover); background: var(--primary-button-hover); }
+.solid-color-start:active:not(:disabled) { transform: translateY(1px); }
+.solid-color-start:disabled { cursor: not-allowed; opacity: .5; }
+.solid-color-note { margin: 14px 0 0; color: var(--text-muted); font-size: .72rem; line-height: 1.6; }
+body.solid-color-active { overflow: hidden; }
+
+/* 全屏播放层：盖住整个视口（含侧栏），最顶层，按 Esc 或浏览器原生退出 */
+.solid-color-player {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  width: 100vw;
+  height: 100dvh;
+  overscroll-behavior: contain;
+}
+@media (max-width: 760px) {
+  .solid-color-presets { gap: 6px; }
+  .solid-color-swatch { width: 40px; height: 40px; }
+  .solid-color-mode span { min-height: 40px; padding: 0 12px; }
+  #solid-color-frame { width: 130px; }
+  #solid-color-duration { min-width: 150px; }
+}

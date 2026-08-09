@@ -54,6 +54,7 @@
     "wishes": "心愿墙",
     "area-search": "地区搜索",
     "history-events": "历年大事件",
+    "solid-color": "纯色填充",
     "searchPlaceholder": "搜索工具...",
     "collapseMenu": "收起菜单",
     "immersiveMenu": "进入沉浸模式",
@@ -89,13 +90,13 @@
     }
   },
   "welcome": {
-    "desc": "49+ 个免费开发工具，无需登录，优先在浏览器本地处理",
+    "desc": "50+ 个免费开发工具，无需登录，优先在浏览器本地处理",
     "openSource": "代码开源",
     "searchPlaceholder": "搜索工具，例如 JSON、时间戳、Base64…",
     "localFirst": "✓ 默认本地处理",
     "free": "免费使用",
     "noLogin": "无需登录",
-    "toolCount": "49+ 个工具",
+    "toolCount": "50+ 个工具",
     "homeSections": "首页工具视图",
     "categories": "分类",
     "recommended": "推荐",
@@ -167,7 +168,8 @@
       "content": "将短文本生成可远程访问的链接",
       "jwt": "本地解析、验证并生成 JWT",
       "area-search": "查询中国行政区与全球城市编码",
-      "history-events": "一张表回顾1993—2026世界与中国大事件"
+      "history-events": "一张表回顾1993—2026世界与中国大事件",
+      "solid-color": "全屏纯色播放，检查屏幕渲染与坏点"
     },
     "recommendations": {
       "open": "打开",
@@ -2493,6 +2495,30 @@
       {"year":"2025","world":"特朗普再次就任并调整关税；教皇方济各逝世、利奥十四世当选；印巴冲突。","china":"西藏定日地震；DeepSeek引发全球关注；举行抗战胜利80周年纪念大会和阅兵。","worldSource":"https://www.britannica.com/topic/2025-Year-in-Review","chinaSource":"https://www.cac.gov.cn/2025-09/03/c_1758792052259681.htm"},
       {"year":"2026","world":"美军抓捕委内瑞拉总统马杜罗；美以对伊朗开战；冬奥会、载人绕月和世界杯举行。","china":"十五五开局并通过规划纲要；上半年GDP同比增长4.7%；基础科研取得新进展。","worldSource":"https://www.britannica.com/topic/Major-Events-of-2026","chinaSource":"https://www.npc.gov.cn/npc/c2/c30834/202603/t20260313_453198.html"}
     ]
+  },
+  "solidColor": {
+    "configTitle": "纯色填充设置",
+    "modeLabel": "颜色模式",
+    "modeSingle": "单色",
+    "modePreset": "特定几种颜色",
+    "modeRandom": "随机颜色",
+    "singleLabel": "选择颜色",
+    "presetLabel": "勾选要播放的测试色",
+    "customLabel": "自定义颜色",
+    "customInputLabel": "选择自定义颜色",
+    "customAdd": "添加",
+    "playlistTitle": "播放列表",
+    "playlistEmpty": "还没有颜色，先勾选或添加",
+    "removeColor": "从播放列表移除 {color}",
+    "frameLabel": "每一帧播放时长",
+    "frameUnit": "毫秒（最短 300）",
+    "durationLabel": "播放时长",
+    "duration10": "10 秒",
+    "duration30": "30 秒",
+    "duration60": "60 秒",
+    "durationUnlimited": "不限（手动退出）",
+    "start": "运行",
+    "note": "点击运行进入全屏纯色播放：单色固定显示，多色与随机模式按设定的每帧时长循环；按 Esc 或浏览器原生退出键随时结束。用于检查屏幕色准、均匀度、亮度与坏点。"
   },
   "areaSearch": {
     "modeLabel": "地区数据范围",

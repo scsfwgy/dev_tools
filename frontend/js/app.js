@@ -131,6 +131,7 @@
     clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
     ruler: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0l-2.6-2.6a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 13.5 3 3M10.5 10.5l3 3M13.5 7.5l3 3M16.5 4.5l3 3"/></svg>',
     palette: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 0-4H12a1.5 1.5 0 0 1 0-3h3a6 6 0 0 0 0-12h-3Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="9.5" cy="6.5" r="1"/><circle cx="14" cy="6" r="1"/></svg>',
+    fill: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 13.8a2 2 0 0 0 0-2.8Z"/><path d="m5 2 5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z"/></svg>',
     code: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
     diff: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>',
     lock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
@@ -456,6 +457,7 @@
     if (activeMenuId !== "math-curiosities" && typeof MathCuriositiesTool !== "undefined" && MathCuriositiesTool.deactivate) MathCuriositiesTool.deactivate();
     if (activeMenuId !== "mindmap" && typeof MindmapTool !== "undefined" && MindmapTool.deactivate) MindmapTool.deactivate();
     if (activeMenuId !== "literacy" && typeof LiteracyTool !== "undefined" && LiteracyTool.deactivate) LiteracyTool.deactivate();
+    if (activeMenuId !== "solid-color" && typeof SolidColorTool !== "undefined" && SolidColorTool.deactivate) SolidColorTool.deactivate();
     const el = document.getElementById("content");
     if (activeMenuId !== "home") {
       var headerToolId = activeMenuId;
@@ -470,7 +472,7 @@
             <div class="home-mark" aria-hidden="true">${icons.code}</div>
             <div>
               <h1>DevTools</h1>
-              <p data-i18n="welcome.desc">49+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
+              <p data-i18n="welcome.desc">50+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
             </div>
           </header>
           <label class="home-search" for="home-search">
@@ -811,6 +813,11 @@
       HistoryEventsTool.init(el);
       return;
     }
+    if (activeMenuId === "solid-color" && typeof SolidColorTool !== "undefined") {
+      el.innerHTML = "";
+      SolidColorTool.init(el);
+      return;
+    }
     const item = menuItems.find(m => m.id === activeMenuId);
     const label = item ? t(item.i18n) : activeMenuId;
     el.innerHTML = `
@@ -830,7 +837,7 @@
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"] },
     { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
-    { id: "everyday", tools: ["content", "translate", "area-search", "history-events"] }
+    { id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }
   ];
 
   var HOME_RECOMMENDATIONS = [

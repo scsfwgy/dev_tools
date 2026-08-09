@@ -54,6 +54,7 @@
     "wishes": "Wish Wall",
     "area-search": "Area Search",
     "history-events": "Major Events Timeline",
+    "solid-color": "Solid Color Fill",
     "searchPlaceholder": "Search tools...",
     "collapseMenu": "Collapse menu",
     "immersiveMenu": "Enter immersive mode",
@@ -89,13 +90,13 @@
     }
   },
   "welcome": {
-    "desc": "49+ free developer tools, no sign-in, with local browser processing by default",
+    "desc": "50+ free developer tools, no sign-in, with local browser processing by default",
     "openSource": "Open source",
     "searchPlaceholder": "Search tools, such as JSON, timestamps, Base64…",
     "localFirst": "✓ Local by default",
     "free": "Free to use",
     "noLogin": "No sign-in",
-    "toolCount": "49+ tools",
+    "toolCount": "50+ tools",
     "homeSections": "Home tool views",
     "categories": "Categories",
     "recommended": "Recommended",
@@ -167,7 +168,8 @@
       "content": "Turn short text into a remotely accessible link",
       "jwt": "Decode, verify and generate JWTs locally",
       "area-search": "Look up Chinese regions and global city codes",
-      "history-events": "Review major world and China events from 1993–2026"
+      "history-events": "Review major world and China events from 1993–2026",
+      "solid-color": "Play solid colors fullscreen to check screen rendering"
     },
     "recommendations": {
       "open": "Open",
@@ -2493,6 +2495,30 @@
       {"year":"2025","world":"Trump returned to office and changed tariffs; Pope Francis died and Leo XIV was elected; India and Pakistan clashed.","china":"The Dingri earthquake struck Tibet; DeepSeek drew global attention; China marked the 80th anniversary of victory in the War of Resistance.","worldSource":"https://www.britannica.com/topic/2025-Year-in-Review","chinaSource":"https://www.cac.gov.cn/2025-09/03/c_1758792052259681.htm"},
       {"year":"2026","world":"U.S. forces captured Venezuela's Nicolás Maduro; the U.S. and Israel attacked Iran; the Winter Olympics, a crewed lunar flyby and the World Cup took place.","china":"The 15th Five-Year Plan began and its outline was adopted; first-half GDP grew 4.7%; basic research reached new milestones.","worldSource":"https://www.britannica.com/topic/Major-Events-of-2026","chinaSource":"https://www.npc.gov.cn/npc/c2/c30834/202603/t20260313_453198.html"}
     ]
+  },
+  "solidColor": {
+    "configTitle": "Solid color settings",
+    "modeLabel": "Color mode",
+    "modeSingle": "Single color",
+    "modePreset": "Selected colors",
+    "modeRandom": "Random colors",
+    "singleLabel": "Pick a color",
+    "presetLabel": "Select the test colors to play",
+    "customLabel": "Custom colors",
+    "customInputLabel": "Pick a custom color",
+    "customAdd": "Add",
+    "playlistTitle": "Playlist",
+    "playlistEmpty": "No colors yet — pick or add some",
+    "removeColor": "Remove {color} from playlist",
+    "frameLabel": "Frame duration",
+    "frameUnit": "ms (min 300)",
+    "durationLabel": "Play duration",
+    "duration10": "10 seconds",
+    "duration30": "30 seconds",
+    "duration60": "60 seconds",
+    "durationUnlimited": "Unlimited (exit manually)",
+    "start": "Run",
+    "note": "Runs fullscreen: single color stays fixed, swatch and random modes cycle one color every frame duration. Press Esc or use the browser's native exit anytime. Use it to check color accuracy, uniformity, brightness and dead pixels."
   },
   "areaSearch": {
     "modeLabel": "Region data scope",

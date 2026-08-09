@@ -764,7 +764,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "49+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "50+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -841,7 +841,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"],
         "games": ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
-        "everyday": ["content", "translate", "area-search", "history-events"],
+        "everyday": ["content", "translate", "area-search", "history-events", "solid-color"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -2088,7 +2088,7 @@ def test_history_events_is_one_local_bilingual_table_with_sources(client):
     assert all(event["chinaSource"].startswith(("http://", "https://")) for event in zh_locale["historyEvents"]["events"])
     assert "2026年8月9日" in zh_locale["historyEvents"]["rangeNote"]
     assert 'activeMenuId === "history-events"' in app_script
-    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events"] }' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }' in app_script
     assert 'class="history-events-table"' in script
     assert 'target="_blank" rel="noopener noreferrer"' in script
     assert "function splitEvents(value)" in script
@@ -2140,7 +2140,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
     assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
-    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events"] }' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
@@ -3396,3 +3396,85 @@ def test_operational_logging_and_delivery_gate_are_wired():
     assert "产品交付门禁（强制）" in project_instructions
     assert "./start.sh logs" in project_instructions
     assert "不得声称产品已交付完成" in project_instructions
+
+
+def test_solid_color_tool_is_local_lazy_indexable_and_localized(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    script_response = client.get("/js/solid-color-tool.js")
+    script = script_response.get_data(as_text=True)
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    page = client.get("/zh/tool/solid-color")
+
+    assert script_response.status_code == 200
+    assert page.status_code == 200
+    assert "var SolidColorTool" in script
+    assert zh_locale["menu"]["solid-color"] == "纯色填充"
+    assert en_locale["menu"]["solid-color"] == "Solid Color Fill"
+    assert "solidColor" in zh_locale and "solidColor" in en_locale
+    assert zh_locale["welcome"]["toolHints"]["solid-color"]
+    assert en_locale["welcome"]["toolHints"]["solid-color"]
+    assert "SolidColorTool.deactivate" in app_script
+    assert "SolidColorTool.init(el)" in app_script
+    assert '"solid-color"' in app_script
+
+    manifest = client.get("/api/tool-manifest").get_json()
+    solid = next((t for t in manifest["tools"] if t["id"] == "solid-color"), None)
+    assert solid is not None
+    assert solid["processing"] == "local"
+    assert solid["script"].startswith("/js/solid-color-tool.js")
+    assert solid["seo"]["zh-CN"]["title"] and solid["seo"]["en"]["title"]
+
+    node = shutil.which("node")
+    if node:
+        program = r'''
+const fs = require("fs");
+const vm = require("vm");
+const context = {
+  window: { __t: key => key },
+  navigator: {},
+  console,
+  Date,
+  Math,
+  String,
+  Number,
+  Object,
+  Array,
+  JSON,
+  RegExp,
+  isFinite,
+  document: { createElement() { return {}; } },
+  setTimeout,
+  clearTimeout
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("frontend/js/solid-color-tool.js", "utf8"), context);
+const core = context.SolidColorTool._test;
+const out = {
+  normalize3Hex: core.normalizeHex("#abc") === "#aabbcc",
+  normalizeUppercase: core.normalizeHex("#FF00FF") === "#ff00ff",
+  normalizeInvalid: core.normalizeHex("nope") === "#3b82f6",
+  single: JSON.stringify(core.buildPalette("single", "#123456", [])) === JSON.stringify(["#123456"]),
+  preset: JSON.stringify(core.buildPalette("preset", null, ["#000000", "#ffffff"])) === JSON.stringify(["#000000", "#ffffff"]),
+  presetNormalizes: JSON.stringify(core.buildPalette("preset", null, ["#ABC"])) === JSON.stringify(["#aabbcc"]),
+  presetEmptyFallsBack: core.buildPalette("preset", "#123456", []).length === 1,
+  random: core.buildPalette("random", null, []).every(c => /^#[0-9a-f]{6}$/.test(c)),
+  randomDistinct: new Set(core.buildPalette("random", null, [])).size === 4,
+  wrap: core.nextIndex(3, 4) === 0,
+  wrapOnEmpty: core.nextIndex(0, 0) === 0,
+  clampEmptyToMin: core.clampFrameMs("") === 300,
+  clampLow: core.clampFrameMs(50) === 300,
+  clampHigh: core.clampFrameMs(99999999) === 3600000,
+  clampNormal: core.clampFrameMs(500) === 500
+};
+process.stdout.write(JSON.stringify(out));
+'''
+        completed = subprocess.run(
+            [node, "-e", program],
+            cwd=frontend_dir.parent,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        assert all(json.loads(completed.stdout).values())

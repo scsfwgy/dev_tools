@@ -1334,6 +1334,34 @@ TOOLS = {
             ],
         },
     },
+    "solid-color": {
+        "zh": {
+            "name": "纯色填充",
+            "title": "纯色填充 - 全屏纯色播放检测屏幕渲染 | Tools24",
+            "description": "单色、多色循环或随机颜色三种模式，全屏纯色播放指定时长，用于检测屏幕坏点、色域、亮度与灰阶等渲染效果。",
+            "keywords": "纯色填充,屏幕测试,坏点检测,全屏纯色,颜色循环,屏幕渲染,显示屏测试",
+            "intro": "选择单色、若干测试色或随机颜色，设定播放时长，一键进入全屏纯色播放，直观检查屏幕的色准、均匀度与坏点。",
+            "features": ["单色固定全屏显示", "黑白灰与 RGB 等测试色循环", "随机颜色循环", "播放时长可设（10/30/60 秒或不限）", "浏览器原生全屏", "完全本地处理"],
+            "faq": [
+                ("三种模式有什么区别？", "单色模式固定显示你选的一个颜色；多色模式在你勾选的测试色之间循环；随机模式每次运行随机生成一组颜色循环。"),
+                ("检测坏点应该用什么颜色？", "黑色和白色最便于观察暗点与亮点，红色、绿色、蓝色可进一步确认具体像素通道。"),
+                ("播放数据会上传吗？", "不会。颜色选择、生成与播放全部在当前浏览器本地完成，也不保存任何记录。"),
+            ],
+        },
+        "en": {
+            "name": "Solid Color Fill",
+            "title": "Solid Color Fill - Fullscreen Color Playback for Screen Test | Tools24",
+            "description": "Play a single color, a loop of test colors or random colors in fullscreen for a set duration to check screen rendering, dead pixels, color gamut and brightness.",
+            "keywords": "solid color fill,screen test,dead pixel test,fullscreen color,color loop,screen rendering,display test",
+            "intro": "Choose a single color, a few test swatches or random colors, set a duration and play solid colors in fullscreen to inspect color accuracy, uniformity and dead pixels.",
+            "features": ["Single color fixed fullscreen", "Black, white, gray and RGB test swatch loop", "Random color loop", "Duration presets (10/30/60 s or unlimited)", "Native browser fullscreen", "Fully local processing"],
+            "faq": [
+                ("What is the difference between the three modes?", "Single mode shows one fixed color; swatch mode loops through the test colors you select; random mode generates a fresh color set for each run."),
+                ("Which color should I use for dead pixel checks?", "Black and white best reveal dark and bright spots, while red, green and blue help confirm individual pixel channels."),
+                ("Is playback data uploaded?", "No. Color selection, generation and playback all run locally in your browser, and nothing is saved."),
+            ],
+        },
+    },
 }
 
 HOME_META = {
@@ -1403,6 +1431,7 @@ TOOL_REGISTRY = {
     "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},
     "wishes": {"order": 300, "icon": "star", "script": "/js/wishes.js?v=20260706", "global": "WishTool", "processing": "server", "indexable": False, "hidden": True},
     "history-events": {"order": 305, "icon": "book", "script": "/js/history-events-tool.js?v=20260809", "global": "HistoryEventsTool", "processing": "local", "indexable": True},
+    "solid-color": {"order": 306, "icon": "fill", "script": "/js/solid-color-tool.js", "global": "SolidColorTool", "processing": "local", "indexable": True},
     "area-search": {"order": 310, "icon": "map-pin", "script": "/js/area-search-tool.js?v=20260712a", "global": "AreaSearchTool", "processing": "hybrid", "indexable": True},
 }
 
