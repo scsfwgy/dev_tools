@@ -123,6 +123,9 @@ var QrcodeTool = (function () {
     var canvas = document.getElementById("qr-canvas");
     try {
       await ensureScript("qrcode", QR_GEN_URL);
+      // qrcode-generator defaults to one byte per JavaScript code unit, which
+      // truncates Chinese and other Unicode text. Use its bundled UTF-8 codec.
+      qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];
       var qr = qrcode(0, "M"); // type 0=auto, error M
       qr.addData(text);
       qr.make();

@@ -858,6 +858,17 @@ def test_sidebar_processing_badges_stay_compact(client):
     assert ".menu-processing {\n  flex: none;" in app_css
 
 
+def test_qrcode_tool_uses_utf8_for_unicode_content(client):
+    script = client.get("/js/qrcode-tool.js")
+    script_text = script.get_data(as_text=True)
+    utf8_assignment = 'qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];'
+
+    assert script.status_code == 200
+    assert utf8_assignment in script_text
+    assert script_text.index(utf8_assignment) < script_text.index("qr.addData(text);")
+    assert TOOL_REGISTRY["qrcode"]["script"].endswith("?v=20260809")
+
+
 def test_image_tool_is_local_and_wired_with_seo_and_locales(client):
     page = client.get("/zh/tool/image")
     script = client.get("/js/image-tool.js")
