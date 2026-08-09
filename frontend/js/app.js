@@ -470,7 +470,7 @@
             <div class="home-mark" aria-hidden="true">${icons.code}</div>
             <div>
               <h1>DevTools</h1>
-              <p data-i18n="welcome.desc">46+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
+              <p data-i18n="welcome.desc">49+ 个免费开发工具，无需登录，优先在浏览器本地处理</p>
             </div>
           </header>
           <label class="home-search" for="home-search">
@@ -806,6 +806,11 @@
       AreaSearchTool.init(el);
       return;
     }
+    if (activeMenuId === "history-events" && typeof HistoryEventsTool !== "undefined") {
+      el.innerHTML = "";
+      HistoryEventsTool.init(el);
+      return;
+    }
     const item = menuItems.find(m => m.id === activeMenuId);
     const label = item ? t(item.i18n) : activeMenuId;
     el.innerHTML = `
@@ -825,7 +830,7 @@
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"] },
     { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
-    { id: "everyday", tools: ["content", "translate", "area-search"] }
+    { id: "everyday", tools: ["content", "translate", "area-search", "history-events"] }
   ];
 
   var HOME_RECOMMENDATIONS = [

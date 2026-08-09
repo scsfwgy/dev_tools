@@ -1308,6 +1308,32 @@ TOOLS = {
             ],
         },
     },
+    "history-events": {
+        "zh": {
+            "name": "历年大事件",
+            "title": "1993—2026 历年大事件 - 世界与中国历史时间表 | Tools24",
+            "description": "按年份汇总1993年至2026年世界与中国的重要政治、经济、科技、灾难和社会事件，并提供参考资料链接。",
+            "keywords": "历年大事件,世界大事记,中国大事记,历史时间线,1993到2026,历史事件表格",
+            "intro": "用一张连续表格回顾1993—2026年的世界与中国大事件，关键条目附参考资料链接。",
+            "features": ["1993—2026连续时间线", "世界与中国并列对照", "关键事件参考链接", "中英文内容", "完全本地浏览"],
+            "faq": [
+                ("这是一份完整年鉴吗？", "不是。表格精选每年最具代表性的政治、经济、科技、灾难和社会事件，适合快速回忆历史。"),
+                ("2026年的内容统计到什么时候？", "2026年仅收录截至2026年8月9日已经发生并可核对的事件。"),
+            ],
+        },
+        "en": {
+            "name": "Major Events Timeline",
+            "title": "1993–2026 Major Events - World and China Timeline | Tools24",
+            "description": "Review major world and China political, economic, technology, disaster and social events from 1993 through 2026 with reference links.",
+            "keywords": "major events timeline,world history timeline,China history timeline,1993 to 2026,historical events table",
+            "intro": "Review major world and China events from 1993 through 2026 in one continuous table with reference links.",
+            "features": ["Continuous 1993–2026 timeline", "World and China side by side", "Reference links for key events", "Chinese and English content", "Fully local browsing"],
+            "faq": [
+                ("Is this a complete historical almanac?", "No. It is a concise selection of representative political, economic, technology, disaster and social events for quick historical recall."),
+                ("How current is the 2026 entry?", "The 2026 row includes only events that had occurred and could be verified by August 9, 2026."),
+            ],
+        },
+    },
 }
 
 HOME_META = {
@@ -1376,6 +1402,7 @@ TOOL_REGISTRY = {
     "content": {"order": 280, "icon": "link", "script": "/js/content-tool.js?v=20260710b", "global": "ContentTool", "processing": "server", "indexable": True},
     "jwt": {"order": 290, "icon": "shield", "script": "/js/jwt-tool.js?v=20260711", "global": "JwtTool", "processing": "local", "indexable": True},
     "wishes": {"order": 300, "icon": "star", "script": "/js/wishes.js?v=20260706", "global": "WishTool", "processing": "server", "indexable": False, "hidden": True},
+    "history-events": {"order": 305, "icon": "book", "script": "/js/history-events-tool.js?v=20260809", "global": "HistoryEventsTool", "processing": "local", "indexable": True},
     "area-search": {"order": 310, "icon": "map-pin", "script": "/js/area-search-tool.js?v=20260712a", "global": "AreaSearchTool", "processing": "hybrid", "indexable": True},
 }
 

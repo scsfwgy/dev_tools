@@ -764,7 +764,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
 
     assert zh_locale["welcome"]["categories"] == "分类"
     assert en_locale["welcome"]["categories"] == "Categories"
-    assert zh_locale["welcome"]["desc"] == "46+ 个免费开发工具，无需登录，优先在浏览器本地处理"
+    assert zh_locale["welcome"]["desc"] == "49+ 个免费开发工具，无需登录，优先在浏览器本地处理"
     assert en_locale["welcome"]["noLogin"] == "No sign-in"
     assert zh_locale["welcome"]["category"] == {
         "all": "全部",
@@ -841,7 +841,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"],
         "games": ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
-        "everyday": ["content", "translate", "area-search"],
+        "everyday": ["content", "translate", "area-search", "history-events"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
     assert len(categorized_ids) == len(set(categorized_ids))
@@ -2059,6 +2059,52 @@ def test_area_search_intro_rejects_truncated_model_output(client, monkeypatch):
     cache_set.assert_not_called()
 
 
+def test_history_events_is_one_local_bilingual_table_with_sources(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    app_css = client.get("/css/app.css").get_data(as_text=True)
+    script_response = client.get("/js/history-events-tool.js")
+    script = script_response.get_data(as_text=True)
+    zh_page = client.get("/zh/tool/history-events")
+    en_page = client.get("/en/tool/history-events")
+
+    assert zh_page.status_code == 200
+    assert en_page.status_code == 200
+    assert "1993—2026 历年大事件" in zh_page.get_data(as_text=True)
+    assert "1993–2026 Major Events" in en_page.get_data(as_text=True)
+    assert "https://dev.tools24.uk/zh/tool/history-events" in zh_page.get_data(as_text=True)
+    assert script_response.status_code == 200
+    assert_tool_is_lazy_loaded(frontend_dir, "history-events-tool.js")
+    assert TOOL_REGISTRY["history-events"]["processing"] == "local"
+    assert TOOL_REGISTRY["history-events"]["indexable"] is True
+    assert TOOL_REGISTRY["history-events"]["global"] == "HistoryEventsTool"
+    assert zh_locale["menu"]["history-events"] == "历年大事件"
+    assert en_locale["menu"]["history-events"] == "Major Events Timeline"
+    assert [event["year"] for event in zh_locale["historyEvents"]["events"]] == [str(year) for year in range(1993, 2027)]
+    assert len(en_locale["historyEvents"]["events"]) == 34
+    assert all(event["worldSource"].startswith("https://") for event in zh_locale["historyEvents"]["events"])
+    assert all(event["chinaSource"].startswith(("http://", "https://")) for event in zh_locale["historyEvents"]["events"])
+    assert "2026年8月9日" in zh_locale["historyEvents"]["rangeNote"]
+    assert 'activeMenuId === "history-events"' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events"] }' in app_script
+    assert 'class="history-events-table"' in script
+    assert 'target="_blank" rel="noopener noreferrer"' in script
+    assert "function splitEvents(value)" in script
+    assert "function decadeSource(year, side)" in script
+    assert "function yearSource(year, side)" in script
+    assert "function timelineSources(year, side)" in script
+    assert "function sourceUrls(item, side, eventCount)" in script
+    assert "Math.max(1, eventCount)" in script
+    assert "fetch(" not in script
+    assert ".history-events-table-wrap" in app_css
+    assert 'events.map(function (event, index)' in script
+    assert 'escapeHtml(sources[index])' in script
+    assert ".history-events-sources" not in app_css
+    assert ".history-events-source" in app_css
+
+
 def test_focus_training_is_local_timed_and_wired(client):
     frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
     zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
@@ -2094,7 +2140,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
     assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
-    assert '{ id: "everyday", tools: ["content", "translate", "area-search"] }' in app_script
+    assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
     assert "@media (max-width: 760px)" in app_css
