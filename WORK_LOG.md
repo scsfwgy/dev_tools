@@ -1,5 +1,9 @@
 # 工作日志
 
+## 2026-09-06 HomeTools 统一后台统计接入
+
+新增只读 `GET /api/admin/stats`，使用独立 `STATS_READ_TOKEN` 的 Bearer 请求头鉴权；汇总现有访问、每日访客、工具与功能调用计数，供 HomeTools 查询和导出。保留旧统计页和存储键，不返回翻译正文、分享内容或 IP。无 Token / URL Token 拒绝，接口标记 no-store。新增协议与鉴权测试，`vercel.json` 的统一 rewrite 已覆盖此路径。生产接入需两个项目分别部署并配置配对只读 Token。
+
 ## 项目概况
 
 DevTools — 在线开发者工具箱，部署于 [dev.tools24.uk](https://dev.tools24.uk)。

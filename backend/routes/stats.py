@@ -1,5 +1,6 @@
 """Visit and tool stats routes."""
 import hashlib
+import hmac
 import html
 import json
 import logging
@@ -175,11 +176,11 @@ def tool_click():
 
 
 @stats_bp.route("/tool-stats")
-def tool_stats():
+def tool_stats(for_admin_api=False):
     stats = cache_store.cache_hgetall(app_settings._TOOL_CLICK_KEY) or {}
     sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
-    if request.args.get("view"):
-        if not _check_admin_token():
+    if request.args.get("view") or for_admin_api:
+        if not for_admin_api and not _check_admin_token():
             return Response("<h1>401 Unauthorized</h1><p>需要 ?token= 鉴权参数</p>", status=401)
         tool_rows = ""
         for rank, (tid, count) in enumerate(sorted_stats, 1):
@@ -206,6 +207,28 @@ def tool_stats():
                 f'</div>'
             )
         tr_count = cache_store.cache_get("translate_count") or "0"
+        if for_admin_api:
+            return jsonify({"ok": True, "data": {
+                "schemaVersion": 1, "source": "devtools",
+                "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "timezone": time.tzname[0],
+                "storage": "redis" if cache_store.is_enabled() else "local-fallback",
+                "metrics": [
+                    {"label": "累计页面访问", "value": int(visit_count)},
+                    {"label": "今日访客", "value": today_users},
+                    {"label": "近30日用户天次", "value": month_user_days},
+                    {"label": "累计工具点击", "value": total_clicks},
+                    {"label": "累计翻译次数", "value": int(tr_count)},
+                    {"label": "累计地区介绍", "value": int(cache_store.cache_get("area_intro_count") or 0)},
+                    {"label": "现存分享内容", "value": len(_list_contents())},
+                ],
+                "dailyUsers": user_series,
+                "breakdowns": [{"label": "工具点击排行 · 累计", "rows": [
+                    {"name": TOOLS.get(tid, {}).get("zh", {}).get("name", tid), "value": int(count)}
+                    for tid, count in sorted_stats]}],
+                "notes": ["访客按匿名 UUID 每日去重；用户天次为每日访客之和，不是月活。",
+                          "本地降级数据不代表跨实例完整统计；汇总不包含翻译正文、分享内容或 IP。"],
+            }}), 200, {"Cache-Control": "no-store"}
         tr_history = cache_store.cache_lrange("translate_history", 0, 49)
         ai_count = cache_store.cache_get("area_intro_count") or "0"
         ai_history = cache_store.cache_lrange("area_intro_history", 0, 49)
@@ -298,3 +321,13 @@ a{{text-decoration:none}}a:hover{{text-decoration:underline}}
 
 <p class="sub" style="margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code> / <code>dev_tools:translate_history</code> / <code>dev_tools:area_intro_history</code> / <code>dev_tools:content:*</code></p>"""
     return jsonify(dict(sorted_stats))
+
+
+@stats_bp.get("/admin/stats")
+def admin_stats():
+    """Read-only aggregate export for HomeTools. Never accept URL credentials."""
+    expected = os.getenv("STATS_READ_TOKEN", "")
+    supplied = request.headers.get("Authorization", "")
+    if not expected or not hmac.compare_digest(supplied.encode(), f"Bearer {expected}".encode()):
+        return jsonify({"ok": False, "error": {"code": "unauthorized", "message": "Unauthorized"}}), 401, {"Cache-Control": "no-store"}
+    return tool_stats(for_admin_api=True)
