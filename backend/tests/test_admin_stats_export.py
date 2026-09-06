@@ -10,26 +10,47 @@ def test_admin_stats_requires_header_token(client, monkeypatch):
         assert response.headers['Cache-Control'] == 'no-store'
 
 
-def test_admin_stats_exports_aggregates_only(client, monkeypatch):
+def test_admin_stats_exports_aggregates_and_records_without_ip(client, monkeypatch):
     from routes import stats
     monkeypatch.setenv('STATS_READ_TOKEN', 'stats-reader')
     with (patch.object(stats.cache_store, 'cache_hgetall', return_value={'json': 12}),
           patch.object(stats.cache_store, 'cache_get', return_value='42'),
           patch.object(stats, '_unique_visit_series', return_value=[{'date': '2026-09-05', 'users': 4}, {'date': '2026-09-06', 'users': 5}]),
           patch.object(stats, '_list_contents', return_value=['one', 'two']),
-          patch.object(stats, '_load_content') as load_content,
-          patch.object(stats.cache_store, 'cache_lrange') as history):
+          patch.object(stats, '_load_content', return_value={'text': 'shared text', 'size': 11, 'ip': 'private-ip'}) as load_content,
+          patch.object(stats.cache_store, 'cache_lrange', return_value=['{"dir":"en-zh","src":"hello","tgt":"你好"}']) as history):
         response = client.get('/api/admin/stats', headers={'Authorization': 'Bearer stats-reader'})
     assert response.status_code == 200
     data = response.json['data']
     assert data['schemaVersion'] == 1 and data['source'] == 'devtools'
     assert {m['label']: m['value'] for m in data['metrics']}['近30日用户天次'] == 9
     assert len(data['dailyUsers']) == 2
-    load_content.assert_not_called()
-    history.assert_not_called()
+    assert load_content.call_count == 2
+    assert history.call_count == 2
+    assert data['records'][0]['rows'][0] == ['en-zh', 'hello', '你好']
+    assert 'shared text' in response.text
+    assert 'private-ip' not in response.text
     assert 'stats-reader' not in response.text
 
 
 def test_unconfigured_export_is_closed(client, monkeypatch):
     monkeypatch.delenv('STATS_READ_TOKEN', raising=False)
     assert client.get('/api/admin/stats', headers={'Authorization': 'Bearer '}).status_code == 401
+
+
+def test_content_export_batches_reads_and_reports_unavailable(client, monkeypatch):
+    from routes import stats
+    monkeypatch.setenv('STATS_READ_TOKEN', 'stats-reader')
+    with (patch.object(stats.cache_store, 'is_enabled', return_value=True),
+          patch.object(stats.cache_store, 'cache_hgetall', return_value={}),
+          patch.object(stats.cache_store, 'cache_get', return_value='0'),
+          patch.object(stats.cache_store, 'cache_lrange', return_value=[]),
+          patch.object(stats, '_list_contents', return_value=['one', 'two']),
+          patch.object(stats.cache_store, 'cache_mget', return_value=['{"text":"example","ip":"private"}', None]) as batch):
+        response = client.get('/api/admin/stats', headers={'Authorization': 'Bearer stats-reader'})
+        assert response.status_code == 200
+        assert batch.call_count == 1
+        assert len(batch.call_args.args[0]) == 2
+        assert 'private' not in response.text
+        batch.return_value = None
+        assert client.get('/api/admin/stats', headers={'Authorization': 'Bearer stats-reader'}).status_code == 503

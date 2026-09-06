@@ -1,7 +1,6 @@
 """Visit and tool stats routes."""
 import hashlib
 import hmac
-import html
 import json
 import logging
 import os
@@ -9,10 +8,9 @@ import re
 import time
 from datetime import date, timedelta
 
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, jsonify, redirect, request
 
 import app_settings
-from http_utils import _check_admin_token
 from service import cache_store
 from tool_data import TOOLS
 from routes.content import _list_contents, _load_content
@@ -177,15 +175,11 @@ def tool_click():
 
 @stats_bp.route("/tool-stats")
 def tool_stats(for_admin_api=False):
+    if request.args.get('view') and not for_admin_api:
+        return redirect('https://www.tools24.uk/admin/sites?source=devtools', code=302)
     stats = cache_store.cache_hgetall(app_settings._TOOL_CLICK_KEY) or {}
     sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
-    if request.args.get("view") or for_admin_api:
-        if not for_admin_api and not _check_admin_token():
-            return Response("<h1>401 Unauthorized</h1><p>需要 ?token= 鉴权参数</p>", status=401)
-        tool_rows = ""
-        for rank, (tid, count) in enumerate(sorted_stats, 1):
-            name = TOOLS.get(tid, {}).get("zh", {}).get("name", tid)
-            tool_rows += f'<tr><td>{rank}</td><td>{html.escape(name)}</td><td><code>{html.escape(tid)}</code></td><td>{count}</td></tr>'
+    if for_admin_api:
         visit_count = cache_store.cache_get(app_settings._VISIT_KEY)
         if visit_count is None:
             visit_count = str(_read_counter())
@@ -193,133 +187,61 @@ def tool_stats(for_admin_api=False):
         user_series = _unique_visit_series()
         today_users = user_series[-1]["users"] if user_series else 0
         month_user_days = sum(item["users"] for item in user_series)
-        max_users = max([item["users"] for item in user_series] + [1])
-        user_bars = ""
-        for item in user_series:
-            users = item["users"]
-            height = max(3, round(users / max_users * 100)) if users else 3
-            value = users if users else ""
-            user_bars += (
-                f'<div class="uv-bar-item" title="{html.escape(item["date"])}：{users} 个唯一用户">'
-                f'<div class="uv-bar-value">{value}</div>'
-                f'<div class="uv-bar" style="height:{height}%"></div>'
-                f'<div class="uv-bar-label">{html.escape(item["date"][5:])}</div>'
-                f'</div>'
-            )
         tr_count = cache_store.cache_get("translate_count") or "0"
-        if for_admin_api:
-            return jsonify({"ok": True, "data": {
-                "schemaVersion": 1, "source": "devtools",
-                "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                "timezone": time.tzname[0],
-                "storage": "redis" if cache_store.is_enabled() else "local-fallback",
-                "metrics": [
-                    {"label": "累计页面访问", "value": int(visit_count)},
-                    {"label": "今日访客", "value": today_users},
-                    {"label": "近30日用户天次", "value": month_user_days},
-                    {"label": "累计工具点击", "value": total_clicks},
-                    {"label": "累计翻译次数", "value": int(tr_count)},
-                    {"label": "累计地区介绍", "value": int(cache_store.cache_get("area_intro_count") or 0)},
-                    {"label": "现存分享内容", "value": len(_list_contents())},
-                ],
-                "dailyUsers": user_series,
-                "breakdowns": [{"label": "工具点击排行 · 累计", "rows": [
-                    {"name": TOOLS.get(tid, {}).get("zh", {}).get("name", tid), "value": int(count)}
-                    for tid, count in sorted_stats]}],
-                "notes": ["访客按匿名 UUID 每日去重；用户天次为每日访客之和，不是月活。",
-                          "本地降级数据不代表跨实例完整统计；汇总不包含翻译正文、分享内容或 IP。"],
-            }}), 200, {"Cache-Control": "no-store"}
-        tr_history = cache_store.cache_lrange("translate_history", 0, 49)
-        ai_count = cache_store.cache_get("area_intro_count") or "0"
-        ai_history = cache_store.cache_lrange("area_intro_history", 0, 49)
-        tr_rows = ""
-        for item in tr_history:
-            try:
-                d = json.loads(item)
-                tr_rows += f'<tr><td><code>{html.escape(d.get("dir", ""))}</code></td><td>{html.escape(d.get("src", ""))}</td><td>{html.escape(d.get("tgt", ""))}</td></tr>'
-            except Exception:
-                pass
-        ai_rows = ""
-        for item in ai_history:
-            try:
-                d = json.loads(item)
-                ai_rows += f'<tr><td><code>{html.escape(d.get("mode", ""))}</code></td><td>{html.escape(d.get("path", ""))}</td><td>{html.escape(d.get("intro", ""))}</td></tr>'
-            except Exception:
-                pass
+        def history(key, fields):
+            rows = []
+            for raw in cache_store.cache_lrange(key, 0, 49):
+                try:
+                    entry = json.loads(raw)
+                    rows.append([str(entry.get(field, ''))[:2000] for field in fields])
+                except (ValueError, TypeError, AttributeError):
+                    continue
+            return rows
+        contents = []
         content_ids = _list_contents()
-        content_rows = ""
-        for cid in content_ids[:50]:
-            entry = _load_content(cid)
-            if not entry:
-                continue
-            full_text = html.escape(entry.get("text", ""))
-            text_preview = full_text[:60].replace("\n", " ")
-            created = entry.get("created_at", 0)
-            created_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(created)) if created else "-"
-            size = entry.get("size", 0)
-            ip = html.escape(entry.get("ip", "-"))
-            link = f"{request.host_url.rstrip('/')}/api/content/{cid}"
-            content_rows += (
-                f'<tr>'
-                f'<td><code>{html.escape(cid)}</code></td>'
-                f'<td>{text_preview}{"…" if len(entry.get("text", "")) > 60 else ""}</td>'
-                f'<td style="font-size:.75rem"><a href="{html.escape(link)}" target="_blank" style="color:var(--accent,#4fc3f7)">{html.escape(link)}</a></td>'
-                f'<td style="font-size:.75rem">{created_str}</td>'
-                f'<td>{size}</td>'
-                f'<td style="font-size:.7rem;color:#888">{ip}</td>'
-                f'</tr>'
-            )
-        return f"""<!DOCTYPE html>
-<meta charset="utf-8"><title>站点统计</title>
-<style>
-body{{font-family:system-ui;max-width:960px;margin:30px auto;padding:0 16px;background:#111;color:#eee}}
-h1{{font-size:1.3rem;margin-bottom:4px}}h2{{font-size:1rem;margin:28px 0 10px;color:#ccc}}
-table{{width:100%;border-collapse:collapse;margin-bottom:8px}}
-th,td{{padding:7px 10px;text-align:left;border-bottom:1px solid #333;vertical-align:top}}
-th{{color:#999;font-size:.75rem;font-weight:600}}
-td{{font-size:.82rem}}tr:hover{{background:#1a1a1a}}
-code{{color:#4fc3f7;font-size:.8rem}}
-.badge{{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;background:#1a3a2a;color:#4caf50}}
-.summary{{display:flex;gap:20px;margin:16px 0;flex-wrap:wrap}}
-.summary-card{{background:#1a1a1a;border-radius:10px;padding:14px 20px;min-width:120px}}
-.summary-card .num{{font-size:2rem;font-weight:700;color:var(--accent,#4fc3f7)}}
-.summary-card .label{{font-size:.75rem;color:#999;margin-top:2px}}
-.sub{{font-size:.7rem;color:#666}}
-.uv-chart{{height:180px;display:grid;grid-template-columns:repeat(30,minmax(12px,1fr));gap:6px;align-items:end;padding:16px 12px 10px;margin:10px 0 22px;background:#1a1a1a;border-radius:10px;border:1px solid #282828}}
-.uv-bar-item{{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0}}
-.uv-bar-value{{height:18px;font-size:.68rem;color:#aaa;font-variant-numeric:tabular-nums}}
-.uv-bar{{width:100%;max-width:20px;min-height:3px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#4fc3f7,#2c7be5)}}
-.uv-bar-label{{margin-top:6px;font-size:.62rem;color:#777;writing-mode:vertical-rl;line-height:1}}
-a{{text-decoration:none}}a:hover{{text-decoration:underline}}
-</style>
-<h1>📊 站点统计</h1>
-<div class="summary">
-<div class="summary-card"><div class="num">{visit_count}</div><div class="label">页面访问</div></div>
-<div class="summary-card"><div class="num">{today_users}</div><div class="label">今日用户</div></div>
-<div class="summary-card"><div class="num">{month_user_days}</div><div class="label">近30日用户天次</div></div>
-<div class="summary-card"><div class="num">{total_clicks}</div><div class="label">工具点击</div></div>
-<div class="summary-card"><div class="num">{len(sorted_stats)}</div><div class="label">工具总数</div></div>
-<div class="summary-card"><div class="num">{tr_count}</div><div class="label">翻译次数</div></div>
-<div class="summary-card"><div class="num">{len(content_ids)}</div><div class="label">内容生成</div></div>
-<div class="summary-card"><div class="num">{ai_count}</div><div class="label">地区介绍</div></div>
-</div>
-
-<h2>👤 每日唯一用户 <span class="sub">（匿名 UUID 去重，仅保留最近 30 天）</span></h2>
-<div class="uv-chart" aria-label="最近 30 天每日唯一用户柱状图">{user_bars}</div>
-
-<h2>🔥 工具点击排行 <span class="sub">（所有用户累计，Redis HINCRBY）</span></h2>
-<table><thead><tr><th>#</th><th>工具</th><th>ID</th><th>次数</th></tr></thead><tbody>{tool_rows}</tbody></table>
-
-<h2>📝 最近翻译记录 <span class="sub">（最新 {len(tr_history)} 条）</span></h2>
-<table><thead><tr><th>方向</th><th>原文</th><th>译文</th></tr></thead><tbody>{tr_rows or '<tr><td colspan="3" style="color:#666">暂无翻译记录</td></tr>'}</tbody></table>
-
-<h2>🌍 最近地区介绍 <span class="sub">（最新 {len(ai_history)} 条）</span></h2>
-<table><thead><tr><th>模式</th><th>地区</th><th>介绍预览</th></tr></thead><tbody>{ai_rows or '<tr><td colspan="3" style="color:#666">暂无记录</td></tr>'}</tbody></table>
-
-<h2>🔗 内容生成记录 <span class="sub">（共 {len(content_ids)} 条，显示最近 50 条）</span></h2>
-<table><thead><tr><th>ID</th><th>内容预览</th><th>链接</th><th>时间</th><th>大小</th><th>IP</th></tr></thead><tbody>{content_rows or '<tr><td colspan="6" style="color:#666">暂无内容</td></tr>'}</tbody></table>
-
-<p class="sub" style="margin-top:24px">数据来源：Redis <code>dev_tools:tool_clicks</code> / <code>dev_tools:translate_history</code> / <code>dev_tools:area_intro_history</code> / <code>dev_tools:content:*</code></p>"""
+        if cache_store.is_enabled():
+            raw_entries = cache_store.cache_mget([app_settings._CONTENT_KEY_PREFIX + cid for cid in content_ids[:50]])
+            if raw_entries is None:
+                return jsonify({'ok': False, 'error': {'code': 'unavailable', 'message': 'Content statistics unavailable'}}), 503, {'Cache-Control': 'no-store'}
+            entries = []
+            for raw in raw_entries:
+                try:
+                    entry = json.loads(raw) if raw else None
+                    entries.append(entry if isinstance(entry, dict) else None)
+                except (ValueError, TypeError):
+                    entries.append(None)
+        else:
+            entries = [_load_content(cid) for cid in content_ids[:50]]
+        for cid, entry in zip(content_ids[:50], entries):
+            if entry:
+                contents.append([cid, str(entry.get('text', ''))[:2000], str(entry.get('created_at', '')), str(entry.get('size', ''))])
+        return jsonify({"ok": True, "data": {
+            "schemaVersion": 1, "source": "devtools",
+            "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "timezone": time.tzname[0],
+            "storage": "redis" if cache_store.is_enabled() else "local-fallback",
+            "metrics": [
+                {"label": "累计页面访问", "value": int(visit_count)},
+                {"label": "今日访客", "value": today_users},
+                {"label": "近30日用户天次", "value": month_user_days},
+                {"label": "累计工具点击", "value": total_clicks},
+                {"label": "有点击记录的工具数", "value": len(sorted_stats)},
+                {"label": "累计翻译次数", "value": int(tr_count)},
+                {"label": "累计地区介绍", "value": int(cache_store.cache_get("area_intro_count") or 0)},
+                {"label": "现存分享内容", "value": len(content_ids)},
+            ],
+            "dailyUsers": user_series,
+            "breakdowns": [{"label": "工具点击排行 · 累计", "rows": [
+                {"name": TOOLS.get(tid, {}).get("zh", {}).get("name", tid), "value": int(count)}
+                for tid, count in sorted_stats]}],
+            "records": [
+                {"label": "最近翻译记录", "columns": ["方向", "原文", "译文"], "rows": history('translate_history', ['dir', 'src', 'tgt'])},
+                {"label": "最近地区介绍", "columns": ["模式", "地区", "介绍"], "rows": history('area_intro_history', ['mode', 'path', 'intro'])},
+                {"label": "分享内容记录", "columns": ["ID", "内容预览", "创建时间（Unix 秒）", "字符数"], "rows": contents}
+            ],
+            "notes": ["访客按匿名 UUID 每日去重；用户天次为每日访客之和，不是月活。",
+                      "本地降级数据不代表跨实例完整统计；明细最多显示最近 50 条，每格文本最多 2000 字，不包含 IP。"],
+        }}), 200, {"Cache-Control": "no-store"}
     return jsonify(dict(sorted_stats))
 
 

@@ -75,3 +75,15 @@ def test_cache_write_helpers_report_success(monkeypatch):
     assert cache_store.cache_expire("key", 60) is True
     assert cache_store.cache_lrem("items", 1, "value") == 2
     assert cache_store.cache_hincrby("stats", "json") == 5
+
+
+def test_cache_mget_keeps_missing_entries_and_namespaces(monkeypatch):
+    from service import cache_store
+    calls = []
+    def command(args):
+        calls.append(args)
+        return ['one', None]
+    monkeypatch.setattr(cache_store, '_command', command)
+    assert cache_store.cache_mget(['a', 'b']) == ['one', None]
+    assert calls == [['MGET', 'dev_tools:a', 'dev_tools:b']]
+    assert cache_store.cache_mget([]) == []

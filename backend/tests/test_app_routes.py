@@ -1780,14 +1780,11 @@ def test_anonymous_unique_users_are_deduped_and_rendered_in_admin_chart(client):
     assert second["is_new_daily_user"] is True
     assert first_uid not in app_settings._UNIQUE_VISIT_PATH.read_text()
 
-    admin = client.get("/api/tool-stats?view=1&token=test-admin-token")
-    page = admin.get_data(as_text=True)
-
-    assert admin.status_code == 200
-    assert "每日唯一用户" in page
-    assert "匿名 UUID 去重，仅保留最近 30 天" in page
-    assert '<div class="num">2</div><div class="label">今日用户</div>' in page
-    assert 'class="uv-chart"' in page
+    admin = client.get('/api/tool-stats?view=1&token=test-admin-token')
+    assert admin.status_code == 302
+    assert admin.headers['Location'] == 'https://www.tools24.uk/admin/sites?source=devtools'
+    from routes.stats import _unique_visit_series
+    assert _unique_visit_series()[-1]['users'] == 2
 
 
 def test_translate_requires_api_key(client, monkeypatch):

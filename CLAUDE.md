@@ -134,7 +134,7 @@ git diff --check
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`
 - `KV_REST_API_URL` / `KV_REST_API_TOKEN`（Vercel KV 兼容变量）
 - `WISH_ADMIN_TOKEN`
-- `STATS_READ_TOKEN`：HomeTools 的只读统计汇总 `/api/admin/stats`，使用 Bearer 请求头验证，不接受 URL Token
+- `STATS_READ_TOKEN`：HomeTools 的只读统计与记录导出 `/api/admin/stats`，使用 Bearer 请求头验证，不接受 URL Token
 - `DEV_TOOLS_DEEPSEEK_API_KEY`
 - `SITE_URL`（SEO 主域名覆盖值，默认 `https://dev.tools24.uk`）
 - `SEO_LAST_MODIFIED`

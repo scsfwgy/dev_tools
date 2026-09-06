@@ -199,3 +199,10 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 
 - Vercel 生产环境需配置环境变量：`UPSTASH_REDIS_REST_URL`、`UPSTASH_REDIS_REST_TOKEN`、`WISH_ADMIN_TOKEN`
 - 心愿墙管理 token 需在 `.env.local` 和 Vercel 环境变量中保持同步
+
+## 2026-09-06 — 统计与记录集中到 HomeTools
+
+- `/api/admin/stats` 补充有点击记录的工具数、最近翻译/地区介绍/分享内容预览，单类最多 50 条、单格最多 2000 字，不导出 IP。
+- `/api/tool-stats?view=1` 转到 HomeTools 的 DevTools Tab，移除旧统计 HTML；公开点击统计 JSON 和采集接口保持原协议。
+- 沿用 STATS_READ_TOKEN，补充鉴权与明细不含 IP 的回归测试。原启动脚本被 requirements 中不可用的 requests==2.34.2 阻塞；使用现有 Python 3.13 环境进行额外测试，不等同于正式启动门禁通过。
+- 额外验证：现有 Python 3.13 环境全量 92 项通过；分享内容改用单次 MGET 批量读取，并覆盖存储失败不可用分支。浏览器 DevTools Tab 明细使用隔离响应验证文本转义和移动端布局。旧启动日志属于历史运行，不作为本轮正式启动通过证据。

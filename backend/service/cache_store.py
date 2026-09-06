@@ -65,6 +65,15 @@ def cache_get(key: str) -> Optional[str]:
     return result if isinstance(result, str) else None
 
 
+
+def cache_mget(keys: List[str]):
+    """Fetch a bounded group in one round trip; None means unavailable."""
+    if not keys:
+        return []
+    result = _command(['MGET', *[_KEY_PREFIX + key for key in keys]])
+    return result if isinstance(result, list) and len(result) == len(keys) else None
+
+
 def cache_set(key: str, value: str, ttl_seconds: int) -> bool:
     result = _command(["SET", _KEY_PREFIX + key, value, "EX", str(int(ttl_seconds))])
     return result == "OK"
