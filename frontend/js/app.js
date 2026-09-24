@@ -15,6 +15,14 @@
   let visitCountUnavailable = false;
   let strictLocalDeviceSession = false;
 
+  function isOfflineGameRoutePath(pathname) {
+    return /^\/(?:zh|en)\/tool\/pelican-bike\/?$/.test(pathname || window.location.pathname);
+  }
+
+  function isStrictLocalRoute(pathname) {
+    return isDeviceRoutePath(pathname) || isOfflineGameRoutePath(pathname);
+  }
+
   function isDeviceRoutePath(pathname) {
     return /^\/(?:zh|en)\/tool\/device\/?$/.test(pathname || window.location.pathname);
   }
@@ -46,7 +54,7 @@
     showCopyToast(t(index === -1 ? "welcome.favoriteAdded" : "welcome.favoriteRemoved"));
   }
   function postGlobalClick(toolId) {
-    if (toolId === "home" || toolId === "device" || strictLocalDeviceSession || isLocalDevelopmentHost()) return;
+    if (toolId === "home" || toolId === "device" || toolId === "pelican-bike" || strictLocalDeviceSession || isLocalDevelopmentHost()) return;
     fetch("/api/tool-click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -155,6 +163,7 @@
     "map-pin": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
     target: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
     balls: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="4"/><circle cx="16.5" cy="7" r="2.5"/><circle cx="15.5" cy="16" r="4.5"/><path d="M9.5 12.7 12 14M12 7.8l2-.4"/></svg>',
+    bike: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="m5 17 4-8 4 8h6l-4-9h-3M9 9h4M10 6h3"/></svg>',
     book: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
   };
 
@@ -244,6 +253,7 @@
   async function applyLanguageAndRender(lang, options) {
     options = options || {};
     await loadLocale(lang);
+    await manifestReady;
     syncLanguageUi(currentLang);
     if (options.path) {
       history.replaceState(options.state || history.state, "", options.path);
@@ -378,7 +388,7 @@
     closeMobileMenu(false);
     window.__toolSubpage = null;
     if (id === "home") currentHomeTab = "categories";
-    if ((id === "device" && !isDeviceRoutePath()) || (strictLocalDeviceSession && id !== "device")) {
+    if (((id === "device" || id === "pelican-bike") && !isStrictLocalRoute()) || (strictLocalDeviceSession && id !== activeMenuId)) {
       // Full navigation in both directions keeps the strict CSP and analytics-free
       // device document isolated from the regular SPA document.
       window.location.assign(buildPathForMenu(id, currentLang));
@@ -400,7 +410,7 @@
   // 浏览器前进/后退
   window.addEventListener("popstate", function () {
     var routed = routeFromPath();
-    if ((routed.menuId === "device") !== strictLocalDeviceSession) {
+    if ((routed.menuId === "device" || routed.menuId === "pelican-bike") !== strictLocalDeviceSession) {
       window.location.reload();
       return;
     }
@@ -454,6 +464,7 @@
     if (activeMenuId !== "cycle-game" && typeof CycleGameTool !== "undefined" && CycleGameTool.deactivate) CycleGameTool.deactivate();
     if (activeMenuId !== "war-game" && typeof WarGameTool !== "undefined" && WarGameTool.deactivate) WarGameTool.deactivate();
     if (activeMenuId !== "fish-game" && typeof FishGameTool !== "undefined" && FishGameTool.deactivate) FishGameTool.deactivate();
+    if (activeMenuId !== "pelican-bike" && typeof PelicanBikeTool !== "undefined" && PelicanBikeTool.deactivate) PelicanBikeTool.deactivate();
     if (activeMenuId !== "math-curiosities" && typeof MathCuriositiesTool !== "undefined" && MathCuriositiesTool.deactivate) MathCuriositiesTool.deactivate();
     if (activeMenuId !== "mindmap" && typeof MindmapTool !== "undefined" && MindmapTool.deactivate) MindmapTool.deactivate();
     if (activeMenuId !== "literacy" && typeof LiteracyTool !== "undefined" && LiteracyTool.deactivate) LiteracyTool.deactivate();
@@ -693,6 +704,11 @@
       FishGameTool.init(el);
       return;
     }
+    if (activeMenuId === "pelican-bike" && typeof PelicanBikeTool !== "undefined") {
+      el.innerHTML = "";
+      PelicanBikeTool.init(el);
+      return;
+    }
     if (activeMenuId === "math-curiosities" && typeof MathCuriositiesTool !== "undefined") {
       el.innerHTML = "";
       MathCuriositiesTool.init(el);
@@ -836,7 +852,7 @@
     { id: "files", tools: ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"] },
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"] },
-    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] },
+    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] },
     { id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }
   ];
 
@@ -1199,7 +1215,7 @@
     syncLanguageUi(routed.lang);
   }
   activeMenuId = routed.menuId;
-  strictLocalDeviceSession = routed.menuId === "device";
+  strictLocalDeviceSession = routed.menuId === "device" || routed.menuId === "pelican-bike";
   currentHomeTab = routed.homeTab || "categories";
   window.__toolSubpage = routed.subpage || null;
 
@@ -1242,7 +1258,8 @@
     var lang = currentLang === "en" ? "en" : "zh-CN";
     var prefix = currentLang === "en" ? "en" : "zh";
     var pageKey = activeMenuId || "home";
-    var meta = (seoMeta[lang] && seoMeta[lang][pageKey]) || seoMeta["zh-CN"].home;
+    var meta = (seoMeta[lang] && seoMeta[lang][pageKey]) || (seoMeta["zh-CN"] && seoMeta["zh-CN"].home);
+    if (!meta) return; // The manifest may still be loading during a fast language change.
     var path = pageKey === "home" ? "/" + prefix + "/" : "/" + prefix + "/tool/" + pageKey;
     var canonical = siteUrl + path;
     document.title = meta.title;

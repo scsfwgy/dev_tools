@@ -116,7 +116,7 @@ def render_spa(lang, tool_id, indexable=True, subpage=None):
         template = template.replace(marker, value)
     response = Response(template, mimetype="text/html")
     response.headers["Content-Language"] = "zh-CN" if lang == "zh" else "en"
-    if tool_id == "device" and not subpage:
+    if tool_id in {"device", "pelican-bike"} and not subpage:
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
             "script-src 'self' 'unsafe-inline'; "
@@ -372,6 +372,11 @@ def audio_files(filename):
 @site_bp.route("/data/<path:filename>")
 def data_files(filename):
     return send_from_directory(str(app_settings.FRONTEND_DIR / "data"), filename)
+
+
+@site_bp.route("/js/<path:filename>")
+def javascript_files(filename):
+    return send_from_directory(str(app_settings.FRONTEND_DIR / "js"), filename)
 
 
 @site_bp.route("/<path:filename>")

@@ -21,6 +21,67 @@ def assert_tool_is_lazy_loaded(frontend_dir, filename):
     assert any((config["script"] or "").split("?", 1)[0].endswith(filename) for config in TOOL_REGISTRY.values())
 
 
+def test_pelican_bike_is_localized_and_runs_with_local_assets(client):
+    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    zh_locale = json.loads((frontend_dir / "locales" / "zh-CN.json").read_text())
+    en_locale = json.loads((frontend_dir / "locales" / "en.json").read_text())
+    game = TOOL_REGISTRY["pelican-bike"]
+    assert game["processing"] == "local" and game["indexable"] is True
+    assert game["global"] == "PelicanBikeTool"
+    assert_tool_is_lazy_loaded(frontend_dir, "pelican-bike-tool.js")
+    assert zh_locale["menu"]["pelican-bike"] == "鹈鹕骑自行车"
+    assert en_locale["menu"]["pelican-bike"] == "Pelican on a Bicycle"
+    for locale in (zh_locale, en_locale):
+        assert locale["pelicanBike"]["jump"]
+        assert locale["pelicanBike"]["trick"]
+        assert locale["pelicanBike"]["cameraChase"]
+        assert locale["pelicanBike"]["winTitle"]
+    for lang in ("zh", "en"):
+        page = client.get(f"/{lang}/tool/pelican-bike")
+        text = page.get_data(as_text=True)
+        assert page.status_code == 200
+        assert f"https://dev.tools24.uk/{lang}/tool/pelican-bike" in text
+        assert "connect-src 'self'" in page.headers["Content-Security-Policy"]
+        assert "googletagmanager.com" not in page.headers["Content-Security-Policy"]
+    script = client.get("/js/pelican-bike-tool.js").get_data(as_text=True)
+    scene_script = client.get("/js/pelican-bike-scene.js").get_data(as_text=True)
+    local_three = client.get("/js/vendor/three-local.js")
+    app_script = client.get("/js/app.js").get_data(as_text=True)
+    assert "requestAnimationFrame" in script
+    assert "WebGLRenderer" in scene_script
+    assert "makeFish" in scene_script and "makeGull" in scene_script
+    assert local_three.status_code == 200
+    assert len(local_three.data) > 100_000
+    assert "/js/vendor/three-local.js" in script
+    assert "fetch(" not in script and "http://" not in script and "https://" not in script
+    assert "fetch(" not in scene_script and "http://" not in scene_script and "https://" not in scene_script
+    assert 'if (!meta) return; // The manifest may still be loading during a fast language change.' in app_script
+    assert 'await manifestReady;' in app_script
+
+    node_test = r"""
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const context = vm.createContext({ window: {}, document: { currentScript: null } });
+vm.runInContext(fs.readFileSync('frontend/js/pelican-bike-tool.js', 'utf8'), context);
+const game = context.PelicanBikeTool._test;
+const course = game.createCourse();
+assert(course.length >= 30);
+assert(course.some(h => h.kind === 'gull'));
+assert(course.some(h => h.kind === 'crate'));
+assert(course.some(h => h.type === 'fish' && h.golden));
+assert(course.every(h => h.lane >= -1 && h.lane <= 1));
+assert(game.collisionRule({type: 'hazard', kind: 'crate'}, 0));
+assert(!game.collisionRule({type: 'hazard', kind: 'crate'}, 1));
+assert(game.collisionRule({type: 'hazard', kind: 'gull'}, 0));
+assert(!game.collisionRule({type: 'hazard', kind: 'gull'}, 1));
+assert(game.collisionRule({type: 'fish', golden: true}, 1));
+assert(!game.collisionRule({type: 'fish', golden: true}, 0));
+assert.strictEqual(game.scoreFor(1200, 5, 2), 2000);
+"""
+    subprocess.run(["node", "-e", node_test], cwd=frontend_dir.parent, check=True)
+
+
 def test_health_and_ip_routes(client, caplog):
     caplog.set_level(logging.INFO, logger="app")
     health = client.get("/api/health")
@@ -107,11 +168,11 @@ def test_device_environment_tool_is_local_lazy_loaded_and_comprehensive(client):
     assert ".device-advanced" in app_css
     assert ".device-authorized-grid" in app_css
     assert "@media (max-width: 640px)" in app_css
-    assert 'id === "device" && !isDeviceRoutePath()' in app_script
-    assert 'strictLocalDeviceSession && id !== "device"' in app_script
+    assert 'isDeviceRoutePath(pathname) || isOfflineGameRoutePath(pathname)' in app_script
+    assert 'strictLocalDeviceSession && id !== activeMenuId' in app_script
     assert "window.location.assign(buildPathForMenu(id, currentLang))" in app_script
-    assert '(routed.menuId === "device") !== strictLocalDeviceSession' in app_script
-    assert 'toolId === "device" || strictLocalDeviceSession' in app_script
+    assert '(routed.menuId === "device" || routed.menuId === "pelican-bike") !== strictLocalDeviceSession' in app_script
+    assert 'toolId === "device" || toolId === "pelican-bike" || strictLocalDeviceSession' in app_script
 
     page = client.get("/zh/tool/device").get_data(as_text=True)
     assert "浏览器本地处理，数据不上传" in page
@@ -840,7 +901,7 @@ def test_home_discovery_and_mobile_navigation_are_wired(client):
         "files": ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"],
         "data": ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"],
         "reference": ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"],
-        "games": ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"],
+        "games": ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"],
         "everyday": ["content", "translate", "area-search", "history-events", "solid-color"],
     }
     categorized_ids = [tool_id for category_id, tools in category_map.items() if category_id != "all" for tool_id in tools]
@@ -2147,7 +2208,7 @@ def test_focus_training_is_local_timed_and_wired(client):
     assert 'class="focus-intro"' in script_text
     assert "fetch(" not in script_text
     assert 'activeMenuId === "focus"' in app_script
-    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] }' in app_script
     assert '{ id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }' in app_script
     assert ".focus-grid" in app_css
     assert "--focus-grid-size" in app_css
@@ -2493,7 +2554,7 @@ def test_predator_reproduction_ecosystem_is_local_fullscreen_and_wired(client):
     assert "resourceRate" not in script
     assert 'activeMenuId === "predator-game"' in app_script
     assert "PredatorGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] }' in app_script
     assert "--ecosystem-prey" in app_css
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
@@ -2629,7 +2690,7 @@ def test_multi_faction_cycle_is_balanced_constant_local_fullscreen_and_wired(cli
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "cycle-game"' in app_script
     assert "CycleGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] }' in app_script
     assert ".cycle-game-swatch" in app_css
     assert ".ball-game-status.is-unified" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2764,7 +2825,7 @@ def test_red_green_war_uses_local_support_and_is_fully_wired(client):
     assert "balls = balls.filter(" not in script
     assert 'activeMenuId === "war-game"' in app_script
     assert "WarGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] }' in app_script
     assert "--ecosystem-predator" in app_css
     assert "--ecosystem-resource" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
@@ -2905,7 +2966,7 @@ def test_big_fish_ecosystem_replicates_merges_grows_and_is_wired(client):
     assert "localStorage" not in script
     assert 'activeMenuId === "fish-game"' in app_script
     assert "FishGameTool.deactivate" in app_script
-    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "math-curiosities"] }' in app_script
+    assert '{ id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] }' in app_script
     assert ".fish-game-swatch.is-giant" in app_css
     assert ".ball-game-stage-card.is-viewport-fullscreen" in app_css
     assert ".ball-game-stage-card.is-fullscreen .ball-game-chart-card { display: none; }" in app_css

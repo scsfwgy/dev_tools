@@ -1120,6 +1120,34 @@ TOOLS = {
             ],
         },
     },
+    "pelican-bike": {
+        "zh": {
+            "name": "鹈鹕骑自行车",
+            "title": "鹈鹕骑自行车 - 3D 海岸骑行小游戏 | Tools24",
+            "description": "骑着自行车穿越 3D 海岸公路：变道收集小鱼，跳过木箱、闪避海鸥，在日落星夜之间抵达灯塔。游戏场景、音效和逻辑全部使用本地资源。",
+            "keywords": "鹈鹕骑自行车,3D海岸骑行,本地小游戏,自行车游戏,WebGL游戏",
+            "intro": "骑鹈鹕穿越三车道海岸公路，收集小鱼，在三次碰撞前抵达灯塔。A / D 变道、W / S 调速、空格跳跃、T 做空中动作；手机可使用屏幕按钮。",
+            "features": ["原创三维鹈鹕、自行车和海岸场景", "三车道变道、调速、跳跃与空中动作", "收集小鱼、避开木箱和海鸥", "随进度变化的日落与星夜", "跟随、侧面与正面镜头", "触屏操作、本地合成音效和本机最佳成绩", "全部运行资源由本站本地提供"],
+            "faq": [
+                ("怎样操作？", "按 A / D 变道、W / S 加速或刹车、空格跳跃、T 做空中动作；C 切换镜头，P 暂停。触屏使用下方按钮。"),
+                ("怎样获胜？", "骑行 1200 米并保留至少一颗心即可到达灯塔。碰撞木箱或海鸥会失去一颗心；第三次碰撞结束本局。"),
+                ("需要联网或上传成绩吗？", "游戏运行资源均来自本站本地文件；游戏中不请求远程素材，最佳成绩只保存在当前浏览器。"),
+            ],
+        },
+        "en": {
+            "name": "Pelican on a Bicycle",
+            "title": "Pelican on a Bicycle - 3D Coastal Cycling Game | Tools24",
+            "description": "Cycle through a 3D coastal road: change lanes for fish, jump crates, dodge gulls, and reach the lighthouse from sunset to starlight. All runtime resources are local.",
+            "keywords": "pelican bicycle game,3D coastal cycling,local mini game,WebGL cycling game",
+            "intro": "Guide a pelican through three coastal lanes. Gather fish and reach the lighthouse before three collisions. Use A / D for lanes, W / S for speed, Space to jump and T for a midair trick. Touch controls are included.",
+            "features": ["Original 3D pelican, bicycle and coastal scenery", "Three lanes, speed, jumps and midair tricks", "Collect fish and avoid crates and gulls", "Sunset changes to a starry night", "Chase, side and front cameras", "Touch controls, synthesized local sound and browser-only best score", "All runtime game resources served locally"],
+            "faq": [
+                ("How do I play?", "Use A / D to change lanes, W / S to speed up or brake, Space to jump and T for a midair trick. C changes camera and P pauses. Touch buttons are below the scene."),
+                ("How do I win?", "Ride 1200 meters with at least one heart left. Crates and gulls cost a heart; the third hit ends the ride."),
+                ("Does the game need the network or upload scores?", "All runtime game resources are local site files. The game does not request remote assets, and your best score stays in this browser."),
+            ],
+        },
+    },
     "math-curiosities": {
         "zh": {
             "name": "数学奇观",
@@ -1419,6 +1447,7 @@ TOOL_REGISTRY = {
     "cycle-game": {"order": 238, "icon": "balls", "script": "/js/cycle-game-tool.js", "global": "CycleGameTool", "processing": "local", "indexable": True},
     "war-game": {"order": 238.5, "icon": "balls", "script": "/js/war-game-tool.js", "global": "WarGameTool", "processing": "local", "indexable": True},
     "fish-game": {"order": 238.75, "icon": "balls", "script": "/js/fish-game-tool.js", "global": "FishGameTool", "processing": "local", "indexable": True},
+    "pelican-bike": {"order": 238.8, "icon": "bike", "script": "/js/pelican-bike-tool.js", "global": "PelicanBikeTool", "processing": "local", "indexable": True},
     "math-curiosities": {"order": 238.9, "icon": "function", "script": "/js/math-curiosities-tool.js", "global": "MathCuriositiesTool", "processing": "local", "indexable": True},
     "cron": {"order": 239, "icon": "clock", "script": "/js/cron-tool.js", "global": "CronTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},

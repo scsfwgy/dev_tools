@@ -206,3 +206,10 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 - `/api/tool-stats?view=1` 转到 HomeTools 的 DevTools Tab，移除旧统计 HTML；公开点击统计 JSON 和采集接口保持原协议。
 - 沿用 STATS_READ_TOKEN，补充鉴权与明细不含 IP 的回归测试。原启动脚本被 requirements 中不可用的 requests==2.34.2 阻塞；使用现有 Python 3.13 环境进行额外测试，不等同于正式启动门禁通过。
 - 额外验证：现有 Python 3.13 环境全量 92 项通过；分享内容改用单次 MGET 批量读取，并覆盖存储失败不可用分支。浏览器 DevTools Tab 明细使用隔离响应验证文本转义和移动端布局。旧启动日志属于历史运行，不作为本轮正式启动通过证据。
+
+## 2026-09-24 — 「鹈鹕骑自行车」升级为本地 3D 海岸骑行
+
+- 在已接入的 `/zh/tool/pelican-bike` 与 `/en/tool/pelican-bike` 上，将初版 2D Canvas 跑酷重做为原创三维场景：程序化鹈鹕、自行车、海岸公路、海水、椰树、路灯、云层、日落星夜和可接近的终点灯塔。斜后方、侧面、正面三种镜头可切换。
+- 玩法改为三车道变道、加速/刹车、跳跃、空中动作、收集普通/金色小鱼、避开木箱和海鸥；包含三颗心、分数、成就、暂停/重玩/全屏、键盘和触屏操作、本机最佳成绩及 Web Audio 合成提示音。长途目标为 1200 米，场景时间随进度变化。
+- Three.js 0.186.0 的官方库在开发时本地打包至 `frontend/js/vendor/three-local.js`，随附官方 MIT 许可证 `three-LICENSE.txt`；运行时由工具页懒加载同源静态文件，无 npm 构建步骤和远程游戏依赖。修正 Flask 三段式 URL 冲突，保证 `/js/vendor/...` 可访问。游戏页保持同源 CSP 并跳过分析及访问量请求。
+- 更新中英文可见文案和 SEO、深浅主题变量、390px 移动端控件及自动化规则测试。`./start.sh start` 和 `./start.sh debug` 均通过完整 93 项 pytest 门禁，并记录 `event=app_start` 与健康检查；使用真实浏览器复查桌面/移动、中文/英文、浅色/深色、场景、控制台与游戏交互。WebGL 不可用时显示明确提示。

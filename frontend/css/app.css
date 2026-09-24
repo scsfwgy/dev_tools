@@ -36,6 +36,28 @@
     --ecosystem-resource: #4ade80;
     --sidebar-w: 240px;
     --sidebar-collapsed-w: 52px;
+    --pelican-panel: #172632;
+    --pelican-text: #f5f1dc;
+    --pelican-muted: #acc6c8;
+    --pelican-line: rgba(202, 234, 227, .17);
+    --pelican-accent: #efb66d;
+    --pelican-button: #f3cb83;
+    --pelican-button-text: #293d44;
+    --pelican-shadow: rgba(7, 17, 27, .28);
+    --pelican-stage: #d8ac9b;
+    --pelican-vignette: rgba(13, 30, 43, .38);
+    --pelican-hit: rgba(234, 96, 74, .5);
+    --pelican-hud-text: #fff8ed;
+    --pelican-hud-shadow: rgba(7, 19, 28, .85);
+    --pelican-glass: rgba(20, 42, 54, .38);
+    --pelican-glass-line: rgba(255, 249, 226, .52);
+    --pelican-highlight: #f9d68c;
+    --pelican-overlay: rgba(10, 29, 40, .52);
+    --pelican-card: #203441;
+    --pelican-card-line: rgba(255, 247, 222, .25);
+    --pelican-mark-bg: rgba(239, 182, 109, .17);
+    --pelican-hearts: #f3a795;
+    --pelican-control: rgba(255, 255, 255, .04);
 }
 
 [data-theme="light"] {
@@ -69,6 +91,28 @@
     --ecosystem-prey: #0284c7;
     --ecosystem-predator: #e11d48;
     --ecosystem-resource: #16a34a;
+    --pelican-panel: #e9f4f0;
+    --pelican-text: #243d47;
+    --pelican-muted: #56757b;
+    --pelican-line: rgba(49, 99, 100, .19);
+    --pelican-accent: #a15a35;
+    --pelican-button: #b35f44;
+    --pelican-button-text: #fff8ed;
+    --pelican-shadow: rgba(25, 59, 68, .14);
+    --pelican-stage: #d8ac9b;
+    --pelican-vignette: rgba(13, 30, 43, .38);
+    --pelican-hit: rgba(234, 96, 74, .5);
+    --pelican-hud-text: #fff8ed;
+    --pelican-hud-shadow: rgba(7, 19, 28, .85);
+    --pelican-glass: rgba(20, 42, 54, .38);
+    --pelican-glass-line: rgba(255, 249, 226, .52);
+    --pelican-highlight: #f9d68c;
+    --pelican-overlay: rgba(10, 29, 40, .52);
+    --pelican-card: #f5fbf7;
+    --pelican-card-line: rgba(45, 93, 94, .21);
+    --pelican-mark-bg: #f9ead8;
+    --pelican-hearts: #b96351;
+    --pelican-control: rgba(255, 255, 255, .4);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -5455,6 +5499,76 @@ textarea:focus-visible,
 .solid-color-start:disabled { cursor: not-allowed; opacity: .5; }
 .solid-color-note { margin: 14px 0 0; color: var(--text-muted); font-size: .72rem; line-height: 1.6; }
 body.solid-color-active { overflow: hidden; }
+
+/* Pelican on a Bicycle */
+.pelican-game { max-width: 1240px; margin: 0 auto 28px; padding: 20px; border: 1px solid var(--pelican-line); border-radius: 24px; background: var(--pelican-panel); color: var(--pelican-text); box-shadow: 0 22px 60px var(--pelican-shadow); }
+.pelican-hero { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 4px 3px 20px; }
+.pelican-eyebrow { color: var(--pelican-accent); font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; }
+.pelican-hero h2 { max-width: 700px; font-size: clamp(1.3rem, 2.7vw, 2.2rem); line-height: 1.15; font-weight: 800; letter-spacing: -.035em; }
+.pelican-local { max-width: 240px; color: var(--pelican-muted); font-size: .73rem; line-height: 1.5; text-align: right; }
+.pelican-stage { position: relative; height: min(61vw, 590px); min-height: 390px; overflow: hidden; border-radius: 19px; background: var(--pelican-stage); isolation: isolate; }
+.pelican-viewport, .pelican-viewport canvas { display: block; width: 100%; height: 100%; }
+.pelican-viewport canvas { touch-action: none; }
+.pelican-stage::after { position: absolute; inset: 0; pointer-events: none; content: ''; background: linear-gradient(180deg, var(--pelican-vignette) 0%, transparent 24%, transparent 70%, var(--pelican-vignette) 100%); }
+.pelican-stage.is-hit::before { position: absolute; z-index: 4; inset: 0; pointer-events: none; content: ''; background: var(--pelican-hit); animation: pelican-hit .38s ease-out both; }
+@keyframes pelican-hit { from { opacity: .8; } to { opacity: 0; } }
+.pelican-topline { position: absolute; z-index: 2; top: 18px; right: 20px; left: 20px; display: flex; justify-content: space-between; gap: 10px; color: var(--pelican-hud-text); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-shadow: 0 1px 8px var(--pelican-hud-shadow); text-transform: uppercase; }
+.pelican-route, .pelican-clock { padding: 7px 10px; border: 1px solid var(--pelican-glass-line); border-radius: 8px; background: var(--pelican-glass); backdrop-filter: blur(8px); }
+.pelican-hud { position: absolute; z-index: 2; right: 20px; bottom: 20px; left: 20px; display: flex; justify-content: space-between; align-items: end; gap: 20px; color: var(--pelican-hud-text); text-shadow: 0 2px 10px var(--pelican-hud-shadow); }
+.pelican-hud-main { width: min(320px, 58%); }
+.pelican-hud-main small { display: block; margin-bottom: 3px; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.pelican-hud-main strong { display: block; font-size: clamp(1.2rem, 2.8vw, 2rem); font-variant-numeric: tabular-nums; }
+.pelican-progress { margin-top: 10px; height: 4px; overflow: hidden; border-radius: 10px; background: var(--pelican-glass-line); }
+.pelican-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--pelican-highlight); }
+.pelican-hud-speed { display: flex; align-items: baseline; gap: 5px; }
+.pelican-hud-speed strong { font-size: clamp(2.1rem, 5vw, 4.5rem); font-weight: 800; line-height: .9; font-variant-numeric: tabular-nums; letter-spacing: -.06em; }
+.pelican-hud-speed span { font-size: .74rem; font-weight: 800; }
+.pelican-overlay[hidden] { display: none; }
+.pelican-overlay { position: absolute; z-index: 5; inset: 0; display: grid; place-items: center; padding: 18px; background: var(--pelican-overlay); backdrop-filter: blur(7px); }
+.pelican-overlay-card { width: min(390px, 100%); padding: 32px; border: 1px solid var(--pelican-card-line); border-radius: 22px; background: var(--pelican-card); color: var(--pelican-text); text-align: center; box-shadow: 0 22px 65px var(--pelican-shadow); }
+.pelican-overlay-mark { display: grid; place-items: center; width: 46px; height: 46px; margin: 0 auto 15px; border-radius: 50%; background: var(--pelican-mark-bg); color: var(--pelican-accent); font-size: 1.4rem; }
+.pelican-overlay-kicker { display: block; color: var(--pelican-accent); font-size: .68rem; font-weight: 800; letter-spacing: .14em; }
+.pelican-overlay-card h3 { margin: 10px 0 8px; font-size: 1.45rem; }
+.pelican-overlay-card p { color: var(--pelican-muted); font-size: .85rem; line-height: 1.55; }
+.pelican-primary { width: 100%; min-height: 48px; margin-top: 21px; border: 0; border-radius: 11px; background: var(--pelican-button); color: var(--pelican-button-text); font-size: .9rem; font-weight: 800; cursor: pointer; }
+.pelican-primary:hover { filter: brightness(.94); }
+.pelican-primary:disabled { opacity: .6; cursor: wait; }
+.pelican-toast { position: absolute; z-index: 4; top: 64px; left: 50%; padding: 10px 16px; border: 1px solid var(--pelican-glass-line); border-radius: 10px; background: var(--pelican-glass); color: var(--pelican-hud-text); font-size: .82rem; font-weight: 800; white-space: nowrap; opacity: 0; transform: translate(-50%, -12px); transition: opacity .2s, transform .2s; pointer-events: none; }
+.pelican-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.pelican-dashboard { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 13px; overflow: hidden; border: 1px solid var(--pelican-line); border-radius: 13px; background: var(--pelican-line); }
+.pelican-dashboard > div { min-width: 0; padding: 12px 16px; background: var(--pelican-card); }
+.pelican-dashboard span { display: block; margin-bottom: 4px; color: var(--pelican-muted); font-size: .66rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.pelican-dashboard strong { display: block; font-size: 1.12rem; font-variant-numeric: tabular-nums; }
+.pelican-hearts { color: var(--pelican-hearts); letter-spacing: .07em; }
+.pelican-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.pelican-toolbar button, .pelican-controls button { min-height: 44px; border: 1px solid var(--pelican-line); border-radius: 10px; background: var(--pelican-control); color: var(--pelican-text); font-size: .78rem; font-weight: 800; cursor: pointer; touch-action: none; user-select: none; }
+.pelican-toolbar button { padding: 8px 13px; }
+.pelican-toolbar button:hover, .pelican-controls button:hover, .pelican-controls button.is-active { background: var(--pelican-button); color: var(--pelican-button-text); }
+.pelican-controls { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.pelican-control-group { display: flex; gap: 8px; }
+.pelican-controls button { min-width: 72px; padding: 9px 16px; }
+.pelican-controls [data-pelican-action="jump"] { background: var(--pelican-button); color: var(--pelican-button-text); }
+.pelican-footer { display: flex; justify-content: space-between; gap: 20px; margin: 15px 2px 0; color: var(--pelican-muted); font-size: .74rem; line-height: 1.55; }
+.pelican-game:fullscreen { width: 100vw; max-width: none; height: 100dvh; overflow: auto; border-radius: 0; }
+.pelican-game:fullscreen .pelican-stage { height: min(68dvh, 850px); }
+@media (max-width: 760px) {
+  .pelican-game { padding: 10px; border-radius: 15px; }
+  .pelican-hero { display: block; padding: 8px 4px 14px; }
+  .pelican-hero h2 { font-size: 1.23rem; }
+  .pelican-local { max-width: none; margin-top: 7px; text-align: left; }
+  .pelican-stage { height: 390px; min-height: 390px; border-radius: 13px; }
+  .pelican-topline { top: 10px; right: 10px; left: 10px; font-size: .6rem; }
+  .pelican-clock { display: none; }
+  .pelican-hud { right: 12px; bottom: 13px; left: 12px; }
+  .pelican-overlay-card { padding: 23px; }
+  .pelican-dashboard > div { padding: 10px; }
+  .pelican-dashboard strong { font-size: .94rem; }
+  .pelican-controls { flex-wrap: wrap; gap: 9px; }
+  .pelican-control-group { flex: 1; justify-content: center; }
+  .pelican-controls button { flex: 1; min-width: 48px; padding: 8px; }
+  .pelican-footer { display: block; }
+  .pelican-footer span { display: block; margin-top: 4px; }
+}
 
 /* 全屏播放层：盖住整个视口（含侧栏），最顶层，按 Esc 或浏览器原生退出 */
 .solid-color-player {
