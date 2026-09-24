@@ -58,6 +58,21 @@
     --pelican-mark-bg: rgba(239, 182, 109, .17);
     --pelican-hearts: #f3a795;
     --pelican-control: rgba(255, 255, 255, .04);
+    --super-panel: #172b37;
+    --super-ink: #f5f2e8;
+    --super-muted: #adc9c9;
+    --super-line: rgba(217, 239, 227, .19);
+    --super-card: #203947;
+    --super-accent: #f2c47b;
+    --super-action: #f5cf88;
+    --super-action-text: #263e49;
+    --super-glass: rgba(16, 40, 52, .59);
+    --super-glass-line: rgba(255, 255, 255, .32);
+    --super-overlay: rgba(12, 29, 43, .48);
+    --super-shadow: rgba(6, 19, 26, .29);
+    --super-white: #fff8e9;
+    --super-health: #ffa695;
+    --super-control: rgba(255, 255, 255, .04);
 }
 
 [data-theme="light"] {
@@ -113,6 +128,21 @@
     --pelican-mark-bg: #f9ead8;
     --pelican-hearts: #b96351;
     --pelican-control: rgba(255, 255, 255, .4);
+    --super-panel: #f0f7f2;
+    --super-ink: #263f47;
+    --super-muted: #587278;
+    --super-line: rgba(57, 105, 106, .2);
+    --super-card: #fbfdfa;
+    --super-accent: #a5663e;
+    --super-action: #b6634b;
+    --super-action-text: #fff8e9;
+    --super-glass: rgba(16, 40, 52, .59);
+    --super-glass-line: rgba(255, 255, 255, .32);
+    --super-overlay: rgba(12, 29, 43, .48);
+    --super-shadow: rgba(43, 74, 68, .16);
+    --super-white: #fff8e9;
+    --super-health: #b65f55;
+    --super-control: rgba(255, 255, 255, .45);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -5585,4 +5615,76 @@ body.solid-color-active { overflow: hidden; }
   .solid-color-mode span { min-height: 40px; padding: 0 12px; }
   #solid-color-frame { width: 130px; }
   #solid-color-duration { min-width: 150px; }
+}
+
+
+/* Super Mario: original Starpath Island platform game */
+.super-game { max-width: 1230px; margin: 0 auto 30px; padding: 20px; border: 1px solid var(--super-line); border-radius: 24px; background: var(--super-panel); color: var(--super-ink); box-shadow: 0 22px 62px var(--super-shadow); }
+.super-hero { display: flex; justify-content: space-between; align-items: end; gap: 20px; padding: 3px 4px 19px; }
+.super-eyebrow { margin: 0 0 7px; color: var(--super-accent); font-size: .72rem; font-weight: 900; letter-spacing: .19em; text-transform: uppercase; }
+.super-hero h2 { margin: 0; font-size: clamp(1.45rem, 3vw, 2.4rem); line-height: 1.12; letter-spacing: -.04em; }
+.super-subtitle { margin: 8px 0 0; color: var(--super-muted); font-size: .84rem; }
+.super-local { max-width: 230px; color: var(--super-muted); font-size: .72rem; line-height: 1.5; text-align: right; }
+.super-stage { position: relative; height: clamp(360px, 47vw, 540px); overflow: hidden; border-radius: 18px; background: var(--super-card); isolation: isolate; }
+.super-stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.super-hud { position: absolute; z-index: 2; top: 16px; left: 16px; display: flex; flex-wrap: wrap; align-items: start; gap: 7px; max-width: calc(100% - 32px); }
+.super-hud > div:not(.super-shield) { min-width: 81px; padding: 8px 11px; border: 1px solid var(--super-glass-line); border-radius: 10px; background: var(--super-glass); color: var(--super-white); backdrop-filter: blur(8px); }
+.super-hud span { display: block; font-size: .58rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .78; }
+.super-hud strong { display: block; margin-top: 3px; font-size: 1.13rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.super-hud #super-hearts { color: var(--super-health); white-space: nowrap; }
+.super-hud .super-shield { padding: 10px 11px; border: 1px solid var(--super-glass-line); border-radius: 10px; background: var(--super-glass); color: var(--super-white); font-size: .77rem; font-weight: 800; }
+.super-hud .super-shield[hidden] { display: none; }
+.super-stage-footer { position: absolute; z-index: 2; right: 17px; bottom: 16px; left: 17px; display: flex; align-items: center; gap: 12px; color: var(--super-white); font-size: .67rem; font-weight: 900; letter-spacing: .08em; text-shadow: 0 1px 6px var(--super-shadow); text-transform: uppercase; }
+.super-stage-footer > span { white-space: nowrap; }
+.super-progress { height: 5px; flex: 1; overflow: hidden; border-radius: 9px; background: var(--super-glass); }
+.super-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--super-action); }
+.super-toast { position: absolute; z-index: 4; top: 72px; left: 50%; max-width: calc(100% - 24px); padding: 10px 16px; border: 1px solid var(--super-glass-line); border-radius: 10px; background: var(--super-glass); color: var(--super-white); font-size: .8rem; font-weight: 800; text-align: center; opacity: 0; transform: translate(-50%, -8px); transition: opacity .2s, transform .2s; pointer-events: none; }
+.super-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.super-overlay[hidden] { display: none; }
+.super-overlay { position: absolute; z-index: 5; inset: 0; display: grid; place-items: center; padding: 18px; background: var(--super-overlay); backdrop-filter: blur(6px); }
+.super-overlay-card { width: min(405px, 100%); max-height: 100%; overflow-y: auto; padding: 30px; border: 1px solid var(--super-line); border-radius: 22px; background: var(--super-card); color: var(--super-ink); text-align: center; box-shadow: 0 22px 60px var(--super-shadow); }
+.super-overlay-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 14px; border: 2px solid var(--super-line); border-radius: 14px; color: var(--super-accent); font-size: 1.75rem; transform: rotate(-6deg); }
+.super-overlay-card small { color: var(--super-accent); font-size: .66rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+.super-overlay-card h3 { margin: 10px 0 8px; font-size: 1.5rem; }
+.super-overlay-card p { margin: 0; color: var(--super-muted); font-size: .86rem; line-height: 1.65; }
+.super-primary { width: 100%; min-height: 48px; margin-top: 23px; border: 0; border-radius: 11px; background: var(--super-action); color: var(--super-action-text); font-size: .93rem; font-weight: 900; cursor: pointer; }
+.super-primary:hover { filter: brightness(.94); }
+.super-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 11px; margin-top: 13px; }
+.super-toolbar-left, .super-toolbar-right { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.super-best { padding: 8px 11px; border: 1px solid var(--super-line); border-radius: 9px; color: var(--super-muted); font-size: .7rem; font-weight: 700; }
+.super-best strong { color: var(--super-ink); font-size: .86rem; font-variant-numeric: tabular-nums; }
+.super-legend { color: var(--super-muted); font-size: .73rem; }
+.super-toolbar button, .super-controls button { min-height: 44px; border: 1px solid var(--super-line); border-radius: 10px; background: var(--super-control); color: var(--super-ink); font-size: .77rem; font-weight: 800; cursor: pointer; touch-action: none; user-select: none; }
+.super-toolbar button { padding: 8px 12px; }
+.super-toolbar button:hover, .super-controls button:hover, .super-controls button.is-active { background: var(--super-action); color: var(--super-action-text); }
+.super-controls { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.super-controls > div { display: flex; gap: 8px; }
+.super-controls button { min-width: 72px; min-height: 54px; padding: 10px 17px; font-size: .88rem; }
+.super-controls [data-super-control="jump"] { min-width: 115px; background: var(--super-action); color: var(--super-action-text); }
+.super-help { margin: 13px 2px 0; color: var(--super-muted); font-size: .75rem; line-height: 1.6; }
+.super-game:fullscreen { max-width: none; width: 100vw; height: 100dvh; overflow: auto; border-radius: 0; }
+.super-game:fullscreen .super-stage { height: min(70dvh, 760px); }
+@media (max-width: 760px) {
+  .super-game { padding: 10px; border-radius: 15px; }
+  .super-hero { display: block; padding: 7px 4px 14px; }
+  .super-hero h2 { font-size: 1.45rem; }
+  .super-subtitle { font-size: .75rem; }
+  .super-local { display: block; max-width: none; margin-top: 7px; text-align: left; }
+  .super-stage { height: 355px; border-radius: 13px; }
+  .super-hud { top: 9px; left: 8px; gap: 4px; max-width: calc(100% - 16px); }
+  .super-hud > div:not(.super-shield) { min-width: 67px; padding: 6px 7px; border-radius: 7px; }
+  .super-hud strong { font-size: .88rem; }
+  .super-hud span { font-size: .5rem; }
+  .super-toast { top: 60px; }
+  .super-stage-footer { right: 9px; bottom: 11px; left: 9px; font-size: .58rem; gap: 7px; }
+  .super-overlay-card { padding: 21px; }
+  .super-toolbar-left { width: 100%; }
+  .super-controls button { flex: 1; min-width: 53px; padding: 8px 10px; }
+  .super-controls > div { flex: 1; }
+  .super-controls [data-super-control="jump"] { min-width: 78px; }
+}
+@media (max-width: 480px) {
+  .super-stage { height: clamp(415px, 115vw, 490px); }
+  .super-overlay { padding: 11px; }
+  .super-overlay-card { padding: 19px; }
 }

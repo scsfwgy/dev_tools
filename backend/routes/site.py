@@ -116,7 +116,7 @@ def render_spa(lang, tool_id, indexable=True, subpage=None):
         template = template.replace(marker, value)
     response = Response(template, mimetype="text/html")
     response.headers["Content-Language"] = "zh-CN" if lang == "zh" else "en"
-    if tool_id in {"device", "pelican-bike"} and not subpage:
+    if tool_id in {"device", "pelican-bike", "super-mario"} and not subpage:
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
             "script-src 'self' 'unsafe-inline'; "

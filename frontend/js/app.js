@@ -16,7 +16,7 @@
   let strictLocalDeviceSession = false;
 
   function isOfflineGameRoutePath(pathname) {
-    return /^\/(?:zh|en)\/tool\/pelican-bike\/?$/.test(pathname || window.location.pathname);
+    return /^\/(?:zh|en)\/tool\/(?:pelican-bike|super-mario)\/?$/.test(pathname || window.location.pathname);
   }
 
   function isStrictLocalRoute(pathname) {
@@ -54,7 +54,7 @@
     showCopyToast(t(index === -1 ? "welcome.favoriteAdded" : "welcome.favoriteRemoved"));
   }
   function postGlobalClick(toolId) {
-    if (toolId === "home" || toolId === "device" || toolId === "pelican-bike" || strictLocalDeviceSession || isLocalDevelopmentHost()) return;
+    if (toolId === "home" || toolId === "device" || toolId === "pelican-bike" || toolId === "super-mario" || strictLocalDeviceSession || isLocalDevelopmentHost()) return;
     fetch("/api/tool-click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -388,7 +388,7 @@
     closeMobileMenu(false);
     window.__toolSubpage = null;
     if (id === "home") currentHomeTab = "categories";
-    if (((id === "device" || id === "pelican-bike") && !isStrictLocalRoute()) || (strictLocalDeviceSession && id !== activeMenuId)) {
+    if (((id === "device" || id === "pelican-bike" || id === "super-mario") && !isStrictLocalRoute()) || (strictLocalDeviceSession && id !== activeMenuId)) {
       // Full navigation in both directions keeps the strict CSP and analytics-free
       // device document isolated from the regular SPA document.
       window.location.assign(buildPathForMenu(id, currentLang));
@@ -410,7 +410,7 @@
   // 浏览器前进/后退
   window.addEventListener("popstate", function () {
     var routed = routeFromPath();
-    if ((routed.menuId === "device" || routed.menuId === "pelican-bike") !== strictLocalDeviceSession) {
+    if ((routed.menuId === "device" || routed.menuId === "pelican-bike" || routed.menuId === "super-mario") !== strictLocalDeviceSession) {
       window.location.reload();
       return;
     }
@@ -465,6 +465,7 @@
     if (activeMenuId !== "war-game" && typeof WarGameTool !== "undefined" && WarGameTool.deactivate) WarGameTool.deactivate();
     if (activeMenuId !== "fish-game" && typeof FishGameTool !== "undefined" && FishGameTool.deactivate) FishGameTool.deactivate();
     if (activeMenuId !== "pelican-bike" && typeof PelicanBikeTool !== "undefined" && PelicanBikeTool.deactivate) PelicanBikeTool.deactivate();
+    if (activeMenuId !== "super-mario" && typeof SuperMarioTool !== "undefined" && SuperMarioTool.deactivate) SuperMarioTool.deactivate();
     if (activeMenuId !== "math-curiosities" && typeof MathCuriositiesTool !== "undefined" && MathCuriositiesTool.deactivate) MathCuriositiesTool.deactivate();
     if (activeMenuId !== "mindmap" && typeof MindmapTool !== "undefined" && MindmapTool.deactivate) MindmapTool.deactivate();
     if (activeMenuId !== "literacy" && typeof LiteracyTool !== "undefined" && LiteracyTool.deactivate) LiteracyTool.deactivate();
@@ -709,6 +710,11 @@
       PelicanBikeTool.init(el);
       return;
     }
+    if (activeMenuId === "super-mario" && typeof SuperMarioTool !== "undefined") {
+      el.innerHTML = "";
+      SuperMarioTool.init(el);
+      return;
+    }
     if (activeMenuId === "math-curiosities" && typeof MathCuriositiesTool !== "undefined") {
       el.innerHTML = "";
       MathCuriositiesTool.init(el);
@@ -852,7 +858,7 @@
     { id: "files", tools: ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"] },
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"] },
-    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "math-curiosities"] },
+    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "super-mario", "math-curiosities"] },
     { id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }
   ];
 
@@ -1215,7 +1221,7 @@
     syncLanguageUi(routed.lang);
   }
   activeMenuId = routed.menuId;
-  strictLocalDeviceSession = routed.menuId === "device" || routed.menuId === "pelican-bike";
+  strictLocalDeviceSession = routed.menuId === "device" || routed.menuId === "pelican-bike" || routed.menuId === "super-mario";
   currentHomeTab = routed.homeTab || "categories";
   window.__toolSubpage = routed.subpage || null;
 

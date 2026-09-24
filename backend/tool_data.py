@@ -1148,6 +1148,34 @@ TOOLS = {
             ],
         },
     },
+    "super-mario": {
+        "zh": {
+            "name": "超级玛丽",
+            "title": "超级玛丽 - 星路岛原创闯关小游戏 | Tools24",
+            "description": "在原创横版冒险星路岛中奔跑、跳跃、收集星币、撞开惊喜方块，穿过四片风景、击败守门兽并抵达星门。支持键盘与触屏，资源完全本地运行。",
+            "keywords": "超级玛丽,横版闯关,平台跳跃,星路岛,本地小游戏",
+            "intro": "穿过草甸、林冠、溪谷和星门城堡。收集星币、利用护盾、跨越沟壑，踩倒守门兽后进入终点星门。",
+            "features": ["原创角色、场景和逐帧绘制", "四段连续的横版关卡与视差背景", "奔跑、可控高度跳跃、平台与沟壑", "星币、惊喜方块、护盾与额外生命", "巡逻敌人、检查点和双阶段守门兽", "键盘、触屏、暂停、重试及全屏", "本地合成音乐与浏览器内最佳成绩"],
+            "faq": [
+                ("怎样操作？", "A / D 或方向键移动，Shift 加速，空格、W 或上方向键跳跃，长按跳得更高；P 暂停，M 切换声音。手机使用屏幕按钮。"),
+                ("怎样通关？", "穿过三处沟壑，在终点踩中守门兽两次，再走进打开的星门。中途可以在检查点复活。"),
+                ("游戏会连接外部服务吗？", "不会。画面、音乐、音效和规则都在浏览器本地生成；最佳成绩仅保存在当前浏览器。"),
+            ],
+        },
+        "en": {
+            "name": "Super Mario",
+            "title": "Super Mario - Original Starpath Island Platform Game | Tools24",
+            "description": "Run, jump, collect star coins and hit surprise blocks across four original island regions. Stomp the gatekeeper and reach the star gate. Keyboard and touch controls; all resources run locally.",
+            "keywords": "super mario,platform game,side scrolling,starpath island,offline browser game",
+            "intro": "Cross the meadow, canopy, creek and star gate citadel. Gather coins, find shields, clear gaps and defeat the gatekeeper to reach the exit.",
+            "features": ["Original hand-drawn character and scenery", "Four continuous side-scrolling regions with parallax backgrounds", "Sprinting, variable-height jumps, platforms and gaps", "Star coins, surprise blocks, shields and extra hearts", "Patrolling foes, checkpoints and a two-hit gatekeeper", "Keyboard, touch, pause, retry and fullscreen", "Locally synthesized music and browser-only best score"],
+            "faq": [
+                ("How do I play?", "Move with A / D or arrow keys, hold Shift to sprint, jump with Space, W or Up, and hold jump for height. P pauses and M toggles sound. Touch buttons work on phones."),
+                ("How do I finish?", "Clear the three gaps, stomp the gatekeeper twice and walk through the open star gate. Checkpoints let you return after a fall."),
+                ("Does this game contact external services?", "No. Artwork, music, sound and gameplay are generated locally. Only your best score is kept in this browser."),
+            ],
+        },
+    },
     "math-curiosities": {
         "zh": {
             "name": "数学奇观",
@@ -1448,6 +1476,7 @@ TOOL_REGISTRY = {
     "war-game": {"order": 238.5, "icon": "balls", "script": "/js/war-game-tool.js", "global": "WarGameTool", "processing": "local", "indexable": True},
     "fish-game": {"order": 238.75, "icon": "balls", "script": "/js/fish-game-tool.js", "global": "FishGameTool", "processing": "local", "indexable": True},
     "pelican-bike": {"order": 238.8, "icon": "bike", "script": "/js/pelican-bike-tool.js", "global": "PelicanBikeTool", "processing": "local", "indexable": True},
+    "super-mario": {"order": 238.85, "icon": "star", "script": "/js/super-mario-tool.js", "global": "SuperMarioTool", "processing": "local", "indexable": True},
     "math-curiosities": {"order": 238.9, "icon": "function", "script": "/js/math-curiosities-tool.js", "global": "MathCuriositiesTool", "processing": "local", "indexable": True},
     "cron": {"order": 239, "icon": "clock", "script": "/js/cron-tool.js", "global": "CronTool", "processing": "local", "indexable": True},
     "image": {"order": 240, "icon": "file", "script": "/js/image-tool.js?v=20260711e", "global": "ImageTool", "processing": "local", "indexable": True},
