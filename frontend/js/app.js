@@ -16,7 +16,7 @@
   let strictLocalDeviceSession = false;
 
   function isOfflineGameRoutePath(pathname) {
-    return /^\/(?:zh|en)\/tool\/(?:pelican-bike|super-mario)\/?$/.test(pathname || window.location.pathname);
+    return /^\/(?:zh|en)\/tool\/(?:pelican-bike|super-mario|life-sim)\/?$/.test(pathname || window.location.pathname);
   }
 
   function isStrictLocalRoute(pathname) {
@@ -54,7 +54,7 @@
     showCopyToast(t(index === -1 ? "welcome.favoriteAdded" : "welcome.favoriteRemoved"));
   }
   function postGlobalClick(toolId) {
-    if (toolId === "home" || toolId === "device" || toolId === "pelican-bike" || toolId === "super-mario" || strictLocalDeviceSession || isLocalDevelopmentHost()) return;
+    if (toolId === "home" || toolId === "device" || toolId === "pelican-bike" || toolId === "super-mario" || toolId === "life-sim" || strictLocalDeviceSession || isLocalDevelopmentHost()) return;
     fetch("/api/tool-click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -388,7 +388,7 @@
     closeMobileMenu(false);
     window.__toolSubpage = null;
     if (id === "home") currentHomeTab = "categories";
-    if (((id === "device" || id === "pelican-bike" || id === "super-mario") && !isStrictLocalRoute()) || (strictLocalDeviceSession && id !== activeMenuId)) {
+    if (((id === "device" || id === "pelican-bike" || id === "super-mario" || id === "life-sim") && !isStrictLocalRoute()) || (strictLocalDeviceSession && id !== activeMenuId)) {
       // Full navigation in both directions keeps the strict CSP and analytics-free
       // device document isolated from the regular SPA document.
       window.location.assign(buildPathForMenu(id, currentLang));
@@ -410,7 +410,7 @@
   // 浏览器前进/后退
   window.addEventListener("popstate", function () {
     var routed = routeFromPath();
-    if ((routed.menuId === "device" || routed.menuId === "pelican-bike" || routed.menuId === "super-mario") !== strictLocalDeviceSession) {
+    if ((routed.menuId === "device" || routed.menuId === "pelican-bike" || routed.menuId === "super-mario" || routed.menuId === "life-sim") !== strictLocalDeviceSession) {
       window.location.reload();
       return;
     }
@@ -463,6 +463,7 @@
     if (activeMenuId !== "predator-game" && typeof PredatorGameTool !== "undefined" && PredatorGameTool.deactivate) PredatorGameTool.deactivate();
     if (activeMenuId !== "cycle-game" && typeof CycleGameTool !== "undefined" && CycleGameTool.deactivate) CycleGameTool.deactivate();
     if (activeMenuId !== "war-game" && typeof WarGameTool !== "undefined" && WarGameTool.deactivate) WarGameTool.deactivate();
+    if (activeMenuId !== "life-sim" && typeof LifeSimTool !== "undefined") LifeSimTool.deactivate();
     if (activeMenuId !== "fish-game" && typeof FishGameTool !== "undefined" && FishGameTool.deactivate) FishGameTool.deactivate();
     if (activeMenuId !== "pelican-bike" && typeof PelicanBikeTool !== "undefined" && PelicanBikeTool.deactivate) PelicanBikeTool.deactivate();
     if (activeMenuId !== "super-mario" && typeof SuperMarioTool !== "undefined" && SuperMarioTool.deactivate) SuperMarioTool.deactivate();
@@ -680,6 +681,11 @@
       FocusTool.init(el);
       return;
     }
+    if (activeMenuId === "life-sim" && typeof LifeSimTool !== "undefined") {
+      el.innerHTML = "";
+      LifeSimTool.init(el);
+      return;
+    }
     if (activeMenuId === "ball-game" && typeof BallGameTool !== "undefined") {
       el.innerHTML = "";
       BallGameTool.init(el);
@@ -858,7 +864,7 @@
     { id: "files", tools: ["text", "diff", "mindmap", "markdown", "image", "converter", "fileinfo"] },
     { id: "data", tools: ["visualization", "function", "timestamp", "unitconvert", "color", "exchange", "tax", "mortgage"] },
     { id: "reference", tools: ["terminal", "git", "docker", "kubernetes", "ai", "android", "flutter", "ios"] },
-    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "pelican-bike", "super-mario", "math-curiosities"] },
+    { id: "games", tools: ["literacy", "focus", "ball-game", "predator-game", "cycle-game", "war-game", "fish-game", "life-sim", "pelican-bike", "super-mario", "math-curiosities"] },
     { id: "everyday", tools: ["content", "translate", "area-search", "history-events", "solid-color"] }
   ];
 
@@ -1221,7 +1227,7 @@
     syncLanguageUi(routed.lang);
   }
   activeMenuId = routed.menuId;
-  strictLocalDeviceSession = routed.menuId === "device" || routed.menuId === "pelican-bike" || routed.menuId === "super-mario";
+  strictLocalDeviceSession = routed.menuId === "device" || routed.menuId === "pelican-bike" || routed.menuId === "super-mario" || routed.menuId === "life-sim";
   currentHomeTab = routed.homeTab || "categories";
   window.__toolSubpage = routed.subpage || null;
 

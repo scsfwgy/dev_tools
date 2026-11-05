@@ -26,6 +26,7 @@ from routes.area_search import (
     _resolve_area_path,
     area_search_bp,
 )
+from routes.life_sim import life_sim_bp
 from routes.content import content_bp
 from routes.exchange_rates import exchange_rates_bp
 from routes.site import content_last_modified, immutable_asset_cache_enabled, public_tool_ids, site_bp
@@ -49,6 +50,7 @@ app.register_blueprint(wishes_bp)
 app.register_blueprint(stats_bp)
 app.register_blueprint(translate_bp)
 app.register_blueprint(area_search_bp)
+app.register_blueprint(life_sim_bp)
 app.register_blueprint(content_bp)
 app.register_blueprint(exchange_rates_bp)
 

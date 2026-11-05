@@ -3,6 +3,7 @@
     "name": "DevTools"
   },
   "menu": {
+    "life-sim": "Between Lives",
     "home": "Home",
     "device": "Device Info",
     "json": "JSON Tool",
@@ -122,6 +123,7 @@
       "server": "Cloud"
     },
     "toolHints": {
+      "life-sim": "Begin somewhere in the world and read an AI-authored life of family, growth, encounters and farewells.",
       "device": "Inspect browser, system, screen and network info",
       "json": "Format, validate and convert JSON",
       "visualization": "Paste table or JSON data to create charts",
@@ -2670,6 +2672,696 @@
       "generation_failed": "Failed to generate the introduction. Please retry.",
       "generation_incomplete": "The generated introduction was incomplete. Please generate it again.",
       "unknown": "Request failed. Please retry."
+    }
+  },
+  "lifeSim": {
+    "brand": "Between Lives",
+    "eyebrow": "BETWEEN LIVES · CHAPTER ONE",
+    "tagline": "A whole world. One life to live.",
+    "intro": "Arrive in a family by chance. Grow, connect and say goodbye. No decisions required: simply watch this life unfold.",
+    "begin": "Begin a random life",
+    "note": "An AI-authored life",
+    "disclaimer": "Characters and events are AI fiction. Local guides may contain errors.",
+    "local": "Autosaved on this device · No account",
+    "story": "This moment",
+    "people": "Your people",
+    "wealth": "Life ledger",
+    "world": "Your world",
+    "memories": "Life story",
+    "age": "years old",
+    "year": "year",
+    "health": "Health",
+    "happiness": "Mood",
+    "skill": "Skills",
+    "cash": "Personal cash",
+    "familyCash": "Family savings",
+    "debt": "Debt",
+    "property": "Home asset",
+    "income": "Annual income",
+    "expenses": "Annual expenses (incl. interest)",
+    "net": "Personal net worth",
+    "familyNote": "Until adulthood, savings belong to your household. At 18 you receive 12% of the remaining family savings and start an independent ledger.",
+    "moneyNote": "Local currency amounts are fictional balancing values. Each year settles living costs, income and 3% debt interest. 60% of available cash repays debt. Homes retain purchase cost. The income card estimates current annual earnings; ledger rows record settled income and costs. Wages pause during unemployment.",
+    "saved": "Progress saved in this browser",
+    "saveError": "Autosave is unavailable. Export your save to keep this life.",
+    "invalid": "The existing save could not be read and has been preserved. Export it or confirm a new life.",
+    "new": "Another life",
+    "confirm": "Leave this life behind and begin again?",
+    "replace": "Replace your current life?",
+    "yes": "Confirm",
+    "cancel": "Keep this life",
+    "export": "Export save",
+    "import": "Import save",
+    "importError": "Import failed: invalid format, version or data. Your current life is unchanged.",
+    "loadError": "Could not load the game. Please refresh to retry.",
+    "visit": "Spend time together",
+    "visited": "Visited this year",
+    "visitLimit": "You can spend time with two people each year. A life choice advances time.",
+    "alive": "Living",
+    "departed": "Remembered",
+    "bond": "Closeness",
+    "noMemory": "Your shared story is just beginning.",
+    "together": "Shared memories",
+    "endTitle": "What did this life leave behind?",
+    "endText": "Some days have faded. Some people stay with you. Look back at the choices and relationships you leave behind.",
+    "lifeYears": "Years lived",
+    "closePeople": "People held close",
+    "choices": "Life chapters",
+    "endAge": "Your journey has come to its end.",
+    "endHealth": "Your body could no longer carry you forward.",
+    "future": "The setting of your life",
+    "origin": "Birthplace",
+    "now": "Current home",
+    "family": "Family beginnings",
+    "school": "Education",
+    "job": "Current role",
+    "currency": "Currency",
+    "placeNote": "Place descriptions provide brief context. Income, housing costs, families and events are fictional; urban and class differences use simplified models.",
+    "sources": "Background references",
+    "download": "Download life save",
+    "emptyLedger": "Your personal annual ledger begins at adulthood.",
+    "empty": "The story is yet to be written.",
+    "eventChoice": "Make a choice, and time moves forward.",
+    "result": "You chose",
+    "support": "Your family gave you a small fund to begin adult life.",
+    "loss": "{person} passed away.",
+    "visitLog": "You made time for {person}.",
+    "death": "Your life reached its final page.",
+    "birthLog": "You came into the world.",
+    "stageChild": "Childhood",
+    "stageSchool": "School years",
+    "stageAdult": "Adulthood",
+    "stageLater": "Later life",
+    "retired": "Retired",
+    "none": "Not yet working",
+    "entry": "Entry-level worker",
+    "skilled": "Skilled worker",
+    "professional": "Professional",
+    "education": {
+      "none": "Still growing",
+      "university": "University education",
+      "vocational": "Vocational education",
+      "work": "Early working life"
+    },
+    "wealths": {
+      "poor": "Struggling",
+      "ordinary": "Ordinary household",
+      "comfortable": "Comfortable",
+      "wealthy": "Wealthy"
+    },
+    "roles": {
+      "mother": "Mother",
+      "father": "Father",
+      "sibling": "Sibling",
+      "grandparent": "Grandparent",
+      "aunt": "Aunt",
+      "cousin": "Cousin",
+      "friend": "Childhood friend",
+      "colleague": "Colleague",
+      "partner": "Partner",
+      "child": "Child"
+    },
+    "countryDescriptions": {
+      "cn": "China is in East Asia, with varied regional languages, food and urban and rural ways of life. Mandarin is the common language and the currency is the renminbi. This edition starts in two places in Hunan.",
+      "jp": "Japan is an East Asian archipelago. Japanese is the main language and the currency is the yen. This edition offers a Kansai city and an inland mountain-city setting.",
+      "br": "Brazil is in South America, with diverse regional cultures and city life. The official language is Portuguese and the currency is the real. This edition offers southeastern and northeastern city settings."
+    },
+    "countries": {
+      "cn": "China",
+      "jp": "Japan",
+      "br": "Brazil"
+    },
+    "places": {
+      "changsha": {
+        "name": "Changsha · Hunan",
+        "description": "The capital of Hunan, crossed by the Xiang River. City streets and school days form the backdrop of your beginnings."
+      },
+      "shaoyang": {
+        "name": "Shaoyang · Hunan",
+        "description": "A prefecture-level city in Hunan with urban districts, county towns and countryside. Home ties and opportunities elsewhere shape your setting."
+      },
+      "osaka": {
+        "name": "Osaka · Osaka Prefecture",
+        "description": "A city in Japan’s Kansai region. Shopping streets, railways and closely connected neighborhoods frame everyday life."
+      },
+      "nagano": {
+        "name": "Nagano · Nagano Prefecture",
+        "description": "An inland city on Honshu, surrounded by mountains. Changing seasons and a smaller-city community frame your childhood."
+      },
+      "saopaulo": {
+        "name": "São Paulo · São Paulo State",
+        "description": "A large city in southeastern Brazil. Diverse neighborhoods, busy commutes and urban life provide the setting."
+      },
+      "recife": {
+        "name": "Recife · Pernambuco",
+        "description": "A coastal city in northeastern Brazil. Rivers, the coast and city neighborhoods become familiar scenes of home."
+      }
+    },
+    "actions": {
+      "family": {
+        "label": "Make time for family",
+        "hint": "Closer bonds, better mood; a small expense."
+      },
+      "curiosity": {
+        "label": "Watch the world with curiosity",
+        "hint": "A little more skill and happiness."
+      },
+      "play": {
+        "label": "Play and make friends",
+        "hint": "Better mood and health; a small expense."
+      },
+      "learn": {
+        "label": "Explore an interest",
+        "hint": "Build skills with a small learning expense."
+      },
+      "study": {
+        "label": "Focus on studying",
+        "hint": "Build skills at a small emotional cost."
+      },
+      "social": {
+        "label": "Show up and listen",
+        "hint": "Improve bonds and mood; social expenses."
+      },
+      "rest": {
+        "label": "Give yourself room to breathe",
+        "hint": "Restore health and mood."
+      },
+      "university": {
+        "label": "Go to university",
+        "hint": "Enter work after four years; build skills. Tuition is 5 baseline monthly wages, financed by debt if needed."
+      },
+      "vocational": {
+        "label": "Learn a trade",
+        "hint": "Build skills for one baseline monthly wage; work from adulthood."
+      },
+      "work": {
+        "label": "Put your energy into work",
+        "hint": "Gain experience at a small health and mood cost."
+      },
+      "training": {
+        "label": "Learn new professional skills",
+        "hint": "Improve skills for 0.4 baseline monthly wages."
+      },
+      "partner": {
+        "label": "Commit to marriage",
+        "hint": "Marry someone you have grown close to and share a home. One marriage per life in this first edition."
+      },
+      "child": {
+        "label": "Welcome a child together",
+        "hint": "Grow your family and future living costs."
+      },
+      "house": {
+        "label": "Buy a home with savings",
+        "hint": "Pay 30 baseline monthly wages; lower future living expenses."
+      },
+      "save": {
+        "label": "Keep spending modest",
+        "hint": "Protect your savings at a small mood cost."
+      },
+      "retire": {
+        "label": "Begin retirement",
+        "hint": "A simplified annual pension of 5.04 baseline monthly wages."
+      },
+      "care": {
+        "label": "Seek proper care",
+        "hint": "Restore health for 0.4 baseline monthly wages."
+      },
+      "move": {
+        "label": "Move to the other region",
+        "hint": "Pay 1.5 baseline monthly wages; change living costs and opportunities."
+      },
+      "stay": {
+        "label": "Stay where you belong",
+        "hint": "Stay in your current home; a small mood boost."
+      },
+      "repair": {
+        "label": "Take care of the problem",
+        "hint": "A small mood boost for 0.2 baseline monthly wages."
+      }
+    },
+    "events": {
+      "birth": {
+        "title": "Hello, world",
+        "body": "You were born in {place}. Your name is {name}. Your family is {wealth}. Your first world is made of familiar voices."
+      },
+      "childhood": {
+        "title": "Beyond the front door",
+        "body": "You begin to recognize the streets outside home. Family members play with you and help you explore. Small interests start taking root."
+      },
+      "school": {
+        "title": "Your first classroom",
+        "body": "You enter a classroom holding your backpack tightly. The child beside you smiles. Lessons and friendships become part of daily life."
+      },
+      "schoolpath": {
+        "title": "Finding your direction",
+        "body": "Classes grow harder and interests become your own. Grades, friends and family expectations gradually shape your path."
+      },
+      "exam": {
+        "title": "An important exam",
+        "body": "An important exam approaches and books pile up. Practice fills the year with tension, fatigue and hope."
+      },
+      "education": {
+        "title": "Beyond the school gates",
+        "body": "At 18, the familiar school gates become part of your past. Family circumstances, interests and growing skills lead you toward a new path."
+      },
+      "career": {
+        "title": "A place of your own",
+        "body": "Adult life comes into focus. Some begin work while others finish studying; you too are finding a place in the wider world."
+      },
+      "love": {
+        "title": "Letting someone in",
+        "body": "Repeated encounters turn a stranger into someone familiar. You learn their habits, and everyday life gains a new connection."
+      },
+      "family": {
+        "title": "The shape of a family",
+        "body": "The meaning of home changes. Sharing daily life, caring for one another and the possibility of a new family member bring new responsibilities."
+      },
+      "home": {
+        "title": "A place to call home",
+        "body": "Where to live becomes an important part of adulthood. Savings, commuting and family needs shape what a home can be."
+      },
+      "crossroads": {
+        "title": "Somewhere in the middle",
+        "body": "You have traveled a long way. Some hopes came true and others still wait. Work, health and close relationships begin to carry different weight."
+      },
+      "retire": {
+        "title": "A slower rhythm",
+        "body": "At 60, the rhythm of work begins to loosen. Retirement enters the picture, shaped by savings, health and habits."
+      },
+      "legacy": {
+        "title": "What you want to keep",
+        "body": "Sorting old belongings, you find a group photograph. Everyone followed a different path, but the bonds remain clear."
+      },
+      "oldage": {
+        "title": "An afternoon by the window",
+        "body": "Life slows down. A visit, a warm meal and a comfortable day become things worth remembering."
+      },
+      "discovery": {
+        "title": "A small discovery",
+        "body": "You discover something fascinating and share it eagerly. The world seems a little larger."
+      },
+      "friendship": {
+        "title": "Between classes",
+        "body": "A friend saves you a seat between classes. You talk about small things while sharing an important time in life."
+      },
+      "outing": {
+        "title": "A weekend invitation",
+        "body": "Someone invites you out on a weekend. An ordinary gathering adds laughter to the year, and a little extra spending."
+      },
+      "schoolstress": {
+        "title": "Unfinished homework",
+        "body": "Schoolwork and expectations become hard to carry. Growing pains take time, support and rest to work through."
+      },
+      "hobby": {
+        "title": "An interest of your own",
+        "body": "An interest adds color to ordinary days. You spend time exploring it and meet people with something in common."
+      },
+      "job": {
+        "title": "A new assignment",
+        "body": "A new task arrives at work. Practice, questions and completed assignments gradually build experience."
+      },
+      "pressure": {
+        "title": "After a busy stretch",
+        "body": "Work and life crowd together like a wheel that never stops. Fatigue begins to show in your body and mood."
+      },
+      "invitation": {
+        "title": "A long-awaited gathering",
+        "body": "Familiar people send an invitation. News, laughter and old stories reconnect your busy lives."
+      },
+      "familycall": {
+        "title": "An evening connection",
+        "body": "An evening conversation brings family news. Some are doing well and others need comfort. Bonds continue through small moments."
+      },
+      "opportunity": {
+        "title": "A new possibility",
+        "body": "A new professional skill comes into view. Learning takes time and money, and may open a different opportunity later."
+      },
+      "setback": {
+        "title": "A difficult year",
+        "body": "This year does not go as planned. You adjust expenses and routines while learning to live with disappointment."
+      },
+      "illness": {
+        "title": "Your health needs attention",
+        "body": "Feeling unwell interrupts your plans. Rest and care take time from everyday life, making ordinary health feel more precious."
+      },
+      "move": {
+        "title": "Life somewhere else",
+        "body": "Work and life in another region come into view. Distance, opportunities, expenses and familiar people shape what happens next."
+      },
+      "affection": {
+        "title": "Someone who listens",
+        "body": "You meet someone who listens carefully. Sharing small details gradually draws your lives closer."
+      },
+      "parenting": {
+        "title": "A child is growing",
+        "body": "Your child has new questions and ideas. Journeys, time together and everyday costs make growing up a shared family experience."
+      },
+      "repair": {
+        "title": "An everyday inconvenience",
+        "body": "Something at home needs repair. You arrange time, fix a problem and pay an expense. Life continues through small practical tasks."
+      },
+      "reunion": {
+        "title": "Together again",
+        "body": "A gathering brings familiar voices close again. Old stories return alongside news of everyone’s present lives."
+      },
+      "quiet": {
+        "title": "Light in an ordinary day",
+        "body": "Nothing momentous happens this year. Walking, reading, cooking or sitting quietly give ordinary days their own light."
+      },
+      "memory": {
+        "title": "A memory returns",
+        "body": "A familiar sound brings back an earlier time. Some people remain close; other encounters now live only in memory."
+      },
+      "unemployment": {
+        "title": "A job ends unexpectedly",
+        "body": "Something changes at work and you lose your position. Wages stop for now, while rent, food and family expenses continue. You begin looking for work again."
+      },
+      "jobhunt": {
+        "title": "Waiting for another job",
+        "body": "Some applications receive no reply; others lead to an interview. Learning, job hunting and everyday expenses fill the year. Finding work takes time and luck."
+      },
+      "seriousIllness": {
+        "title": "A serious illness interrupts life",
+        "body": "Persistent discomfort becomes a serious illness. Appointments, treatment and recovery replace familiar routines, and family companionship matters more than ever."
+      },
+      "accident": {
+        "title": "An accident on an ordinary day",
+        "body": "An unexpected accident interrupts an ordinary day. You are injured and your plans stop for a while. The days ahead will need time for recovery."
+      },
+      "bereavement": {
+        "title": "Someone familiar is gone",
+        "body": "The loss of someone close leaves an empty place in ordinary days. You share time with those still here and learn to carry memories forward."
+      },
+      "reemployment": {
+        "title": "Work finds a new beginning",
+        "body": "Waiting finally brings an answer: you have work again. Wages resume and routines begin to take shape, while the leaner days remain in memory."
+      }
+    },
+    "connection": "This moment brings {person}, your {role}, to mind.",
+    "callback": "You still remember your choice at {age}: {action}.",
+    "npcSchool": "At school",
+    "npcWork": "Working",
+    "npcLater": "Later life",
+    "map": "Map",
+    "mapTitle": "Where are you in the world?",
+    "offlineMap": "Offline geography · City-level locations",
+    "mapNote": "The map ships with the game and needs no online tiles. Markers are city reference points, not a home address or your device location. The basemap shows land and coasts, with no streets or administrative boundaries.",
+    "mapHelp": "Select a place to locate it. Drag the map, or focus it and use arrow keys to pan. Use the buttons to zoom.",
+    "locate": "Locate",
+    "locateCurrent": "Locate current home",
+    "locateOrigin": "Locate birthplace",
+    "worldView": "World overview",
+    "zoomIn": "Zoom in +",
+    "zoomOut": "Zoom out −",
+    "coordinates": "Latitude / Longitude",
+    "exploreEnvironment": "Explore local life",
+    "mapExploreOnly": "Exploring another place does not change your character’s home.",
+    "mapAttribution": "Geographic data:",
+    "localEnvironment": "Life in this place",
+    "environmentNote": "City background compiled as of 2026. Neighborhood, rural and individual circumstances differ. These summaries describe context, not every resident’s experience, and do not advance with the game’s future years.",
+    "simulatedLife": "Character context · Game simulation",
+    "yourDailyLife": "How you live today",
+    "familySetting": "Your family background: {wealth}.",
+    "homeChild": "You still live with family, who provide housing and cover everyday expenses.",
+    "homeOwned": "You have bought a home in the game, reducing subsequent living costs.",
+    "homeRent": "You have not bought a home in the game; living expenses include renting.",
+    "schoolLife": "Growing up, learning and spending time with family and friends shape your daily life.",
+    "workingLife": "Work, learning and relationships share your time; the ledger records your income and expenses.",
+    "retiredLife": "Retirement brings pensions, health and companionship to the center of daily life.",
+    "settingNote": "This paragraph reflects your character’s current state. Class and financial values are fictional game parameters.",
+    "environmentLabels": {
+      "setting": "City and daily rhythm",
+      "climate": "Climate and everyday comfort",
+      "housing": "Where people live",
+      "mobility": "Commuting and getting around",
+      "food": "Food and social life",
+      "education": "Growing up and education",
+      "work": "Work and opportunities",
+      "services": "Healthcare and public life"
+    },
+    "environments": {
+      "changsha": {
+        "setting": "Changsha, Hunan’s capital, spans the Xiang River. Districts range from commercial centers and campuses to older streets and suburbs; river crossings can shape daily journeys.",
+        "climate": "Summers are hot and humid, winters damp and chilly, and spring and summer bring rain. Air conditioning, umbrellas, ventilation and drying laundry shape home comfort.",
+        "housing": "Older apartments, newer compounds, shared rentals and suburban homes coexist. Access to school, work and transport must be weighed against space and household budgets.",
+        "mobility": "Urban journeys can combine metro, buses and walking; rail and air connect the city outward. Commuting depends on both your neighborhood and destination.",
+        "food": "Rice noodles, Hunan dishes and street snacks form part of local food culture. Home cooking, canteens and shared meals coexist, with choices beyond the region’s spicy reputation.",
+        "education": "The provincial capital has universities and cultural facilities, while distance, family support and personal paths still matter. The game simplifies education rather than reproducing admissions rules.",
+        "work": "Manufacturing, commerce, services and cultural activities provide varied settings for work. Offices, factories, shops and self-employment involve different rhythms and opportunities.",
+        "services": "Healthcare institutions and community services form part of city life; access varies with location and circumstances. The game uses simplified health and costs, not actual treatment or insurance procedures.",
+        "sources": [
+          {
+            "label": "Hunan Government · Changsha",
+            "url": "https://www.enghunan.gov.cn/hneng/AboutHunan/HunanFacts/AdministrativeDivisions/201508/t20150804_1814341.html"
+          },
+          {
+            "label": "Changsha city context",
+            "url": "https://hunan.gov.cn/hnszf/jxxx/szmp/zss/szmp.html"
+          }
+        ]
+      },
+      "shaoyang": {
+        "setting": "Shaoyang includes city districts, county towns and countryside. Markets, schools and neighborhoods frame urban life; cross-county family visits and working elsewhere add other experiences.",
+        "climate": "A humid subtropical monsoon climate meets hills, valleys and mountains. Rainy journeys, damp-proofing and seasonal clothing matter, with conditions varying across the wider area.",
+        "housing": "Urban apartments, county-town housing and rural homes offer different conditions. Relatives may live apart; sharing the same prefecture name does not mean similar space or access.",
+        "mobility": "Buses, roads and railway connections serve different journeys. A city commute and a visit to a rural relative require different routes, transfers and travel time.",
+        "food": "Rice, noodles and regional Hunan cooking offer a food backdrop. Markets, home meals and family gatherings can frame stories, while tastes vary between households.",
+        "education": "School access and resources differ between urban, county and rural settings. Grades, family support and arrangements away from home influence study; geography alone does not determine a life.",
+        "work": "Commerce, services, manufacturing and county economies provide varied work settings. Employment elsewhere can also shape families, with trade-offs depending on occupation, place and household plans.",
+        "services": "Distance to healthcare and public services varies between city, town and countryside. Transport and family accompaniment provide meaningful story details without assuming identical local access.",
+        "sources": [
+          {
+            "label": "Hunan Government · Shaoyang",
+            "url": "https://www.enghunan.gov.cn/hneng/AboutHunan/HunanFacts/AdministrativeDivisions/201508/t20150804_1814330.html"
+          },
+          {
+            "label": "Hunan Culture and Tourism · Shaoyang",
+            "url": "https://whhlyt.hunan.gov.cn/whhlyt/english/Tourism/Recommendations/202406/t20240628_33340680.html"
+          }
+        ]
+      },
+      "osaka": {
+        "setting": "In Japan’s Kansai region, Osaka mixes shopping streets, stations and residential neighborhoods. Home and work can lie in different districts, shaping daytime commuting and evening routines.",
+        "climate": "Muggy summer weather, winter cold, seasonal rain and typhoons affect plans. Ventilation, cooling and routine disaster preparation also shape life in a dense city.",
+        "housing": "Apartments, shared rentals and family homes meet different budgets. Commuting, amenities and rental procedures matter, alongside waste sorting, noise and shared-space etiquette.",
+        "mobility": "Rail, metro and buses offer several travel combinations, often joined by walking. Transfers, station locations and travel times shape the experience of commuting.",
+        "food": "Takoyaki, okonomiyaki and shopping-street dining are recognizable local traditions. Groceries, packed meals and home cooking remain everyday options, alongside many forms of socializing.",
+        "education": "Schools, activities and family arrangements shape childhood. Actual admissions follow local systems; the game’s shared ages and study choices are not an exact Osaka school model.",
+        "work": "Commerce, tourism, manufacturing and professional work offer different settings. Communication, skills and commuting affect choices; a commercial city does not give everyone the same income.",
+        "services": "Osaka’s living guide covers healthcare, parenting, pensions and disaster preparation. Real procedures require local information; the game retains only simplified health, cost and retirement systems.",
+        "sources": [
+          {
+            "label": "Osaka City · Living guide",
+            "url": "https://www.city.osaka.lg.jp/contents/wdu020/enjoy/en/"
+          },
+          {
+            "label": "Osaka official visitor information",
+            "url": "https://www.osaka-info.jp/en/information/osaka-faq/"
+          }
+        ]
+      },
+      "nagano": {
+        "setting": "Nagano City is the inland capital of Nagano Prefecture on Honshu. Stations, neighborhoods and surrounding mountains provide a setting shaped partly by seasonal outdoor activities.",
+        "climate": "Inland conditions bring noticeable seasonal and daily temperature changes. Cold winters and snow can affect travel; heating, clothing and road conditions shape everyday comfort.",
+        "housing": "Apartments near stations and homes farther out offer different convenience. More space must be balanced against school, work, shopping and winter journeys.",
+        "mobility": "Rail connects Nagano with other cities, while buses and roads serve local journeys. Life near a station and life away from main routes require different planning.",
+        "food": "Shinshu soba, apples and regional snacks are part of Nagano’s food culture. Groceries, home cooking and seasonal ingredients can give everyday stories a local texture.",
+        "education": "Schools, family and community shape childhood; studying farther away may mean commuting or leaving home. The game’s study costs are a shared model, not actual local tuition.",
+        "work": "Services, tourism and industries in the wider region offer work settings. Seasons and location can affect routines; family support and career development also matter.",
+        "services": "Access to healthcare and administration depends on home location and transport. Winter appointments, accompanying older relatives and everyday shopping can shape practical routines.",
+        "sources": [
+          {
+            "label": "Study in Japan · Nagano",
+            "url": "https://www.studyinjapan.go.jp/en/why/47prefectures/chubu/nagano.html"
+          },
+          {
+            "label": "Go! Nagano · Regional context",
+            "url": "https://db.go-nagano.net/id/about-nagano/"
+          }
+        ]
+      },
+      "saopaulo": {
+        "setting": "São Paulo is a large, culturally diverse Brazilian city. Commercial centers, residential districts and outer neighborhoods have different rhythms and living conditions.",
+        "climate": "Seasons in this Southern Hemisphere city run opposite to China and Japan. Weather and rain affect plans; daily life calls for more nuance than a fixed tropical image.",
+        "housing": "Housing location and commuting are closely linked. Apartments, rentals and neighborhood conditions vary; budgets, work, transport and services must be considered together.",
+        "mobility": "Rail, buses and roads serve daily journeys, sometimes with several transfers. In a large city, living farther away can mean substantial time costs.",
+        "food": "Migration has shaped varied food traditions, markets, bakeries and restaurants. Parks, museums and cultural venues offer other settings for meeting friends.",
+        "education": "Educational institutions offer varied settings, while family support, home location and travel still shape experience. The game’s shared choices do not guarantee opportunity through city size.",
+        "work": "Commerce, professional services, culture and other sectors create varied work settings. Skills, roles and stability differ; prominent business districts represent only part of working life.",
+        "services": "Healthcare, education and community-service experiences differ by place and circumstance. Caring for relatives involves time, travel and budgets; the game does not reproduce benefit eligibility or fees.",
+        "sources": [
+          {
+            "label": "Visit Brasil · São Paulo",
+            "url": "https://visitbrasil.com/en/location/sao-paulo/"
+          },
+          {
+            "label": "IBGE · São Paulo municipality",
+            "url": "https://www.ibge.gov.br/cidadesat/xtras/perfil.php?codmun=355030&r=2"
+          }
+        ]
+      },
+      "recife": {
+        "setting": "Recife, capital of Pernambuco in northeastern Brazil, combines rivers, bridges, a coast and urban neighborhoods. Historic quarters and seafront views represent only part of the city.",
+        "climate": "The low-latitude coastal setting is generally warm and humid. Shade, ventilation and rainy-day plans matter, while buildings and drainage conditions vary by neighborhood.",
+        "housing": "Coastal, historic and other residential districts offer different settings. Families also weigh work, schools, transport and affordable expenses when choosing a home.",
+        "mobility": "Buses, rail and roads connect districts, with rivers and bridges influencing routes. Living in the city or its surroundings can mean different transfers and commuting routines.",
+        "food": "Northeastern cooking, cassava-based foods and regional culture form part of life. Home meals, markets and celebrations carry relationships, beyond the city’s seafront image.",
+        "education": "Schools and further education provide important settings, while family support and travel affect access. The game uses shared study rules rather than assigning outcomes by birthplace.",
+        "work": "Commerce, cultural tourism and technology-related activities offer varied work settings. Shops, offices and other workplaces differ; a city name alone says little about income or stability.",
+        "services": "Healthcare and community services depend on home location, transport and circumstances. Rainy-day family journeys, appointments and childcare can shape practical daily arrangements.",
+        "sources": [
+          {
+            "label": "Recife city government · City context",
+            "url": "https://desenvolvimentoeconomico.recife.pe.gov.br/censo-2022"
+          },
+          {
+            "label": "IBGE · Recife municipality",
+            "url": "https://www.ibge.gov.br/cidades-e-estados/pe/recife.html"
+          },
+          {
+            "label": "Recife city government · Culture and life",
+            "url": "https://www2.recife.pe.gov.br/servico/cidade-1"
+          },
+          {
+            "label": "Recife official tourism · Climate",
+            "url": "https://visit.recife.pe.gov.br/informacoes/clima/"
+          }
+        ]
+      }
+    },
+    "continueLife": "Continue this life",
+    "playLife": "Autoplay",
+    "pauseLife": "Pause",
+    "readingPace": "Reading pace",
+    "paces": {
+      "3000": "Fast · 3 sec",
+      "6000": "Medium · 6 sec",
+      "10000": "Slow · 10 sec"
+    },
+    "observerHint": "No decisions required. Life unfolds on its own. Autoplay pauses when you explore another tab or leave the page.",
+    "peopleObserverHint": "Time together and shared memories grow automatically as life unfolds. Open a person’s memories to look back.",
+    "lastChapter": "The previous chapter",
+    "incomeEstimate": "Current annual income estimate",
+    "unemployed": "Temporarily unemployed",
+    "realEnvironment": "Explore the real surroundings",
+    "mapProviders": {
+      "amap": "Amap",
+      "google": "Google Maps"
+    },
+    "realMapHints": {
+      "amap": "Locations in China use Amap. Open the map to explore streets, local facilities and any photos or satellite layers the service provides.",
+      "google": "Locations outside China use Google. After searching or locating the place, explore available satellite imagery, Street View and local facilities in the provider. Access and coverage vary."
+    },
+    "openRealMap": "Explore the surroundings",
+    "openSatellite": "Satellite imagery",
+    "openStreetView": "Try Street View",
+    "realMapNote": "Opens the provider in a new window, sending only a city reference point and place name. Your game progress stays here. Imagery may be older and does not show a fictional home or future life. The offline map remains available.",
+    "moods": {
+      "positive": "A brighter chapter",
+      "negative": "A difficult chapter",
+      "neutral": "An ordinary chapter",
+      "death": "The final chapter"
+    },
+    "endReasons": {
+      "age": "Time ran its course. This life comes to a close here.",
+      "health": "Your body could not carry you any farther.",
+      "illness": "Your condition suddenly worsened, bringing this life to an earlier end.",
+      "accident": "An unexpected accident brought this life to a sudden end."
+    },
+    "autoOutcomes": {
+      "family": "You made time for family, bringing your relationships a little closer.",
+      "curiosity": "Curiosity helped you explore the world and build your earliest skills.",
+      "play": "Play and company brought joy, easing your body and mood.",
+      "learn": "You explored an interest, investing a little money and gaining skills.",
+      "study": "You focused on studying, improving your skills while carrying some pressure.",
+      "social": "You showed up, talked and listened, growing closer to people around you.",
+      "rest": "You slowed down and gave your body and mood time to recover.",
+      "university": "You entered university for four years of study. Tuition became an expense, with any shortfall financed by debt.",
+      "vocational": "You learned a trade, building skills and beginning working life earlier.",
+      "work": "You put energy into work or finding a position, building experience along the way.",
+      "training": "You invested time and money in professional learning and gained new skills.",
+      "partner": "You married someone you grew close to, welcoming a partner into daily life.",
+      "child": "You welcomed a child, adding love and the responsibility of raising them.",
+      "house": "You bought a home with savings, turning cash into a housing asset and changing living costs.",
+      "save": "You kept spending modest to protect the savings you had.",
+      "retire": "You stepped away from work and began receiving the game’s simplified pension.",
+      "care": "You received care and treatment, paying a cost as your body began to recover.",
+      "move": "You moved to the other region in your country, changing living costs and work opportunities.",
+      "stay": "You stayed in familiar surroundings and continued life with the people you knew.",
+      "repair": "You resolved a small problem at home, paying a cost to restore daily comfort."
+    },
+    "birthLoading": "Finding a beginning in the area catalog…",
+    "birthFallback": "The global area service is unavailable. This life uses the six-place offline sample.",
+    "globalPlaceNote": "This place comes from the shared Area Search catalog. A locality may be a city, state or other administrative area; some names may be outdated. No real household or economic distribution is provided.",
+    "catalogSource": "Source: Area Search · Local area catalog",
+    "locationLevels": {
+      "district": "Province / city / district",
+      "locality": "Country / catalog locality",
+      "country": "Country-level data only"
+    },
+    "countryReferenceNote": "The catalog has no precise coordinates for this city or district. This marker is a country reference point, not a birthplace or home address. The real-map link searches the full place name.",
+    "coordinatesMissing": "No reference coordinates",
+    "lifePoints": "life points",
+    "globalEconomyNote": "Global mode uses shared fictional life points, income and expense rules. These do not represent local currency, prices or earnings.",
+    "aiLabel": "AI generated · Not fact-checked",
+    "aiLoading": "AI is adding to this chapter… You can continue with the local story at any time.",
+    "aiFallback": "AI content is unavailable. The local story remains playable. Toggle AI off and on to retry.",
+    "aiOffHint": "AI narration is off. Enable it at the top for local-life introductions and enriched chapters.",
+    "aiCaution": "AI content may be inaccurate. Characters, finances and future experiences are fictional.",
+    "aiOn": "AI narration: on",
+    "aiOff": "AI narration: off",
+    "cloudPrivacy": "Birthplaces come from the shared Area Search catalog. AI generates life events and consequences; fictional character details are sent to the server. Saves stay in your browser.",
+    "offlineNote": "Offline sample · 3 countries · 6 places",
+    "timeLoading": "Loading a moment in time...",
+    "aiDetails": "Life details",
+    "aiSettings": "More",
+    "settings": "More",
+    "aiClose": "Close",
+    "aiWelcomeKicker": "A random beginning. A life you have never lived.",
+    "aiWelcome": "Where you are born, who you meet, what happens next—let time decide. All you need to do is read on.",
+    "aiWelcomePrivacy": "AI-generated lives require a connection. Fictional character details are sent to AI; saves stay in this browser.",
+    "aiFailedTitle": "Time has paused",
+    "aiRequiredError": "AI could not produce a valid chapter. Your progress has not changed. Retry, or check the service configuration if the problem continues.",
+    "retry": "Retry",
+    "aiReturn": "Return to the last chapter",
+    "aiChapterHint": "Continue to turn the next page of this life.",
+    "aiAutoHint": "Time is moving automatically. Pause in Life details.",
+    "aiHousehold": "These figures describe the household.",
+    "aiPersonal": "These figures describe the individual.",
+    "aiMoneyNote": "All amounts are fictional AI-generated life points, not actual local currency, wages or prices. Income and expenses describe the current annual level.",
+    "aiIntroError": "The local living guide could not be generated. Please retry.",
+    "aiPrivacy": "AI generates each chapter and its consequences. Requests include the fictional character’s name, age, health, finances, relationships and summaries of the last three chapters. Full saves stay in this browser. The app validates and commits a complete response; failed generation does not advance time. Do not put real private information in imported saves.",
+    "aiRecover": "Manage save",
+    "aiWaitingHint": "Time is moving forward. You can keep reading this page.",
+    "aiDossier": "A LIFE, IN DETAIL",
+    "aiAbout": "About AI, privacy and saves",
+    "birthEyebrow": "ANOTHER LIFE · ABOUT TO BEGIN",
+    "birthJourney": "A whole world. One new beginning.",
+    "birthJourneyHint": "Let the world turn. Another story is taking shape.",
+    "birthFound": "A place for your story",
+    "birthArriving": "Arriving at your birthplace...",
+    "birthReference": "The globe marker is a country reference point",
+    "detailDescriptions": {
+      "people": "The people who share a part of your journey.",
+      "wealth": "The comforts and pressures of an everyday life.",
+      "memories": "Every page is a moment you have lived.",
+      "settings": "Who you are today, and how this life is saved."
+    },
+    "welcomeEyebrow": "BEFORE THE STORY BEGINS",
+    "welcomeAs": "In this life, you will be",
+    "welcomeCountryHint": "Meet the country before you step into everyday life.",
+    "welcomeFamily": "Your first circle of people",
+    "welcomeFamilyHint": "Your connection with the world begins with these names.",
+    "welcomeMap": "Your place in the world",
+    "welcomeReady": "Ready to step into this life?",
+    "welcomeStartHint": "Begin at birth, and see where time takes you.",
+    "welcomeEnter": "Begin this life",
+    "welcomeGuideNote": "AI-generated country and local guides may be inaccurate. Rankings need a metric, year and source; no rank is given without reliable information. Characters and finances are fictional.",
+    "countryGuideLabels": {
+      "economy": "Economy & living standards",
+      "ranking": "Global position & rankings",
+      "environment": "Nature & environment",
+      "tourism": "Travel & culture"
     }
   }
 }

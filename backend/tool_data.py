@@ -1086,6 +1086,54 @@ TOOLS = {
             ],
         },
     },
+    "life-sim": {
+        "zh": {
+            "name": "人生之间",
+            "title": "人生之间 - 文字人生模拟游戏 | Tools24",
+            "description": "从全球地区库随机出生，AI 生成人生每一章及其后果，体验家庭、成长、工作与离别，存档保存在浏览器。",
+            "keywords": "人生模拟,文字游戏,随机人生,家庭关系",
+            "intro": "从全球地区库随机出生，AI 生成人生每一章及其后果，体验家庭、成长、工作与离别，存档保存在浏览器。",
+            "features": [
+                "旋转地球与出生欢迎页",
+                "国家经济、环境与旅行概览",
+                "完整人生与持续关系",
+                "财富账本与本地存档"
+            ],
+            "faq": [
+                [
+                    "这是真实人口和财富模拟吗？",
+                    "这是 AI 创作的虚构人生游戏。国家等概率抽取，人物、财富及事件由 AI 生成，不代表真实人口、经济或医疗统计。"
+                ],
+                [
+                    "存档会上传吗？",
+                    "存档保存在当前浏览器。生成章节时会发送虚构角色的姓名、年龄、健康、财富、人际关系和最近三章摘要，不发送完整存档。页面不加载分析或会话录屏。"
+                ]
+            ]
+        },
+        "en": {
+            "name": "Between Lives",
+            "title": "Between Lives - A Text Life Simulation | Tools24",
+            "description": "Begin in a random global region. AI generates each chapter and its consequences: family, growth, work and farewells. Saves stay in your browser.",
+            "keywords": "life simulation,text game,random life,family relationships",
+            "intro": "Begin in a random global region. AI generates each chapter and its consequences: family, growth, work and farewells. Saves stay in your browser.",
+            "features": [
+                "Rotating globe and birthplace welcome",
+                "Country economy, nature and cultural context",
+                "A full lifetime and ongoing relationships",
+                "Financial ledger and local saves"
+            ],
+            "faq": [
+                [
+                    "Is this a statistical population simulation?",
+                    "This is AI-authored fiction. Countries are sampled equally; characters, finances and events are not population, economic or medical statistics."
+                ],
+                [
+                    "Are saves uploaded?",
+                    "Saves stay in this browser. Chapter generation sends fictional names, age, health, finances, relationships and the last three chapter summaries, never a full save. No analytics or session replay is loaded."
+                ]
+            ]
+        }
+    },
     "fish-game": {
         "zh": {
             "name": "大鱼吃小鱼",
@@ -1474,6 +1522,7 @@ TOOL_REGISTRY = {
     "predator-game": {"order": 237, "icon": "balls", "script": "/js/predator-game-tool.js", "global": "PredatorGameTool", "processing": "local", "indexable": True},
     "cycle-game": {"order": 238, "icon": "balls", "script": "/js/cycle-game-tool.js", "global": "CycleGameTool", "processing": "local", "indexable": True},
     "war-game": {"order": 238.5, "icon": "balls", "script": "/js/war-game-tool.js", "global": "WarGameTool", "processing": "local", "indexable": True},
+    "life-sim": {"order": 238.8, "icon": "balls", "script": "/js/life-sim-tool.js", "global": "LifeSimTool", "processing": "hybrid", "indexable": True},
     "fish-game": {"order": 238.75, "icon": "balls", "script": "/js/fish-game-tool.js", "global": "FishGameTool", "processing": "local", "indexable": True},
     "pelican-bike": {"order": 238.8, "icon": "bike", "script": "/js/pelican-bike-tool.js", "global": "PelicanBikeTool", "processing": "local", "indexable": True},
     "super-mario": {"order": 238.85, "icon": "star", "script": "/js/super-mario-tool.js", "global": "SuperMarioTool", "processing": "local", "indexable": True},
