@@ -17,7 +17,8 @@ A build-free AI-authored life reader. The shared Area Search catalog supplies ca
 The injected service interface is:
 
 ```
-birth(seed) -> Promise<world>
+locations(country?,signal) -> Promise<countries | places>
+birth(seed,{country?,place?}?) -> Promise<world>
 chapter({kind,lang,seed,places,context?,memories?},signal) -> Promise<chapter>
 ai({kind:'intro',lang,location},signal) -> Promise<{title,body,country:{economy,ranking,environment,tourism}}>
 ```
@@ -55,3 +56,11 @@ The pytest/start gate runs legacy engine/map checks, global catalog checks, mock
 The reader keeps the same connected dialog and navigation nodes across section switches, map actions and AI callbacks. `showModal()` runs only on a real opening; changing a section updates its content without replaying the modal entrance. Closing/reopening still plays the entrance normally. The persistent import input is cleared after reading a file, allowing the same save to be selected again.
 
 With `./start.sh` running and an existing Playwright Core installation, run the focused browser regression with `PLAYWRIGHT_CORE_PATH=/path/to/playwright-core node frontend/js/life-sim/view.browser.test.cjs`. It mocks AI/statistics and checks dialog identity, animation counts, keyboard focus, scrolling and repeated imports across desktop/mobile, languages and themes. `LIFE_SIM_TEST_URL` overrides the default localhost origin.
+
+## Optional birthplace selection
+
+The opening screen and New life confirmation offer optional native country and city/region selectors. Both blank preserves global random sampling. Country only samples within that country; country plus a canonical place ID pins the first location and origin exactly. Country changes immediately clear the old place; aborted/stale responses cannot populate another country's list. Read failures never block random birth, and retries retain the chosen country/place and seed.
+
+`GET /api/life-sim/locations` lists the existing usable shared countries; `?country=CHN` lists province/city pairs and other country codes list available child entries. Some overseas entries are states or provinces and some countries have none; the UI labels them city/region and explains the source gap. `GET /api/life-sim/birth?seed=...&country=...&place=...` validates the combination server-side, keeps the requested location first, and may include one other allowed location for later chapters. No arbitrary typed place names enter prompts. Both server and client require the initial AI chapter to use locationIndex 0, so it cannot override the requested birthplace. Later chapters may still move.
+
+The injected service adapter owns these APIs. The portable UI has no host URLs or credentials. The standalone entry supplies the same interface (asset version v9). Run `birth-picker.browser.test.cjs` with the same Playwright environment as the dialog tests to cover global random, country-only, exact place, failures, stale responses and source gaps. Its geography endpoints use the real local catalog; AI and telemetry are mocked.

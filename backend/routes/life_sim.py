@@ -15,7 +15,27 @@ def birth():
             raise ValueError
     except (ValueError, TypeError):
         return jsonify(ok=False,error='invalid_seed'),400
-    return jsonify(ok=True,data=life_catalog.birth(seed),countries=len(life_catalog.countries()))
+    country = request.args.get('country', '').strip().upper()
+    place = request.args.get('place', '').strip()
+    if len(country) > 3 or len(place) > 100:
+        return jsonify(ok=False,error='invalid_selection'),400
+    try:
+        world = life_catalog.birth(seed, country or None, place or None)
+    except ValueError as error:
+        return jsonify(ok=False,error=str(error)),400
+    return jsonify(ok=True,data=world,countries=len(life_catalog.countries()))
+
+
+@life_sim_bp.get('/locations')
+def locations():
+    code = request.args.get('country', '').strip().upper()
+    if not code:
+        return jsonify(ok=True,data=[{'code':c['code'],'name':c.get('name') or c.get('cname'),
+                                     'cname':c.get('cname') or c.get('name')}
+                                    for c in life_catalog.countries().values()])
+    if code not in life_catalog.countries():
+        return jsonify(ok=False,error='invalid_country'),400
+    return jsonify(ok=True,data=life_catalog.selectable_places(code))
 
 
 @life_sim_bp.post('/ai')

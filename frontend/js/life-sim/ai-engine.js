@@ -27,7 +27,7 @@
   const context=v=>Object.fromEntries(fields.map(k=>[k,clone(v[k])]));
   function transition(old,v,kind){
     if(!snapshot(v)||!prose(v)) return false;
-    if(kind==='start') return v.age===0 && v.alive;
+    if(kind==='start') return v.age===0 && v.alive && v.locationIndex===0;
     if(!old || v.name!==old.name) return false;
     if(kind==='resume') return JSON.stringify(context(old))===JSON.stringify(context(v));
     const delta=v.age-old.age;

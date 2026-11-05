@@ -8,7 +8,7 @@
     let details=null,confirmation=null,playing=false,timer=null,introBusy=false,introError=false,introController=null;
     let mapSelected=null,mapBox=null,drag=null,dragged=false,globe=null;
     const intros=new Map(),markup=new WeakMap();
-    let viewRoot=null;
+    let viewRoot=null,countryItems=[],placeItems=[],countryStatus='idle',placeStatus='idle',chosenCountry='',chosenPlace='',pickSerial=0,countryController=null,placeController=null;
     const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const button=(action,label,cls='',disabled=false)=>'<button type="button" data-life-action="'+esc(action)+'" class="'+cls+'"'+(disabled?' disabled':'')+'>'+esc(label)+'</button>';
     const icons={people:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',world:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M3 12h18M12 3a17 17 0 0 1 0 18 17 17 0 0 1 0-18',map:'m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6M9 3v15M15 6v15',wealth:'M3 5h16v4H3zM3 9v11h18V9H3m12 4h6v4h-6z',memories:'M12 8v4l3 2M3 12a9 9 0 1 0 3-6.7M3 3v6h6',settings:'M4 5h16M4 12h16M4 19h16M8 3v4M16 10v4M10 17v4',close:'m6 6 12 12M18 6 6 18'};
@@ -32,10 +32,40 @@
     function story(){
       if(busy&&operation?.kind==='start')return birthScene();
       if(error&&(!state||operation?.kind==='start'))return '<section class="life-reading life-failure" role="alert"><h2>'+esc(t.aiFailedTitle)+'</h2><p>'+esc(t.aiRequiredError)+'</p>'+button('retry',t.retry,'life-primary')+(state?button('return',t.aiReturn):'')+'</section>';
-      if(!state)return '<section class="life-reading life-welcome"><span class="life-kicker">'+esc(t.aiWelcomeKicker)+'</span><h1>'+esc(t.tagline)+'</h1><p>'+esc(t.aiWelcome)+'</p>'+button('begin',t.begin,'life-primary',!!raw)+'<small>'+esc(t.aiWelcomePrivacy)+'</small></section>';
+      if(!state)return '<section class="life-reading life-welcome"><span class="life-kicker">'+esc(t.aiWelcomeKicker)+'</span><h1>'+esc(t.tagline)+'</h1><p>'+esc(t.aiWelcome)+'</p>'+birthPicker('welcome')+button('begin',chosenCountry?t.welcomeEnter:t.begin,'life-primary',!!raw)+'<small>'+esc(t.aiWelcomePrivacy)+'</small></section>';
       if(!state.started)return welcome();
       const c=state.chapter;
       return '<main class="life-reading"><div class="life-identity"><span class="life-year">'+c.age+'<small>'+esc(t.age)+'</small></span><div><strong>'+esc(c.name)+'</strong><button type="button" class="life-location" data-life-action="details:map">'+esc(place(current()))+' ↗</button></div></div><span class="life-kicker">'+(2026+c.age)+' · '+esc(t.moods[c.mood])+'</span><h1 id="life-moment" tabindex="-1">'+esc(c.title)+'</h1><p class="life-story-text">'+esc(c.body)+'</p><div class="life-reading-actions">'+button(error?'retry':c.alive?'next':'memories',busy?t.timeLoading:error?t.retry:c.alive?t.continueLife:t.memories,'life-primary'+(busy?' is-loading':''),busy)+'</div>'+(error?'<p class="life-inline-error" role="alert">'+esc(t.aiRequiredError)+'</p>':'')+'<small class="life-reading-status" role="status">'+esc(busy?t.aiWaitingHint:playing?t.aiAutoHint:c.alive?t.aiChapterHint:t.endText)+'</small></main>';
+    }
+    function birthPicker(scope){
+      const p=t.birthPicker,selected=countryItems.find(c=>c.code===chosenCountry),label=c=>lang==='en'?c.name:c.cname;
+      const countries=countryItems.slice().sort((a,b)=>label(a).localeCompare(label(b),config.lang||'zh-CN'));
+      const places=placeItems.slice().sort((a,b)=>(lang==='en'?a.pathEn:a.path).localeCompare(lang==='en'?b.pathEn:b.path,config.lang||'zh-CN'));
+      const placeholder=!chosenCountry?p.chooseCountry:placeStatus==='loading'?p.loading:placeStatus==='ready'&&!places.length?p.noPlaces:p.randomPlace;
+      const status=countryStatus==='loading'?p.loading:countryStatus==='error'?p.error:placeStatus==='error'?p.error:selected&&placeStatus==='ready'&&!places.length?p.noPlaces:p.note;
+      return '<div class="life-birth-picker"><div class="life-picker-fields"><label for="life-country-'+scope+'"><span>'+esc(p.country)+'</span><select id="life-country-'+scope+'" data-life-picker="country"'+(countryStatus!=='ready'?' disabled':'')+'><option value="">'+esc(p.randomCountry)+'</option>'+countries.map(c=>'<option value="'+esc(c.code)+'"'+(c.code===chosenCountry?' selected':'')+'>'+esc(label(c))+'</option>').join('')+'</select></label><label for="life-place-'+scope+'"><span>'+esc(p.place)+'</span><select id="life-place-'+scope+'" data-life-picker="place"'+(!chosenCountry||placeStatus!=='ready'||!places.length?' disabled':'')+'><option value="">'+esc(placeholder)+'</option>'+places.map(v=>'<option value="'+esc(v.id)+'"'+(v.id===chosenPlace?' selected':'')+'>'+esc((lang==='en'?v.pathEn:v.path).split(' / ').slice(1).join(' / '))+'</option>').join('')+'</select></label></div><p class="life-picker-note" role="status">'+esc(status)+'</p>'+(countryStatus==='error'||placeStatus==='error'?button('picker-retry',t.retry,'life-picker-retry'):'')+'</div>';
+    }
+    async function loadCountries(){
+      if(destroyed||countryStatus==='loading'||countryStatus==='ready')return;
+      countryStatus='loading';countryController=new AbortController();const control=countryController,timeout=setTimeout(()=>control.abort(),12000);render();
+      try{
+        if(!config.services?.locations)throw new Error('unavailable');
+        const result=await config.services.locations('',control.signal);
+        if(!Array.isArray(result)||!result.length||result.length>300||new Set(result.map(c=>c?.code)).size!==result.length||!result.every(c=>c&&typeof c.code==='string'&&/^[A-Z]{3}$/.test(c.code)&&['name','cname'].every(k=>typeof c[k]==='string'&&c[k].trim()&&Array.from(c[k]).length<=150)))throw new Error('invalid_countries');
+        if(!destroyed){countryItems=result;countryStatus='ready';}
+      }catch(_){if(!destroyed)countryStatus='error';}
+      finally{clearTimeout(timeout);if(!destroyed)render();}
+    }
+    async function loadPlaces(){
+      placeController?.abort();const serial=++pickSerial,target=chosenCountry;
+      placeItems=[];chosenPlace='';placeStatus=target?'loading':'idle';render();if(!target)return;
+      const country=countryItems.find(c=>c.code===target),control=new AbortController();placeController=control;const timeout=setTimeout(()=>control.abort(),12000);
+      try{
+        const result=await config.services.locations(target,control.signal);
+        if(!Array.isArray(result)||result.length>2000||new Set(result.map(p=>p?.id)).size!==result.length||!result.every(p=>A.validWorld({country,places:[p],origin:p?.id})))throw new Error('invalid_places');
+        if(!destroyed&&serial===pickSerial){placeItems=result;placeStatus='ready';}
+      }catch(_){if(!destroyed&&serial===pickSerial)placeStatus='error';}
+      finally{clearTimeout(timeout);if(!destroyed&&serial===pickSerial)render();}
     }
     function welcome(){
       const c=state.chapter,value=intros.get(current())||(state.introduction?.regionId===current()?state.introduction:null);
@@ -82,7 +112,7 @@
       const tabs=state?['people','world','map','wealth','memories','settings']:['settings'],c=state?.chapter;
       const profile=c?'<span class="life-dossier-avatar" aria-hidden="true">'+esc(Array.from(c.name)[0])+'</span><div class="life-dossier-identity"><span class="life-kicker">'+esc(t.aiDossier)+'</span><h2 id="life-sheet-title">'+esc(c.name)+'<small>'+c.age+' '+esc(t.age)+'</small></h2><p>'+esc(place(current()))+'</p></div>':'<div class="life-dossier-identity"><h2 id="life-sheet-title">'+esc(t.aiDetails)+'</h2></div>';
       const subtitle=details==='world'||details==='map'?state&&place(current()):(t.detailDescriptions||{})[details]||'';
-      return {header:profile+'<button type="button" class="life-sheet-close" data-life-action="close" aria-label="'+esc(t.aiClose)+'">'+icon('close')+'</button>',nav:tabs.map(k=>'<button type="button" data-life-action="details:'+k+'">'+icon(k)+'<span>'+esc(t[k]||t.aiSettings)+'</span></button>').join(''),content:'<div class="life-section-heading"><h3>'+esc(t[details]||t.aiSettings)+'</h3><p>'+esc(subtitle)+'</p></div>'+(confirmation?'<section class="life-sheet-confirm" role="alert"><p>'+esc(confirmation==='new'?t.confirm:t.replace)+'</p>'+button('confirm',t.yes,'life-primary')+button('cancel',t.cancel)+'</section>':({people,world,map,wealth,memories,settings}[details])())};
+      return {header:profile+'<button type="button" class="life-sheet-close" data-life-action="close" aria-label="'+esc(t.aiClose)+'">'+icon('close')+'</button>',nav:tabs.map(k=>'<button type="button" data-life-action="details:'+k+'">'+icon(k)+'<span>'+esc(t[k]||t.aiSettings)+'</span></button>').join(''),content:'<div class="life-section-heading"><h3>'+esc(t[details]||t.aiSettings)+'</h3><p>'+esc(subtitle)+'</p></div>'+(confirmation?'<section class="life-sheet-confirm" role="alert"><p>'+esc(confirmation==='new'?t.confirm:t.replace)+'</p>'+(confirmation==='new'?birthPicker('sheet'):'')+button('confirm',t.yes,'life-primary')+button('cancel',t.cancel)+'</section>':({people,world,map,wealth,memories,settings}[details])())};
     }
     function replaceHTML(node,value){
       if(markup.get(node)===value)return false;
@@ -90,7 +120,7 @@
     }
     function render(){
       if(destroyed)return;
-      const active=container.querySelector(':focus'),focused=active?.getAttribute('data-life-action');
+      const active=container.querySelector(':focus'),focused=active?.getAttribute('data-life-action'),pickerFocus=active?.getAttribute('data-life-picker');
       if(!viewRoot){
         container.innerHTML='<div class="life-sim life-reader"><header class="life-toolbar"></header><div class="life-notices"></div><div class="life-main"></div><input id="life-import" type="file" accept="application/json,.json" hidden aria-label="'+esc(t.import)+'"></div>';
         viewRoot=container.firstElementChild;
@@ -121,6 +151,7 @@
         const scope=dialog?.open?dialog:viewRoot,target=Array.from(scope.querySelectorAll('[data-life-action]')).find(el=>el.dataset.lifeAction===focused);
         (target||dialog?.querySelector('nav [aria-current]'))?.focus({preventScroll:true});
       }
+      if(pickerFocus&&!active.isConnected){const scope=dialog?.open?dialog:viewRoot;scope.querySelector('[data-life-picker="'+pickerFocus+'"]')?.focus({preventScroll:true});}
       schedule();
     }
     function close(){details=null;confirmation=null;render();container.querySelector('.life-toolbar button')?.focus({preventScroll:true});}
@@ -130,7 +161,7 @@
       const timeout=setTimeout(()=>control.abort(),40000);
       try{
         if(!config.services?.chapter)throw new Error('unavailable');
-        if(!task.world){task.world=await config.services.birth(task.seed);if(!A.validWorld(task.world))throw new Error('birth');}
+        if(!task.world){task.world=await config.services.birth(task.seed,task.selection);if(!A.validWorld(task.world))throw new Error('birth');}
         if(control.signal.aborted)throw new Error('aborted');
         task.payload=task.payload||A.request(task.previous,task.kind,task.world,task.seed,lang);
         const value=await config.services.chapter(task.payload,control.signal);
@@ -153,7 +184,7 @@
       }catch(_){if(!destroyed){error='failed';pause();}}
       finally{clearTimeout(timeout);if(!destroyed){busy=false;controller=null;render();if(!error)container.querySelector('#life-moment')?.focus({preventScroll:true});}}
     }
-    function begin(){pause();details=null;confirmation=null;const seed=new Uint32Array(1);crypto.getRandomValues(seed);operation={kind:'start',seed:seed[0],world:null,previous:null};run();container.scrollIntoView({block:'start',behavior:'instant'});}
+    function begin(){pause();placeController?.abort();pickSerial++;if(placeStatus==='loading')placeStatus='idle';details=null;confirmation=null;const seed=new Uint32Array(1);crypto.getRandomValues(seed);operation={kind:'start',seed:seed[0],world:null,previous:null,selection:{country:chosenCountry,place:chosenPlace}};run();container.scrollIntoView({block:'start',behavior:'instant'});}
     function nextChapter(){if(!state?.started||!state.chapter.alive||busy||error)return;operation={kind:'next',seed:state.seed,world:state.world,previous:state};run();}
     function exportSave(){
       const blob=new Blob([state?JSON.stringify(state):raw],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='between-lives-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -168,6 +199,7 @@
       else if(a==='memories'){details='memories';}
       else if(a==='close'){close();return;}
       else if(a==='intro-retry'){requestIntro();}
+      else if(a==='picker-retry'){if(countryStatus==='error')loadCountries();else loadPlaces();}
       else if(a==='map'){
         if(dragged&&el.classList.contains('life-map-pin')){dragged=false;return;}
         if(!M.allLocations(shell())[id])return;mapSelected=id;mapBox=M.locate(id,shell());if(!details)details='map';
@@ -176,7 +208,7 @@
       else if(a==='play'){playing=!playing;close();return;}
       else if(a==='export'){exportSave();return;}
       else if(a==='import'){pause();container.querySelector('#life-import').click();return;}
-      else if(a==='new'){pause();confirmation='new';}
+      else if(a==='new'){pause();confirmation='new';loadCountries();if(chosenCountry&&placeStatus!=='ready')loadPlaces();}
       else if(a==='cancel')confirmation=null;
       else if(a==='confirm'){
         if(confirmation==='new'){begin();return;}
@@ -185,6 +217,8 @@
       render();
     }
     async function change(event){
+      if(event.target.dataset.lifePicker==='country'){chosenCountry=event.target.value;loadPlaces();return;}
+      if(event.target.dataset.lifePicker==='place'){chosenPlace=event.target.value;return;}
       if(event.target.id!=='life-import')return;const file=event.target.files[0];event.target.value='';if(!file)return;
       try{if(file.size>2000000)throw new Error('size');const value=JSON.parse(await file.text());if(destroyed)return;if(!A.valid(value))throw new Error('format');if(state||raw){confirmation=value;details='settings';}else save(value);}
       catch(_){notice=t.importError;}render();if(state&&!state.started&&!state.introduction)requestIntro();
@@ -201,8 +235,8 @@
     }
     function visibility(){if(document.hidden){pause();}else schedule();}
     const listeners={click,change,pointerdown:pointerDown,pointermove:pointerMove,pointerup:pointerUp,pointercancel:pointerUp,keydown:keyDown};
-    Object.entries(listeners).forEach(([name,fn])=>container.addEventListener(name,fn));document.addEventListener('visibilitychange',visibility);render();if(state&&!state.started&&!state.introduction)requestIntro();
-    return {destroy(){destroyed=true;pause();globe?.destroy();controller?.abort();introController?.abort();container.querySelector('dialog')?.close();Object.entries(listeners).forEach(([name,fn])=>container.removeEventListener(name,fn));document.removeEventListener('visibilitychange',visibility);}};
+    Object.entries(listeners).forEach(([name,fn])=>container.addEventListener(name,fn));document.addEventListener('visibilitychange',visibility);render();if(state&&!state.started&&!state.introduction)requestIntro();if(!state)loadCountries();
+    return {destroy(){destroyed=true;pause();countryController?.abort();placeController?.abort();globe?.destroy();controller?.abort();introController?.abort();container.querySelector('dialog')?.close();Object.entries(listeners).forEach(([name,fn])=>container.removeEventListener(name,fn));document.removeEventListener('visibilitychange',visibility);}};
   }
   root.LifeSimView={mount};
 })(typeof globalThis!=='undefined'?globalThis:this);

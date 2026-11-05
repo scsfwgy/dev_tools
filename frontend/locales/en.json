@@ -3318,7 +3318,7 @@
     "settings": "More",
     "aiClose": "Close",
     "aiWelcomeKicker": "A random beginning. A life you have never lived.",
-    "aiWelcome": "Where you are born, who you meet, what happens next—let time decide. All you need to do is read on.",
+    "aiWelcome": "Choose a birthplace, or let time decide. Then read on and discover a life you have never lived.",
     "aiWelcomePrivacy": "AI-generated lives require a connection. Fictional character details are sent to AI; saves stay in this browser.",
     "aiFailedTitle": "Time has paused",
     "aiRequiredError": "AI could not produce a valid chapter. Your progress has not changed. Retry, or check the service configuration if the problem continues.",
@@ -3362,6 +3362,17 @@
       "ranking": "Global position & rankings",
       "environment": "Nature & environment",
       "tourism": "Travel & culture"
+    },
+    "birthPicker": {
+      "country": "Country (optional)",
+      "place": "City / region (optional)",
+      "randomCountry": "Anywhere in the world",
+      "randomPlace": "Random within this country",
+      "chooseCountry": "Choose a country, or leave random",
+      "loading": "Loading locations...",
+      "noPlaces": "No local entries; birth will be in this country",
+      "note": "Leave both blank for a random global birthplace. Choose only a country to stay within it. Some local entries are states or provinces.",
+      "error": "Locations could not load. Retry, or keep your current selection and start randomly."
     }
   }
 }

@@ -247,3 +247,14 @@
  .life-arrival-start button { width:100%; }
  .life-arrival>section { margin-bottom:32px; }
 }
+.life-birth-picker { width:100%; max-width:600px; margin:0 0 24px; text-align:left; }
+.life-picker-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.life-picker-fields label { min-width:0; display:block; }
+.life-picker-fields label>span { display:block; color:var(--life-muted); font-size:12px; margin-bottom:7px; }
+.life-picker-fields select { display:block; width:100%; min-width:0; min-height:46px; border:1px solid var(--life-line); border-radius:10px; padding:10px 30px 10px 12px; font:inherit; font-size:14px; background:var(--life-paper); color:var(--life-ink); text-overflow:ellipsis; }
+.life-picker-fields select:disabled { color:var(--life-muted); background:var(--life-wash); opacity:.75; }
+.life-picker-fields select:focus-visible { outline:3px solid var(--life-accent); outline-offset:2px; }
+.life-picker-note { color:var(--life-muted); font-size:11px; line-height:1.8; margin:10px 0 0; }
+.life-picker-retry { margin-top:10px; }
+.life-sheet-confirm .life-birth-picker { margin-top:20px; }
+@media(max-width:760px) { .life-picker-fields { grid-template-columns:1fr; gap:12px; } .life-picker-fields select { font-size:16px; } }

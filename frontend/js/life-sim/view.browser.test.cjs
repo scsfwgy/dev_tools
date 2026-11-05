@@ -5,15 +5,15 @@ const assert=require('node:assert/strict');
 const A=require('./ai-engine.js');
 const origin=process.env.LIFE_SIM_TEST_URL||'http://127.0.0.1:8731';
 const world={country:{code:'CHN',name:'China',cname:'中国'},origin:'china:43:4301',places:[
- {id:'china:43:4305',mode:'china',codes:['43','4305'],country:'CHN',path:'中国 / 湖南 / 邵阳',pathEn:'China / Hunan / Shaoyang',level:'locality',precision:'country',lat:35,lon:104},
- {id:'china:43:4301',mode:'china',codes:['43','4301'],country:'CHN',path:'中国 / 湖南 / 长沙',pathEn:'China / Hunan / Changsha',level:'locality',precision:'country',lat:35,lon:104}
+ {id:'china:43:4301',mode:'china',codes:['43','4301'],country:'CHN',path:'中国 / 湖南 / 长沙',pathEn:'China / Hunan / Changsha',level:'locality',precision:'country',lat:35,lon:104},
+ {id:'china:43:4305',mode:'china',codes:['43','4305'],country:'CHN',path:'中国 / 湖南 / 邵阳',pathEn:'China / Hunan / Shaoyang',level:'locality',precision:'country',lat:35,lon:104}
 ]};
 const guide={title:'Local life',body:'A fictional test guide.\n\n'.repeat(60),country:{economy:'Test context.',ranking:'No ranking in this test fixture.',environment:'Test context.',tourism:'Test context.'}};
-const chapter={name:'Ari',age:0,alive:true,mood:'positive',health:80,happiness:70,occupation:'Child',education:'Not yet at school',locationIndex:1,
+const chapter={name:'Ari',age:0,alive:true,mood:'positive',health:80,happiness:70,occupation:'Child',education:'Not yet at school',locationIndex:0,
  finances:{owner:'household',cash:1000,debt:0,property:0,income:2000,expenses:1800},
  people:Array.from({length:4},(_,i)=>({id:'family_'+i,name:'Relative '+i,relation:'Family',age:25+i,alive:true,closeness:80,note:'A shared memory.'})),title:'A beginning',body:'A fictional chapter.',summary:'Living with family.'};
 let initial=A.commit(null,chapter,'start',world,7,'en');initial.introduction={...guide,regionId:world.origin};initial=A.enter(initial);
-const moved=structuredClone(chapter);moved.age=3;moved.locationIndex=0;moved.people.forEach(p=>p.age+=3);initial=A.commit(initial,moved,'next');
+const moved=structuredClone(chapter);moved.age=3;moved.locationIndex=1;moved.people.forEach(p=>p.age+=3);initial=A.commit(initial,moved,'next');
 (async()=>{
  const browser=await chromium.launch({headless:true}),results=[];
  try{

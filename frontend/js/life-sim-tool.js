@@ -24,11 +24,12 @@ var LifeSimTool = (function () {
     return payload.data;
   }
   var services = {
-    birth: async function(seed) {
+    birth: async function(seed,selection) {
       var controller = new AbortController(); var timeout = setTimeout(function(){controller.abort();},12000);
-      try { return await json('/api/life-sim/birth?seed=' + seed,{signal:controller.signal}); }
+      try { var params = new URLSearchParams({seed:seed}); if(selection && selection.country) params.set('country',selection.country); if(selection && selection.place) params.set('place',selection.place); return await json('/api/life-sim/birth?' + params.toString(),{signal:controller.signal}); }
       finally { clearTimeout(timeout); }
     },
+    locations: function(country,signal) { return json('/api/life-sim/locations' + (country ? '?country=' + encodeURIComponent(country) : ''),{signal:signal}); },
     chapter: function(payload,signal) { return json('/api/life-sim/chapter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:signal}); },
     ai: function(payload,signal) { return json('/api/life-sim/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:signal}); }
   };

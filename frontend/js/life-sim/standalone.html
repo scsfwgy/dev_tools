@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-CN" data-theme="light">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Between Lives · 人生之间</title><link rel="stylesheet" href="./style.css?v=8"></head>
-<body style="margin:0;padding:16px;background:var(--life-wash)"><div id="game"></div><script src="./ai-engine.js?v=8"></script><script src="./geography.js?v=8"></script><script src="./map.js?v=8"></script><script src="./globe.js?v=8"></script><script src="./view.js?v=8"></script><script>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Between Lives · 人生之间</title><link rel="stylesheet" href="./style.css?v=9"></head>
+<body style="margin:0;padding:16px;background:var(--life-wash)"><div id="game"></div><script src="./ai-engine.js?v=9"></script><script src="./geography.js?v=9"></script><script src="./map.js?v=9"></script><script src="./globe.js?v=9"></script><script src="./view.js?v=9"></script><script>
 (async function () {
   var lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh-CN';
   document.documentElement.lang = lang;
-  var response = await fetch('../../locales/' + lang + '.json?v=8');
+  var response = await fetch('../../locales/' + lang + '.json?v=9');
   if (!response.ok) throw new Error('locale');
   var text = (await response.json()).lifeSim;
   async function json(url,payload,signal) {
@@ -17,7 +17,8 @@
   var storage;
   try { storage = localStorage; } catch (_) { storage = { getItem: function () { return null; }, setItem: function () { throw new Error('storage'); } }; }
   LifeSimView.mount(document.getElementById('game'), {text: text, lang: lang, storage: storage, services: {
-    birth: seed => json('/api/life-sim/birth?seed='+seed),
+    birth: (seed,selection) => json('/api/life-sim/birth?'+new URLSearchParams({seed,...(selection||{})})),
+    locations: (country,signal) => json('/api/life-sim/locations'+(country?'?country='+encodeURIComponent(country):''),null,signal),
     chapter: (payload,signal) => json('/api/life-sim/chapter',payload,signal),
     ai: (payload,signal) => json('/api/life-sim/ai',payload,signal)
   }});

@@ -59,7 +59,7 @@ def clean_snapshot(value):
 
 def validate_transition(previous, current, kind):
     if kind=='start':
-        return current['age']==0 and current['alive']
+        return current['age']==0 and current['alive'] and current['locationIndex']==0
     if not previous or current['name']!=previous['name']:
         return False
     delta=current['age']-previous['age']
@@ -143,7 +143,7 @@ def generate(value, location, alternatives, ip):
            'Make consequences match the story; the complete financial snapshot is in life points. '
            'Write 180-350 Chinese characters or 120-200 English words for body. Avoid saying a choice awaits the reader. ')
     if data['kind']=='start':
-        rules+='Create a living newborn at age 0 with a plausible local fictional name, varied family finances and 4-8 close relatives. Generate all initial traits and relationships yourself.'
+        rules+='The birthplace is already selected: locationIndex MUST be 0. Do not relocate at birth. Create a living newborn at age 0 with a plausible local fictional name, varied family finances and 4-8 close relatives. Generate all initial traits and relationships yourself.'
     elif data['kind']=='next':
         rules+='Advance age by 1-5 years, never past 110. YOU choose the next experiences: growth, ordinary days, friendship, romance, work, unemployment, sickness, accidents, death or other plausible events. Do not force marriage, education or success at fixed ages. Return the complete updated snapshot and the scene describing what actually happened.'
     else:

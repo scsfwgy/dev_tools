@@ -264,3 +264,56 @@ def test_country_welcome_guide_canonical_ranking_context_and_validation(client,m
     monkeypatch.setattr(life_ai,'_CACHE',OrderedDict())
     result['country'].pop('ranking')
     assert client.post('/api/life-sim/ai',json=payload).status_code==502
+
+
+def test_optional_birthplace_selection_and_catalog(client):
+    from service import life_catalog
+    countries=client.get('/api/life-sim/locations')
+    assert countries.status_code==200
+    assert len(countries.json['data'])==len(life_catalog.countries())
+    assert len({c['code'] for c in countries.json['data']})==len(countries.json['data'])
+    china=client.get('/api/life-sim/locations?country=CHN').json['data']
+    changsha=next(p for p in china if p['codes']==['43','4301'])
+    assert changsha['id']=='china:43:4301' and '长沙' in changsha['path']
+    usa=client.get('/api/life-sim/locations?country=USA').json['data']
+    assert usa and all(p['country']=='USA' and p['codes'][-1]!='STP' for p in usa)
+    for seed in (0,3,12345):
+        assert client.get('/api/life-sim/birth',query_string={'seed':seed}).json['data']==life_catalog.birth(seed)
+        for code,place in [('CHN',changsha),('USA',usa[0])]:
+            country_only=client.get('/api/life-sim/birth',query_string={'seed':seed,'country':code})
+            assert country_only.status_code==200 and country_only.json['data']['country']['code']==code
+            fixed=client.get('/api/life-sim/birth',query_string={'seed':seed,'country':code,'place':place['id']})
+            assert fixed.status_code==200
+            data=fixed.json['data'];assert data['origin']==place['id']==data['places'][0]['id']
+            assert all(p['country']==code for p in data['places']) and len({p['id'] for p in data['places']})==len(data['places'])
+            assert client.get('/api/life-sim/birth',query_string={'seed':seed,'country':code,'place':place['id']}).json['data']==data
+    empty_code=next(code for code in life_catalog.countries() if not life_catalog.selectable_places(code))
+    assert client.get('/api/life-sim/locations',query_string={'country':empty_code}).json['data']==[]
+    data=client.get('/api/life-sim/birth',query_string={'seed':1,'country':empty_code}).json['data']
+    assert data['country']['code']==empty_code and data['places'][0]['level']=='country'
+    for params in ({'country':'ZZZ'},{'place':changsha['id']},{'country':'USA','place':changsha['id']},{'country':'CHN','place':'china:99:9999'},{'country':'CHN','place':'x'*101}):
+        assert client.get('/api/life-sim/birth',query_string={'seed':1,**params}).status_code==400
+    assert client.get('/api/life-sim/locations?country=ZZZ').status_code==400
+
+
+def test_birth_chapter_cannot_override_selected_location(client,monkeypatch):
+    from collections import OrderedDict
+    import json
+    import app_settings
+    from service import life_chapters,life_ai
+    monkeypatch.setattr(app_settings,'_DEEPSEEK_KEY','test-key')
+    monkeypatch.setattr(life_chapters,'_CACHE',OrderedDict());monkeypatch.setattr(life_ai,'_RATES',OrderedDict())
+    output=_chapter();output['locationIndex']=1
+    class Response:
+        def raise_for_status(self):pass
+        def json(self):return {'choices':[{'finish_reason':'stop','message':{'content':json.dumps(output)}}]}
+    monkeypatch.setattr(life_chapters.requests,'post',lambda *a,**k:Response())
+    payload={'kind':'start','lang':'zh','seed':1,'places':[{'mode':'china','codes':['43','4301']},{'mode':'china','codes':['43','4305']}]}
+    assert client.post('/api/life-sim/chapter',json=payload).status_code==502
+    output['locationIndex']=0
+    assert client.post('/api/life-sim/chapter',json=payload).status_code==200
+    script=r'''
+const assert=require('node:assert/strict'),A=require('./frontend/js/life-sim/ai-engine.js');
+const chapter=JSON.parse(process.argv[1]);assert(A.transition(null,chapter,'start'));assert(!A.transition(null,{...chapter,locationIndex:1},'start'));
+'''
+    subprocess.run(['node','-e',script,json.dumps(output)],cwd=ROOT,check=True,capture_output=True,text=True)

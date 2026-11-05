@@ -96,13 +96,42 @@ def resolve(spec):
             'precision': 'country'}
 
 
-def birth(seed):
+@lru_cache(maxsize=175)
+def selectable_places(country_code):
+    country = countries().get(country_code)
+    if not country:
+        raise ValueError('invalid_country')
+    if country_code == 'CHN':
+        specs = [('china', [pc, cc]) for pc, province in _load_china_tree().items()
+                 for cc in (province.get('c') or {})]
+    else:
+        specs = [('world', codes) for codes in _world_places(country) if len(codes) == 2]
+    return [place for mode, codes in specs if (place := resolve({'mode': mode, 'codes': codes}))]
+
+
+def birth(seed, country_code=None, place_id=None):
     rng = random.Random(seed)
-    country = rng.choice(list(countries().values()))
+    if country_code:
+        country = countries().get(country_code)
+        if not country:
+            raise ValueError('invalid_country')
+    else:
+        if place_id:
+            raise ValueError('country_required')
+        country = rng.choice(list(countries().values()))
+    chosen = None
+    if place_id:
+        chosen = next((p for p in selectable_places(country['code']) if p['id'] == place_id), None)
+        if not chosen:
+            raise ValueError('invalid_place')
     options = _china_places() if country['code'] == 'CHN' else _world_places(country)
     mode = 'china' if country['code'] == 'CHN' else 'world'
-    selected = rng.sample(options, min(2, len(options)))
-    places = [resolve({'mode': mode, 'codes': codes}) for codes in selected]
+    if chosen:
+        alternatives = [codes for codes in options if codes[:len(chosen['codes'])] != chosen['codes']]
+        places = [dict(chosen)] + [resolve({'mode': mode, 'codes': codes}) for codes in rng.sample(alternatives, min(1, len(alternatives)))]
+    else:
+        selected = rng.sample(options, min(2, len(options)))
+        places = [resolve({'mode': mode, 'codes': codes}) for codes in selected]
     places = [p for p in places if p]
     if not places:
         places = [resolve({'mode': 'world', 'codes': [country['code']]})]
