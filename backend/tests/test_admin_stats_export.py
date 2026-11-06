@@ -33,6 +33,19 @@ def test_admin_stats_exports_aggregates_and_records_without_ip(client, monkeypat
     assert 'stats-reader' not in response.text
 
 
+def test_admin_stats_counts_a_new_daily_visitor_by_country_once(client, monkeypatch):
+    monkeypatch.setenv('STATS_READ_TOKEN', 'stats-reader')
+    uid = '11111111-1111-4111-8111-111111111111'
+    assert client.post('/api/visits/increment', json={'anonymous_id': uid},
+                       headers={'X-Vercel-IP-Country': 'sg'}).status_code == 200
+    assert client.post('/api/visits/increment', json={'anonymous_id': uid},
+                       headers={'X-Vercel-IP-Country': 'US'}).status_code == 200
+    data = client.get('/api/admin/stats', headers={'Authorization': 'Bearer stats-reader'}).json['data']
+    assert data['geo']['day'] == [{'code': 'SG', 'value': 1}]
+    assert data['geo']['labels']['week'] == '近 7 日用户天次'
+    assert uid not in client.get('/api/admin/stats', headers={'Authorization': 'Bearer stats-reader'}).text
+
+
 def test_unconfigured_export_is_closed(client, monkeypatch):
     monkeypatch.delenv('STATS_READ_TOKEN', raising=False)
     assert client.get('/api/admin/stats', headers={'Authorization': 'Bearer '}).status_code == 401

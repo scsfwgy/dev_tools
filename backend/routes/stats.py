@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from flask import Blueprint, jsonify, redirect, request
 
 import app_settings
-from service import cache_store
+from service import cache_store, visitor_geo
 from tool_data import TOOLS
 from routes.content import _list_contents, _load_content
 
@@ -119,6 +119,11 @@ def _unique_visit_series():
     return [{"date": day, "users": len(data.get(day, []))} for day in days]
 
 
+def _record_geo_if_new(unique_visit):
+    if unique_visit and unique_visit.get("new"):
+        visitor_geo.record(unique_visit["day"], visitor_geo.country_from_headers(request.headers))
+
+
 @stats_bp.route("/visits")
 def visits():
     return jsonify({"count": _current_visit_count()})
@@ -145,6 +150,7 @@ def visits_increment():
         if count is not None:
             payload = {"count": count}
             unique_visit = _record_unique_visit((request.get_json(silent=True) or {}).get("anonymous_id"))
+            _record_geo_if_new(unique_visit)
             if unique_visit:
                 payload["unique_users_today"] = unique_visit["count"]
                 payload["is_new_daily_user"] = unique_visit["new"]
@@ -154,6 +160,7 @@ def visits_increment():
         _write_counter(count)
     payload = {"count": count}
     unique_visit = _record_unique_visit((request.get_json(silent=True) or {}).get("anonymous_id"))
+    _record_geo_if_new(unique_visit)
     if unique_visit:
         payload["unique_users_today"] = unique_visit["count"]
         payload["is_new_daily_user"] = unique_visit["new"]
@@ -231,6 +238,7 @@ def tool_stats(for_admin_api=False):
                 {"label": "现存分享内容", "value": len(content_ids)},
             ],
             "dailyUsers": user_series,
+            "geo": visitor_geo.periods(),
             "breakdowns": [{"label": "工具点击排行 · 累计", "rows": [
                 {"name": TOOLS.get(tid, {}).get("zh", {}).get("name", tid), "value": int(count)}
                 for tid, count in sorted_stats]}],
@@ -240,6 +248,7 @@ def tool_stats(for_admin_api=False):
                 {"label": "分享内容记录", "columns": ["ID", "内容预览", "创建时间（Unix 秒）", "字符数"], "rows": contents}
             ],
             "notes": ["访客按匿名 UUID 每日去重；用户天次为每日访客之和，不是月活。",
+                      "地区分布只计入带网络国家码的新日访客。日是今天；周、月是近 7、30 个自然日的用户天次之和，不是周活或月活。",
                       "本地降级数据不代表跨实例完整统计；明细最多显示最近 50 条，每格文本最多 2000 字，不包含 IP。"],
         }}), 200, {"Cache-Control": "no-store"}
     return jsonify(dict(sorted_stats))
