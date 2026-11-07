@@ -34,6 +34,7 @@ def test_admin_stats_exports_aggregates_and_records_without_ip(client, monkeypat
 
 
 def test_admin_stats_counts_a_new_daily_visitor_by_country_once(client, monkeypatch):
+    monkeypatch.setenv("VERCEL", "1")
     monkeypatch.setenv('STATS_READ_TOKEN', 'stats-reader')
     uid = '11111111-1111-4111-8111-111111111111'
     assert client.post('/api/visits/increment', json={'anonymous_id': uid},
@@ -67,3 +68,30 @@ def test_content_export_batches_reads_and_reports_unavailable(client, monkeypatc
         assert 'private' not in response.text
         batch.return_value = None
         assert client.get('/api/admin/stats', headers={'Authorization': 'Bearer stats-reader'}).status_code == 503
+
+
+def test_self_hosted_visit_gets_country_without_vercel_header(client, monkeypatch):
+    monkeypatch.delenv("VERCEL", raising=False)
+    monkeypatch.delenv("GEOIP_DATABASE", raising=False)
+    monkeypatch.setenv("GEOIP_TRUSTED_PROXIES", "127.0.0.0/8")
+    monkeypatch.setenv("STATS_READ_TOKEN", "stats-reader")
+    uid = "33333333-3333-4333-8333-333333333333"
+    for _ in range(2):
+        response = client.post("/api/visits/increment", json={"anonymous_id": uid},
+                               headers={"X-Forwarded-For": "8.8.8.8"})
+        assert response.status_code == 200
+    data = client.get("/api/admin/stats", headers={"Authorization": "Bearer stats-reader"}).json["data"]
+    assert data["geo"]["day"] == [{"code": "US", "value": 1}]
+    assert data["geo"]["lookupStatus"] == "ok"
+    assert "8.8.8.8" not in str(data["geo"])
+
+
+def test_geo_storage_failure_is_not_an_empty_period(monkeypatch):
+    from service import visitor_geo
+    monkeypatch.setattr(visitor_geo.cache_store, "is_enabled", lambda: True)
+    monkeypatch.setattr(visitor_geo.cache_store, "_command", lambda args: None)
+    report = visitor_geo.periods()
+    assert report["status"] == "unavailable"
+    assert report["day"] == []
+    monkeypatch.setattr(visitor_geo.cache_store, "_command", lambda args: [])
+    assert visitor_geo.periods()["status"] == "ok"

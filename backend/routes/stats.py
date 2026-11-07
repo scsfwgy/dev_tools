@@ -121,7 +121,7 @@ def _unique_visit_series():
 
 def _record_geo_if_new(unique_visit):
     if unique_visit and unique_visit.get("new"):
-        visitor_geo.record(unique_visit["day"], visitor_geo.country_from_headers(request.headers))
+        visitor_geo.record(unique_visit["day"], visitor_geo.country_from_headers(request.headers, request.remote_addr))
 
 
 @stats_bp.route("/visits")

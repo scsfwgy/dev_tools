@@ -299,3 +299,11 @@ Flask + 原生 HTML/CSS/JS + Vercel serverless 架构。
 - ./start.sh restart 完整 107 项通过：新增国家/中国城市/海外地区列表、默认/国家随机/指定地点、确定性、来源缺失、非法国家/地点或跨国组合拒绝，以及服务端/前端出生地不可被 AI 改写检查。
 - 新增 birth-picker.browser.test.cjs，真实请求本地地区与出生接口，AI/统计及境外请求隔离。1440px/390px × 中英 × 深浅色 8 组验证全球随机、仅国家、具体中国/海外地点、清空选择、请求失败和错误 AI 地点不覆盖旧档、原选择重试；额外检查快速换国的晚响应、无下级资料、列表失败仍可随机。原 view.browser.test.cjs 的 8 组弹窗连续性/动画/焦点/导入回归也通过；独立入口指定城市出生及按钮文案检查通过。
 - 浏览器检查手机/桌面选择界面，无横向溢出或未解释控制台错误。日志 app_start、health 200（0.2ms），地区/出生读取 200、通常约 0.1–10ms，manifest 200，未见本轮 Traceback/ERROR/WARNING。测试中的 503 与非法 AI 地点为预期模拟失败；未调用真实模型、真实 Redis 或外部地图。真机及实际模型生成质量尚未验证。
+
+## 2026-11-07 自托管地区统计修复
+
+- 用随代码附带的 DB-IP Country Lite 数据库离线解析国家；只有 Vercel 部署才读取 Vercel 国家头。
+- 仅信任配置的反向代理，从右向左解析转发链；不保存或外发完整 IP。
+- 地区报表分别导出数据库配置状态和存储故障状态；HomeTools 共用地图显示原因和 DB-IP 署名。
+- 新增无 Vercel 头的真实路由计数、去重、IPv4/IPv6、代理伪造、损坏数据库和 Redis 失败测试。
+- 验证：`./start.sh restart` 完成 123 项完整测试，启动日志包含 `event=app_start`，健康检查 200；源站统计导出 200 且 `geo.lookupStatus=ok` / `countrySource=local-db`。共用 HomeTools 后台在 1440px/390px 浏览器中通过 5 种地区状态和周/月切换检查，无页面异常；本仓库没有修改产品 UI。HomeTools 305 项、GlobalAssetHistory 618 项测试也通过。启动日志无未解释错误；生产部署尚未更新，Docker/1Panel 需配置实际可信代理。
